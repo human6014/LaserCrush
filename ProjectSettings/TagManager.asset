@@ -12,10 +12,10 @@ TagManager:
   - Water
   - UI
   - 
+  - Touchable
   - 
-  - 
-  - 
-  - 
+  - Reflectable
+  - Absorbable
   - 
   - 
   - 
@@ -40,4 +40,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Line
+    uniqueID: 1821945837
     locked: 0

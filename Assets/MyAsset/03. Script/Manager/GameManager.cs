@@ -6,11 +6,20 @@ namespace Laser.Manager
 {
     public class GameManager : MonoBehaviour
     {
+
+        
         private void Awake()
         {
             SetResolution();
+
+           
         }
-        
+
+        private void Update()
+        {
+            //m_InputManager.ManagedUpdate();
+        }
+
         /// <summary>
         /// 게임 최초 시작 시 해상도를 설정해줌
         /// </summary>
