@@ -38,9 +38,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: MainCanvas
+    uniqueID: 3302680341
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: Line
     uniqueID: 1821945837
+    locked: 0
+  - name: NormalObject
+    uniqueID: 3713533471
+    locked: 0
+  - name: SettingCanvas
+    uniqueID: 115237625
     locked: 0

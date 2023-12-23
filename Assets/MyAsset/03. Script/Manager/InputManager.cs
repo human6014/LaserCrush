@@ -14,6 +14,7 @@ namespace Laser.Manager
         private Camera m_MainCamera;
 
         private Vector3 m_ClickPos;
+        private Vector3 m_Direction;
         private bool m_IsDragInit;
 
         public Action<bool> RepaintInitPointAction;
@@ -27,7 +28,8 @@ namespace Laser.Manager
             {
                 m_IsDragInit = isDragInit;
                 if (!m_IsDragInit) return;
-                m_SubLineRenderer.SetPosition(0, m_LaserInitTransform.position);
+
+                Re();
             };
             RepaintLineAction += RepaintLine;
         }
@@ -46,22 +48,25 @@ namespace Laser.Manager
             #endif
         }
 
+        private void Re()
+        {
+            RaycastHit2D hit = Physics2D.Raycast(m_LaserInitTransform.position, m_Direction, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
+
+            m_SubLineRenderer.SetPosition(0, m_LaserInitTransform.position);
+            m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - m_Direction);
+        }
+
         private void RepaintLine()
         {
             if (m_IsDragInit) return;
 
             Vector3 m_ClickPos = MainScreenToWorldPoint(Input.mousePosition);
-            Vector3 direction = (m_ClickPos - m_LaserInitTransform.position).normalized;
+            m_Direction = (m_ClickPos - m_LaserInitTransform.position).normalized;
 
             Debug.Log("RepaintLine");
-            if (direction.y <= 0) return;
+            if (m_Direction.y <= 0) return;
 
-            //differ = new Vector3(differ.y >= 0 ? differ.x : differ.x >= 0 ? 1 : -1, Mathf.Clamp(differ.y, 0.2f, 1), 0);
-
-            RaycastHit2D hit = Physics2D.Raycast(m_LaserInitTransform.position, direction, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-
-            m_SubLineRenderer.SetPosition(0, m_LaserInitTransform.position);
-            m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - direction);
+            Re();
         }
 
         private void SetEditorInput()
