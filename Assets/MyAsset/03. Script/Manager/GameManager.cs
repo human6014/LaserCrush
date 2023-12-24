@@ -2,28 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class GameManager : MonoBehaviour
+namespace Laser.Manager
 {
-    #region Property
-    private LazerManager lazerManager;
-    private List<ICollisionable> m_CollisionableDbjects = new List<ICollisionable>();
-    private bool m_OnDeploying;
-    #endregion
-
-    public void Update()
+    public class GameManager : MonoBehaviour
     {
-        //½Ã¹Ä·¹ÀÌ¼Ç
-        if(m_OnDeploying)
+    
+        #region Property
+        private LazerManager lazerManager;
+        private List<ICollisionable> m_CollisionableDbjects = new List<ICollisionable>();
+        private bool m_OnDeploying;
+        #endregion
+        
+        private void Awake()
         {
-            lazerManager.Activate();
-        }
-        //¹èÄ¡ÅÏ
-        else
-        {
-            //¾î¶²½ÄÀ¸·Î ÇØ¾ßÇÒÁö °¨ÀÌ ¾È¿Â´Ù
-            //¿Ï·á¹öÆ°(¿¡³ÊÁö ÃæÀü¼Ò ´©¸£±â) ´©¸£¸é ¹èÄ¡¿Ï·áº¯¼ö true·Î ¹Ù²Ù±â
+            SetResolution();
 
+           
+        }
+
+        private void Update()
+        {
+            //m_InputManager.ManagedUpdate();
+        }
+
+        /// <summary>
+        /// ê²Œì„ ìµœì´ˆ ì‹œì‘ ì‹œ í•´ìƒë„ë¥¼ ì„¤ì •í•´ì¤Œ
+        /// </summary>
+        public void SetResolution()
+        {
+            int setWidth = 1080; // ì‚¬ìš©ì ì„¤ì • ë„ˆë¹„
+            int setHeight = 1920; // ì‚¬ìš©ì ì„¤ì • ë†’ì´
+
+            int deviceWidth = Screen.width; // í˜„ì¬ ê¸°ê¸° ë„ˆë¹„
+            int deviceHeight = Screen.height; // í˜„ì¬ ê¸°ê¸° ë†’ì´
+
+            Screen.SetResolution(setWidth, (int)((float)deviceHeight / deviceWidth * setWidth), true);
+
+            Rect rect;
+            if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // ê¸°ê¸°ì˜ í•´ìƒë„ ë¹„ê°€ ë” í° ê²½ìš°
+            {
+                float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // ìƒˆë¡œìš´ ë„ˆë¹„
+                rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // ìƒˆë¡œìš´ Rect ì ìš©
+            }
+            else // ê²Œì„ì˜ í•´ìƒë„ ë¹„ê°€ ë” í° ê²½ìš°
+            {
+                float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // ìƒˆë¡œìš´ ë†’ì´
+                rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // ìƒˆë¡œìš´ Rect ì ìš©
+            }
+            Camera.main.rect = rect;
         }
     }
 }
