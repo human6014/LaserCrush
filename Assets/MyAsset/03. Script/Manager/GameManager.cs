@@ -6,7 +6,12 @@ namespace Laser.Manager
 {
     public class GameManager : MonoBehaviour
     {
-
+    
+        #region Property
+        private LazerManager lazerManager;
+        private List<ICollisionable> m_CollisionableDbjects = new List<ICollisionable>();
+        private bool m_OnDeploying;
+        #endregion
         
         private void Awake()
         {
@@ -21,28 +26,28 @@ namespace Laser.Manager
         }
 
         /// <summary>
-        /// °ÔÀÓ ÃÖÃÊ ½ÃÀÛ ½Ã ÇØ»óµµ¸¦ ¼³Á¤ÇØÁÜ
+        /// ê²Œì„ ìµœì´ˆ ì‹œì‘ ì‹œ í•´ìƒë„ë¥¼ ì„¤ì •í•´ì¤Œ
         /// </summary>
         public void SetResolution()
         {
-            int setWidth = 1080; // »ç¿ëÀÚ ¼³Á¤ ³Êºñ
-            int setHeight = 1920; // »ç¿ëÀÚ ¼³Á¤ ³ôÀÌ
+            int setWidth = 1080; // ì‚¬ìš©ì ì„¤ì • ë„ˆë¹„
+            int setHeight = 1920; // ì‚¬ìš©ì ì„¤ì • ë†’ì´
 
-            int deviceWidth = Screen.width; // ÇöÀç ±â±â ³Êºñ
-            int deviceHeight = Screen.height; // ÇöÀç ±â±â ³ôÀÌ
+            int deviceWidth = Screen.width; // í˜„ì¬ ê¸°ê¸° ë„ˆë¹„
+            int deviceHeight = Screen.height; // í˜„ì¬ ê¸°ê¸° ë†’ì´
 
             Screen.SetResolution(setWidth, (int)((float)deviceHeight / deviceWidth * setWidth), true);
 
             Rect rect;
-            if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // ±â±âÀÇ ÇØ»óµµ ºñ°¡ ´õ Å« °æ¿ì
+            if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // ê¸°ê¸°ì˜ í•´ìƒë„ ë¹„ê°€ ë” í° ê²½ìš°
             {
-                float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // »õ·Î¿î ³Êºñ
-                rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // »õ·Î¿î Rect Àû¿ë
+                float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // ìƒˆë¡œìš´ ë„ˆë¹„
+                rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // ìƒˆë¡œìš´ Rect ì ìš©
             }
-            else // °ÔÀÓÀÇ ÇØ»óµµ ºñ°¡ ´õ Å« °æ¿ì
+            else // ê²Œì„ì˜ í•´ìƒë„ ë¹„ê°€ ë” í° ê²½ìš°
             {
-                float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // »õ·Î¿î ³ôÀÌ
-                rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // »õ·Î¿î Rect Àû¿ë
+                float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // ìƒˆë¡œìš´ ë†’ì´
+                rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // ìƒˆë¡œìš´ Rect ì ìš©
             }
             Camera.main.rect = rect;
         }
