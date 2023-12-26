@@ -1,8 +1,9 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngineInternal;
 
 namespace Laser.Manager
 {
@@ -51,7 +52,6 @@ namespace Laser.Manager
         private void Re()
         {
             RaycastHit2D hit = Physics2D.Raycast(m_LaserInitTransform.position, m_Direction, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-
             m_SubLineRenderer.SetPosition(0, m_LaserInitTransform.position);
             m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - m_Direction);
         }

@@ -4,13 +4,23 @@ using UnityEngine;
 
 namespace Laser.Manager
 {
+    /// <summary>
+    /// 인풋과 턴 개념을 결정하는 클래스
+    /// 각 턴마다 적절한 update함수를 호출해준다.
+    /// 
+    /// </summary>
+    enum GameStateType
+    {
+        Deploying,
+        BlockUpdating,
+        LaserActivating
+    }
     public class GameManager : MonoBehaviour
     {
     
         #region Property
-        private LazerManager lazerManager;
-        private List<ICollisionable> m_CollisionableDbjects = new List<ICollisionable>();
-        private bool m_OnDeploying;
+        private LaserManager m_LaserManager;
+        private GameStateType m_GameStateType;
         #endregion
         
         private void Awake()
@@ -22,7 +32,21 @@ namespace Laser.Manager
 
         private void Update()
         {
-            //m_InputManager.ManagedUpdate();
+            switch (m_GameStateType) 
+            {
+                case GameStateType.Deploying:
+                    OnDeploying(); 
+                    break;
+                case GameStateType.BlockUpdating:
+                    BlockUpdating();
+                    break;
+                case GameStateType.LaserActivating:
+                    LaserActivating();
+                    break;
+                default:
+                    Debug.Log("올바르지 않은 게임 상태입니다.");
+                    break;
+            }
         }
 
         /// <summary>
@@ -50,6 +74,42 @@ namespace Laser.Manager
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
             }
             Camera.main.rect = rect;
+        }
+
+        public static void DeployingComplete()
+        {
+
+        }
+
+        public void OnDeploying()
+        {
+            //m_InputManager.ManagedUpdate();
+            //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
+            m_GameStateType = GameStateType.LaserActivating;
+
+        }
+
+        public void BlockUpdating()
+        {
+            /*todo
+             * 블럭 생성및 화면에 존재하는 아이템 획득
+             */
+            m_GameStateType = GameStateType.Deploying;
+        }
+
+        public void LaserActivating()
+        {
+            if (Energy.IsAvailable())
+            {
+                m_LaserManager.Activate();
+            }
+            else
+            {
+                if (m_LaserManager.DeActivate())
+                {
+                    m_GameStateType = GameStateType.Deploying;
+                }
+            }
         }
     }
 }
