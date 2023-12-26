@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IUpdateable
 {
     public void ManagedUpdate();
+
+    public bool IsAttable();
 }

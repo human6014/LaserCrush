@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ICollisionable;
 
 /// <summary>
 /// 레이저가 프리즘과 충돌 시 활성화 되어 있으면 port의 vector를 받아
 /// 해당 방향으로 레이저를 추가 생산
 /// </summary>
 
-public class Prism : Item
+public class Prism : Item, ICollisionable
 {
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
@@ -15,7 +16,7 @@ public class Prism : Item
     #region Property
     private const int m_MaxUsingCount = 3;
     private const int m_CHARGINTIME = 10;
-    private List<Vector3> m_EjectionPorts = new List<Vector3>();
+    private List<Vector2> m_EjectionPorts = new List<Vector2>();
     private int m_UsingCount = 0;
     private bool m_IsActivate = false;
     private int m_ChargingWait;
@@ -24,6 +25,7 @@ public class Prism : Item
     /// <summary>
     /// 화면에서 유저 입력을 받아 설치할때 호출할 함수
     /// 아이템에서 보조선이 나와 각도를 시각화 해준다
+    /// 수정 필요
     /// </summary>
     void SetEjectionPorts()
     {
@@ -44,7 +46,7 @@ public class Prism : Item
         return m_IsActivate;
     }
 
-    public List<Vector3> GetEjectionPorts()
+    public List<Vector2> GetEjectionPorts()
     {
         return m_EjectionPorts;
     }
@@ -59,5 +61,18 @@ public class Prism : Item
         }
     }
 
-     
+    public void GetDamage(int damage)
+    {
+        return;
+    }
+
+    public bool IsAttackable()
+    {
+        return false;
+    }
+
+    public EntityType GetEntityType()
+    {
+        return EntityType.Prisim;
+    }
 }
