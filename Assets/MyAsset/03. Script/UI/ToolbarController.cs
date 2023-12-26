@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Laser.UI
 {
@@ -8,11 +9,12 @@ namespace Laser.UI
     {
         [SerializeField] private RectTransform m_ToolbarTransform;
         [SerializeField] private RectTransform m_ContentTransform;
-        [SerializeField] private Item[] m_Items;
+        [SerializeField] private List<Item> m_Items;
 
         private Item m_CurrentItem;
         private RectTransform m_CurrentItemTransform;
         private Vector2 m_Offset;
+        private Vector2 m_InitPos;
 
         private void Awake()
         {
@@ -28,20 +30,23 @@ namespace Laser.UI
         {
             m_CurrentItem = clickedItem;
             m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();
-            m_CurrentItemTransform.SetParent(m_ToolbarTransform);
+            m_CurrentItem.GetComponent<Image>().maskable = false;
 
-            m_Offset = m_CurrentItemTransform.anchoredPosition - (Vector2)Input.mousePosition;
+            m_InitPos = m_CurrentItemTransform.anchoredPosition;
+            m_Offset = m_InitPos - (Vector2)Input.mousePosition;
         }
 
         private void OnPointerUp()
         {
-            m_CurrentItemTransform.SetParent(m_ContentTransform);
+            m_CurrentItem.GetComponent<Image>().maskable = true;
+
+            m_CurrentItemTransform.anchoredPosition = m_InitPos;
         }
 
         private void OnDrag(Vector2 delta)
         {
             m_CurrentItemTransform.anchoredPosition = delta + m_Offset;
-            //m_CurrentItemTransform.Translate(delta);
+
         }
     }
 }
