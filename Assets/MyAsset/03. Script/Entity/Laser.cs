@@ -11,22 +11,22 @@ using UnityEngineInternal;
 
 namespace Laser.Entity
 {
-    enum LaserStateType // ÀÌ¸§ °í¹Î
+    enum LaserStateType // ì´ë¦„ ê³ ë¯¼
     {
         Move,
         Hitting
     }
 
     /// <summary>
-    /// ·¹ÀÌÀú ¸Å´ÏÀú°¡ ¸Å ¾÷µ¥ÀÌÆ®¸¶´Ù °¢ ·¹ÀÌÀú °³Ã¼¸¦ ¾÷µ¥ÀÌÆ®ÇØÁÜ
-    /// Ãæµ¹°ü·Ã ·ÎÁ÷Àº ¸ğµÎ ·¹ÀÌÀú¿¡¼­ Ã³¸® ÈÄ °¢ °³Ã¼¿¡ Åëº¸ÇÏ´Â ¹æ½Ä
-    ///     ex) Ãæµ¹ ¿ÀºêÁ§Æ® Å½»ö ÈÄ hp, Å¸ÀÔµî ÀĞ¾î¿Â ÈÄ ·ÎÁ÷ Ã³¸® ÈÄ °¢ °³Ã¼¿¡ Åëº¸
+    /// ë ˆì´ì € ë§¤ë‹ˆì €ê°€ ë§¤ ì—…ë°ì´íŠ¸ë§ˆë‹¤ ê° ë ˆì´ì € ê°œì²´ë¥¼ ì—…ë°ì´íŠ¸í•´ì¤Œ
+    /// ì¶©ëŒê´€ë ¨ ë¡œì§ì€ ëª¨ë‘ ë ˆì´ì €ì—ì„œ ì²˜ë¦¬ í›„ ê° ê°œì²´ì— í†µë³´í•˜ëŠ” ë°©ì‹
+    ///     ex) ì¶©ëŒ ì˜¤ë¸Œì íŠ¸ íƒìƒ‰ í›„ hp, íƒ€ì…ë“± ì½ì–´ì˜¨ í›„ ë¡œì§ ì²˜ë¦¬ í›„ ê° ê°œì²´ì— í†µë³´
     /// </summary>
     public class Laser : MonoBehaviour
     {
         /// <summary>
-        /// m_StartPoint : ·¹ÀÌÀú ½ÃÀÛÁ¡ -> ¼Ò¸ê½Ã ½ÃÀÛÁ¡ÀÌ ÀÌµ¿ÇÔ
-        /// m_EndPoint : ·¹ÀÌÀú ³¡Á¡ -> ¹ß»ç ½Ã ³¡Á¡ÀÌ ÀÌµ¿ÇÔ
+        /// m_StartPoint : ë ˆì´ì € ì‹œì‘ì  -> ì†Œë©¸ì‹œ ì‹œì‘ì ì´ ì´ë™í•¨
+        /// m_EndPoint : ë ˆì´ì € ëì  -> ë°œì‚¬ ì‹œ ëì ì´ ì´ë™í•¨
         /// </summary>
         #region Property
         [SerializeField] private GameObject m_LaserObject;
@@ -38,8 +38,8 @@ namespace Laser.Entity
         private float m_ShootingVelocity = 0.1f;
         private List<Laser> m_ChildLazers = new List<Laser>();
         private LaserStateType m_State;
-        private int m_Damage;//º¯¼öÀÌ¸§ °í¹Î -> ÇÑ¹ø ¼Ò¸ğÇÒ ¿¡³ÊÁö¸¦ º¸°üÇÒ º¯¼ö
-        private ICollisionable m_Target = null; // ÀÌºÎºĞµµ °í¹Î ÇØºÁ¾ßÇÔ
+        private int m_Damage;//ë³€ìˆ˜ì´ë¦„ ê³ ë¯¼ -> í•œë²ˆ ì†Œëª¨í•  ì—ë„ˆì§€ë¥¼ ë³´ê´€í•  ë³€ìˆ˜
+        private ICollisionable m_Target = null; // ì´ë¶€ë¶„ë„ ê³ ë¯¼ í•´ë´ì•¼í•¨
 
         private LineRenderer m_LineRenderer;
         #endregion
@@ -62,30 +62,30 @@ namespace Laser.Entity
         }
 
         /// <summary>
-        /// ·¹ÀÌÀú ÃÑ »óÅÂ
-        /// [¿òÁ÷ÀÓ] : Ãæµ¹ Àü »óÅÂ ¾÷µ¥ÀÌÆ®¸¶´Ù ¹æÇâº¤ÅÍ ¹æÇâÀ¸·Î ÀÌµ¿
-        /// [Ãæµ¹] : ÃÖÃÊ Ãæµ¹¿¡¼­ ÀÚ½Ä ·¹ÀÌÀú »ı¼º, ÁÖ±â¸¶´Ù ¿¡³ÊÁö Ã¼Å© ÈÄ Ãæµ¹ ºí·° °í°İ
-        ///          ·¹ÀÌÀúÀÇ »ı¼º(ºĞ±â)´Â ¿òÁ÷ÀÓ »óÅÂ¿¡¼­ ÃÖÃÊ Ãæµ¹À» °¨ÁöÇÑ ¼ø°£ ¼öÇàµÈ´Ù.
+        /// ë ˆì´ì € ì´ ìƒíƒœ
+        /// [ì›€ì§ì„] : ì¶©ëŒ ì „ ìƒíƒœ ì—…ë°ì´íŠ¸ë§ˆë‹¤ ë°©í–¥ë²¡í„° ë°©í–¥ìœ¼ë¡œ ì´ë™
+        /// [ì¶©ëŒ] : ìµœì´ˆ ì¶©ëŒì—ì„œ ìì‹ ë ˆì´ì € ìƒì„±, ì£¼ê¸°ë§ˆë‹¤ ì—ë„ˆì§€ ì²´í¬ í›„ ì¶©ëŒ ë¸”ëŸ­ ê³ ê²©
+        ///          ë ˆì´ì €ì˜ ìƒì„±(ë¶„ê¸°)ëŠ” ì›€ì§ì„ ìƒíƒœì—ì„œ ìµœì´ˆ ì¶©ëŒì„ ê°ì§€í•œ ìˆœê°„ ìˆ˜í–‰ëœë‹¤.
         /// </summary>
         public void ManagedUpdate()
         {
             switch (m_State) 
             {
-                case LaserStateType.Move://¿¡³ÊÁö ¼Ò¸ğx ÀÌµ¿¸¸
+                case LaserStateType.Move://ì—ë„ˆì§€ ì†Œëª¨x ì´ë™ë§Œ
                     Move();
                     break;
                 case LaserStateType.Hitting:
                     Hiting();
                     break;
                 default:
-                    Debug.Log("Àß¸øµÈ ·¹ÀÌÀú »óÅÂÀÔ´Ï´Ù.");
+                    Debug.Log("ì˜ëª»ëœ ë ˆì´ì € ìƒíƒœì…ë‹ˆë‹¤.");
                     break;
             }
         }
 
         public void GenerateLazer(Vector2 direction)
         {
-            //·¹ÀÌÀú »ı¼º
+            //ë ˆì´ì € ìƒì„±
         }
 
         public bool HasChild()
@@ -103,14 +103,14 @@ namespace Laser.Entity
         }
 
         /// <summary>
-        /// ÀÏÁ¤ ¼Óµµ¸¸Å­ startPoint¸¦ endPoint¹æÇâÀ¸·Î ÀÌµ¿
-        /// ·¹ÀÌÀú°¡ Áö¿öÁö¸é true ¹İÈ¯
+        /// ì¼ì • ì†ë„ë§Œí¼ startPointë¥¼ endPointë°©í–¥ìœ¼ë¡œ ì´ë™
+        /// ë ˆì´ì €ê°€ ì§€ì›Œì§€ë©´ true ë°˜í™˜
         /// </summary>
         public bool Erase()
         {
             if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_EraseVelocity)
             {
-                //»èÁ¦
+                //ì‚­ì œ
                 m_StartPoint = m_EndPoint;
                 return true;
             }
@@ -119,10 +119,10 @@ namespace Laser.Entity
         }
 
         /// <summary>
-        /// ·¹ÀÌÀúÀÇ ³¡Á¡À» ¿òÁ÷ÀÌ´Â ÇÔ¼ö
-        /// 1.  Ãæµ¹ Å½Áö
-        /// 1.1 Ãæµ¹ÇÑ °³Ã¼¸¦ ¹Ş¾Æ¿Â´Ù
-        /// 1.2 °³Ã¼¿¡ ¸Â´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+        /// ë ˆì´ì €ì˜ ëì ì„ ì›€ì§ì´ëŠ” í•¨ìˆ˜
+        /// 1.  ì¶©ëŒ íƒì§€
+        /// 1.1 ì¶©ëŒí•œ ê°œì²´ë¥¼ ë°›ì•„ì˜¨ë‹¤
+        /// 1.2 ê°œì²´ì— ë§ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
         /// </summary> 
         public void Move()
         {
@@ -130,7 +130,7 @@ namespace Laser.Entity
             
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.transform.position);
-            if (hit.collider != null && dist <= m_ShootingVelocity)//Ãæµ¹ ½Ã
+            if (hit.collider != null && dist <= m_ShootingVelocity)//ì¶©ëŒ ì‹œ
             {
                 Debug.Log("Move" + hit.transform.name);
                 m_Target = hit.transform.GetComponent<ICollisionable>();
@@ -139,8 +139,7 @@ namespace Laser.Entity
                 temVec = (hit.normal + temVec).normalized;
 
                 //CreateChildRaser(hit.transform.position, temVec);
-
-                //µ¥¹ÌÁö °è»êX -> ÀÚ½Ä ·¹ÀÌÀú »ı¼º¸¸ ´ã´ç
+                //ë°ë¯¸ì§€ ê³„ì‚°X -> ìì‹ ë ˆì´ì € ìƒì„±ë§Œ ë‹´ë‹¹
                 //switch (m_Target.GetEntityType())
                 //{
                 //    case EntityType.NormalBlock:
@@ -161,7 +160,7 @@ namespace Laser.Entity
                 //    case EntityType.Launcher:
 
                 //    default:
-                //        Debug.Log("Ãæµ¹ °³Ã¼ÀÇ Å¸ÀÔÀÌ ¿Ã¹Ù¸£Áö ¾ÊÀ½"); break;
+                //        Debug.Log("ì¶©ëŒ ê°œì²´ì˜ íƒ€ì…ì´ ì˜¬ë°”ë¥´ì§€ ì•ŠìŒ"); break;
                 //}
                 m_State = LaserStateType.Hitting;
             }
@@ -170,10 +169,10 @@ namespace Laser.Entity
         }
 
         /// <summary>
-        /// ÀÛµ¿ ¼ø¼­
-        /// 1. Ãæµ¹ ÁßÀÎ ºí·°ÀÇ Å¸ÀÔÀ» È®ÀÎÇÏ°í °ø°İ ºÒ°¡´ÉÀÎ °æ¿ì ¾÷µ¥ÀÌÆ® Á¾·á
-        /// 2. °ø°İÀÌ °¡´ÉÇÒ °æ¿ì ¿¡³ÊÁö ÀÜ·®À» È®ÀÎ ÈÄ 0ÀÌ ¾Æ´Ï¸é °ø°İ ÁøÇà
-        /// 3. ÇØ´ç ºí·°¿¡ GetDamageÇÔ¼ö¸¦ È£ÃâÇØ µ¥¹ÌÁö¸¦ ÁÖ°í Energy°³Ã¼¿¡ ¿¡³ÊÁö¸¦ °¨¼Ò½ÃÅ²´Ù.
+        /// ì‘ë™ ìˆœì„œ
+        /// 1. ì¶©ëŒ ì¤‘ì¸ ë¸”ëŸ­ì˜ íƒ€ì…ì„ í™•ì¸í•˜ê³  ê³µê²© ë¶ˆê°€ëŠ¥ì¸ ê²½ìš° ì—…ë°ì´íŠ¸ ì¢…ë£Œ
+        /// 2. ê³µê²©ì´ ê°€ëŠ¥í•  ê²½ìš° ì—ë„ˆì§€ ì”ëŸ‰ì„ í™•ì¸ í›„ 0ì´ ì•„ë‹ˆë©´ ê³µê²© ì§„í–‰
+        /// 3. í•´ë‹¹ ë¸”ëŸ­ì— GetDamageí•¨ìˆ˜ë¥¼ í˜¸ì¶œí•´ ë°ë¯¸ì§€ë¥¼ ì£¼ê³  Energyê°œì²´ì— ì—ë„ˆì§€ë¥¼ ê°ì†Œì‹œí‚¨ë‹¤.
         /// </summary>
         public void Hiting()
         {
@@ -182,15 +181,17 @@ namespace Laser.Entity
                 return;
             }
 
-            if (Energy.CheckEnergy())//¹ß»çÀü ¿¡³ÊÁö »ç¿ë°¡´É¿©ºÎ È®ÀÎ
+            if (Energy.CheckEnergy())//ë°œì‚¬ì „ ì—ë„ˆì§€ ì‚¬ìš©ê°€ëŠ¥ì—¬ë¶€ í™•ì¸
             {
                 m_Target.GetDamage(m_Damage);
             }
         }
 
-        public void Complete()
+        public void Init(Vector2 posion, Vector2 dir)
         {
-
+            m_StartPoint = posion;
+            m_EndPoint = posion;
+            m_DirectionVector = dir.normalized;
         }
 
         public void CollideNormalBlock()
@@ -198,9 +199,10 @@ namespace Laser.Entity
             return;
         }
 
+
         public void CollideReflectBlock(RaycastHit2D hit)
         {
-            //»õ·Î¿î ÀÚ½Ä ·¹ÀÌÀú »ı¼º
+            //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
             Vector2 temDir = m_DirectionVector + hit.normal;
             temDir = (hit.normal + temDir).normalized;
 
@@ -212,37 +214,51 @@ namespace Laser.Entity
             List<Vector2> dir =  hit.collider.GetComponent<Prism>().GetEjectionPorts();
             for(int i = 0; i < dir.Count; ++i) 
             {
-                //TODO//
-                //dirÀ» ¹æÇâº¤ÅÍ·Î ÇÏ°í À§Ä¡´Â hit Æ÷ÀÎÅÍ·Î ÇÏ´Â ·¹ÀÌÀú »ı¼º
-                //·¹ÀÌÀú »ı¼º ÈÄ manager¿¡ addÇÔ¼ö¸¦ È£ÃâÇØ Ãß°¡ÇØ ÁÖ¾î¾ß ÇÑ´Ù.
+                //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
+                //todo//
+                //GetReflectVector() ì‚¬ìš©í•˜ë©´ë˜ìš”
+                //Init()í•¨ìˆ˜ í˜¸ì¶œí•˜ë©´ ì´ˆê¸°í™” ê°€ëŠ¥
+                /*ìì‹ ìƒì„± ìˆœì„œ
+                 * 1. ìì‹ ì¸ìŠ¤í„´ì‹œì—ì´íŠ¸
+                 * 2. ìì‹ ë ˆì´ì € inití•¨ìˆ˜ë¡œ ê°ì²´ ì´ˆê¸°í™”
+                 * 3. LaserManagerì— Add
+                 */
             }
         }
 
         public void CollideWall(RaycastHit2D hit)
         {
-            //»õ·Î¿î ÀÚ½Ä ·¹ÀÌÀú »ı¼º
+            //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
+            //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
+            //todo//
+            //GetReflectVector() ì‚¬ìš©í•˜ë©´ë˜ìš”
+            //Init()í•¨ìˆ˜ í˜¸ì¶œí•˜ë©´ ì´ˆê¸°í™” ê°€ëŠ¥
+            /*ìì‹ ìƒì„± ìˆœì„œ
+             * 1. ìì‹ ì¸ìŠ¤í„´ì‹œì—ì´íŠ¸
+             * 2. ìì‹ ë ˆì´ì € inití•¨ìˆ˜ë¡œ ê°ì²´ ì´ˆê¸°í™”
+             * 3. LaserManagerì— Add
+             */
 
-            Vector2 temDir = m_DirectionVector + hit.normal;
-            temDir = (hit.normal + temDir).normalized;
+            HittingWall();
         }
 
         public void CollideFloor()
         {
-            return;
+            HittingFloor();
         }
 
         public void CollideLauncher(RaycastHit2D hit)
         {
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
             //TODO//
-            //dirÀ» ¹æÇâº¤ÅÍ·Î ÇÏ°í À§Ä¡´Â hit Æ÷ÀÎÅÍ·Î ÇÏ´Â ·¹ÀÌÀú »ı¼º
-            //·¹ÀÌÀú »ı¼º ÈÄ manager¿¡ addÇÔ¼ö¸¦ È£ÃâÇØ Ãß°¡ÇØ ÁÖ¾î¾ß ÇÑ´Ù.
+            //dirì„ ë°©í–¥ë²¡í„°ë¡œ í•˜ê³  ìœ„ì¹˜ëŠ” hit í¬ì¸í„°ë¡œ í•˜ëŠ” ë ˆì´ì € ìƒì„±
+            //ë ˆì´ì € ìƒì„± í›„ managerì— addí•¨ìˆ˜ë¥¼ í˜¸ì¶œí•´ ì¶”ê°€í•´ ì£¼ì–´ì•¼ í•œë‹¤.
             CreateChildRaser(hit.transform.position, dir);
         }
 
         /// <summary>
-        /// ÀÚ½Ä ·¹ÀÌÀú ¸¸µé°í À§Ä¡, °¢µµ ¼³Á¤ +
-        /// LaserManagerÀÇ ·¹ÀÌÀú ¸®½ºÆ®¿¡ Ãß°¡
+        /// ìì‹ ë ˆì´ì € ë§Œë“¤ê³  ìœ„ì¹˜, ê°ë„ ì„¤ì • +
+        /// LaserManagerì˜ ë ˆì´ì € ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="rot"></param>
@@ -252,6 +268,39 @@ namespace Laser.Entity
             Laser laser = Instantiate(gameObject).GetComponent<Laser>();
             laser.Init(pos, rot);
             LaserManager.AddLaser(laser);
+            //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
+            //ìƒˆë¡œìš´ ìì‹ ë ˆì´ì € ìƒì„±
+            //todo//
+            //GetReflectVector() ì‚¬ìš©í•˜ë©´ë˜ìš”
+            //Init()í•¨ìˆ˜ í˜¸ì¶œí•˜ë©´ ì´ˆê¸°í™” ê°€ëŠ¥
+            /*ìì‹ ìƒì„± ìˆœì„œ
+             * 1. ìì‹ ì¸ìŠ¤í„´ì‹œì—ì´íŠ¸
+             * 2. ìì‹ ë ˆì´ì € inití•¨ìˆ˜ë¡œ ê°ì²´ ì´ˆê¸°í™”
+             * 3. LaserManagerì— Add
+             */
         }
+
+        /// <summary>
+        /// ë‹¨ìœ„ë² í„°ë¡œ ë°˜í™˜
+        /// </summary>
+        /// <param name="hit"></param>
+        /// <returns></returns>
+        private Vector2 GetReflectVector(RaycastHit2D hit)
+        {
+            return (hit.normal + m_DirectionVector + hit.normal).normalized;
+        }
+
+
+        private void HittingWall()
+        {
+            //ë‚¨ì€ ì—ë„ˆì§€ì˜ ì¼ì • ë¹„ìœ¨ì„ ê°ì†Œ
+
+        }
+
+        private void HittingFloor()
+        {
+            //ì¼ë‹¨ ë¡œì§ ë³´ë¥˜
+        }
+        
     }
 }

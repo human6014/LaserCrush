@@ -97,6 +97,8 @@ namespace Laser.Manager
         {
             /*todo
              * 블럭 생성및 화면에 존재하는 아이템 획득
+             * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
+             *   -> Time함수 등을 사용
              */
             m_GameStateType = GameStateType.Deploying;
         }
@@ -109,7 +111,7 @@ namespace Laser.Manager
             }
             else
             {
-                if (m_LaserManager.DeActivate())
+                if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
                     m_GameStateType = GameStateType.Deploying;
                 }
