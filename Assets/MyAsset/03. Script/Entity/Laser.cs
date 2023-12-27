@@ -69,6 +69,7 @@ namespace Laser.Entity
         /// </summary>
         public void ManagedUpdate()
         {
+            Debug.Log(m_State);
             switch (m_State) 
             {
                 case LaserStateType.Move://에너지 소모x 이동만
@@ -129,8 +130,8 @@ namespace Laser.Entity
             if(!Energy.CheckEnergy()) { return; }
             
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-            float dist = Vector2.Distance(m_EndPoint, hit.transform.position);
-            if (hit.collider != null && dist <= m_ShootingVelocity)//충돌 시
+            float dist = Vector2.Distance(m_EndPoint, hit.point);
+            if (hit.collider != null && dist <= m_ShootingVelocity)//�浹 ��
             {
                 Debug.Log("Move" + hit.transform.name);
                 m_Target = hit.transform.GetComponent<ICollisionable>();
