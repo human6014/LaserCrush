@@ -5,7 +5,7 @@ using UnityEngine;
 public class Energy : MonoBehaviour
 {
     #region Property
-    private static int m_Energy;
+    private static int m_Energy = 100;
     private static Vector2 m_Postion;
     #endregion
 

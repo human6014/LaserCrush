@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public interface ICollisionable 
+public interface ICollisionable
 {
     [Flags]
     enum EntityType
@@ -20,9 +20,9 @@ public interface ICollisionable
         Launcher
     }
 
-    EntityType GetEntityType();
+    public EntityType GetEntityType();
 
-    void GetDamage(int damage);
+    public void GetDamage(int damage);
 
     public bool IsAttackable();
 }

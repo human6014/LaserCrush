@@ -13,8 +13,8 @@ namespace Laser.Entity
 {
     enum LaserStateType // 이름 고민
     {
-        Hitting,
-        Move
+        Move,
+        Hitting
     }
 
     /// <summary>
@@ -29,16 +29,37 @@ namespace Laser.Entity
         /// m_EndPoint : 레이저 끝점 -> 발사 시 끝점이 이동함
         /// </summary>
         #region Property
+        [SerializeField] private GameObject m_LaserObject;
+
         private Vector2 m_StartPoint;
         private Vector2 m_EndPoint;
         private Vector2 m_DirectionVector;
-        private float m_EraseVelocity;
-        private float m_ShootingVelocity;
+        private float m_EraseVelocity = 0.2f;
+        private float m_ShootingVelocity = 0.1f;
         private List<Laser> m_ChildLazers = new List<Laser>();
         private LaserStateType m_State;
         private int m_Damage;//변수이름 고민 -> 한번 소모할 에너지를 보관할 변수
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
+
+        private LineRenderer m_LineRenderer;
         #endregion
+
+        private void Awake()
+        {
+            m_LineRenderer = GetComponent<LineRenderer>();
+            if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
+        }
+
+        public void Init(Vector2 posion, Vector2 dir)
+        {
+            m_StartPoint = posion;
+            m_EndPoint = posion;
+            m_DirectionVector = dir.normalized;
+
+            m_LineRenderer.positionCount = 2;
+            m_LineRenderer.SetPosition(0, posion);
+            m_LineRenderer.SetPosition(1, dir);
+        }
 
         /// <summary>
         /// 레이저 총 상태
@@ -46,7 +67,7 @@ namespace Laser.Entity
         /// [충돌] : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 고격
         ///          레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
         /// </summary>
-        public void Update()
+        public void ManagedUpdate()
         {
             switch (m_State) 
             {
@@ -91,7 +112,7 @@ namespace Laser.Entity
             {
                 //삭제
                 m_StartPoint = m_EndPoint;
-                return true; ;
+                return true;
             }
             m_StartPoint += m_DirectionVector * m_EraseVelocity;
             return false;
@@ -106,47 +127,46 @@ namespace Laser.Entity
         public void Move()
         {
             if(!Energy.CheckEnergy()) { return; }
-
-            RaycastHit2D hit = Physics2D.Raycast(m_EndPoint, m_DirectionVector, Mathf.Infinity, 1
-                << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-            if (hit.distance <= m_ShootingVelocity)//충돌 시
+            
+            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
+            float dist = Vector2.Distance(m_EndPoint, hit.transform.position);
+            if (hit.collider != null && dist <= m_ShootingVelocity)//충돌 시
             {
-                m_Target = hit.collider.GetComponent<ICollisionable>();
+                Debug.Log("Move" + hit.transform.name);
+                m_Target = hit.transform.GetComponent<ICollisionable>();
 
-                /*Vector2 temVec = m_DirectionVector + hit.normal;
+                Vector2 temVec = m_DirectionVector + hit.normal;
                 temVec = (hit.normal + temVec).normalized;
 
-                GameObject prefab = new GameObject();
-                GameObject obj = Instantiate(prefab);
+                //CreateChildRaser(hit.transform.position, temVec);
 
-                obj.GetComponent<Laser>().Init(hit.transform, hit.transform, temVec);//초기화
-                LaserManager.AddLaser(obj.GetComponent<Laser>());//이거 맞나?*/
-                
                 //데미지 계산X -> 자식 레이저 생성만 담당
-                switch (m_Target.GetEntityType())
-                {
-                    case EntityType.NormalBlock:
-                        CollideNormalBlock();
-                        break;
-                    case EntityType.ReflectBlock:
-                        CollideReflectBlock(hit);
-                        break;
-                    case EntityType.Prisim:
-                        CollidePrisim(hit);
-                        break;
-                    case EntityType.Floor:
-                        CollideFloor();
-                        break;
-                    case EntityType.Wall:
-                        CollideWall(hit);
-                        break;
-                    case EntityType.Launcher:
+                //switch (m_Target.GetEntityType())
+                //{
+                //    case EntityType.NormalBlock:
+                //        CollideNormalBlock();
+                //        break;
+                //    case EntityType.ReflectBlock:
+                //        CollideReflectBlock(hit);
+                //        break;
+                //    case EntityType.Prisim:
+                //        CollidePrisim(hit);
+                //        break;
+                //    case EntityType.Floor:
+                //        CollideFloor();
+                //        break;
+                //    case EntityType.Wall:
+                //        CollideWall(hit);
+                //        break;
+                //    case EntityType.Launcher:
 
-                    default:
-                        Debug.Log("충돌 개체의 타입이 올바르지 않음"); break;
-                }
+                //    default:
+                //        Debug.Log("충돌 개체의 타입이 올바르지 않음"); break;
+                //}
+                m_State = LaserStateType.Hitting;
             }
             m_EndPoint += m_DirectionVector * m_ShootingVelocity;
+            m_LineRenderer.SetPosition(1, m_EndPoint);
         }
 
         /// <summary>
@@ -173,13 +193,6 @@ namespace Laser.Entity
 
         }
 
-        public void Init(Vector2 posion, Vector2 dir)
-        {
-            m_StartPoint = posion;
-            m_EndPoint = posion;
-            m_DirectionVector = dir.normalized;
-        }
-
         public void CollideNormalBlock()
         {
             return;
@@ -191,9 +204,7 @@ namespace Laser.Entity
             Vector2 temDir = m_DirectionVector + hit.normal;
             temDir = (hit.normal + temDir).normalized;
 
-            //To Do//
-            //자식 레이저 개체 생성과 해당 방향백터로 초기화 해야됨 ㅠㅠ
-            //Init()함수 호출하면 초기화 가능
+            CreateChildRaser(hit.transform.position, temDir);
         }
 
         public void CollidePrisim(RaycastHit2D hit)
@@ -214,6 +225,7 @@ namespace Laser.Entity
             Vector2 temDir = m_DirectionVector + hit.normal;
             temDir = (hit.normal + temDir).normalized;
         }
+
         public void CollideFloor()
         {
             return;
@@ -225,6 +237,21 @@ namespace Laser.Entity
             //TODO//
             //dir을 방향벡터로 하고 위치는 hit 포인터로 하는 레이저 생성
             //레이저 생성 후 manager에 add함수를 호출해 추가해 주어야 한다.
+            CreateChildRaser(hit.transform.position, dir);
+        }
+
+        /// <summary>
+        /// 자식 레이저 만들고 위치, 각도 설정 +
+        /// LaserManager의 레이저 리스트에 추가
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="rot"></param>
+        private void CreateChildRaser(Vector2 pos, Vector2 rot)
+        {
+            Debug.Log("CreateChildRaser");
+            Laser laser = Instantiate(gameObject).GetComponent<Laser>();
+            laser.Init(pos, rot);
+            LaserManager.AddLaser(laser);
         }
     }
 }

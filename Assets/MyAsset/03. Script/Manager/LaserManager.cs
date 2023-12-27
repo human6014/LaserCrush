@@ -13,7 +13,7 @@ namespace Laser.Manager
     {
         #region Property
         //lazer저장하는 자료구조
-        private Laser.Entity.Laser m_InitLazer;
+        [SerializeField] private Laser.Entity.Laser m_InitLazer;
         private static List<Laser.Entity.Laser> m_Lasers = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserAddBuffer = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserRemoveBuffer = new List<Laser.Entity.Laser>();
@@ -44,7 +44,7 @@ namespace Laser.Manager
                 }
             }
         }
-
+        
         public void EraseLazer()
         {
             foreach (var lazer in m_RootLazer)
@@ -64,7 +64,7 @@ namespace Laser.Manager
             if (!m_Initialized)//턴 시작
             {
                 m_RootLazer.Clear();
-                m_InitLazer.Init(Energy.GetPosion(), Launcher.GetPosion() - Energy.GetPosion());
+                m_InitLazer.Init(m_InitLazer.transform.position, transform.up);
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
                 m_Initialized = true;
@@ -79,7 +79,7 @@ namespace Laser.Manager
                 {
                     if(Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
                     {
-                        m_Lasers[i].Update();
+                        m_Lasers[i].ManagedUpdate();
                     }
                 }
             }
@@ -117,21 +117,6 @@ namespace Laser.Manager
             }
             DeActivateBufferFlush();
             return false;
-        }
-
-        public void SetFirstPos(Vector3 pos)
-        {
-            m_SubLine.SetPosition(0, pos);
-        }
-
-        public void SetSecondPos(Vector3 pos)
-        {
-            m_SubLine.SetPosition(1, pos);
-        }
-
-        public void ResetPos()
-        {
-            m_SubLine.SetPositions(new Vector3[] { Vector3.zero, Vector3.zero });
         }
 
         public static void AddLaser(Laser.Entity.Laser laser)
