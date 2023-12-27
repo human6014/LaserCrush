@@ -1,9 +1,9 @@
 using System;
+using UnityEngine;
 
-public interface ICollisionable
+namespace Laser.Entity
 {
-
-    enum EntityType
+    public enum EntityType
     {
         //Attable//
         NormalBlock,
@@ -15,10 +15,13 @@ public interface ICollisionable
         Wall,
         Launcher
     }
+    abstract public class ICollisionable : MonoBehaviour
+    {
+        protected EntityType m_Type;
+        public abstract EntityType GetEntityType();
 
-    public EntityType GetEntityType();
+        public abstract void GetDamage(int damage);
 
-    public void GetDamage(int damage);
-
-    bool IsAttackable();
+        public abstract bool IsAttackable();
+    }
 }

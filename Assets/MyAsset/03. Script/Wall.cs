@@ -1,23 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using static ICollisionable;
+using Laser.Entity;
+using Debug = UnityEngine.Debug;
 
-public class Wall : MonoBehaviour, ICollisionable
+public class Wall : ICollisionable
 {
-    private EntityType m_Type = EntityType.Wall;
+    public void Awake()
+    {
+        m_Type = EntityType.Wall;
+        Debug.Log("벽 초기화");
+    }
+    public override EntityType GetEntityType()
+    {
+        return EntityType.Wall;
+    }
 
-    public void GetDamage(int damage)
+
+    public override void GetDamage(int damage)
     {
         return;
     }
 
-    public ICollisionable.EntityType GetEntityType()
-    {
-        return m_Type;
-    }
-
-    public bool IsAttackable()
+    public override bool IsAttackable()
     {
         return false;
     }

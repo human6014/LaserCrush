@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Laser.Manager;
-using static ICollisionable;
+using Laser.Entity;
 using Unity.Android.Types;
 using Unity.Burst.CompilerServices;
 using UnityEngine.UIElements;
@@ -43,6 +43,7 @@ namespace Laser.Entity
 
         private LineRenderer m_LineRenderer;
         #endregion
+
 
         private void Awake()
         {
@@ -127,11 +128,12 @@ namespace Laser.Entity
         public void Move()
         {
             if(!Energy.CheckEnergy()) { return; }
-            
+
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.transform.position);
             if (hit.collider != null && dist <= m_ShootingVelocity)//충돌 시
             {
+                Debug.Log("Move");
                 Debug.Log("Move" + hit.transform.name);
                 m_Target = hit.transform.GetComponent<ICollisionable>();
 
@@ -185,13 +187,6 @@ namespace Laser.Entity
             {
                 m_Target.GetDamage(m_Damage);
             }
-        }
-
-        public void Init(Vector2 posion, Vector2 dir)
-        {
-            m_StartPoint = posion;
-            m_EndPoint = posion;
-            m_DirectionVector = dir.normalized;
         }
 
         public void CollideNormalBlock()
@@ -301,6 +296,5 @@ namespace Laser.Entity
         {
             //일단 로직 보류
         }
-        
     }
 }

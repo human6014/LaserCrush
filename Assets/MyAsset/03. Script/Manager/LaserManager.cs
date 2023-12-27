@@ -64,7 +64,7 @@ namespace Laser.Manager
             if (!m_Initialized)//턴 시작
             {
                 m_RootLazer.Clear();
-                m_InitLazer.Init(m_InitLazer.transform.position, transform.up);
+                m_InitLazer.Init(m_InitLazer.transform.position, m_InitLazer.transform.up);
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
                 m_Initialized = true;

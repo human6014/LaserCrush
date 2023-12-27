@@ -1,14 +1,14 @@
+using Laser.Entity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static ICollisionable;
 
 /// <summary>
 /// 레이저가 프리즘과 충돌 시 활성화 되어 있으면 port의 vector를 받아
 /// 해당 방향으로 레이저를 추가 생산
 /// </summary>
 
-public class Prism : Item, ICollisionable
+public class Prism : ICollisionable
 {
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
@@ -61,17 +61,17 @@ public class Prism : Item, ICollisionable
         }
     }
 
-    public void GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
         return;
     }
 
-    public bool IsAttackable()
+    public override bool IsAttackable()
     {
         return false;
     }
 
-    public EntityType GetEntityType()
+    public override EntityType GetEntityType()
     {
         return EntityType.Prisim;
     }
