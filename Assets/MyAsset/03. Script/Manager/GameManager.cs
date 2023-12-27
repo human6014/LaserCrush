@@ -17,9 +17,9 @@ namespace Laser.Manager
     }
     public class GameManager : MonoBehaviour
     {
-    
         #region Property
         [SerializeField] private LaserManager m_LaserManager;
+        [SerializeField] private ClickableObject m_GameStartButton;
 
         private GameStateType m_GameStateType;
 
@@ -29,8 +29,8 @@ namespace Laser.Manager
         private void Awake()
         {
             SetResolution();
+            m_GameStartButton.MouseDownAction += OnDeploying;
 
-           
         }
 
         private void Update()
@@ -38,7 +38,7 @@ namespace Laser.Manager
             switch (m_GameStateType) 
             {
                 case GameStateType.Deploying:
-                    OnDeploying(); 
+
                     break;
                 case GameStateType.BlockUpdating:
                     BlockUpdating();

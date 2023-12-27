@@ -14,15 +14,15 @@ namespace Laser.Manager
         #region Property
         //lazer저장하는 자료구조
         [SerializeField] private Laser.Entity.Laser m_InitLazer;
+        [SerializeField] private LineRenderer m_SubLine;
+        [SerializeField] private SubLineController m_SubLineController;
+
         private static List<Laser.Entity.Laser> m_Lasers = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserAddBuffer = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserRemoveBuffer = new List<Laser.Entity.Laser>();
         //지우기 시작할 레이저보관 자료구조
         private List<Laser.Entity.Laser> m_RootLazer = new List<Laser.Entity.Laser>();
         private static bool m_Initialized = false;
-
-        //tem
-        [SerializeField] private LineRenderer m_SubLine;
         #endregion
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Laser.Manager
             if (!m_Initialized)//턴 시작
             {
                 m_RootLazer.Clear();
-                m_InitLazer.Init(m_InitLazer.transform.position, transform.up);
+                m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction);
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
                 m_Initialized = true;
