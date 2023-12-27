@@ -19,8 +19,11 @@ namespace Laser.Manager
     {
     
         #region Property
-        private LaserManager m_LaserManager;
+        [SerializeField] private LaserManager m_LaserManager;
+
         private GameStateType m_GameStateType;
+
+
         #endregion
         
         private void Awake()
@@ -85,6 +88,7 @@ namespace Laser.Manager
         {
             //m_InputManager.ManagedUpdate();
             //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
+            
             m_GameStateType = GameStateType.LaserActivating;
 
         }

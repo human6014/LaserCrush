@@ -1,6 +1,6 @@
 using System;
 
-public interface ICollisionable 
+public interface ICollisionable
 {
 
     enum EntityType
@@ -16,9 +16,9 @@ public interface ICollisionable
         Launcher
     }
 
-    EntityType GetEntityType();
+    public EntityType GetEntityType();
 
-    void GetDamage(int damage);
+    public void GetDamage(int damage);
 
     bool IsAttackable();
 }
