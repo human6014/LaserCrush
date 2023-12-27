@@ -7,10 +7,10 @@ namespace Laser.Controller.InputObject
 {
     public class ClickableArea : MonoBehaviour
     {
-        [SerializeField] private InputManager m_InputManager;
+        [SerializeField] private SubLineController m_SubLineRenderer;
         
         private void OnMouseDrag() 
-            => m_InputManager.RepaintLineAction?.Invoke();
+            => m_SubLineRenderer.RepaintLineAction?.Invoke();
         
     }
 }

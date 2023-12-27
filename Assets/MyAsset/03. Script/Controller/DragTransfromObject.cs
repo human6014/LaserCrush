@@ -7,7 +7,7 @@ namespace Laser.Controller.InputObject
 {
     public class DragTransfromObject : MonoBehaviour
     {
-        [SerializeField] private InputManager m_InputManager;
+        [SerializeField] private SubLineController m_SubLineRenderer;
 
         private float m_ZCoord;
 
@@ -29,10 +29,10 @@ namespace Laser.Controller.InputObject
             objectPos.y = -69;
             transform.position = objectPos;
 
-            m_InputManager.RepaintInitPointAction?.Invoke(true);
+            m_SubLineRenderer.RepaintInitPointAction?.Invoke(true);
         }
 
         private void OnMouseUp()
-            => m_InputManager.RepaintInitPointAction?.Invoke(false);
+            => m_SubLineRenderer.RepaintInitPointAction?.Invoke(false);
     }
 }
