@@ -46,7 +46,7 @@ namespace Laser.Entity
         /// [충돌] : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 고격
         ///          레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
         /// </summary>
-        public void Update()
+        public void Activate()
         {
             switch (m_State) 
             {
@@ -113,15 +113,6 @@ namespace Laser.Entity
             {
                 m_Target = hit.collider.GetComponent<ICollisionable>();
 
-                /*Vector2 temVec = m_DirectionVector + hit.normal;
-                temVec = (hit.normal + temVec).normalized;
-
-                GameObject prefab = new GameObject();
-                GameObject obj = Instantiate(prefab);
-
-                obj.GetComponent<Laser>().Init(hit.transform, hit.transform, temVec);//초기화
-                LaserManager.AddLaser(obj.GetComponent<Laser>());//이거 맞나?*/
-                
                 //데미지 계산X -> 자식 레이저 생성만 담당
                 switch (m_Target.GetEntityType())
                 {
@@ -168,11 +159,6 @@ namespace Laser.Entity
             }
         }
 
-        public void Complete()
-        {
-
-        }
-
         public void Init(Vector2 posion, Vector2 dir)
         {
             m_StartPoint = posion;
@@ -185,15 +171,18 @@ namespace Laser.Entity
             return;
         }
 
+
         public void CollideReflectBlock(RaycastHit2D hit)
         {
             //새로운 자식 레이저 생성
-            Vector2 temDir = m_DirectionVector + hit.normal;
-            temDir = (hit.normal + temDir).normalized;
-
-            //To Do//
-            //자식 레이저 개체 생성과 해당 방향백터로 초기화 해야됨 ㅠㅠ
+            //todo//
+            //GetReflectVector() 사용하면되요
             //Init()함수 호출하면 초기화 가능
+            /*자식 생성 순서
+             * 1. 자식 인스턴시에이트
+             * 2. 자식 레이저 init함수로 객체 초기화
+             * 3. LaserManager에 Add
+             */
         }
 
         public void CollidePrisim(RaycastHit2D hit)
@@ -201,30 +190,74 @@ namespace Laser.Entity
             List<Vector2> dir =  hit.collider.GetComponent<Prism>().GetEjectionPorts();
             for(int i = 0; i < dir.Count; ++i) 
             {
-                //TODO//
-                //dir을 방향벡터로 하고 위치는 hit 포인터로 하는 레이저 생성
-                //레이저 생성 후 manager에 add함수를 호출해 추가해 주어야 한다.
+                //새로운 자식 레이저 생성
+                //todo//
+                //GetReflectVector() 사용하면되요
+                //Init()함수 호출하면 초기화 가능
+                /*자식 생성 순서
+                 * 1. 자식 인스턴시에이트
+                 * 2. 자식 레이저 init함수로 객체 초기화
+                 * 3. LaserManager에 Add
+                 */
             }
         }
 
         public void CollideWall(RaycastHit2D hit)
         {
             //새로운 자식 레이저 생성
+            //새로운 자식 레이저 생성
+            //todo//
+            //GetReflectVector() 사용하면되요
+            //Init()함수 호출하면 초기화 가능
+            /*자식 생성 순서
+             * 1. 자식 인스턴시에이트
+             * 2. 자식 레이저 init함수로 객체 초기화
+             * 3. LaserManager에 Add
+             */
 
-            Vector2 temDir = m_DirectionVector + hit.normal;
-            temDir = (hit.normal + temDir).normalized;
+            HittingWall();
         }
         public void CollideFloor()
         {
-            return;
+            HittingFloor();
         }
 
         public void CollideLauncher(RaycastHit2D hit)
         {
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
-            //TODO//
-            //dir을 방향벡터로 하고 위치는 hit 포인터로 하는 레이저 생성
-            //레이저 생성 후 manager에 add함수를 호출해 추가해 주어야 한다.
+            //새로운 자식 레이저 생성
+            //새로운 자식 레이저 생성
+            //todo//
+            //GetReflectVector() 사용하면되요
+            //Init()함수 호출하면 초기화 가능
+            /*자식 생성 순서
+             * 1. 자식 인스턴시에이트
+             * 2. 자식 레이저 init함수로 객체 초기화
+             * 3. LaserManager에 Add
+             */
         }
+
+        /// <summary>
+        /// 단위베터로 반환
+        /// </summary>
+        /// <param name="hit"></param>
+        /// <returns></returns>
+        private Vector2 GetReflectVector(RaycastHit2D hit)
+        {
+            return (hit.normal + m_DirectionVector + hit.normal).normalized;
+        }
+
+
+        private void HittingWall()
+        {
+            //남은 에너지의 일정 비율을 감소
+
+        }
+
+        private void HittingFloor()
+        {
+            //일단 로직 보류
+        }
+        
     }
 }
