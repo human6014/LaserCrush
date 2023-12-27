@@ -67,7 +67,5 @@ namespace Laser.Object
             }
             return false;
         }
-
-
     }
 }

@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 
 public interface ICollisionable
 {
-    [Flags]
+
     enum EntityType
     {
         //Attable//
@@ -24,5 +20,5 @@ public interface ICollisionable
 
     public void GetDamage(int damage);
 
-    public bool IsAttackable();
+    bool IsAttackable();
 }

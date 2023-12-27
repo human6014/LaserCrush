@@ -7,12 +7,12 @@ using Laser.Entity;
 namespace Laser.Manager
 {
     /// <summary>
-    /// ·¹ÀÌÀú ¸ŞÀÌÀú´Â ·¹ÀÌÀú¸¦ ÇÏ³ªÇÏ³ª ½º½º·Î °ü¸®ÇÏÁö ¾Ê°í È°¼ºÈ­ ºñÈ°¼ºÈ­(»ç¶óÁö´Â ´Ü°è)¸¸ °áÁ¤ÇØ¼­ ³Ñ°ÜÁØ´Ù.
+    /// ë ˆì´ì € ë©”ì´ì €ëŠ” ë ˆì´ì €ë¥¼ í•˜ë‚˜í•˜ë‚˜ ìŠ¤ìŠ¤ë¡œ ê´€ë¦¬í•˜ì§€ ì•Šê³  í™œì„±í™” ë¹„í™œì„±í™”(ì‚¬ë¼ì§€ëŠ” ë‹¨ê³„)ë§Œ ê²°ì •í•´ì„œ ë„˜ê²¨ì¤€ë‹¤.
     /// </summary>
     public class LaserManager : MonoBehaviour
     {
         #region Property
-        //lazerÀúÀåÇÏ´Â ÀÚ·á±¸Á¶
+        //lazerì €ì¥í•˜ëŠ” ìë£Œêµ¬ì¡°
         [SerializeField] private Laser.Entity.Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
@@ -20,15 +20,15 @@ namespace Laser.Manager
         private static List<Laser.Entity.Laser> m_Lasers = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserAddBuffer = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserRemoveBuffer = new List<Laser.Entity.Laser>();
-        //Áö¿ì±â ½ÃÀÛÇÒ ·¹ÀÌÀúº¸°ü ÀÚ·á±¸Á¶
+        //ì§€ìš°ê¸° ì‹œì‘í•  ë ˆì´ì €ë³´ê´€ ìë£Œêµ¬ì¡°
         private List<Laser.Entity.Laser> m_RootLazer = new List<Laser.Entity.Laser>();
         private static bool m_Initialized = false;
         #endregion
 
         /// <summary>
-        /// ·¹ÀÌÀú°¡ ÆÄ±«´çÇÏ´Â ÀÌº¥Æ® ¹ß»ı ½Ã È£Ãâ
-        /// ÆÄ±«´çÇÒ lazer¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ ÇØ´ç °³Ã¼ÀÇ ÀÚ½Älazer¸¦ 
-        /// »õ·Î¿î rootlazer¿¡ Ãß°¡
+        /// ë ˆì´ì €ê°€ íŒŒê´´ë‹¹í•˜ëŠ” ì´ë²¤íŠ¸ ë°œìƒ ì‹œ í˜¸ì¶œ
+        /// íŒŒê´´ë‹¹í•  lazerë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ í•´ë‹¹ ê°œì²´ì˜ ìì‹lazerë¥¼ 
+        /// ìƒˆë¡œìš´ rootlazerì— ì¶”ê°€
         /// </summary>
         /// <param name="lazer"></param>
         void DestroyLazer(Laser.Entity.Laser lazer)
@@ -56,12 +56,12 @@ namespace Laser.Manager
         public void Activate()
         {
             /*
-             * ÅÏ ½ÃÀÛ
-             * 1. ·çÆ® ¹è¿­ ºñ¿ì±â
-             * 2. ½ÃÀÛ ·¹ÀÌÀú ¼ÂÆÃ ÈÄ ·çÆ®¹è¿­°ú ·¹ÀÌÀú ¹è¿­¿¡ Ãß°¡
-             * 3. ÃÊ±âÈ­º¯¼ö ¼ÂÆÃ
+             * í„´ ì‹œì‘
+             * 1. ë£¨íŠ¸ ë°°ì—´ ë¹„ìš°ê¸°
+             * 2. ì‹œì‘ ë ˆì´ì € ì…‹íŒ… í›„ ë£¨íŠ¸ë°°ì—´ê³¼ ë ˆì´ì € ë°°ì—´ì— ì¶”ê°€
+             * 3. ì´ˆê¸°í™”ë³€ìˆ˜ ì…‹íŒ…
              */
-            if (!m_Initialized)//ÅÏ ½ÃÀÛ
+            if (!m_Initialized)//í„´ ì‹œì‘
             {
                 m_RootLazer.Clear();
                 m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction);
@@ -70,14 +70,14 @@ namespace Laser.Manager
                 m_Initialized = true;
             }
             /*
-             * 1. ·¹ÀÌÀú ¼øÈ¸ÇÏ¸ç ¸ğµç ·¹ÀÌÀú ÁøÇà 
+             * 1. ë ˆì´ì € ìˆœíšŒí•˜ë©° ëª¨ë“  ë ˆì´ì € ì§„í–‰ 
              */
             else
             {
                 ActivateBufferFlush();
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if(Energy.CheckEnergy()) // ¿¡³ÊÁö ¾øÀ¸¸é È£ÃâÀÇ ÀÇ¹Ì°¡ ¾ø´Ù -> ÃÖÀûÈ­?
+                    if(Energy.CheckEnergy()) // ì—ë„ˆì§€ ì—†ìœ¼ë©´ í˜¸ì¶œì˜ ì˜ë¯¸ê°€ ì—†ë‹¤ -> ìµœì í™”?
                     {
                         m_Lasers[i].ManagedUpdate();
                     }
@@ -86,8 +86,8 @@ namespace Laser.Manager
         }
 
         /// <summary>
-        /// ¸ğµç ·¹ÀÌÀú »èÁ¦½Ã true ¹İÈ¯
-        /// true ¹İÈ¯ ½Ã ´Ù½Ã ·¹ÀÌÀú ¹ß½Ã ½Ã initalized·Î ½ÃÀÛÇÏ±âÀ§ÇØ m_Initialized¸¦ false·Î ¼³Á¤ 
+        /// ëª¨ë“  ë ˆì´ì € ì‚­ì œì‹œ true ë°˜í™˜
+        /// true ë°˜í™˜ ì‹œ ë‹¤ì‹œ ë ˆì´ì € ë°œì‹œ ì‹œ initalizedë¡œ ì‹œì‘í•˜ê¸°ìœ„í•´ m_Initializedë¥¼ falseë¡œ ì„¤ì • 
         /// </summary>
         public bool DeActivate()
         {
@@ -97,10 +97,10 @@ namespace Laser.Manager
                 return true;
             }
             /*
-             * 1 ·çÆ®¹è¿­¿¡¼­ ÇÏ³ª¾¿ ²¨³½´Ù
-             * 2 ²¨³½ ·¹ÀÌÀúÀÇ ½ÃÀÛÁ¡À» ³¡Á¡À¸·Î ÀÌµ¿½ÃÅ²´Ù.
-             * 3 ³¡Á¡°ú ½ÃÀÛÁ¡ÀÌ ¸¸³ª¸é ·¹ÀÌÀú¸¦ ·çÆ®¹è¿­¿¡¼­ »èÁ¦ÇÏ°í ÀÚ½Ä·¹ÀÌÀú¸¦ ¹è¿­¿¡ Ãß°¡
-             * 4 À§ °úÁ¤À» ·¹ÀÌÀú ¹è¿­ÀÌ ºô¶§±îÁö ÁøÇàÇÑ´Ù.
+             * 1 ë£¨íŠ¸ë°°ì—´ì—ì„œ í•˜ë‚˜ì”© êº¼ë‚¸ë‹¤
+             * 2 êº¼ë‚¸ ë ˆì´ì €ì˜ ì‹œì‘ì ì„ ëì ìœ¼ë¡œ ì´ë™ì‹œí‚¨ë‹¤.
+             * 3 ëì ê³¼ ì‹œì‘ì ì´ ë§Œë‚˜ë©´ ë ˆì´ì €ë¥¼ ë£¨íŠ¸ë°°ì—´ì—ì„œ ì‚­ì œí•˜ê³  ìì‹ë ˆì´ì €ë¥¼ ë°°ì—´ì— ì¶”ê°€
+             * 4 ìœ„ ê³¼ì •ì„ ë ˆì´ì € ë°°ì—´ì´ ë¹Œë•Œê¹Œì§€ ì§„í–‰í•œë‹¤.
              */
             for (int i = 0; i < m_RootLazer.Count; i++)
             {
