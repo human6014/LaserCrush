@@ -138,19 +138,14 @@ namespace Laser.Entity
         {
             if(!Energy.CheckEnergy()) { return; }
 
-            RaycastHit2D hit = Physics2D.Raycast(m_EndPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
+            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.point);
             if (hit.collider != null && dist <= m_ShootingVelocity)//�浹 ��
             {
-                //Debug.Log("충돌!!" + hit.transform.name + "   남은 거리 : " + dist);
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 m_Target.Hitted(hit, m_DirectionVector);
-                //여기입니다.-> 상태가 안바뀝니다. 로그 찍어보셔요
                 m_State = LaserStateType.Hitting;
-                if(m_State == LaserStateType.Hitting)
-                {
-                    Debug.Log("레이저 상태 변환" );
-                }
+                CreateChildRaser(hit.point, GetReflectVector(hit));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_ShootingVelocity;
@@ -254,8 +249,9 @@ namespace Laser.Entity
         private void CreateChildRaser(Vector2 pos, Vector2 rot)
         {
             Debug.Log("CreateChildRaser");
-            Laser laser = Instantiate(gameObject).GetComponent<Laser>();
-            laser.Init(pos, rot);
+            Laser laser = Instantiate(m_LaserObject).GetComponent<Laser>();
+            laser.transform.position = pos;
+            laser.Init(pos + rot, rot);
             LaserManager.AddLaser(laser);
         }
 
