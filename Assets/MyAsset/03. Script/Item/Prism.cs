@@ -75,4 +75,9 @@ public class Prism : ICollisionable
     {
         return EntityType.Prisim;
     }
+
+    public override void Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+    {
+        return;
+    }
 }

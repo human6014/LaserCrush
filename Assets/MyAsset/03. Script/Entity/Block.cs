@@ -64,5 +64,10 @@ namespace Laser.Object
             }
             return false;
         }
+        public override void Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+        {
+            return;
+        }
+
     }
 }
