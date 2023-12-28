@@ -8,13 +8,15 @@ using Unity.Android.Types;
 using Unity.Burst.CompilerServices;
 using UnityEngine.UIElements;
 using UnityEngineInternal;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Laser.Entity
 {
     enum LaserStateType // 이름 고민
     {
         Move,
-        Hitting
+        Hitting,
+        None
     }
 
     /// <summary>
@@ -40,13 +42,15 @@ namespace Laser.Entity
         private LaserStateType m_State;
         private int m_Damage;//변수이름 고민 -> 한번 소모할 에너지를 보관할 변수
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
-
+        private bool m_IsInitated;
         private LineRenderer m_LineRenderer;
         #endregion
 
 
         private void Awake()
         {
+            m_IsInitated = false;
+            m_State = LaserStateType.Move;
             m_LineRenderer = GetComponent<LineRenderer>();
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
@@ -56,7 +60,7 @@ namespace Laser.Entity
             m_StartPoint = posion;
             m_EndPoint = posion;
             m_DirectionVector = dir.normalized;
-
+            m_IsInitated = true;
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, posion);
             m_LineRenderer.SetPosition(1, dir);
@@ -71,6 +75,7 @@ namespace Laser.Entity
         public void ManagedUpdate()
         {
             Debug.Log(m_State);
+            if (!m_IsInitated) { return; }
             switch (m_State) 
             {
                 case LaserStateType.Move://에너지 소모x 이동만
@@ -78,6 +83,9 @@ namespace Laser.Entity
                     break;
                 case LaserStateType.Hitting:
                     Hiting();
+                    break;
+                case LaserStateType.None:
+                    Tem();
                     break;
                 default:
                     Debug.Log("잘못된 레이저 상태입니다.");
@@ -130,42 +138,20 @@ namespace Laser.Entity
         {
             if(!Energy.CheckEnergy()) { return; }
 
-            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
+            RaycastHit2D hit = Physics2D.Raycast(m_EndPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.point);
             if (hit.collider != null && dist <= m_ShootingVelocity)//�浹 ��
             {
-                Debug.Log("Move");
-                Debug.Log("Move" + hit.transform.name);
+                //Debug.Log("충돌!!" + hit.transform.name + "   남은 거리 : " + dist);
                 m_Target = hit.transform.GetComponent<ICollisionable>();
-
-                Vector2 temVec = m_DirectionVector + hit.normal;
-                temVec = (hit.normal + temVec).normalized;
-
-                //CreateChildRaser(hit.transform.position, temVec);
-                //데미지 계산X -> 자식 레이저 생성만 담당
-                //switch (m_Target.GetEntityType())
-                //{
-                //    case EntityType.NormalBlock:
-                //        CollideNormalBlock();
-                //        break;
-                //    case EntityType.ReflectBlock:
-                //        CollideReflectBlock(hit);
-                //        break;
-                //    case EntityType.Prisim:
-                //        CollidePrisim(hit);
-                //        break;
-                //    case EntityType.Floor:
-                //        CollideFloor();
-                //        break;
-                //    case EntityType.Wall:
-                //        CollideWall(hit);
-                //        break;
-                //    case EntityType.Launcher:
-
-                //    default:
-                //        Debug.Log("충돌 개체의 타입이 올바르지 않음"); break;
-                //}
+                m_Target.Hitted(hit, m_DirectionVector);
+                //여기입니다.-> 상태가 안바뀝니다. 로그 찍어보셔요
                 m_State = LaserStateType.Hitting;
+                if(m_State == LaserStateType.Hitting)
+                {
+                    Debug.Log("레이저 상태 변환" );
+                }
+                return;
             }
             m_EndPoint += m_DirectionVector * m_ShootingVelocity;
             m_LineRenderer.SetPosition(1, m_EndPoint);
@@ -179,6 +165,7 @@ namespace Laser.Entity
         /// </summary>
         public void Hiting()
         {
+            Debug.Log("Hitting()");
             if (!m_Target.IsAttackable())
             {
                 return;
@@ -190,6 +177,12 @@ namespace Laser.Entity
             }
         }
 
+
+        public void Tem()
+        {
+            Debug.Log("Tem()");
+            return;
+        }
         public void CollideNormalBlock()
         {
             return;
@@ -264,16 +257,6 @@ namespace Laser.Entity
             Laser laser = Instantiate(gameObject).GetComponent<Laser>();
             laser.Init(pos, rot);
             LaserManager.AddLaser(laser);
-            //새로운 자식 레이저 생성
-            //새로운 자식 레이저 생성
-            //todo//
-            //GetReflectVector() 사용하면되요
-            //Init()함수 호출하면 초기화 가능
-            /*자식 생성 순서
-             * 1. 자식 인스턴시에이트
-             * 2. 자식 레이저 init함수로 객체 초기화
-             * 3. LaserManager에 Add
-             */
         }
 
         /// <summary>

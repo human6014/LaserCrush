@@ -23,5 +23,7 @@ namespace Laser.Entity
         public abstract void GetDamage(int damage);
 
         public abstract bool IsAttackable();
+
+        public abstract void Hitted(RaycastHit2D hit, Vector2 parentDirVector);
     }
 }
