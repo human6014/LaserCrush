@@ -63,9 +63,16 @@ public class Energy : MonoBehaviour
         return m_Energy > 0;
     }
 
-
     public static bool IsAvailable()
     {
         return m_Energy > 0;
+    }
+
+    /// <summary>
+    /// 일단 부딪힐떄 마다 30퍼 삭제
+    /// </summary>
+    public static void CollidWithWall()
+    {
+        m_Energy -= (m_Energy / 3);
     }
 }
