@@ -30,10 +30,6 @@ namespace Laser.Object
         {
             //가지고 있는 아이템을 필드에 생성 -> 턴 종료 후 획등 방식
         }
-        public override EntityType GetEntityType()
-        {
-            return m_Type;
-        }
 
         public override void GetDamage(int damage)
         {
@@ -64,9 +60,10 @@ namespace Laser.Object
             }
             return false;
         }
-        public override void Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+        public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
-            return;
+            List<Vector2> answer = new List<Vector2>();
+            return answer;
         }
 
     }

@@ -71,13 +71,9 @@ public class Prism : ICollisionable
         return false;
     }
 
-    public override EntityType GetEntityType()
+    public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-        return EntityType.Prisim;
-    }
-
-    public override void Hitted(RaycastHit2D hit, Vector2 parentDirVector)
-    {
-        return;
+        List<Vector2> answer = new List<Vector2>();
+        return answer;
     }
 }
