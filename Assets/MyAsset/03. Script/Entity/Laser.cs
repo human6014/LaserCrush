@@ -36,9 +36,9 @@ namespace Laser.Entity
         private Vector2 m_DirectionVector;
         private float m_EraseVelocity = 0.4f;
         private float m_ShootingVelocity = 0.2f;
-        private List<Laser> m_ChildLazers = new List<Laser>();
+        private List<Laser> m_ChildLazers;
         private LaserStateType m_State;
-        private int m_Damage;//변수이름 고민 -> 한번 소모할 에너지를 보관할 변수
+        private int m_Damage;//변수이름 고민 -> 틱당 벽돌 공격할 에너지량
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
         private bool m_IsInitated;
         private LineRenderer m_LineRenderer;
@@ -46,6 +46,7 @@ namespace Laser.Entity
 
         private void Awake()
         {
+            m_ChildLazers = new List<Laser>();
             m_IsInitated = false;
             m_State = LaserStateType.Move;
             m_LineRenderer = GetComponent<LineRenderer>();
@@ -58,6 +59,7 @@ namespace Laser.Entity
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsInitated = true;
+            m_ChildLazers.Clear();
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
             m_LineRenderer.SetPosition(1, position);
@@ -65,6 +67,7 @@ namespace Laser.Entity
 
         /// <summary>
         /// 레이저 총 상태
+        /// 이름 바꾸는게 어떨까?
         /// [움직임] : 충돌 전 상태 업데이트마다 방향벡터 방향으로 이동
         /// [충돌] : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 고격
         ///          레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
@@ -139,8 +142,6 @@ namespace Laser.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
                 m_State = LaserStateType.Hitting;
-                //CreateChildRaser(hit.point, GetReflectVector(hit));
-                //위에꺼 지우고 밑에꺼 실행 시켜요
                 AddChild(LaserManager.CreateLaser(dir, hit.point));
                 return;
             }
@@ -185,16 +186,6 @@ namespace Laser.Entity
         public void CollideLauncher(RaycastHit2D hit)
         {
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
-        }
-
-        /// <summary>
-        /// 단위베터로 반환
-        /// </summary>
-        /// <param name="hit"></param>
-        /// <returns></returns>
-        private Vector2 GetReflectVector(RaycastHit2D hit)
-        {
-            return (hit.normal + m_DirectionVector + hit.normal).normalized;
         }
     }
 }

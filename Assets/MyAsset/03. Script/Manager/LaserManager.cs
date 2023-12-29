@@ -32,34 +32,6 @@ namespace Laser.Manager
             m_LaserStaticObject = m_LaserObject;
         }
 
-        /// <summary>
-        /// 레이저가 파괴당하는 이벤트 발생 시 호출
-        /// 파괴당할 lazer를 매개변수로 받아 해당 개체의 자식lazer를 
-        /// 새로운 rootlazer에 추가
-        /// </summary>
-        /// <param name="lazer"></param>
-        void DestroyLazer(Laser.Entity.Laser lazer)
-        {
-            m_RootLazer.Remove(lazer);
-
-            if (lazer.HasChild())
-            {
-                List<Laser.Entity.Laser> child = lazer.GetChildLazer();
-                foreach (var now in child)
-                {
-                    m_RootLazer.Add(now);
-                }
-            }
-        }
-        
-        public void EraseLazer()
-        {
-            foreach (var lazer in m_RootLazer)
-            {
-                lazer.Erase();
-            }
-        }
-
         public void Activate()
         {
             /*
@@ -118,20 +90,18 @@ namespace Laser.Manager
             {
                 if (m_RootLazer[i].Erase())
                 {
-                    m_LaserRemoveBuffer.Add(m_Lasers[i]);
-                    foreach(var child in m_Lasers[i].GetChildLazer())
+                    m_LaserRemoveBuffer.Add(m_RootLazer[i]);
+                    foreach(var child in m_RootLazer[i].GetChildLazer())
                     {
-                        m_LaserRemoveBuffer.Add(child);
+                        m_LaserAddBuffer.Add(child);
                     }
-                    m_Lasers.Remove(m_Lasers[i]);
-                    Debug.Log(i);
                 }
             }
             DeActivateBufferFlush();
             return false;
         }
 
-        public void ActivateBufferFlush()
+        private void ActivateBufferFlush()
         {
             //Debug.Log("레이저 추가");
             for (int i = 0; i < m_LaserAddBuffer.Count; i++) 
@@ -142,7 +112,7 @@ namespace Laser.Manager
             m_LaserAddBuffer.Clear();
         }
 
-        public void DeActivateBufferFlush()
+        private void DeActivateBufferFlush()
         {
             for (int i = 0; i < m_LaserRemoveBuffer.Count; i++)
             {
@@ -152,9 +122,9 @@ namespace Laser.Manager
             {
                 m_RootLazer.Add(m_LaserAddBuffer[i]);
             }
-
             m_LaserAddBuffer.Clear();
             m_LaserRemoveBuffer.Clear();
+
         }
 
         public static List<Laser.Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
@@ -168,7 +138,6 @@ namespace Laser.Manager
                 laser.Init(pos + dirVector[i], dirVector[i]);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
-                Debug.Log("레이저 추가: 현제 레이저 갯수   " + m_LaserAddBuffer.Count);
             }
             return answer;
         }

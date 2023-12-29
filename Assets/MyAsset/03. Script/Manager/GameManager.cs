@@ -21,6 +21,9 @@ namespace Laser.Manager
         [SerializeField] private LaserManager m_LaserManager;
         [SerializeField] private ClickableObject m_GameStartButton;
 
+        //추가한거 -> 잘 다듬어 주세요~
+        [SerializeField] private BlockManager m_BlockManager;
+        [SerializeField] private ItemManager m_ItemManager;
         private GameStateType m_GameStateType;
 
         #endregion
@@ -78,24 +81,43 @@ namespace Laser.Manager
 
         public static void DeployingComplete()
         {
+            /*ToDo
+             * m_ItemManager.AddPrism()함수를 사용해 프리즘을 인스턴시에이트 후 배열에 추가
+             */
         }
 
         public void OnDeploying()
         {
             //m_InputManager.ManagedUpdate();
             //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
-            
+            Debug.Log("배치 턴");
             m_GameStateType = GameStateType.LaserActivating;
 
         }
 
+        /// <summary>
+        /// 로그에 찍힌 순서대로 진행된다 한 업데이트에 일어날 수 도 있고 Time함수 같은 걸 써서
+        /// 딜레이를 줘도 되고
+        /// </summary>
         public void BlockUpdating()
         {
-            /*todo
+            Debug.Log("필드 위 아이템 획득");
+            /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
              *   -> Time함수 등을 사용
              */
+            //m_ItemManager.GetDroppedItems();
+
+            Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
+            /* ToDo
+             *  
+             */
+            //m_ItemManager.CheckDestroyPrisms();
+
+            Debug.Log("블럭 생성");
+            //todo//
+            //m_BlockManager.GenerateBlock(0); -> 인스턴스화가 안되서 안되는듯
             m_GameStateType = GameStateType.Deploying;
         }
 

@@ -27,6 +27,8 @@ public class Wall : ICollisionable
     public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
         Debug.Log("벽과 충돌 후 자식생성");
+        Debug.Log("벽과 충돌 후 에너지 사용");
+        Energy.CollidWithWall();
         Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
         return new List<Vector2>() { dir };
     }
