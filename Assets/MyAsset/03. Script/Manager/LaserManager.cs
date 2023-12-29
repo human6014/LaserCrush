@@ -111,18 +111,18 @@ namespace Laser.Manager
                 if (m_RootLazer[i].Erase())
                 {
                     m_LaserRemoveBuffer.Add(m_Lasers[i]);
-                    m_Lasers.Remove(m_Lasers[i]);
-
                     foreach(var child in m_Lasers[i].GetChildLazer())
                     {
-                        m_LaserAddBuffer.Add(child);
+                        m_LaserRemoveBuffer.Add(child);
                     }
+                    m_Lasers.Remove(m_Lasers[i]);
                 }
             }
             DeActivateBufferFlush();
             return false;
         }
 
+        //나중에 이거 지워도됨 그럼
         public static void AddLaser(Laser.Entity.Laser laser)
         {
             m_LaserAddBuffer.Add(laser);
@@ -153,6 +153,21 @@ namespace Laser.Manager
 
             m_LaserAddBuffer.Clear();
             m_LaserRemoveBuffer.Clear();
+        }
+
+        public static List<Laser.Entity.Laser> CreateLaser(List<Vector2> DirVector, Vector2 pos)
+        {
+            List < Laser.Entity.Laser > answer =  new List < Laser.Entity.Laser >();    
+            //여기에 만들어 주세요 
+            for (int i = 0; i < DirVector.Count; i++) 
+            {
+                /*
+                 * 시작점 pos, 방향백터 DirVector
+                 */
+                //m_LaserAddBuffer.Add(laser);
+                //answer.add(laser);
+            }
+            return answer;
         }
     }
 }
