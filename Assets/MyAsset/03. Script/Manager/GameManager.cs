@@ -23,14 +23,12 @@ namespace Laser.Manager
 
         private GameStateType m_GameStateType;
 
-
         #endregion
         
         private void Awake()
         {
             SetResolution();
             m_GameStartButton.MouseDownAction += OnDeploying;
-
         }
 
         private void Update()

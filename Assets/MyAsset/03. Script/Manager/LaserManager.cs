@@ -12,11 +12,13 @@ namespace Laser.Manager
     public class LaserManager : MonoBehaviour
     {
         #region Property
-        //lazer저장하는 자료구조
         [SerializeField] private Laser.Entity.Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
+        [SerializeField] private GameObject m_LaserObject;
 
+        private static GameObject m_LaserStaticObject;
+        //lazer저장하는 자료구조
         private static List<Laser.Entity.Laser> m_Lasers = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserAddBuffer = new List<Laser.Entity.Laser>();
         private static List<Laser.Entity.Laser> m_LaserRemoveBuffer = new List<Laser.Entity.Laser>();
@@ -24,6 +26,11 @@ namespace Laser.Manager
         private List<Laser.Entity.Laser> m_RootLazer = new List<Laser.Entity.Laser>();
         private static bool m_Initialized = false;
         #endregion
+
+        private void Awake()
+        {
+            m_LaserStaticObject = m_LaserObject;
+        }
 
         /// <summary>
         /// 레이저가 파괴당하는 이벤트 발생 시 호출
@@ -106,6 +113,7 @@ namespace Laser.Manager
              * 3 끝점과 시작점이 만나면 레이저를 루트배열에서 삭제하고 자식레이저를 배열에 추가
              * 4 위 과정을 레이저 배열이 빌때까지 진행한다.
              */
+            Debug.Log("m_RootLazer : " + m_RootLazer.Count);
             for (int i = 0; i < m_RootLazer.Count; i++)
             {
                 if (m_RootLazer[i].Erase())
@@ -116,17 +124,11 @@ namespace Laser.Manager
                         m_LaserRemoveBuffer.Add(child);
                     }
                     m_Lasers.Remove(m_Lasers[i]);
+                    Debug.Log(i);
                 }
             }
             DeActivateBufferFlush();
             return false;
-        }
-
-        //나중에 이거 지워도됨 그럼
-        public static void AddLaser(Laser.Entity.Laser laser)
-        {
-            m_LaserAddBuffer.Add(laser);
-            Debug.Log("레이저 추가: 현제 레이저 갯수   " + m_LaserAddBuffer.Count);
         }
 
         public void ActivateBufferFlush()
@@ -155,17 +157,18 @@ namespace Laser.Manager
             m_LaserRemoveBuffer.Clear();
         }
 
-        public static List<Laser.Entity.Laser> CreateLaser(List<Vector2> DirVector, Vector2 pos)
+        public static List<Laser.Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
         {
             List < Laser.Entity.Laser > answer =  new List < Laser.Entity.Laser >();    
-            //여기에 만들어 주세요 
-            for (int i = 0; i < DirVector.Count; i++) 
+
+            for (int i = 0; i < dirVector.Count; i++) 
             {
-                /*
-                 * 시작점 pos, 방향백터 DirVector
-                 */
-                //m_LaserAddBuffer.Add(laser);
-                //answer.add(laser);
+                Laser.Entity.Laser laser = Instantiate(m_LaserStaticObject).GetComponent<Laser.Entity.Laser>();
+                laser.transform.position = pos;
+                laser.Init(pos + dirVector[i], dirVector[i]);
+                m_LaserAddBuffer.Add(laser);
+                answer.Add(laser);
+                Debug.Log("레이저 추가: 현제 레이저 갯수   " + m_LaserAddBuffer.Count);
             }
             return answer;
         }

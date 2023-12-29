@@ -28,8 +28,6 @@ public class Wall : ICollisionable
     {
         Debug.Log("벽과 충돌 후 자식생성");
         Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
-        List<Vector2> answer = new List<Vector2>();
-        answer.Add(dir);
-        return answer;
+        return new List<Vector2>() { dir };
     }
 }

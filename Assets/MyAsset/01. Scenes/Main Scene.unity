@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 203338337}
   - component: {fileID: 203338338}
   - component: {fileID: 203338339}
+  - component: {fileID: 203338340}
   m_Layer: 10
   m_Name: Down
   m_TagString: Untagged
@@ -560,6 +561,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &203338340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203338336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4b12ce95c914ca408cdc9eab6547ec0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &377909380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1218,7 +1231,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &824324715
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3064,6 +3077,7 @@ MonoBehaviour:
   m_InitLazer: {fileID: 5040965255223801551}
   m_SubLine: {fileID: 1380143814}
   m_SubLineController: {fileID: 1292888497}
+  m_LaserObject: {fileID: 3849716301240663123, guid: b23373a09b3943a46bf57b29600b312b, type: 3}
 --- !u!114 &1292888497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3078,7 +3092,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SubLineRenderer: {fileID: 1380143814}
   m_LaserInitTransform: {fileID: 3849716300557570480}
-  m_IsActiveSubLine: 1
 --- !u!1 &1317912727
 GameObject:
   m_ObjectHideFlags: 0
@@ -14433,4 +14446,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf70dfde725ece94cbac32061a87f0a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LaserObject: {fileID: 3849716301240663123, guid: b23373a09b3943a46bf57b29600b312b, type: 3}

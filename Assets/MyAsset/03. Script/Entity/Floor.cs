@@ -26,7 +26,7 @@ public class Floor : ICollisionable
         Debug.Log("바닥과 충돌 에너지 감소");
         Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
         Debug.Log(Energy.GetEnergy());
-        List<Vector2> answer = new List<Vector2>();
-        return answer;
+
+        return new List<Vector2>();
     }
 }

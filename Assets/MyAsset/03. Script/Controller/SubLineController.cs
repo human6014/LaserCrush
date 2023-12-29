@@ -1,4 +1,4 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +11,6 @@ namespace Laser.Manager
     {
         [SerializeField] private LineRenderer m_SubLineRenderer;
         [SerializeField] private Transform m_LaserInitTransform;
-        [SerializeField] private bool m_IsActiveSubLine;
 
         private Camera m_MainCamera;
 
@@ -27,8 +26,9 @@ namespace Laser.Manager
         /// </summary>
         public Action RepaintLineAction { get; set; }
 
-        public Vector3 Position { get => m_LaserInitTransform.position;}
+        public Vector3 Position { get => m_LaserInitTransform.position; }
         public Vector3 Direction { get; private set; } = Vector3.up;
+        public bool IsActiveSubLine { get; set; } = true;
 
         private void Awake()
         {
@@ -48,8 +48,10 @@ namespace Laser.Manager
 
         private void SetLinePosition()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-            if (m_IsActiveSubLine)
+            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity,
+                1 << LayerMask.NameToLayer("Reflectable") |
+                1 << LayerMask.NameToLayer("Absorbable"));
+            if (IsActiveSubLine)
             {
                 m_SubLineRenderer.SetPosition(0, Position);
                 m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - Direction);
@@ -71,11 +73,11 @@ namespace Laser.Manager
 
         public void SetEnableLine(bool isEnable)
             => m_SubLineRenderer.enabled = isEnable;
-        
-        private Vector3 MainScreenToWorldPoint(Vector3 screenPos) 
+
+        private Vector3 MainScreenToWorldPoint(Vector3 screenPos)
             => m_MainCamera.ScreenToWorldPoint(screenPos) + new Vector3(0, 0, 10);
-        
-        private bool RaycastToTouchable(Vector3 pos, out RaycastHit hit) 
+
+        private bool RaycastToTouchable(Vector3 pos, out RaycastHit hit)
             => Physics.Raycast(m_MainCamera.ScreenPointToRay(pos), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Touchable"));
 
         private void OnDestroy()

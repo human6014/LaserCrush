@@ -31,13 +31,11 @@ namespace Laser.Entity
         /// m_EndPoint : 레이저 끝점 -> 발사 시 끝점이 이동함
         /// </summary>
         #region Property
-        [SerializeField] private GameObject m_LaserObject;
-
         private Vector2 m_StartPoint;
         private Vector2 m_EndPoint;
         private Vector2 m_DirectionVector;
-        private float m_EraseVelocity = 0.2f;
-        private float m_ShootingVelocity = 0.1f;
+        private float m_EraseVelocity = 0.4f;
+        private float m_ShootingVelocity = 0.2f;
         private List<Laser> m_ChildLazers = new List<Laser>();
         private LaserStateType m_State;
         private int m_Damage;//변수이름 고민 -> 한번 소모할 에너지를 보관할 변수
@@ -54,15 +52,15 @@ namespace Laser.Entity
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
 
-        public void Init(Vector2 posion, Vector2 dir)
+        public void Init(Vector2 position, Vector2 dir)
         {
-            m_StartPoint = posion;
-            m_EndPoint = posion;
+            m_StartPoint = position;
+            m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsInitated = true;
             m_LineRenderer.positionCount = 2;
-            m_LineRenderer.SetPosition(0, posion);
-            m_LineRenderer.SetPosition(1, dir);
+            m_LineRenderer.SetPosition(0, position);
+            m_LineRenderer.SetPosition(1, position);
         }
 
         /// <summary>
@@ -120,7 +118,7 @@ namespace Laser.Entity
                 return true;
             }
             m_StartPoint += m_DirectionVector * m_EraseVelocity;
-            m_LineRenderer.SetPosition(1, m_EndPoint);
+            m_LineRenderer.SetPosition(0, m_StartPoint);
             return false;
         }
 
@@ -136,17 +134,14 @@ namespace Laser.Entity
 
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.point);
-            if (hit.collider != null && dist <= m_ShootingVelocity)//�浹 ��
+            if (hit.collider != null && dist <= m_ShootingVelocity)
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
                 m_State = LaserStateType.Hitting;
-                if(dir.Count > 0) 
-                {
-                    CreateChildRaser(hit.point, GetReflectVector(hit));
-                }
+                //CreateChildRaser(hit.point, GetReflectVector(hit));
                 //위에꺼 지우고 밑에꺼 실행 시켜요
-                //AddChild(LaserManager.CreateLaser(dir, hit.point));
+                AddChild(LaserManager.CreateLaser(dir, hit.point));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_ShootingVelocity;
@@ -190,25 +185,6 @@ namespace Laser.Entity
         public void CollideLauncher(RaycastHit2D hit)
         {
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
-            //TODO//
-            //dir을 방향벡터로 하고 위치는 hit 포인터로 하는 레이저 생성
-            //레이저 생성 후 manager에 add함수를 호출해 추가해 주어야 한다.
-            CreateChildRaser(hit.transform.position, dir);
-        }
-
-        /// <summary>
-        /// 자식 레이저 만들고 위치, 각도 설정 +
-        /// LaserManager의 레이저 리스트에 추가
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="rot"></param>
-        private void CreateChildRaser(Vector2 pos, Vector2 rot)
-        {
-            Debug.Log("CreateChildRaser");
-            Laser laser = Instantiate(m_LaserObject).GetComponent<Laser>();
-            laser.transform.position = pos;
-            laser.Init(pos + rot, rot);
-            LaserManager.AddLaser(laser);
         }
 
         /// <summary>
