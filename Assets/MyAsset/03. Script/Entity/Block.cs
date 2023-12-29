@@ -9,7 +9,7 @@ namespace Laser.Object
         #region Property
         private int m_HP;
         private Vector2 m_Position;
-        private DroppedItem m_Item = null;
+        private Item m_Item = null;
         private List<Vector2> m_Direction = new List<Vector2>();
         #endregion
 
@@ -20,7 +20,7 @@ namespace Laser.Object
         /// 드랍 아이템이 없을 경우 널값을 대입
         /// <param name="entityType"></param>
         /// <param name="hp"></param>
-        public void Init(DroppedItem droppedItem, EntityType entityType, int hp)
+        public void Init(Item droppedItem, EntityType entityType, int hp)
         {
             m_HP = hp;
             m_Type = entityType;
@@ -65,6 +65,5 @@ namespace Laser.Object
             List<Vector2> answer = new List<Vector2>();
             return answer;
         }
-
     }
 }

@@ -3025,6 +3025,7 @@ GameObject:
   - component: {fileID: 1292888493}
   - component: {fileID: 1292888496}
   - component: {fileID: 1292888497}
+  - component: {fileID: 1292888498}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3046,6 +3047,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LaserManager: {fileID: 1292888496}
   m_GameStartButton: {fileID: 1012169028}
+  m_BlockManager: {fileID: 1292888498}
+  m_ItemManager: {fileID: 0}
 --- !u!4 &1292888494
 Transform:
   m_ObjectHideFlags: 0
@@ -3092,6 +3095,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SubLineRenderer: {fileID: 1380143814}
   m_LaserInitTransform: {fileID: 3849716300557570480}
+--- !u!114 &1292888498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292888492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b058b9fafe9f48f428f6fd91147e9b1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1317912727
 GameObject:
   m_ObjectHideFlags: 0

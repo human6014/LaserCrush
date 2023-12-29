@@ -1,4 +1,5 @@
 using Laser.Entity;
+using Laser.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,9 +72,27 @@ public class Prism : ICollisionable
         return false;
     }
 
+    /// <summary>
+    /// 해당 함수가 호출되면 프리즘이 활성화되며 사용 횟수가1회 차감
+    /// </summary>
+    /// <param name="hit"></param>
+    /// <param name="parentDirVector"></param>
+    /// <returns></returns>
     public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
+        m_IsActivate = true;
+        m_UsingCount--;
         List<Vector2> answer = new List<Vector2>();
         return answer;
+    }
+
+    public bool IsOverloaded()
+    {
+        if(m_UsingCount == 0)
+        {
+            return true;
+        }
+        return false; 
+
     }
 }
