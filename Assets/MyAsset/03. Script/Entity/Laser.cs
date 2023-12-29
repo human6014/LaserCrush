@@ -46,7 +46,6 @@ namespace Laser.Entity
         private LineRenderer m_LineRenderer;
         #endregion
 
-
         private void Awake()
         {
             m_IsInitated = false;
@@ -93,11 +92,6 @@ namespace Laser.Entity
             }
         }
 
-        public void GenerateLazer(Vector2 direction)
-        {
-            //레이저 생성
-        }
-
         public bool HasChild()
         {
             if (m_ChildLazers.Count == 0)
@@ -121,10 +115,12 @@ namespace Laser.Entity
             if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_EraseVelocity)
             {
                 //삭제
+                Debug.Log("레이저 제거");
                 m_StartPoint = m_EndPoint;
                 return true;
             }
             m_StartPoint += m_DirectionVector * m_EraseVelocity;
+            m_LineRenderer.SetPosition(1, m_EndPoint);
             return false;
         }
 
@@ -143,9 +139,14 @@ namespace Laser.Entity
             if (hit.collider != null && dist <= m_ShootingVelocity)//�浹 ��
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
-                m_Target.Hitted(hit, m_DirectionVector);
+                List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
                 m_State = LaserStateType.Hitting;
-                CreateChildRaser(hit.point, GetReflectVector(hit));
+                if(dir.Count > 0) 
+                {
+                    CreateChildRaser(hit.point, GetReflectVector(hit));
+                }
+                //위에꺼 지우고 밑에꺼 실행 시켜요
+                //AddChild(LaserManager.CreateLaser(dir, hit.point));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_ShootingVelocity;
@@ -172,63 +173,18 @@ namespace Laser.Entity
             }
         }
 
+        private void AddChild(List<Laser> child)
+        {
+            for(int i = 0; i < child.Count; i++) 
+            {
+                m_ChildLazers.Add(child[i]);
+            }
+        }
 
         public void Tem()
         {
             Debug.Log("Tem()");
             return;
-        }
-        public void CollideNormalBlock()
-        {
-            return;
-        }
-
-
-        public void CollideReflectBlock(RaycastHit2D hit)
-        {
-            //새로운 자식 레이저 생성
-            Vector2 temDir = m_DirectionVector + hit.normal;
-            temDir = (hit.normal + temDir).normalized;
-
-            CreateChildRaser(hit.transform.position, temDir);
-        }
-
-        public void CollidePrisim(RaycastHit2D hit)
-        {
-            List<Vector2> dir =  hit.collider.GetComponent<Prism>().GetEjectionPorts();
-            for(int i = 0; i < dir.Count; ++i) 
-            {
-                //새로운 자식 레이저 생성
-                //todo//
-                //GetReflectVector() 사용하면되요
-                //Init()함수 호출하면 초기화 가능
-                /*자식 생성 순서
-                 * 1. 자식 인스턴시에이트
-                 * 2. 자식 레이저 init함수로 객체 초기화
-                 * 3. LaserManager에 Add
-                 */
-            }
-        }
-
-        public void CollideWall(RaycastHit2D hit)
-        {
-            //새로운 자식 레이저 생성
-            //새로운 자식 레이저 생성
-            //todo//
-            //GetReflectVector() 사용하면되요
-            //Init()함수 호출하면 초기화 가능
-            /*자식 생성 순서
-             * 1. 자식 인스턴시에이트
-             * 2. 자식 레이저 init함수로 객체 초기화
-             * 3. LaserManager에 Add
-             */
-
-            HittingWall();
-        }
-
-        public void CollideFloor()
-        {
-            HittingFloor();
         }
 
         public void CollideLauncher(RaycastHit2D hit)
@@ -263,18 +219,6 @@ namespace Laser.Entity
         private Vector2 GetReflectVector(RaycastHit2D hit)
         {
             return (hit.normal + m_DirectionVector + hit.normal).normalized;
-        }
-
-
-        private void HittingWall()
-        {
-            //남은 에너지의 일정 비율을 감소
-
-        }
-
-        private void HittingFloor()
-        {
-            //일단 로직 보류
         }
     }
 }

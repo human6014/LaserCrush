@@ -38,7 +38,6 @@ namespace Laser.Manager
             switch (m_GameStateType) 
             {
                 case GameStateType.Deploying:
-
                     break;
                 case GameStateType.BlockUpdating:
                     BlockUpdating();
@@ -81,7 +80,6 @@ namespace Laser.Manager
 
         public static void DeployingComplete()
         {
-
         }
 
         public void OnDeploying()
@@ -111,6 +109,7 @@ namespace Laser.Manager
             }
             else
             {
+                Debug.Log("레이저 삭제...");
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
                     m_GameStateType = GameStateType.Deploying;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Laser.Entity
@@ -18,12 +19,11 @@ namespace Laser.Entity
     abstract public class ICollisionable : MonoBehaviour
     {
         protected EntityType m_Type;
-        public abstract EntityType GetEntityType();
-
         public abstract void GetDamage(int damage);
 
         public abstract bool IsAttackable();
 
-        public abstract void Hitted(RaycastHit2D hit, Vector2 parentDirVector);
+        public abstract List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector);
+
     }
 }
