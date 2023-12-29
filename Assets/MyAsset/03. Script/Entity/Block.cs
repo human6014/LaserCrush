@@ -54,15 +54,16 @@ namespace Laser.Object
 
         public override bool IsAttackable()
         {
-            if(m_Type == EntityType.NormalBlock || m_Type == EntityType.ReflectBlock)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
         public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
             List<Vector2> answer = new List<Vector2>();
+            if (m_Type == EntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
+            {
+                Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
+                return new List<Vector2>() { dir };
+            }
             return answer;
         }
     }

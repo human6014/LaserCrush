@@ -38,7 +38,7 @@ namespace Laser.Entity
         private float m_ShootingVelocity = 0.2f;
         private List<Laser> m_ChildLazers;
         private LaserStateType m_State;
-        private int m_Damage;//변수이름 고민 -> 한번 소모할 에너지를 보관할 변수
+        private int m_Damage;//변수이름 고민 -> 틱당 벽돌 공격할 에너지량
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
         private bool m_IsInitated;
         private LineRenderer m_LineRenderer;
