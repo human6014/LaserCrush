@@ -84,7 +84,7 @@ namespace Laser.Manager
         {
             //m_InputManager.ManagedUpdate();
             //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
-            
+            Debug.Log("배치 턴");
             m_GameStateType = GameStateType.LaserActivating;
 
         }
@@ -96,6 +96,7 @@ namespace Laser.Manager
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
              *   -> Time함수 등을 사용
              */
+            Debug.Log("블럭 생성");
             m_GameStateType = GameStateType.Deploying;
         }
 
