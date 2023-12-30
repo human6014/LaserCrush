@@ -1,13 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using TMPro;
 
 public class Energy : MonoBehaviour
 {
     #region Property
-    private static int m_Energy = 100;
+    [SerializeField] private TextMeshProUGUI m_Text;
+
+    private static event UnityAction m_TextUpdate;
+    
+    private static int m_Energy = 10000;
     private static Vector2 m_Postion;
     #endregion
+
+    private void Awake()
+    {
+        m_TextUpdate = null;
+        m_TextUpdate += () => m_Text.text = m_Energy.ToString();
+        m_TextUpdate?.Invoke();
+    }
 
     /// <summary>
     /// 무조건 에너지는 1만 사용한다.
@@ -25,7 +38,7 @@ public class Energy : MonoBehaviour
         return true;
     }
 
-    public static int  GetEnergy()
+    public static int GetEnergy()
     {
         return m_Energy;
     }
@@ -48,14 +61,14 @@ public class Energy : MonoBehaviour
         if(energy <= m_Energy) 
         {
             m_Energy -= energy;
-            return energy;
         }
         else
         {
             energy = m_Energy;
             m_Energy = 0;
-            return energy; 
         }
+        m_TextUpdate?.Invoke();
+        return energy;
     }
     
     public static bool CheckEnergy()

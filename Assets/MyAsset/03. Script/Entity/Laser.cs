@@ -31,24 +31,27 @@ namespace Laser.Entity
         /// m_EndPoint : 레이저 끝점 -> 발사 시 끝점이 이동함
         /// </summary>
         #region Property
+        [SerializeField] private Data.LaserData m_LaserData;
+
+        private List<Laser> m_ChildLazers;
+
+        private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
+        private LineRenderer m_LineRenderer;
+
+        private LaserStateType m_State;
+
         private Vector2 m_StartPoint;
         private Vector2 m_EndPoint;
         private Vector2 m_DirectionVector;
-        private float m_EraseVelocity = 0.4f;
-        private float m_ShootingVelocity = 0.2f;
-        private List<Laser> m_ChildLazers;
-        private LaserStateType m_State;
-        private int m_Damage;//변수이름 고민 -> 틱당 벽돌 공격할 에너지량
-        private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
+
         private bool m_IsInitated;
-        private LineRenderer m_LineRenderer;
         #endregion
 
         private void Awake()
         {
             m_ChildLazers = new List<Laser>();
             m_IsInitated = false;
-            m_State = LaserStateType.Move;
+
             m_LineRenderer = GetComponent<LineRenderer>();
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
@@ -113,14 +116,14 @@ namespace Laser.Entity
         /// </summary>
         public bool Erase()
         {
-            if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_EraseVelocity)
+            if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_LaserData.EraseVelocity)
             {
                 //삭제
                 Debug.Log("레이저 제거");
                 m_StartPoint = m_EndPoint;
                 return true;
             }
-            m_StartPoint += m_DirectionVector * m_EraseVelocity;
+            m_StartPoint += m_DirectionVector * m_LaserData.EraseVelocity;
             m_LineRenderer.SetPosition(0, m_StartPoint);
             return false;
         }
@@ -137,7 +140,7 @@ namespace Laser.Entity
 
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
             float dist = Vector2.Distance(m_EndPoint, hit.point);
-            if (hit.collider != null && dist <= m_ShootingVelocity)
+            if (hit.collider != null && dist <= m_LaserData.ShootingVelocity)
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
@@ -145,7 +148,7 @@ namespace Laser.Entity
                 AddChild(LaserManager.CreateLaser(dir, hit.point));
                 return;
             }
-            m_EndPoint += m_DirectionVector * m_ShootingVelocity;
+            m_EndPoint += m_DirectionVector * m_LaserData.ShootingVelocity;
             m_LineRenderer.SetPosition(1, m_EndPoint);
         }
 
@@ -165,7 +168,8 @@ namespace Laser.Entity
 
             if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
-                m_Target.GetDamage(m_Damage);
+                if (m_Target is null) return;
+                m_Target.GetDamage(m_LaserData.Damage);
             }
         }
 

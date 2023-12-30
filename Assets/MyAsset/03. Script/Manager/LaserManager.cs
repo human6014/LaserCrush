@@ -76,6 +76,7 @@ namespace Laser.Manager
         {
             if (m_Lasers.Count == 0)
             {
+                Debug.Log("DeActivate Comp");
                 m_Initialized = false;
                 return true;
             }
