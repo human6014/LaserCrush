@@ -16,7 +16,7 @@ namespace Laser.Entity
         Wall,
         Launcher
     }
-    abstract public class ICollisionable : MonoBehaviour
+    public abstract class ICollisionable : MonoBehaviour
     {
         protected EntityType m_Type;
         public abstract void GetDamage(int damage);

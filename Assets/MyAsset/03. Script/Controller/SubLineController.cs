@@ -51,17 +51,15 @@ namespace Laser.Manager
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity,
                 1 << LayerMask.NameToLayer("Reflectable") |
                 1 << LayerMask.NameToLayer("Absorbable"));
-            if (IsActiveSubLine)
-            {
-                m_SubLineRenderer.SetPosition(0, Position);
-                m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - Direction);
-            }
+            m_SubLineRenderer.SetPosition(0, Position);
+            m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - Direction);
         }
 
         private void RepaintLine()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (m_IsDragInit) return;
+
 
             Vector3 m_ClickPos = MainScreenToWorldPoint(Input.mousePosition);
             Direction = (m_ClickPos - Position).normalized;

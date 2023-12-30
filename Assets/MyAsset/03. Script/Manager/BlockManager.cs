@@ -19,6 +19,11 @@ namespace Laser.Manager
         public static void GenerateBlock(int num)
         {
             //TODO//
+            for(int i = 0; i < num; i++)
+            {
+
+            }
+
             /*
              * num갯수 만큼 블럭 생성
              * 생성 후 리스트에 추가
