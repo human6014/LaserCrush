@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace Laser.Object
+namespace Laser
 {
     public class Block : ICollisionable
     {
         #region Property
         [SerializeField] private TextMeshProUGUI m_Text;
 
-        private bool m_IsDestroyed;
-        private int m_HP = 1000;
-        private Vector2 m_Position;
-        private Item m_Item = null;
         private List<Vector2> m_Direction = new List<Vector2>();
-        #endregion
+        private Item m_Item = null;
 
-        private void Awake()
-        {
-            Init(1000, EntityType.NormalBlock, null);
-        }
+        private Vector2 m_Position;
+
+        private int m_HP = 1000;
+        private bool m_IsDestroyed;
+        #endregion
 
         /// <summary>
         /// 화면에 띄우기 전 반드시 초기화함수 호출할 것
@@ -38,7 +35,7 @@ namespace Laser.Object
             m_Text.text = hp.ToString();
         }
 
-        private void Destroy()
+        public void Destroy()
         {
             if (m_IsDestroyed) return;
             m_IsDestroyed = true;
@@ -49,6 +46,9 @@ namespace Laser.Object
         public override void GetDamage(int damage)
         {
             Debug.Log("GetDamage");
+
+            //체력 구분으로 부서진 경우는 바로 return 하도록 변경
+            //임시 방편으로 버그 안뜨게 막아놓은 상태임
 
             if (m_HP < damage) // 남은 피가 데미지보다 작을 경우
             {
@@ -74,6 +74,7 @@ namespace Laser.Object
         {
             return true;
         }
+
         public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
             Debug.Log("Block Hitted");

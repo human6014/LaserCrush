@@ -1,5 +1,4 @@
 using Laser.Entity;
-using Laser.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,12 +14,15 @@ public class Prism : ICollisionable
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
     #region Property
-    private const int m_MaxUsingCount = 3;
-    private const int m_CHARGINTIME = 10;
     private List<Vector2> m_EjectionPorts = new List<Vector2>();
+
+    private const int m_MaxUsingCount = 3;
+    private const int m_ChargingTime = 10;
+    
     private int m_UsingCount = 0;
-    private bool m_IsActivate = false;
     private int m_ChargingWait;
+
+    private bool m_IsActivate = false;
     #endregion
 
     /// <summary>
@@ -56,7 +58,7 @@ public class Prism : ICollisionable
     {
         //시간경과
         m_ChargingWait++;
-        if(m_ChargingWait >= m_CHARGINTIME)
+        if(m_ChargingWait >= m_ChargingTime)
         {
             m_IsActivate=true;
         }

@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Laser.Manager;
-using Laser.Entity;
-using Unity.Android.Types;
-using Unity.Burst.CompilerServices;
-using UnityEngine.UIElements;
-using UnityEngineInternal;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Laser.Entity
 {
@@ -63,6 +57,7 @@ namespace Laser.Entity
             m_DirectionVector = dir.normalized;
             m_IsInitated = true;
             m_ChildLazers.Clear();
+
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
             m_LineRenderer.SetPosition(1, position);

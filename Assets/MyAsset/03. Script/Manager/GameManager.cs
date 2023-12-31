@@ -24,13 +24,12 @@ namespace Laser.Manager
         //추가한거 -> 잘 다듬어 주세요~
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
-        private GameStateType m_GameStateType;
+        private GameStateType m_GameStateType = GameStateType.BlockUpdating;
 
         #endregion
         
         private void Awake()
         {
-            
             m_GameStartButton.MouseDownAction += OnDeploying;
         }
 
@@ -90,7 +89,7 @@ namespace Laser.Manager
 
             Debug.Log("블럭 생성");
             //todo//
-            //m_BlockManager.GenerateBlock(0); -> 인스턴스화가 안되서 안되는듯
+            m_BlockManager.GenerateBlock(4); // -> 인스턴스화가 안되서 안되는듯
             m_GameStateType = GameStateType.Deploying;
         }
 

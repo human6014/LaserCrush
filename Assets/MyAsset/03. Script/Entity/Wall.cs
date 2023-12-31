@@ -2,9 +2,6 @@ using Laser.Entity;
 using Laser.Manager;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.Rendering.DebugUI.Table;
-using Debug = UnityEngine.Debug;
 
 public class Wall : ICollisionable
 {
