@@ -60,7 +60,7 @@ public class Prism : ICollisionable
         m_ChargingWait++;
         if(m_ChargingWait >= m_ChargingTime)
         {
-            m_IsActivate=true;
+            m_IsActivate = true;
         }
     }
 

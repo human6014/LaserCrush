@@ -17,7 +17,6 @@ namespace Laser.UI
 
             if (m_IsActiveToolbar) ToolbarOn();
             else ToolbarOff();
-            
         }
 
         private void ToolbarOn()

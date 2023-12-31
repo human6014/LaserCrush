@@ -9,7 +9,7 @@ namespace Laser.Manager
     /// 각 턴마다 적절한 update함수를 호출해준다.
     /// 
     /// </summary>
-    enum GameStateType
+    public enum GameStateType
     {
         Deploying,
         BlockUpdating,
