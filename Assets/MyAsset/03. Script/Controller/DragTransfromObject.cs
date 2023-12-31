@@ -26,7 +26,7 @@ namespace Laser.Controller.InputObject
         {
             Vector3 objectPos = GetMouseAsWorldPoint();
             objectPos.x = Mathf.Clamp(objectPos.x, -44, 44);
-            objectPos.y = -69;
+            objectPos.y = -63;
             transform.position = objectPos;
 
             m_SubLineRenderer.RepaintInitPointAction?.Invoke(true);

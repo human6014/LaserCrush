@@ -8,8 +8,6 @@ namespace Laser.Manager
 {
     public class ItemManager : MonoBehaviour
     {
-        // Start is called before the first frame update
-
         #region property
         private static List<Item> m_Items = new List<Item>();
         private static List<Prism> m_Prisms = new List<Prism>();
@@ -20,7 +18,7 @@ namespace Laser.Manager
         private void Awake()
         {
             m_Items.Clear();
-            m_Prisms.Clear();  
+            m_Prisms.Clear();
         }
 
         public void GetDroppedItems()

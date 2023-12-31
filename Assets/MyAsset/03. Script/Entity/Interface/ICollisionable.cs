@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Laser.Entity
 {
+    //enum 필요없음 이거
     public enum EntityType
     {
         //Attable//
