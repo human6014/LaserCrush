@@ -11,6 +11,5 @@ namespace Laser.Controller.InputObject
         
         private void OnMouseDrag() 
             => m_SubLineRenderer.RepaintLineAction?.Invoke();
-        
     }
 }

@@ -6,12 +6,12 @@ using UnityEngine.Events;
 
 namespace Laser.UI
 {
-    public class Item : MonoBehaviour,IPointerDownHandler, IPointerUpHandler, IDragHandler
+    public class Item : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         [SerializeField] private GameObject m_ItemObject;
 
         private UnityAction<Item> m_PointerDownAction;
-        private UnityAction m_PointerUpAction;
+        private UnityAction<Vector2> m_PointerUpAction;
         private UnityAction<Vector2> m_DragAction;
 
         public event UnityAction<Item> PointerDownAction 
@@ -20,7 +20,7 @@ namespace Laser.UI
             remove => m_PointerDownAction -= value; 
         }
 
-        public event UnityAction PointerUpAction
+        public event UnityAction<Vector2> PointerUpAction
         {
             add => m_PointerUpAction += value; 
             remove => m_PointerUpAction -= value;
@@ -32,13 +32,15 @@ namespace Laser.UI
             remove => m_DragAction -= value;
         }
 
+        public GameObject ItemObject { get => m_ItemObject; }
+
         public void OnPointerDown(PointerEventData eventData)
             => m_PointerDownAction?.Invoke(this);
-        
+
         public void OnPointerUp(PointerEventData eventData)
-            => m_PointerUpAction?.Invoke();
+            => m_PointerUpAction?.Invoke(eventData.position);
         
         public void OnDrag(PointerEventData eventData)
-            => m_DragAction?.Invoke(eventData.position);
+            => m_DragAction?.Invoke(eventData.delta);
     }
 }

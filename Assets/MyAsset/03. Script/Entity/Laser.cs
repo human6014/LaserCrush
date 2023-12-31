@@ -133,9 +133,9 @@ namespace Laser.Entity
         {
             if(!Energy.CheckEnergy()) { return; }
 
-            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable"));
-            float dist = Vector2.Distance(m_EndPoint, hit.point);
-            if (hit.collider != null && dist <= m_LaserData.ShootingVelocity)
+            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
+
+            if (hit.collider != null && Vector2.Distance(m_EndPoint, hit.point) <= m_LaserData.ShootingVelocity)
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);

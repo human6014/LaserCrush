@@ -48,9 +48,7 @@ namespace Laser.Manager
 
         private void SetLinePosition()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity,
-                1 << LayerMask.NameToLayer("Reflectable") |
-                1 << LayerMask.NameToLayer("Absorbable"));
+            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - Direction);
         }
@@ -60,11 +58,11 @@ namespace Laser.Manager
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (m_IsDragInit) return;
 
-
             Vector3 m_ClickPos = MainScreenToWorldPoint(Input.mousePosition);
             Direction = (m_ClickPos - Position).normalized;
 
             if (Direction.y <= 0) return;
+            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward,Direction);
 
             SetLinePosition();
         }
