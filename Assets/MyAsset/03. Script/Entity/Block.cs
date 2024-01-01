@@ -1,9 +1,9 @@
-using Laser.Entity;
+using LaserCrush.Entity;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace Laser
+namespace LaserCrush
 {
     public class Block : ICollisionable
     {

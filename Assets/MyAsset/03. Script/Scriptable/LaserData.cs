@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Data
+namespace LaserCrush.Data
 {
     [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Laser Data", order = int.MaxValue)]
     public class LaserData : ScriptableObject

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     public static class LayerManager
     {

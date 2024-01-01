@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     /// <summary>
     /// 인풋과 턴 개념을 결정하는 클래스

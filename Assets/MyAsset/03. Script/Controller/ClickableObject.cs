@@ -1,10 +1,9 @@
-using Laser.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Laser
+namespace LaserCrush
 {
     public class ClickableObject : MonoBehaviour
     {

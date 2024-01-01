@@ -1,5 +1,4 @@
-using Laser.Entity;
-using Laser.Manager;
+using LaserCrush.Entity;
 using System.Collections.Generic;
 using UnityEngine;
 

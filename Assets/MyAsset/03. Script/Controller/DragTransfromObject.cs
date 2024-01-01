@@ -1,9 +1,9 @@
+using LaserCrush.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Laser.Manager;
 
-namespace Laser.Controller.InputObject
+namespace LaserCrush.Controller.InputObject
 {
     public class DragTransfromObject : MonoBehaviour
     {

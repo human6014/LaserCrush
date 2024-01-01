@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Entity
+namespace LaserCrush.Entity
 {
     //enum 필요없음 이거
     public enum EntityType

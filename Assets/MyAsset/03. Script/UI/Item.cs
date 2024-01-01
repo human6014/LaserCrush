@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-namespace Laser.UI
+namespace LaserCrush.UI
 {
     public class Item : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {

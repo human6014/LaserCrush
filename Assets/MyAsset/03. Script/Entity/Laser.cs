@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Laser.Manager;
+using LaserCrush.Manager;
 
-namespace Laser.Entity
+namespace LaserCrush.Entity
 {
     enum LaserStateType // 이름 고민
     {
@@ -31,6 +31,7 @@ namespace Laser.Entity
 
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
         private LineRenderer m_LineRenderer;
+        private Func<List<Vector2>, Vector2, List<Laser>> m_LaserCreateFunc;
 
         private LaserStateType m_State;
 
@@ -50,7 +51,7 @@ namespace Laser.Entity
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
 
-        public void Init(Vector2 position, Vector2 dir)
+        public void Init(Vector2 position, Vector2 dir, Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc)
         {
             m_StartPoint = position;
             m_EndPoint = position;
@@ -58,6 +59,7 @@ namespace Laser.Entity
             m_IsInitated = true;
             m_ChildLazers.Clear();
 
+            m_LaserCreateFunc = laserCreateFunc;
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
             m_LineRenderer.SetPosition(1, position);
@@ -140,7 +142,8 @@ namespace Laser.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
                 m_State = LaserStateType.Hitting;
-                AddChild(LaserManager.CreateLaser(dir, hit.point));
+
+                AddChild(m_LaserCreateFunc?.Invoke(dir, hit.point));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_LaserData.ShootingVelocity;
