@@ -18,18 +18,26 @@ namespace LaserCrush.Manager
     public class GameManager : MonoBehaviour
     {
         #region Property
+        [SerializeField] private GameSettingManager m_GameSettingManager;
+        [SerializeField] private AudioManager m_AudioManager;
         [SerializeField] private LaserManager m_LaserManager;
-        [SerializeField] private ClickableObject m_GameStartButton;
-
-        //추가한거 -> 잘 다듬어 주세요~
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
+
+        [SerializeField] private ClickableObject m_GameStartButton;
+
         private GameStateType m_GameStateType = GameStateType.BlockUpdating;
 
         #endregion
         
         private void Awake()
         {
+            m_GameSettingManager.Init();
+            m_AudioManager.Init();
+            m_LaserManager.Init(InstantiateObject);
+            m_BlockManager.Init(InstantiateObject);
+            m_ItemManager.Init();
+
             m_GameStartButton.MouseDownAction += OnDeploying;
         }
 
@@ -51,6 +59,9 @@ namespace LaserCrush.Manager
                     break;
             }
         }
+
+        private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);
+        
 
         public static void DeployingComplete()
         {
