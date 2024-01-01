@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Notifications.Android;
 using UnityEngine;
-using Laser.Entity;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     /// <summary>
     /// 레이저 메이저는 레이저를 하나하나 스스로 관리하지 않고 활성화 비활성화(사라지는 단계)만 결정해서 넘겨준다.
@@ -12,20 +10,21 @@ namespace Laser.Manager
     public class LaserManager : MonoBehaviour
     {
         #region Property
-        [SerializeField] private Laser.Entity.Laser m_InitLazer;
+        [SerializeField] private Entity.Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
         [SerializeField] private GameObject m_LaserObject;
 
         private static GameObject m_LaserStaticObject;
         //lazer저장하는 자료구조
-        private static List<Laser.Entity.Laser> m_Lasers = new List<Laser.Entity.Laser>();
-        private static List<Laser.Entity.Laser> m_LaserAddBuffer = new List<Laser.Entity.Laser>();
-        private static List<Laser.Entity.Laser> m_LaserRemoveBuffer = new List<Laser.Entity.Laser>();
+        private static List<Entity.Laser> m_Lasers = new List<Entity.Laser>();
+        private static List<Entity.Laser> m_LaserAddBuffer = new List<Entity.Laser>();
+        private static List<Entity.Laser> m_LaserRemoveBuffer = new List<Entity.Laser>();
         //지우기 시작할 레이저보관 자료구조
-        private List<Laser.Entity.Laser> m_RootLazer = new List<Laser.Entity.Laser>();
+        private List<Entity.Laser> m_RootLazer = new List<Entity.Laser>();
         private static bool m_Initialized = false;
         #endregion
+
 
         private void Awake()
         {
@@ -45,7 +44,7 @@ namespace Laser.Manager
                 Debug.Log("턴 시작");
                 m_RootLazer.Clear();
 
-                m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction);
+                m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction, CreateLaser);
                 
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
@@ -128,15 +127,15 @@ namespace Laser.Manager
 
         }
 
-        public static List<Laser.Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
+        public static List<Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
         {
-            List < Laser.Entity.Laser > answer =  new List < Laser.Entity.Laser >();    
+            List<Entity.Laser> answer = new List<Entity.Laser>();
 
-            for (int i = 0; i < dirVector.Count; i++) 
+            for (int i = 0; i < dirVector.Count; i++)
             {
-                Laser.Entity.Laser laser = Instantiate(m_LaserStaticObject).GetComponent<Laser.Entity.Laser>();
+                Entity.Laser laser = Instantiate(m_LaserStaticObject).GetComponent<Entity.Laser>();
                 laser.transform.position = pos;
-                laser.Init(pos + dirVector[i], dirVector[i]);
+                laser.Init(pos + dirVector[i], dirVector[i], CreateLaser);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }

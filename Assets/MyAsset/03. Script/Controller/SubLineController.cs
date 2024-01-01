@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngineInternal;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     public sealed class SubLineController : MonoBehaviour
     {

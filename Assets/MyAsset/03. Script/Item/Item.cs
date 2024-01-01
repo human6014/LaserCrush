@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Entity
+namespace LaserCrush.Entity
 {
     public enum ItemType
     {

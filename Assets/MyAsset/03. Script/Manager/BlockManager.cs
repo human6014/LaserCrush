@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     public class BlockManager : MonoBehaviour
     {
@@ -11,7 +11,6 @@ namespace Laser.Manager
         [SerializeField] private Vector2 m_InitPos;
         [SerializeField] private Vector2 m_Offset;
 
-        
         private List<Block> m_Blocks = new List<Block>();
 
         public void GenerateBlock(int num)

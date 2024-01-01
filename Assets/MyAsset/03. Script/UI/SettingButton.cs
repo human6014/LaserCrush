@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Laser.UI
+namespace LaserCrush.UI
 {
     public class SettingButton : MonoBehaviour, IPointerClickHandler
     {

@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Laser.Entity;
+using LaserCrush.Entity;
 using TMPro;
 
-namespace Laser.Manager
+namespace LaserCrush.Manager
 {
     public class ItemManager : MonoBehaviour
     {

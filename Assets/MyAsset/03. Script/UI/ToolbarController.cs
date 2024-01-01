@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Laser.UI
+namespace LaserCrush.UI
 {
     public class ToolbarController : MonoBehaviour
     {
