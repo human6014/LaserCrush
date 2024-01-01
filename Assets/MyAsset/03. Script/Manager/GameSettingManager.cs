@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace LaserCrush.Manager
 {
-    public class GameSettingManager : MonoBehaviour
+    [System.Serializable]
+    public class GameSettingManager
     {
-        private void Awake()
+        public void Init()
         {
             SetResolution();
         }

@@ -6,19 +6,21 @@ using TMPro;
 
 namespace LaserCrush.Manager
 {
-    public class ItemManager : MonoBehaviour
+    [System.Serializable]
+    public class ItemManager
     {
         #region property
-        private static List<Item> m_Items = new List<Item>();
-        private static List<Prism> m_Prisms = new List<Prism>();
+        private List<Item> m_Items = new List<Item>();
+        private List<Prism> m_Prisms = new List<Prism>();
 
-        private static List<Prism> m_PrismRemoveBuffer = new List<Prism>();
+        private List<Prism> m_PrismRemoveBuffer = new List<Prism>();
         #endregion
 
-        private void Awake()
+        public void Init()
         {
-            m_Items.Clear();
-            m_Prisms.Clear();
+            m_Items = new List<Item>();
+            m_Prisms = new List<Prism>();
+            m_PrismRemoveBuffer = new List<Prism>();
         }
 
         public void GetDroppedItems()
