@@ -10,11 +10,10 @@ public class Energy : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_Text;
 
     private static event UnityAction m_TextUpdate;
-    
-    private int m_Energy = 10000;
-    private Vector2 m_Postion;
-    #endregion
 
+    private static int m_Energy = 10000;
+    private static Vector2 m_Postion;
+    #endregion
     private void Awake()
     {
         m_TextUpdate = null;
@@ -38,12 +37,12 @@ public class Energy : MonoBehaviour
         return true;
     }
 
-    public int GetEnergy()
+    public static int GetEnergy()
     {
         return m_Energy;
     }
 
-    public Vector2 GetPosion()
+    public static Vector2 GetPosion()
     {
         return m_Postion;
     }
@@ -56,7 +55,7 @@ public class Energy : MonoBehaviour
     /// 사용할 에너지
     /// </param>
     /// <returns></returns>
-    public int UseEnergy(int energy)
+    public static int UseEnergy(int energy)
     {
         if(energy <= m_Energy) 
         {
@@ -71,12 +70,12 @@ public class Energy : MonoBehaviour
         return energy;
     }
     
-    public bool CheckEnergy()
+    public static bool CheckEnergy()
     {
         return m_Energy > 0;
     }
 
-    public bool IsAvailable()
+    public static bool IsAvailable()
     {
         return m_Energy > 0;
     }
@@ -84,8 +83,9 @@ public class Energy : MonoBehaviour
     /// <summary>
     /// 일단 부딪힐떄 마다 30퍼 삭제
     /// </summary>
-    public void CollidWithWall()
+    public static void CollidWithWall()
     {
         m_Energy -= (m_Energy / 3);
+        m_TextUpdate?.Invoke();
     }
 }

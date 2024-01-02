@@ -7,15 +7,22 @@ namespace LaserCrush.Manager
     [System.Serializable]
     public class GameSettingManager
     {
+        [SerializeField] private int m_TargetFrameRate = 60;
         public void Init()
         {
+            SetFrame();
             SetResolution();
+        }
+
+        private void SetFrame()
+        {
+            Application.targetFrameRate = m_TargetFrameRate;
         }
 
         /// <summary>
         /// 게임 최초 시작 시 해상도를 설정해줌
         /// </summary>
-        public void SetResolution()
+        private void SetResolution()
         {
             int setWidth = 1080; // 사용자 설정 너비
             int setHeight = 1920; // 사용자 설정 높이

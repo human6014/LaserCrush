@@ -9,14 +9,18 @@ namespace LaserCrush
     {
         #region Property
         [SerializeField] private TextMeshProUGUI m_Text;
-
+        [SerializeField] private EEntityType m_Type;
         private Item m_Item = null;
 
         private EEntityType m_EntityType;
         private int m_HP = 1000;
         private bool m_IsDestroyed;
-        private Energy m_Energy;
         #endregion
+
+        private void Awake()
+        {
+            Init(1000, m_Type, null);
+        }
 
         /// <summary>
         /// 화면에 띄우기 전 반드시 초기화함수 호출할 것
@@ -38,7 +42,7 @@ namespace LaserCrush
         {
             if (m_IsDestroyed) return;
             m_IsDestroyed = true;
-            //Destroy(gameObject);
+            Destroy(gameObject);
             //가지고 있는 아이템을 필드에 생성 -> 턴 종료 후 획등 방식
         }
 
@@ -51,7 +55,7 @@ namespace LaserCrush
 
             if (m_HP < damage) // 남은 피가 데미지보다 작을 경우
             {
-                int getDamage = m_Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
+                int getDamage = Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
                 if (m_HP - getDamage == 0)
                 {
                     Destroy();
@@ -63,7 +67,7 @@ namespace LaserCrush
             }
             else
             {
-                int getDamage = m_Energy.UseEnergy(damage);  //사용 가능한 에너지를 반환받는다.
+                int getDamage = Energy.UseEnergy(damage);  //사용 가능한 에너지를 반환받는다.
                 m_HP -= getDamage;
             }
             m_Text.text = m_HP.ToString();

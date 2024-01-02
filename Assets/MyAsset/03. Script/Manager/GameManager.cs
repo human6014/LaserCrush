@@ -27,8 +27,6 @@ namespace LaserCrush.Manager
         [SerializeField] private ClickableObject m_GameStartButton;
 
         private GameStateType m_GameStateType = GameStateType.BlockUpdating;
-
-        private Energy m_Energy;
         #endregion
         
         private void Awake()
@@ -62,28 +60,19 @@ namespace LaserCrush.Manager
         }
 
         private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);
-        
 
-        public static void DeployingComplete()
-        {
-            /*ToDo
-             * m_ItemManager.AddPrism()함수를 사용해 프리즘을 인스턴시에이트 후 배열에 추가
-             */
-        }
-
-        public void OnDeploying()
+        private void OnDeploying()
         {
             //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
             Debug.Log("배치 턴");
             m_GameStateType = GameStateType.LaserActivating;
-
         }
 
         /// <summary>
         /// 로그에 찍힌 순서대로 진행된다 한 업데이트에 일어날 수 도 있고 Time함수 같은 걸 써서
         /// 딜레이를 줘도 되고
         /// </summary>
-        public void BlockUpdating()
+        private void BlockUpdating()
         {
             Debug.Log("필드 위 아이템 획득");
             /*ToDo
@@ -105,9 +94,9 @@ namespace LaserCrush.Manager
             m_GameStateType = GameStateType.Deploying;
         }
 
-        public void LaserActivating()
+        private void LaserActivating()
         {
-            if (m_Energy.IsAvailable())
+            if (Energy.IsAvailable())
             {
                 m_LaserManager.Activate();
             }

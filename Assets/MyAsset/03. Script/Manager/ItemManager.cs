@@ -43,7 +43,7 @@ namespace LaserCrush.Manager
             RemoveBufferFlush();
         }
 
-        public static void AddPrism(Prism prism)
+        public void AddPrism(Prism prism)
         {
 
         }

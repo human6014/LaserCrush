@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: GameStartCanvas
+    uniqueID: 1748923983
+    locked: 0
   - name: MainCanvas
     uniqueID: 3302680341
     locked: 0
