@@ -115,10 +115,11 @@ namespace LaserCrush.Manager
             Debug.Log("블럭 생성");
             //todo//
             m_BlockManager.GenerateBlock(4); // -> 인스턴스화가 안되서 안되는듯
-            m_GameStateType = GameStateType.Deploying;
 
             Debug.Log("에너지 보충");
             Energy.ChargeEnergy();
+
+            m_GameStateType = GameStateType.Deploying;
         }
 
         public void LaserActivating()

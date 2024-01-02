@@ -163,10 +163,11 @@ namespace LaserCrush.Entity
             if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
                 if(!m_Target.GetDamage(m_LaserData.Damage))
-                { 
+                {
+                    //LossParent(m_Target) -> 이 함수 호출해서 자식 레이저 지우기 시작
                     m_Target = null;
                     m_State = LaserStateType.Move;
-                    Debug.Log("블럭파괴 상태 변환");
+                    //Debug.Log("블럭파괴 상태 변환");
                 }
             }
         }
