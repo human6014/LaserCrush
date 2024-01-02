@@ -10,7 +10,6 @@ namespace LaserCrush.Entity
     {
         Move,
         Hitting,
-        None
     }
 
     /// <summary>
@@ -41,7 +40,6 @@ namespace LaserCrush.Entity
 
         private bool m_IsInitated;
 
-        private Energy m_Energy;
         #endregion
 
         private void Awake()
@@ -76,7 +74,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public void ManagedUpdate()
         {
-            Debug.Log(m_State);
+            //Debug.Log(m_State);
             if (!m_IsInitated) { return; }
             switch (m_State) 
             {
@@ -85,9 +83,6 @@ namespace LaserCrush.Entity
                     break;
                 case LaserStateType.Hitting:
                     Hiting();
-                    break;
-                case LaserStateType.None:
-                    Tem();
                     break;
                 default:
                     Debug.Log("잘못된 레이저 상태입니다.");
@@ -144,7 +139,6 @@ namespace LaserCrush.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
                 m_State = LaserStateType.Hitting;
-
                 AddChild(m_LaserCreateFunc?.Invoke(dir, hit.point));
                 return;
             }
@@ -160,7 +154,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public void Hiting()
         {
-            Debug.Log("Hitting()");
+            //Debug.Log("Hitting()");
             if (!m_Target.IsGetDamageable())
             {
                 return;
@@ -168,8 +162,12 @@ namespace LaserCrush.Entity
 
             if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
-                m_State = LaserStateType.Move;
-                m_Target.GetDamage(m_LaserData.Damage);
+                if(!m_Target.GetDamage(m_LaserData.Damage))
+                { 
+                    m_Target = null;
+                    m_State = LaserStateType.Move;
+                    Debug.Log("블럭파괴 상태 변환");
+                }
             }
         }
 
@@ -181,11 +179,6 @@ namespace LaserCrush.Entity
             }
         }
 
-        public void Tem()
-        {
-            Debug.Log("Tem()");
-            return;
-        }
 
         public void CollideLauncher(RaycastHit2D hit)
         {

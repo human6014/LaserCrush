@@ -34,7 +34,6 @@ namespace LaserCrush
             m_HP = hp;
             m_EntityType = entityType;
             m_Item = droppedItem;
-
             m_Text.text = m_HP.ToString();
         }
          
@@ -46,19 +45,21 @@ namespace LaserCrush
             //가지고 있는 아이템을 필드에 생성 -> 턴 종료 후 획등 방식
         }
 
-        public void GetDamage(int damage)
+        public bool GetDamage(int damage)
         {
-            Debug.Log("GetDamage");
+            //Debug.Log("GetDamage");
 
             //체력 구분으로 부서진 경우는 바로 return 하도록 변경
             //임시 방편으로 버그 안뜨게 막아놓은 상태임
 
-            if (m_HP < damage) // 남은 피가 데미지보다 작을 경우
+            if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
             {
                 int getDamage = Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
                 if (m_HP - getDamage == 0)
                 {
                     Destroy();
+                    Debug.Log("블럭 파괴및 레이저 상태 변화");
+                    return false;
                 }
                 else
                 {
@@ -71,12 +72,14 @@ namespace LaserCrush
                 m_HP -= getDamage;
             }
             m_Text.text = m_HP.ToString();
+            return true;
         }
 
         public bool IsGetDamageable()
         {
             return true;
         }
+        //수정
         public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
             Debug.Log("Block Hitted");

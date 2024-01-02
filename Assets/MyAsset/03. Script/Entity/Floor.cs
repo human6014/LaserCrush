@@ -30,8 +30,8 @@ public class Floor : MonoBehaviour, ICollisionable
         return false;
     }
 
-    public void GetDamage(int  damage)
+    public bool GetDamage(int  damage)
     {
-        return;
+        return false;
     }
 }

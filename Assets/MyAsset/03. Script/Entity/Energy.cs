@@ -10,7 +10,7 @@ public class Energy : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_Text;
 
     private static event UnityAction m_TextUpdate;
-
+    
     private static int m_Energy = 10000;
     private static Vector2 m_Postion;
     #endregion
@@ -22,20 +22,11 @@ public class Energy : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹«Á¶°Ç ¿¡³ÊÁö´Â 1¸¸ »ç¿ëÇÑ´Ù.
-    /// ¿¡³ÊÁö¸¦ ¼Ò¸ğÇÒ ¼ö ÀÖÀ» °æ¿ì Âü ¹İÈ¯
+    /// ë¬´ì¡°ê±´ ì—ë„ˆì§€ëŠ” 1ë§Œ ì‚¬ìš©í•œë‹¤.
+    /// ì—ë„ˆì§€ë¥¼ ì†Œëª¨í•  ìˆ˜ ìˆì„ ê²½ìš° ì°¸ ë°˜í™˜
     /// </summary>
     /// <param name="energy"></param>
     /// <returns></returns>
-    public bool UseEnergy()
-    {
-        if(m_Energy <= 0)
-        {
-            return false;
-        }
-        m_Energy -= 1;
-        return true;
-    }
 
     public static int GetEnergy()
     {
@@ -48,11 +39,11 @@ public class Energy : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹İÈ¯ÇüÀº ÃÑ »ç¿ëÇÑ ¿¡³ÊÁöÀÇ ¾çÀÌ´Ù.
-    /// Àû°Ô³²
+    /// ë°˜í™˜í˜•ì€ ì´ ì‚¬ìš©í•œ ì—ë„ˆì§€ì˜ ì–‘ì´ë‹¤.
+    /// ì ê²Œë‚¨
     /// </summary>
     /// <param name="energy">
-    /// »ç¿ëÇÒ ¿¡³ÊÁö
+    /// ì‚¬ìš©í•  ì—ë„ˆì§€
     /// </param>
     /// <returns></returns>
     public static int UseEnergy(int energy)
@@ -81,11 +72,17 @@ public class Energy : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀÏ´Ü ºÎµúÈú‹š ¸¶´Ù 30ÆÛ »èÁ¦
+    /// ì¼ë‹¨ ë¶€ë”ªíÂ‹Âš ë§ˆë‹¤ 30í¼ ì‚­ì œ
     /// </summary>
     public static void CollidWithWall()
     {
         m_Energy -= (m_Energy / 3);
+        m_TextUpdate?.Invoke();
+    }
+
+    public static void ChargeEnergy()
+    {
+        m_Energy = m_MaxEengy;
         m_TextUpdate?.Invoke();
     }
 }
