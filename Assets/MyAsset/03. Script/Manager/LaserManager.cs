@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
+using System;
+
 
 namespace LaserCrush.Manager
 {
     /// <summary>
     /// 레이저 메이저는 레이저를 하나하나 스스로 관리하지 않고 활성화 비활성화(사라지는 단계)만 결정해서 넘겨준다.
     /// </summary>
+    [Serializable]
     public class LaserManager : MonoBehaviour
     {
         #region Property
@@ -23,15 +26,27 @@ namespace LaserCrush.Manager
         private List<Laser> m_LaserRemoveBuffer = new List<Laser>();
 
         //지우기 시작할 레이저보관 자료구조
+
         private List<Laser> m_RootLazer = new List<Laser>();
+
         private static bool m_Initialized = false;
 
         private Energy m_Energy;
         #endregion
 
-        private void Awake()
+        private event Func<GameObject, GameObject> m_InstantiateFunc;
+
+
+        public void Init(Func<GameObject, GameObject> instantiateFunc)
         {
             m_LaserStaticObject = m_LaserObject;
+
+            m_Lasers = new List<Entity.Laser>();
+            m_LaserAddBuffer = new List<Entity.Laser>();
+            m_LaserRemoveBuffer = new List<Entity.Laser>();
+            m_RootLazer = new List<Entity.Laser>();
+
+            m_InstantiateFunc = instantiateFunc;
         }
 
         public void Activate()
