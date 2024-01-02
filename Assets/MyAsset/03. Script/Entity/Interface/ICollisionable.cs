@@ -4,27 +4,13 @@ using UnityEngine;
 
 namespace LaserCrush.Entity
 {
-    //enum 필요없음 이거
-    public enum EntityType
+    interface ICollisionable
     {
-        //Attable//
-        NormalBlock,
-        ReflectBlock,
+        public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector);
 
-        ///////
-        Prisim,
-        Floor,
-        Wall,
-        Launcher
-    }
-    public abstract class ICollisionable : MonoBehaviour
-    {
-        protected EntityType m_Type;
-        public abstract void GetDamage(int damage);
+        public bool IsGetDamageable();
 
-        public abstract bool IsAttackable();
-
-        public abstract List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector);
+        public void GetDamage(int damage); 
 
     }
 }

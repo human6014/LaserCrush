@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LaserCrush.Entity;
 using System;
+
 
 namespace LaserCrush.Manager
 {
@@ -12,22 +14,28 @@ namespace LaserCrush.Manager
     public class LaserManager : MonoBehaviour
     {
         #region Property
-        [SerializeField] private Entity.Laser m_InitLazer;
+        [SerializeField] private Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
         [SerializeField] private GameObject m_LaserObject;
 
         private static GameObject m_LaserStaticObject;
         //lazer저장하는 자료구조
-        private static List<Entity.Laser> m_Lasers = new List<Entity.Laser>();
-        private static List<Entity.Laser> m_LaserAddBuffer = new List<Entity.Laser>();
-        private static List<Entity.Laser> m_LaserRemoveBuffer = new List<Entity.Laser>();
+        private List<Laser> m_Lasers = new List<Laser>();
+        private List<Laser> m_LaserAddBuffer = new List<Laser>();
+        private List<Laser> m_LaserRemoveBuffer = new List<Laser>();
+
         //지우기 시작할 레이저보관 자료구조
-        private List<Entity.Laser> m_RootLazer;
+
+        private List<Laser> m_RootLazer = new List<Laser>();
+
         private static bool m_Initialized = false;
+
+        private Energy m_Energy;
         #endregion
 
         private event Func<GameObject, GameObject> m_InstantiateFunc;
+
 
         public void Init(Func<GameObject, GameObject> instantiateFunc)
         {
@@ -67,7 +75,7 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if(Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
+                    if(m_Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
                     {
                         Debug.Log("레이저 업데이트" + i);
                         m_Lasers[i].ManagedUpdate();
@@ -137,7 +145,7 @@ namespace LaserCrush.Manager
 
         }
 
-        public static List<Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
+        public List<Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
         {
             List<Entity.Laser> answer = new List<Entity.Laser>();
 
