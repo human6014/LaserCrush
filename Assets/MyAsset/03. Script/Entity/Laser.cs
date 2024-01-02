@@ -51,15 +51,20 @@ namespace LaserCrush.Entity
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
 
-        public void Init(Vector2 position, Vector2 dir, Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc)
+        public void Init(Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc)
+        {
+            m_LaserCreateFunc = laserCreateFunc;
+        }
+
+        public void Activate(Vector2 position, Vector2 dir)
         {
             m_StartPoint = position;
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsInitated = true;
-            m_ChildLazers.Clear();
+            m_State = LaserStateType.Move;
 
-            m_LaserCreateFunc = laserCreateFunc;
+            m_ChildLazers.Clear();
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
             m_LineRenderer.SetPosition(1, position);
@@ -76,6 +81,7 @@ namespace LaserCrush.Entity
         {
             //Debug.Log(m_State);
             if (!m_IsInitated) { return; }
+            Debug.Log("ManagedUpdate");
             switch (m_State) 
             {
                 case LaserStateType.Move://에너지 소모x 이동만
@@ -183,6 +189,11 @@ namespace LaserCrush.Entity
         public void CollideLauncher(RaycastHit2D hit)
         {
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
+        }
+
+        private void OnDestroy()
+        {
+            m_LaserCreateFunc = null;
         }
     }
 }

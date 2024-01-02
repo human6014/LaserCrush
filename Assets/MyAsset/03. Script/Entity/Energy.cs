@@ -10,7 +10,8 @@ public class Energy : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_Text;
 
     private static event UnityAction m_TextUpdate;
-    
+
+    private static int m_MaxEnergy = 10000;
     private static int m_Energy = 10000;
     private static Vector2 m_Postion;
     #endregion
@@ -74,7 +75,7 @@ public class Energy : MonoBehaviour
     /// <summary>
     /// 일단 부딪힐 마다 30퍼 삭제
     /// </summary>
-    public static void CollidWithWall()
+    public static void CollideWithWall()
     {
         m_Energy -= (m_Energy / 3);
         m_TextUpdate?.Invoke();
@@ -82,7 +83,7 @@ public class Energy : MonoBehaviour
 
     public static void ChargeEnergy()
     {
-        m_Energy = m_MaxEengy;
+        m_Energy = m_MaxEnergy;
         m_TextUpdate?.Invoke();
     }
 }

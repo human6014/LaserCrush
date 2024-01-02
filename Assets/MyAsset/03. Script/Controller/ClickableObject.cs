@@ -16,6 +16,7 @@ namespace LaserCrush
 
         public void OnMouseDown()
         {
+            Debug.Log("Mouse Down");
             m_MouseDownAction?.Invoke();
         }
     }
