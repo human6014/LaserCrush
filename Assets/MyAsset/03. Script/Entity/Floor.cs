@@ -7,7 +7,6 @@ public class Floor : MonoBehaviour, ICollisionable
 {
     #region Property
     private EEntityType m_EntityType;
-    private Energy m_Energy;
     #endregion
     public void Awake()
     {
@@ -20,8 +19,6 @@ public class Floor : MonoBehaviour, ICollisionable
     {
         Debug.Log("바닥과 충돌 에너지 감소");
         Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
-        Debug.Log(Energy.GetEnergy());
-
         return new List<Vector2>();
     }
 

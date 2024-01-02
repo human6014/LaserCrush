@@ -61,8 +61,6 @@ namespace LaserCrush.Manager
              */
             if (!m_Initialized)//턴 첫 시작
             {
-
-                Debug.Log("턴 시작");
                 m_InitLazer.Activate(m_SubLineController.Position, m_SubLineController.Direction);
 
                 m_RootLazer.Add(m_InitLazer);
@@ -72,7 +70,6 @@ namespace LaserCrush.Manager
             }
             else
             {
-                Debug.Log("Activate 도는중 " + m_Lasers.Count);
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
                     if (Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
@@ -96,7 +93,6 @@ namespace LaserCrush.Manager
         {
             if (m_Lasers.Count == 0)
             {
-                Debug.Log("DeActivate Comp");
                 foreach (Transform tr in m_LasersTransform)
                 {
                     m_DestroyAction?.Invoke(tr.gameObject);
@@ -163,11 +159,9 @@ namespace LaserCrush.Manager
 
         private void ActivateBufferFlush()
         {
-            //Debug.Log("레이저 추가");
             for (int i = 0; i < m_LaserAddBuffer.Count; i++)
             {
                 m_Lasers.Add(m_LaserAddBuffer[i]);
-                Debug.Log("레이저 추가");
             }
             m_LaserAddBuffer.Clear();
         }

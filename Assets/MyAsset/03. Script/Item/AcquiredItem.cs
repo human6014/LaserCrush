@@ -47,5 +47,17 @@ namespace LaserCrush.Entity
 
         public void OnDrag(PointerEventData eventData)
             => m_DragAction?.Invoke(eventData.delta);
+
+
+
+        /// <summary>
+        /// 이름은 바뀌어도 되지만 델리게이트를 사용해서 ItemManager에 프리즘 배열에 추가해야함
+        /// </summary>
+        public void InstalledPrism()
+        {
+            /* Todo
+             * AddPrism() -> 델리게이트로 추가
+             */
+        }
     }
 }

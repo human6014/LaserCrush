@@ -14,9 +14,9 @@ namespace LaserCrush.Entity
     public class Item : MonoBehaviour
     {
         #region Property
-        private EItemState m_State;
-        private EItemType m_Type;
-        private Vector2 m_Posion { get; }
+        protected EItemState m_State;
+        protected EItemType m_Type;
+        protected Vector2 m_Posion { get; }
         #endregion
 
     }
