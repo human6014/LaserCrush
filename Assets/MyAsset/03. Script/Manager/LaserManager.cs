@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
@@ -26,8 +25,12 @@ namespace LaserCrush.Manager
         private List<Laser> m_LaserRemoveBuffer = new List<Laser>();
 
         //지우기 시작할 레이저보관 자료구조
-
         private List<Laser> m_RootLazer = new List<Laser>();
+
+        //중간에 부모를 잃은 레이저 지우는 자료구조
+        private List<Laser> m_LossParentsLaser = new List<Laser>();
+        private List<Laser> m_LossParentsLaserAddBuffer = new List<Laser>();
+        private List<Laser> m_LossParentsLaserRemoveBuffer = new List<Laser>();
 
         private bool m_Initialized = false;
         #endregion
@@ -37,6 +40,7 @@ namespace LaserCrush.Manager
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, Action<GameObject> destroyAction)
         {
+
             m_Lasers = new List<Laser>();
             m_LaserAddBuffer = new List<Laser>();
             m_LaserRemoveBuffer = new List<Laser>();
@@ -55,8 +59,9 @@ namespace LaserCrush.Manager
              * 2. 시작 레이저 셋팅 후 루트배열과 레이저 배열에 추가
              * 3. 초기화변수 셋팅
              */
-            if (!m_Initialized)//턴 시작
+            if (!m_Initialized)//턴 첫 시작
             {
+
                 Debug.Log("턴 시작");
                 m_InitLazer.Activate(m_SubLineController.Position, m_SubLineController.Direction);
 
@@ -65,21 +70,21 @@ namespace LaserCrush.Manager
 
                 m_Initialized = true;
             }
-            /*
-             * 1. 레이저 순회하며 모든 레이저 진행 
-             */
             else
             {
                 Debug.Log("Activate 도는중 " + m_Lasers.Count);
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if(Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
+                    if (Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
                     {
-                        //Debug.Log("레이저 업데이트" + i);
                         m_Lasers[i].ManagedUpdate();
                     }
                 }
                 ActivateBufferFlush();
+
+
+                //중간에 부모를 잃은 레이저 처리하는 함수
+                RemoveLossParentsLaser();
             }
         }
 
@@ -111,20 +116,55 @@ namespace LaserCrush.Manager
                 if (m_RootLazer[i].Erase())
                 {
                     m_LaserRemoveBuffer.Add(m_RootLazer[i]);
-                    foreach(var child in m_RootLazer[i].GetChildLazer())
+                    foreach (var child in m_RootLazer[i].GetChildLazer())
                     {
                         m_LaserAddBuffer.Add(child);
                     }
                 }
             }
             DeActivateBufferFlush();
+
+            //중간에 부모를 잃은 레이저 처리하는 함수
+            RemoveLossParentsLaser();
             return false;
+        }
+
+        public void RemoveLossParentsLaser()
+        {
+            if (m_LossParentsLaser.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < m_LossParentsLaser.Count; i++)
+            {
+                if (m_LossParentsLaser[i].Erase())
+                {
+                    m_LossParentsLaserRemoveBuffer.Add(m_LossParentsLaser[i]);
+                    foreach (var child in m_LossParentsLaser[i].GetChildLazer())
+                    {
+                        m_LossParentsLaserAddBuffer.Add(child);
+                    }
+                }
+            }
+            LossParentsLaserBufferFlush();
+        }
+
+        /// <summary>
+        /// CreateLaser처럼 함수 포인터를 넘겨줘서 작동시켜야 할 듯
+        /// </summary>
+        public void LossParent(List<Laser> lasers)
+        {
+            for(int i = 0;i <lasers.Count;i++) 
+            {
+                m_LossParentsLaser.Add(lasers[i]);
+            }
         }
 
         private void ActivateBufferFlush()
         {
             //Debug.Log("레이저 추가");
-            for (int i = 0; i < m_LaserAddBuffer.Count; i++) 
+            for (int i = 0; i < m_LaserAddBuffer.Count; i++)
             {
                 m_Lasers.Add(m_LaserAddBuffer[i]);
                 Debug.Log("레이저 추가");
@@ -147,12 +187,29 @@ namespace LaserCrush.Manager
             m_LaserRemoveBuffer.Clear();
         }
 
+        private void LossParentsLaserBufferFlush()
+        {
+            for (int i = 0; i < m_LossParentsLaserRemoveBuffer.Count; i++)
+            {
+                m_LossParentsLaser.Remove(m_LossParentsLaserRemoveBuffer[i]);
+                m_Lasers.Remove(m_LossParentsLaserRemoveBuffer[i]);
+            }
+            for (int i = 0; i < m_LossParentsLaserAddBuffer.Count; i++)
+            {
+                m_LossParentsLaser.Add(m_LossParentsLaserAddBuffer[i]);
+            }
+            m_LossParentsLaserAddBuffer.Clear();
+            m_LossParentsLaserRemoveBuffer.Clear();
+
+        }
+
         public List<Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
         {
             List<Laser> answer = new List<Laser>();
 
             for (int i = 0; i < dirVector.Count; i++)
             {
+
                 Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.SetParent(m_LasersTransform);
                 laser.transform.position = pos;
@@ -163,5 +220,7 @@ namespace LaserCrush.Manager
             }
             return answer;
         }
+
+        
     }
 }
