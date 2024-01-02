@@ -81,9 +81,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public void ManagedUpdate()
         {
-            //Debug.Log(m_State);
             if (!m_IsInitated) { return; }
-            Debug.Log("ManagedUpdate");
             switch (m_State) 
             {
                 case LaserStateType.Move://에너지 소모x 이동만
@@ -120,8 +118,6 @@ namespace LaserCrush.Entity
         {
             if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_LaserData.EraseVelocity)
             {
-                //삭제
-                Debug.Log("레이저 제거");
                 m_StartPoint = m_EndPoint;
                 return true;
             }
@@ -162,7 +158,6 @@ namespace LaserCrush.Entity
         /// </summary>
         public void Hiting()
         {
-            //Debug.Log("Hitting()");
             if (!m_Target.IsGetDamageable())
             {
                 return;
@@ -173,10 +168,8 @@ namespace LaserCrush.Entity
                 if(!m_Target.GetDamage(m_LaserData.Damage))
                 {
                     m_LaserEraseAction?.Invoke(m_ChildLazers);
-                    //LossParent(m_Target) -> 이 함수 호출해서 자식 레이저 지우기 시작
                     m_Target = null;
                     m_State = LaserStateType.Move;
-                    //Debug.Log("블럭파괴 상태 변환");
                 }
             }
         }

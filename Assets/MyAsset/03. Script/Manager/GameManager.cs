@@ -49,7 +49,7 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
-            Debug.Log("m_GameStateType : " + m_GameStateType);
+            //Debug.Log("m_GameStateType : " + m_GameStateType);
             switch (m_GameStateType) 
             {
                 case GameStateType.Deploying:
@@ -103,17 +103,18 @@ namespace LaserCrush.Manager
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
              *   -> Time함수 등을 사용
              */
-            //m_ItemManager.GetDroppedItems();
+            m_ItemManager.GetDroppedItems();
 
             Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
             /* ToDo
-             *  
              */
-            //m_ItemManager.CheckDestroyPrisms();
+            m_ItemManager.CheckDestroyPrisms();
 
             Debug.Log("블럭 생성");
             //todo//
+            m_BlockManager.MoveDownAllBlocks();// 한줄 내려오고
             m_BlockManager.GenerateBlock(4); // -> 인스턴스화가 안되서 안되는듯
+
 
             Debug.Log("에너지 보충");
             Energy.ChargeEnergy();
@@ -123,19 +124,15 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
-            Debug.Log("LaserActivating()");
             if (Energy.IsAvailable())
             {
                 m_LaserManager.Activate();
             }
             else
             {
-                //Debug.Log("레이저 삭제...");
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
-                    Debug.Log("레이저 제거 완료");
                     m_GameStateType = GameStateType.BlockUpdating;
-
                 }
             }
         }
