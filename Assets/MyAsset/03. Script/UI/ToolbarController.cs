@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using LaserCrush.Entity;
 
 namespace LaserCrush.UI
 {
@@ -9,15 +10,15 @@ namespace LaserCrush.UI
     {
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private RectTransform m_ContentTransform;
-        [SerializeField] private List<Item> m_Items;
+        [SerializeField] private List<AcquiredItem> m_Items;
 
-        private Item m_CurrentItem;
+        private AcquiredItem m_CurrentItem;
         private RectTransform m_CurrentItemTransform;
         private Vector2 m_InitPos;
 
         private void Awake()
         {
-            foreach (Item item in m_Items)
+            foreach (AcquiredItem item in m_Items)
             {
                 item.PointerDownAction += OnPointerDown;
                 item.PointerUpAction += OnPointerUp;
@@ -25,7 +26,7 @@ namespace LaserCrush.UI
             }
         }
 
-        private void OnPointerDown(Item clickedItem)
+        private void OnPointerDown(AcquiredItem clickedItem)
         {
             m_CurrentItem = clickedItem;
             m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();

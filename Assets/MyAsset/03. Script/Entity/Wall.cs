@@ -15,7 +15,6 @@ namespace LaserCrush.Entity
             Debug.Log("벽 초기화");
         }
 
-
         public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
             Debug.Log("벽과 충돌 후 자식생성");

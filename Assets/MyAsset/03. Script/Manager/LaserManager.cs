@@ -11,15 +11,13 @@ namespace LaserCrush.Manager
     /// 레이저 메이저는 레이저를 하나하나 스스로 관리하지 않고 활성화 비활성화(사라지는 단계)만 결정해서 넘겨준다.
     /// </summary>
     [Serializable]
-    public class LaserManager : MonoBehaviour
+    public class LaserManager
     {
         #region Property
         [SerializeField] private Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
         [SerializeField] private GameObject m_LaserObject;
-
-        private static GameObject m_LaserStaticObject;
         //lazer저장하는 자료구조
         private List<Laser> m_Lasers = new List<Laser>();
         private List<Laser> m_LaserAddBuffer = new List<Laser>();
@@ -29,22 +27,17 @@ namespace LaserCrush.Manager
 
         private List<Laser> m_RootLazer = new List<Laser>();
 
-        private static bool m_Initialized = false;
-
-        private Energy m_Energy;
+        private bool m_Initialized = false;
         #endregion
 
         private event Func<GameObject, GameObject> m_InstantiateFunc;
 
-
         public void Init(Func<GameObject, GameObject> instantiateFunc)
         {
-            m_LaserStaticObject = m_LaserObject;
-
-            m_Lasers = new List<Entity.Laser>();
-            m_LaserAddBuffer = new List<Entity.Laser>();
-            m_LaserRemoveBuffer = new List<Entity.Laser>();
-            m_RootLazer = new List<Entity.Laser>();
+            m_Lasers = new List<Laser>();
+            m_LaserAddBuffer = new List<Laser>();
+            m_LaserRemoveBuffer = new List<Laser>();
+            m_RootLazer = new List<Laser>();
 
             m_InstantiateFunc = instantiateFunc;
         }
@@ -141,16 +134,15 @@ namespace LaserCrush.Manager
             }
             m_LaserAddBuffer.Clear();
             m_LaserRemoveBuffer.Clear();
-
         }
 
-        public List<Entity.Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
+        public List<Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
         {
-            List<Entity.Laser> answer = new List<Entity.Laser>();
+            List<Laser> answer = new List<Laser>();
 
             for (int i = 0; i < dirVector.Count; i++)
             {
-                Entity.Laser laser = Instantiate(m_LaserStaticObject).GetComponent<Entity.Laser>();
+                Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.position = pos;
                 laser.Init(pos + dirVector[i], dirVector[i], CreateLaser);
                 m_LaserAddBuffer.Add(laser);

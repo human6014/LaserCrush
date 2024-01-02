@@ -9,6 +9,9 @@ namespace LaserCrush.Entity
         #region Property
         private EItemState m_EItemType;
         private EItemState m_EState;
+
+        private AcquiredItem m_AcquiredItem;
         #endregion
+
     }
 }
