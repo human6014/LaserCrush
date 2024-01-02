@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LaserCrush.Entity;
+using LaserCrush.Manager;
 
 namespace LaserCrush.UI
 {
@@ -12,11 +13,22 @@ namespace LaserCrush.UI
         [SerializeField] private RectTransform m_ContentTransform;
         [SerializeField] private List<AcquiredItem> m_Items;
 
+        private ItemManager m_ItemManager;
         private AcquiredItem m_CurrentItem;
         private RectTransform m_CurrentItemTransform;
         private Vector2 m_InitPos;
 
         private void Awake()
+        {
+            AcquireItem();
+        }
+
+        public void Init(ItemManager itemManager)
+        {
+            m_ItemManager = itemManager;
+        }
+
+        private void AcquireItem()
         {
             foreach (AcquiredItem item in m_Items)
             {
@@ -48,6 +60,9 @@ namespace LaserCrush.UI
                 GameObject obj = Instantiate(m_CurrentItem.ItemObject);
                 obj.transform.SetParent(m_BatchedItemTransform);
                 obj.transform.position = ray.origin;
+
+                if (!obj.TryGetComponent(out Prism prism)) Debug.LogError("Prism is null");
+                m_ItemManager.AddPrism(prism);
 
                 Destroy(m_CurrentItem.gameObject);
             }
