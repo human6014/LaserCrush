@@ -10,15 +10,15 @@ namespace LaserCrush.Manager
     /// 레이저 메이저는 레이저를 하나하나 스스로 관리하지 않고 활성화 비활성화(사라지는 단계)만 결정해서 넘겨준다.
     /// </summary>
     [Serializable]
-    public class LaserManager : MonoBehaviour
+    public class LaserManager
     {
         #region Property
         [SerializeField] private Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
         [SerializeField] private GameObject m_LaserObject;
+        [SerializeField] private Transform m_LasersTransform;
 
-        private static GameObject m_LaserStaticObject;
         //lazer저장하는 자료구조
         private List<Laser> m_Lasers = new List<Laser>();
         private List<Laser> m_LaserAddBuffer = new List<Laser>();
@@ -32,15 +32,14 @@ namespace LaserCrush.Manager
         private List<Laser> m_LossParentsLaserAddBuffer = new List<Laser>();
         private List<Laser> m_LossParentsLaserRemoveBuffer = new List<Laser>();
 
-
         private bool m_Initialized = false;
-
-        private event Func<GameObject, GameObject> m_InstantiateFunc;
         #endregion
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc)
+        private event Func<GameObject, GameObject> m_InstantiateFunc;
+        private event Action<GameObject> m_DestroyAction;
+
+        public void Init(Func<GameObject, GameObject> instantiateFunc, Action<GameObject> destroyAction)
         {
-            m_LaserStaticObject = m_LaserObject;
 
             m_Lasers = new List<Laser>();
             m_LaserAddBuffer = new List<Laser>();
@@ -48,6 +47,8 @@ namespace LaserCrush.Manager
             m_RootLazer = new List<Laser>();
 
             m_InstantiateFunc = instantiateFunc;
+            m_DestroyAction = destroyAction;
+            m_InitLazer.Init(CreateLaser);
         }
 
         public void Activate()
@@ -60,15 +61,18 @@ namespace LaserCrush.Manager
              */
             if (!m_Initialized)//턴 첫 시작
             {
-                Debug.Log("레이저 첫 발사");
-                m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction, CreateLaser);
+
+                Debug.Log("턴 시작");
+                m_InitLazer.Activate(m_SubLineController.Position, m_SubLineController.Direction);
 
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
+
                 m_Initialized = true;
             }
             else
             {
+                Debug.Log("Activate 도는중 " + m_Lasers.Count);
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
                     if (Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
@@ -93,6 +97,10 @@ namespace LaserCrush.Manager
             if (m_Lasers.Count == 0)
             {
                 Debug.Log("DeActivate Comp");
+                foreach (Transform tr in m_LasersTransform)
+                {
+                    m_DestroyAction?.Invoke(tr.gameObject);
+                }
                 m_Initialized = false;
                 return true;
             }
@@ -192,6 +200,7 @@ namespace LaserCrush.Manager
             }
             m_LossParentsLaserAddBuffer.Clear();
             m_LossParentsLaserRemoveBuffer.Clear();
+
         }
 
         public List<Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
@@ -200,9 +209,12 @@ namespace LaserCrush.Manager
 
             for (int i = 0; i < dirVector.Count; i++)
             {
-                Laser laser = Instantiate(m_LaserStaticObject).GetComponent<Laser>();
+
+                Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
+                laser.transform.SetParent(m_LasersTransform);
                 laser.transform.position = pos;
-                laser.Init(pos + dirVector[i], dirVector[i], CreateLaser);
+                laser.Init(CreateLaser);
+                laser.Activate(pos + dirVector[i], dirVector[i]);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }

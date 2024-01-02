@@ -9,14 +9,18 @@ namespace LaserCrush
     {
         #region Property
         [SerializeField] private TextMeshProUGUI m_Text;
-
+        [SerializeField] private EEntityType m_Type;
         private Item m_Item = null;
 
         private EEntityType m_EntityType;
         private int m_HP = 1000;
         private bool m_IsDestroyed;
-        private Energy m_Energy;
         #endregion
+
+        private void Awake()
+        {
+            Init(1000, m_Type, null);
+        }
 
         /// <summary>
         /// 화면에 띄우기 전 반드시 초기화함수 호출할 것
