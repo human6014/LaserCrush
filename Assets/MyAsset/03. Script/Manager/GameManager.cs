@@ -33,9 +33,10 @@ namespace LaserCrush.Manager
         {
             m_GameSettingManager.Init();
             m_AudioManager.Init();
-            m_LaserManager.Init(InstantiateObject);
+            m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_BlockManager.Init(InstantiateObject);
             m_ItemManager.Init();
+
             m_GameStartButton.MouseDownAction += OnDeploying; 
         }
 
@@ -48,7 +49,7 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
-            //Debug.Log("m_GameStateType : " + m_GameStateType);
+            Debug.Log("m_GameStateType : " + m_GameStateType);
             switch (m_GameStateType) 
             {
                 case GameStateType.Deploying:
@@ -66,7 +67,9 @@ namespace LaserCrush.Manager
             }
         }
 
-        private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);       
+        private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);
+
+        private void DestroyObject(GameObject obj) => Destroy(obj);
 
         public static void DeployingComplete()
         {
@@ -119,6 +122,7 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
+            Debug.Log("LaserActivating()");
             if (Energy.IsAvailable())
             {
                 m_LaserManager.Activate();
@@ -130,6 +134,7 @@ namespace LaserCrush.Manager
                 {
                     Debug.Log("레이저 제거 완료");
                     m_GameStateType = GameStateType.BlockUpdating;
+
                 }
             }
         }
