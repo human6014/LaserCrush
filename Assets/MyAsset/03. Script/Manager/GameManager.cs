@@ -24,6 +24,8 @@ namespace LaserCrush.Manager
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
 
+        [SerializeField] private UIManager m_UIManager;
+
         [SerializeField] private ClickableObject m_GameStartButton;
 
         private GameStateType m_GameStateType = GameStateType.BlockUpdating;
@@ -34,8 +36,9 @@ namespace LaserCrush.Manager
             m_GameSettingManager.Init();
             m_AudioManager.Init();
             m_LaserManager.Init(InstantiateObject, DestroyObject);
-            m_BlockManager.Init(InstantiateObject);
             m_ItemManager.Init();
+            m_BlockManager.Init(InstantiateObject, m_ItemManager);
+            m_UIManager.Init(m_ItemManager);
 
             m_GameStartButton.MouseDownAction += OnDeploying; 
         }

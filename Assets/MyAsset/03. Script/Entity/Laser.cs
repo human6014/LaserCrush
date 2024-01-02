@@ -119,6 +119,7 @@ namespace LaserCrush.Entity
             if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_LaserData.EraseVelocity)
             {
                 m_StartPoint = m_EndPoint;
+                if(m_LineRenderer != null) m_LineRenderer.SetPosition(0, m_StartPoint);
                 return true;
             }
             m_StartPoint += m_DirectionVector * m_LaserData.EraseVelocity;
@@ -191,6 +192,7 @@ namespace LaserCrush.Entity
         private void OnDestroy()
         {
             m_LaserCreateFunc = null;
+            m_LaserEraseAction = null;
         }
     }
 }

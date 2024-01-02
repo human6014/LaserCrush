@@ -14,45 +14,48 @@ namespace LaserCrush.Manager
         [SerializeField] private Vector2 m_InitPos;
         [SerializeField] private Vector2 m_Offset;
 
+        private Vector3 m_MoveDownVector;
 
+        private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
-        public event Func<GameObject, GameObject> m_InstantiateFunc;
+        private event Func<GameObject, GameObject> m_InstantiateFunc;
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc)
+        public void Init(Func<GameObject, GameObject> instantiateFunc, ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
             m_InstantiateFunc = instantiateFunc;
+            m_ItemManager = itemManager;
+
+            m_MoveDownVector = new Vector3(0, m_Offset.y, 0);
         }
 
         public void GenerateBlock(int num)
         {
             GameObject obj;
             Block block;
-            for(int i = 0; i < num; i++)
+            for (int i = 0; i < num; i++)
             {
                 obj = m_InstantiateFunc?.Invoke(m_BlockObject);
                 obj.transform.SetParent(m_BlockTransform);
 
                 block = obj.GetComponent<Block>();
                 block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(1000, GenerateEntityType(), GenerateItemType());
+                block.Init(1000, GenerateEntityType(), GenerateItemType(), RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
 
-        public void DestroyBlock(Block block)
+        private void RemoveBlock(Block block)
         {
+            //m_ItemManager.AddDroppedItem(block.DroppedItem);
             m_Blocks.Remove(block);
         }
 
         public void MoveDownAllBlocks()
         {
-            /* TODO
-             * 모든 블럭 아래로 한칸 내려오게 만들기 순회하면됨
-             */
-            for(int i = 0; i < m_Blocks.Count; i++)
+            for (int i = 0; i < m_Blocks.Count; i++)
             {
-                m_Blocks[i].MoveDown();
+                m_Blocks[i].transform.position += m_MoveDownVector;
             }
         }
 
@@ -67,17 +70,17 @@ namespace LaserCrush.Manager
         private EItemType GenerateItemType()
         {
             //0~99사이 숫자 생성
-            int prob = UnityEngine.Random.Range(0,100);
+            int prob = UnityEngine.Random.Range(0, 100);
 
-            if(prob < 50)
+            if (prob < 50)
             {
                 return EItemType.None;
             }
-            else if(prob < 80)
+            else if (prob < 80)
             {
                 return EItemType.Energy;
             }
-            else if( prob < 90)
+            else if (prob < 90)
             {
                 return EItemType.Prism_1;
             }
@@ -93,7 +96,7 @@ namespace LaserCrush.Manager
         /// 반사 블럭 = 50
         /// </summary>
         /// <returns></returns>
-        private EEntityType GenerateEntityType() 
+        private EEntityType GenerateEntityType()
         {
             int prob = UnityEngine.Random.Range(0, 100);
 

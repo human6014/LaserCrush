@@ -73,11 +73,11 @@ public class Energy : MonoBehaviour
     }
 
     /// <summary>
-    /// 일단 부딪힐 마다 30퍼 삭제
+    /// 일단 부딪힐 마다 10퍼 삭제
     /// </summary>
     public static void CollideWithWall()
     {
-        m_Energy -= (m_Energy / 3);
+        m_Energy -= (m_Energy / 10);
         m_TextUpdate?.Invoke();
     }
 

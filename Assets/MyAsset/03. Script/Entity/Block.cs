@@ -1,6 +1,8 @@
 using LaserCrush.Entity;
 using System.Collections.Generic;
 using UnityEngine;
+using LaserCrush.Data;
+using System;
 using TMPro;
 
 namespace LaserCrush
@@ -8,18 +10,27 @@ namespace LaserCrush
     public class Block : MonoBehaviour, ICollisionable
     {
         #region Property
-        [SerializeField] private TextMeshProUGUI m_Text;
-        [SerializeField] private EEntityType m_Type;
-        private EItemType m_Item;
+        [SerializeField] private BlockData m_BlockData;
 
+        private DroppedItem m_DroppedItem;
+        private SpriteRenderer m_SpriteRenderer;
+        private TextMeshProUGUI m_Text;
+
+        private EItemType m_Item;
         private EEntityType m_EntityType;
+
         private int m_HP = 1000;
         private bool m_IsDestroyed;
+
+        private Action<Block> m_RemoveBlockAction;
         #endregion
+
+        public DroppedItem DroppedItem { get => m_DroppedItem; }
 
         private void Awake()
         {
-            Init(1000, m_Type, EItemType.None);
+            m_Text = GetComponentInChildren<TextMeshProUGUI>();
+            m_SpriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         /// <summary>
@@ -29,18 +40,24 @@ namespace LaserCrush
         /// 드랍 아이템이 없을 경우 널값을 대입
         /// <param name="entityType"></param>
         /// <param name="hp"></param>
-        public void Init(int hp, EEntityType entityType, EItemType ItemType)
+        public void Init(int hp, EEntityType entityType, EItemType itemType, Action<Block> removeBlockAction)
         {
             m_HP = hp;
             m_EntityType = entityType;
-            m_Item = ItemType;
+            m_Item = itemType;
+
             m_Text.text = m_HP.ToString();
+            m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ? 
+                m_BlockData.NormalBlockColor : 
+                m_BlockData.ReflectBlockColor;
+
+            m_RemoveBlockAction = removeBlockAction;
         }
 
         private void Destroy()
         {
-            if (m_IsDestroyed) return;
             m_IsDestroyed = true;
+            m_RemoveBlockAction?.Invoke(this);
             Destroy(gameObject);
 
             if (m_Item != EItemType.None)
@@ -54,7 +71,8 @@ namespace LaserCrush
 
         public bool GetDamage(int damage)
         {
-            //체력 구분으로 부서진 경우는 바로 return 하도록 변경
+            if (m_IsDestroyed) return false;
+
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
             {
                 int getDamage = Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
@@ -94,9 +112,9 @@ namespace LaserCrush
             return answer;
         }
 
-        public void MoveDown()
+        private void OnDestroy()
         {
-
+            m_RemoveBlockAction = null;
         }
     }
 }
