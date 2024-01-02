@@ -48,7 +48,7 @@ namespace LaserCrush.Manager
 
             m_InstantiateFunc = instantiateFunc;
             m_DestroyAction = destroyAction;
-            m_InitLazer.Init(CreateLaser);
+            m_InitLazer.Init(CreateLaser, LossParent);
         }
 
         public void Activate()
@@ -213,7 +213,7 @@ namespace LaserCrush.Manager
                 Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.SetParent(m_LasersTransform);
                 laser.transform.position = pos;
-                laser.Init(CreateLaser);
+                laser.Init(CreateLaser, LossParent);
                 laser.Activate(pos + dirVector[i], dirVector[i]);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);

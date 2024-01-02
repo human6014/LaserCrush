@@ -31,6 +31,7 @@ namespace LaserCrush.Entity
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
         private LineRenderer m_LineRenderer;
         private Func<List<Vector2>, Vector2, List<Laser>> m_LaserCreateFunc;
+        private Action<List<Laser>> m_LaserEraseAction;
 
         private LaserStateType m_State;
 
@@ -51,9 +52,10 @@ namespace LaserCrush.Entity
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
 
-        public void Init(Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc)
+        public void Init(Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
         {
             m_LaserCreateFunc = laserCreateFunc;
+            m_LaserEraseAction = laserEraseAction;
         }
 
         public void Activate(Vector2 position, Vector2 dir)
@@ -170,6 +172,7 @@ namespace LaserCrush.Entity
             {
                 if(!m_Target.GetDamage(m_LaserData.Damage))
                 {
+                    m_LaserEraseAction?.Invoke(m_ChildLazers);
                     //LossParent(m_Target) -> 이 함수 호출해서 자식 레이저 지우기 시작
                     m_Target = null;
                     m_State = LaserStateType.Move;
