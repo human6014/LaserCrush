@@ -27,7 +27,7 @@ namespace LaserCrush.Manager
         {
             for(int i = 0; i < m_Items.Count; i++)
             {
-                m_Items[i].GetItem();
+                //m_Items[i].GetItem();
             }
         }
 
