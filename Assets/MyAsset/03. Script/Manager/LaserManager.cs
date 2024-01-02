@@ -60,8 +60,6 @@ namespace LaserCrush.Manager
             if (!m_Initialized)//턴 시작
             {
                 Debug.Log("턴 시작");
-                m_RootLazer.Clear();
-
                 m_InitLazer.Init(m_SubLineController.Position, m_SubLineController.Direction, CreateLaser);
                 
                 m_RootLazer.Add(m_InitLazer);
@@ -75,9 +73,9 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if(m_Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
+                    if(Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
                     {
-                        Debug.Log("레이저 업데이트" + i);
+                        //Debug.Log("레이저 업데이트" + i);
                         m_Lasers[i].ManagedUpdate();
                     }
                 }
@@ -103,7 +101,7 @@ namespace LaserCrush.Manager
              * 3 끝점과 시작점이 만나면 레이저를 루트배열에서 삭제하고 자식레이저를 배열에 추가
              * 4 위 과정을 레이저 배열이 빌때까지 진행한다.
              */
-            Debug.Log("m_RootLazer : " + m_RootLazer.Count);
+            //Debug.Log("m_RootLazer : " + m_RootLazer.Count);
             for (int i = 0; i < m_RootLazer.Count; i++)
             {
                 if (m_RootLazer[i].Erase())
@@ -135,6 +133,7 @@ namespace LaserCrush.Manager
             for (int i = 0; i < m_LaserRemoveBuffer.Count; i++)
             {
                 m_RootLazer.Remove(m_LaserRemoveBuffer[i]);
+                m_Lasers.Remove(m_LaserRemoveBuffer[i]);
             }
             for (int i = 0; i < m_LaserAddBuffer.Count; i++)
             {

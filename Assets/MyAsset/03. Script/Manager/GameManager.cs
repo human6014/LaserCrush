@@ -38,16 +38,23 @@ namespace LaserCrush.Manager
             m_LaserManager.Init(InstantiateObject);
             m_BlockManager.Init(InstantiateObject);
             m_ItemManager.Init();
-
-            m_GameStartButton.MouseDownAction += OnDeploying;
+            m_GameStartButton.MouseDownAction += OnDeploying; 
         }
 
+        /// <summary>
+        /// 게임 진행 순서
+        /// 1. 블럭 업데이트 -> 필드위 아이템 획득, 블럭 생성, 에너지 보충
+        /// 2. 배치 턴
+        /// 3. 레이저 활성화
+        /// 4. 1로 돌아감
+        /// </summary>
         private void Update()
         {
-            Debug.Log("m_GameStateType : " + m_GameStateType);
+            //Debug.Log("m_GameStateType : " + m_GameStateType);
             switch (m_GameStateType) 
             {
                 case GameStateType.Deploying:
+                    //temDeployingComplete();
                     break;
                 case GameStateType.BlockUpdating:
                     BlockUpdating();
@@ -69,6 +76,12 @@ namespace LaserCrush.Manager
             /*ToDo
              * m_ItemManager.AddPrism()함수를 사용해 프리즘을 인스턴시에이트 후 배열에 추가
              */
+
+        }
+
+        public void temDeployingComplete()
+        {
+            m_GameStateType = GameStateType.LaserActivating;
         }
 
         public void OnDeploying()
@@ -103,20 +116,24 @@ namespace LaserCrush.Manager
             //todo//
             m_BlockManager.GenerateBlock(4); // -> 인스턴스화가 안되서 안되는듯
             m_GameStateType = GameStateType.Deploying;
+
+            Debug.Log("에너지 보충");
+            Energy.ChargeEnergy();
         }
 
         public void LaserActivating()
         {
-            if (m_Energy.IsAvailable())
+            if (Energy.IsAvailable())
             {
                 m_LaserManager.Activate();
             }
             else
             {
-                Debug.Log("레이저 삭제...");
+                //Debug.Log("레이저 삭제...");
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
-                    m_GameStateType = GameStateType.Deploying;
+                    Debug.Log("레이저 제거 완료");
+                    m_GameStateType = GameStateType.BlockUpdating;
                 }
             }
         }

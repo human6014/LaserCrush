@@ -8,7 +8,6 @@ namespace LaserCrush.Entity
     {
         #region Property
         private EEntityType m_EntityType;
-        private Energy m_Energy;
         #endregion
         public void Awake()
         {
@@ -21,7 +20,7 @@ namespace LaserCrush.Entity
         {
             Debug.Log("벽과 충돌 후 자식생성");
             Debug.Log("벽과 충돌 후 에너지 사용");
-            m_Energy.CollidWithWall();
+            Energy.CollidWithWall();
             Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
             return new List<Vector2>() { dir };
         }
@@ -31,9 +30,9 @@ namespace LaserCrush.Entity
             return false;
         }
 
-        public void GetDamage(int damage)
+        public bool GetDamage(int damage)
         {
-            return;
+            return false;
         }
     }
 }

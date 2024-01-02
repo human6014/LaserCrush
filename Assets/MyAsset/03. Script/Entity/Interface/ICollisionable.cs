@@ -10,7 +10,6 @@ namespace LaserCrush.Entity
 
         public bool IsGetDamageable();
 
-        public void GetDamage(int damage); 
-
+        public bool GetDamage(int damage); 
     }
 }

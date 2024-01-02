@@ -19,8 +19,8 @@ public class Floor : MonoBehaviour, ICollisionable
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
         Debug.Log("바닥과 충돌 에너지 감소");
-        m_Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
-        Debug.Log(m_Energy.GetEnergy());
+        Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
+        Debug.Log(Energy.GetEnergy());
 
         return new List<Vector2>();
     }
@@ -30,8 +30,8 @@ public class Floor : MonoBehaviour, ICollisionable
         return false;
     }
 
-    public void GetDamage(int  damage)
+    public bool GetDamage(int  damage)
     {
-        return;
+        return false;
     }
 }

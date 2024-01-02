@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using LaserCrush.Entity;
 
 namespace LaserCrush.Manager
 {
@@ -33,7 +33,7 @@ namespace LaserCrush.Manager
 
                 block = obj.GetComponent<Block>();
                 block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(1000, Entity.EntityType.NormalBlock, null);
+                block.Init(1000, EEntityType.NormalBlock, null);
                 m_Blocks.Add(block);
             }
         }

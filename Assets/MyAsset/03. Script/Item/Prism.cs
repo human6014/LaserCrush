@@ -92,8 +92,8 @@ public class Prism : Item, ICollisionable
         return false;
     }
 
-    public void GetDamage(int damage)
+    public bool GetDamage(int damage)
     {
-        return;
+        return false;
     }
 }
