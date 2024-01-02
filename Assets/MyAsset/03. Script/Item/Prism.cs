@@ -8,7 +8,7 @@ using UnityEngine;
 /// 해당 방향으로 레이저를 추가 생산
 /// </summary>
 
-public class Prism : ICollisionable
+public class Prism : Item, ICollisionable
 {
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
@@ -64,23 +64,13 @@ public class Prism : ICollisionable
         }
     }
 
-    public override void GetDamage(int damage)
-    {
-        return;
-    }
-
-    public override bool IsAttackable()
-    {
-        return false;
-    }
-
     /// <summary>
     /// 해당 함수가 호출되면 프리즘이 활성화되며 사용 횟수가1회 차감
     /// </summary>
     /// <param name="hit"></param>
     /// <param name="parentDirVector"></param>
     /// <returns></returns>
-    public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+    public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
         m_IsActivate = true;
         m_UsingCount--;
@@ -95,6 +85,15 @@ public class Prism : ICollisionable
             return true;
         }
         return false; 
+    }
 
+    public bool IsGetDamageable()
+    {
+        return false;
+    }
+
+    public void GetDamage(int damage)
+    {
+        return;
     }
 }

@@ -26,6 +26,7 @@ namespace LaserCrush.Manager
         [SerializeField] private ItemManager m_ItemManager;
         private GameStateType m_GameStateType = GameStateType.BlockUpdating;
 
+        private Energy m_Energy;
         #endregion
         
         private void Awake()
@@ -95,7 +96,7 @@ namespace LaserCrush.Manager
 
         public void LaserActivating()
         {
-            if (Energy.IsAvailable())
+            if (m_Energy.IsAvailable())
             {
                 m_LaserManager.Activate();
             }

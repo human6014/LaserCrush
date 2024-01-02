@@ -9,10 +9,10 @@ namespace LaserCrush.Manager
     public class ItemManager : MonoBehaviour
     {
         #region property
-        private static List<Item> m_Items = new List<Item>();
-        private static List<Prism> m_Prisms = new List<Prism>();
+        private List<Item> m_Items = new List<Item>();
+        private List<Prism> m_Prisms = new List<Prism>();
 
-        private static List<Prism> m_PrismRemoveBuffer = new List<Prism>();
+        private List<Prism> m_PrismRemoveBuffer = new List<Prism>();
         #endregion
 
         private void Awake()
@@ -25,7 +25,7 @@ namespace LaserCrush.Manager
         {
             for(int i = 0; i < m_Items.Count; i++)
             {
-                m_Items[i].GetItem();
+                //m_Items[i].GetItem();
             }
         }
 

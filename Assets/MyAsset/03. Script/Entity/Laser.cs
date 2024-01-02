@@ -40,6 +40,8 @@ namespace LaserCrush.Entity
         private Vector2 m_DirectionVector;
 
         private bool m_IsInitated;
+
+        private Energy m_Energy;
         #endregion
 
         private void Awake()
@@ -133,7 +135,7 @@ namespace LaserCrush.Entity
         /// </summary> 
         public void Move()
         {
-            if(!Energy.CheckEnergy()) { return; }
+            if(!m_Energy.CheckEnergy()) { return; }
 
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
 
@@ -159,14 +161,17 @@ namespace LaserCrush.Entity
         public void Hiting()
         {
             Debug.Log("Hitting()");
-            if (!m_Target.IsAttackable())
+            if (!m_Target.IsGetDamageable())
             {
                 return;
             }
 
-            if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
+            if (m_Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
-                if (m_Target is null) return;
+                if (m_Target is null)
+                {
+                    m_State = LaserStateType.Move;
+                }
                 m_Target.GetDamage(m_LaserData.Damage);
             }
         }

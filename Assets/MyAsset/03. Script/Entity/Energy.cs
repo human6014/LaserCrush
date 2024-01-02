@@ -11,8 +11,8 @@ public class Energy : MonoBehaviour
 
     private static event UnityAction m_TextUpdate;
     
-    private static int m_Energy = 10000;
-    private static Vector2 m_Postion;
+    private int m_Energy = 10000;
+    private Vector2 m_Postion;
     #endregion
 
     private void Awake()
@@ -38,12 +38,12 @@ public class Energy : MonoBehaviour
         return true;
     }
 
-    public static int GetEnergy()
+    public int GetEnergy()
     {
         return m_Energy;
     }
 
-    public static Vector2 GetPosion()
+    public Vector2 GetPosion()
     {
         return m_Postion;
     }
@@ -56,7 +56,7 @@ public class Energy : MonoBehaviour
     /// 사용할 에너지
     /// </param>
     /// <returns></returns>
-    public static int UseEnergy(int energy)
+    public int UseEnergy(int energy)
     {
         if(energy <= m_Energy) 
         {
@@ -71,12 +71,12 @@ public class Energy : MonoBehaviour
         return energy;
     }
     
-    public static bool CheckEnergy()
+    public bool CheckEnergy()
     {
         return m_Energy > 0;
     }
 
-    public static bool IsAvailable()
+    public bool IsAvailable()
     {
         return m_Energy > 0;
     }
@@ -84,7 +84,7 @@ public class Energy : MonoBehaviour
     /// <summary>
     /// 일단 부딪힐떄 마다 30퍼 삭제
     /// </summary>
-    public static void CollidWithWall()
+    public void CollidWithWall()
     {
         m_Energy -= (m_Energy / 3);
     }

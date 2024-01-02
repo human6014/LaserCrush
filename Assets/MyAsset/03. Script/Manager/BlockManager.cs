@@ -18,10 +18,10 @@ namespace LaserCrush.Manager
             Block block;
             for(int i = 0; i < num; i++)
             {
-                block = Instantiate(m_BlockObject, m_BlockTransform);
-                block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(1000, Entity.EntityType.NormalBlock, null);
-                m_Blocks.Add(block);
+                //block = Instantiate(m_BlockObject, m_BlockTransform);
+                //block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
+                //block.Init(1000, Entity.EEntityType.NormalBlock, null);
+                //m_Blocks.Add(block);
             }
         }
 

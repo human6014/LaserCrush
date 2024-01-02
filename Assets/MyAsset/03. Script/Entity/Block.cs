@@ -5,18 +5,17 @@ using TMPro;
 
 namespace LaserCrush
 {
-    public class Block : ICollisionable
+    public class Block : MonoBehaviour, ICollisionable
     {
         #region Property
         [SerializeField] private TextMeshProUGUI m_Text;
 
-        private List<Vector2> m_Direction = new List<Vector2>();
         private Item m_Item = null;
 
-        private Vector2 m_Position;
-
+        private EEntityType m_EntityType;
         private int m_HP = 1000;
         private bool m_IsDestroyed;
+        private Energy m_Energy;
         #endregion
 
         /// <summary>
@@ -26,24 +25,24 @@ namespace LaserCrush
         /// 드랍 아이템이 없을 경우 널값을 대입
         /// <param name="entityType"></param>
         /// <param name="hp"></param>
-        public void Init(int hp, EntityType entityType, Item droppedItem)
+        public void Init(int hp, EEntityType entityType, Item droppedItem)
         {
             m_HP = hp;
-            m_Type = entityType;
+            m_EntityType = entityType;
             m_Item = droppedItem;
 
-            m_Text.text = hp.ToString();
+            m_Text.text = m_HP.ToString();
         }
-
+         
         public void Destroy()
         {
             if (m_IsDestroyed) return;
             m_IsDestroyed = true;
-            Destroy(gameObject);
+            //Destroy(gameObject);
             //가지고 있는 아이템을 필드에 생성 -> 턴 종료 후 획등 방식
         }
 
-        public override void GetDamage(int damage)
+        public void GetDamage(int damage)
         {
             Debug.Log("GetDamage");
 
@@ -52,7 +51,7 @@ namespace LaserCrush
 
             if (m_HP < damage) // 남은 피가 데미지보다 작을 경우
             {
-                int getDamage = Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
+                int getDamage = m_Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
                 if (m_HP - getDamage == 0)
                 {
                     Destroy();
@@ -64,27 +63,27 @@ namespace LaserCrush
             }
             else
             {
-                int getDamage = Energy.UseEnergy(damage);  //사용 가능한 에너지를 반환받는다.
+                int getDamage = m_Energy.UseEnergy(damage);  //사용 가능한 에너지를 반환받는다.
                 m_HP -= getDamage;
             }
             m_Text.text = m_HP.ToString();
         }
 
-        public override bool IsAttackable()
+        public bool IsGetDamageable()
         {
             return true;
         }
-
-        public override List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+        public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
             Debug.Log("Block Hitted");
 
             List<Vector2> answer = new List<Vector2>();
-            if (m_Type == EntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
+            if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
                 Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
                 return new List<Vector2>() { dir };
             }
+            m_Text.text = m_HP.ToString();
             return answer;
         }
     }
