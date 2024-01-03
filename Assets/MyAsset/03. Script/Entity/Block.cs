@@ -75,7 +75,7 @@ namespace LaserCrush
 
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
             {
-                int getDamage = Energy.UseEnergy(m_HP);
+                Energy.UseEnergy(m_HP);
                 Destroy();
                 return false;
             }
