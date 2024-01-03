@@ -67,11 +67,8 @@ namespace LaserCrush
                 Destroy();
                 return false;
             }
-            else
-            {
-                int getDamage = Energy.UseEnergy(damage);
-                m_HP -= getDamage;
-            }
+            else m_HP -= Energy.UseEnergy(damage);
+
             m_Text.text = m_HP.ToString();
             return true;
         }

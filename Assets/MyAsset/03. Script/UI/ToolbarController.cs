@@ -26,7 +26,6 @@ namespace LaserCrush.UI
             RectTransform tr = item.GetComponent<RectTransform>();
             tr.SetParent(m_ContentTransform, true);
             tr.localScale = Vector3.one;
-            //tr.position = Vector3.zero;
 
             item.PointerDownAction += OnPointerDown;
             item.PointerUpAction += OnPointerUp;
@@ -35,7 +34,6 @@ namespace LaserCrush.UI
 
         private void OnPointerDown(AcquiredItem clickedItem)
         {
-            Debug.Log("OnPointerDown");
             m_CurrentItem = clickedItem;
             m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();
             m_CurrentItem.GetComponent<Image>().maskable = false;
@@ -45,7 +43,6 @@ namespace LaserCrush.UI
 
         private void OnPointerUp(Vector2 pos)
         {
-            Debug.Log("OnPointerUp");
             Ray ray = Camera.main.ScreenPointToRay(pos);
             if (!CanBatch(ray.origin))
             {
@@ -72,7 +69,6 @@ namespace LaserCrush.UI
 
         private void OnDrag(Vector2 delta)
         {
-            Debug.Log("OnDrag");
             m_CurrentItemTransform.anchoredPosition += delta;
         }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.UI;
+using System;
 
 namespace LaserCrush.Manager
 {
-    [System.Serializable]
+    [Serializable]
     public class ItemManager
     {
         #region Variable
@@ -19,26 +20,30 @@ namespace LaserCrush.Manager
         private List<InstalledItem> m_PrismRemoveBuffer = new List<InstalledItem>();
         #endregion
 
-        public void Init()
+        private event Action<GameObject> m_DestroyAction;
+
+        public void Init(Action<GameObject> destroyAction)
         {
             m_DroppedItems = new List<DroppedItem>();
             m_AcquiredItems = new List<AcquiredItem>();
             m_Prisms = new List<InstalledItem>();
             m_PrismRemoveBuffer = new List<InstalledItem>();
 
+            m_DestroyAction = destroyAction;
+
             m_ToolbarController.m_AddPrismAction += AddPrism;
         }
 
         public void GetDroppedItems()
         {
-            for(int i = 0; i < m_DroppedItems.Count; i++)
+            foreach (DroppedItem droppedItem in m_DroppedItems)
             {
-                AcquiredItem acquiredItem = m_DroppedItems[i].GetItem();
+                AcquiredItem acquiredItem = droppedItem.GetItem();
                 m_AcquiredItems.Add(acquiredItem);
                 m_ToolbarController.AcquireItem(acquiredItem);
-
+                m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
-            //m_DroppedItems.Clear();
+            m_DroppedItems.Clear();
         }
 
         public void CheckDestroyPrisms()

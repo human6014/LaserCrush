@@ -64,9 +64,12 @@ namespace LaserCrush.Entity
             m_StartPoint = position;
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
+
             m_IsInitated = true;
-            m_State = ELaserStateType.Move;
             m_IsActivated = true;
+
+            m_State = ELaserStateType.Move;
+            
             m_ChildLazers.Clear();
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
@@ -166,6 +169,8 @@ namespace LaserCrush.Entity
 
             if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
+                //수정 필요할듯?
+                //
                 if (!m_Target.GetDamage(m_LaserData.Damage))
                 {
                     m_LaserEraseAction?.Invoke(m_ChildLazers);
