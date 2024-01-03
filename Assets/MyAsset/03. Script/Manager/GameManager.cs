@@ -38,7 +38,7 @@ namespace LaserCrush.Manager
             m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_ItemManager.Init();
             m_BlockManager.Init(InstantiateObject, m_ItemManager);
-            m_UIManager.Init(m_ItemManager);
+            m_UIManager.Init();
 
             m_GameStartButton.MouseDownAction += OnDeploying; 
         }

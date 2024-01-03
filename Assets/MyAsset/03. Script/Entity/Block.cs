@@ -16,16 +16,13 @@ namespace LaserCrush
         private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
 
-        private EItemType m_Item;
         private EEntityType m_EntityType;
 
         private int m_HP = 1000;
         private bool m_IsDestroyed;
 
-        private Action<Block> m_RemoveBlockAction;
+        private Action<Block, DroppedItem> m_RemoveBlockAction;
         #endregion
-
-        public DroppedItem DroppedItem { get => m_DroppedItem; }
 
         private void Awake()
         {
@@ -36,15 +33,14 @@ namespace LaserCrush
         /// <summary>
         /// 화면에 띄우기 전 반드시 초기화함수 호출할 것
         /// </summary>
-        /// <param name="droppedItem"></param>
-        /// 드랍 아이템이 없을 경우 널값을 대입
-        /// <param name="entityType"></param>
         /// <param name="hp"></param>
-        public void Init(int hp, EEntityType entityType, EItemType itemType, Action<Block> removeBlockAction)
+        /// <param name="entityType"></param>
+        /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
+        public void Init(int hp, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
         {
             m_HP = hp;
             m_EntityType = entityType;
-            m_Item = itemType;
+            m_DroppedItem = droppedItem;
 
             m_Text.text = m_HP.ToString();
             m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ? 
@@ -57,16 +53,8 @@ namespace LaserCrush
         private void Destroy()
         {
             m_IsDestroyed = true;
-            m_RemoveBlockAction?.Invoke(this);
+            m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
             Destroy(gameObject);
-
-            if (m_Item != EItemType.None)
-            {
-                /* TODO
-                 * 가지고 있는 아이템으로 DroppedItem개체 인스턴시에이트 해야함
-                 * AddDroppedItem -> 델리게이트 함수를 사용해서 배열에 추가해야함.
-                 */
-            }
         }
 
         public bool GetDamage(int damage)

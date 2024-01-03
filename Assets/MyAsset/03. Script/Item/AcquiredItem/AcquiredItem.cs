@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace LaserCrush.Entity
 {
-    public class AcquiredItem : Item, IPointerDownHandler, IPointerUpHandler, IDragHandler
+    public class AcquiredItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         #region Variable
         [SerializeField] private GameObject m_ItemObject;
@@ -14,13 +14,16 @@ namespace LaserCrush.Entity
         private EItemState m_EItemType;
         private EItemState m_EState;
 
-        private Prism m_PrismItem;
+        private InstalledItem m_PrismItem;
         #endregion
 
+        #region Delegate
         private UnityAction<AcquiredItem> m_PointerDownAction;
         private UnityAction<Vector2> m_PointerUpAction;
         private UnityAction<Vector2> m_DragAction;
+        #endregion
 
+        #region Property
         public event UnityAction<AcquiredItem> PointerDownAction
         {
             add => m_PointerDownAction += value;
@@ -40,6 +43,7 @@ namespace LaserCrush.Entity
         }
 
         public GameObject ItemObject { get => m_ItemObject; }
+        #endregion
 
         public void OnPointerDown(PointerEventData eventData)
             => m_PointerDownAction?.Invoke(this);
@@ -60,6 +64,13 @@ namespace LaserCrush.Entity
             /* Todo
              * AddPrism() -> 델리게이트로 추가
              */
+        }
+
+        private void OnDestroy()
+        {
+            m_PointerDownAction = null;
+            m_PointerUpAction = null;
+            m_DragAction = null;
         }
     }
 }

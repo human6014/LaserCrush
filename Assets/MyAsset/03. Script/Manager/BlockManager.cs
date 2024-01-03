@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using LaserCrush.Entity;
-using TMPro.EditorUtilities;
+using LaserCrush.Data;
 
 namespace LaserCrush.Manager
 {
@@ -10,10 +10,14 @@ namespace LaserCrush.Manager
     public class BlockManager
     {
         #region Variable
+        #region SerializeField
+        [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
+        [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
         [SerializeField] private GameObject m_BlockObject;
         [SerializeField] private Vector2 m_InitPos;
         [SerializeField] private Vector2 m_Offset;
+        #endregion
 
         private Vector3 m_MoveDownVector;
 
@@ -35,6 +39,7 @@ namespace LaserCrush.Manager
         {
             GameObject obj;
             Block block;
+            DroppedItem item = null;
             for (int i = 0; i < num; i++)
             {
                 obj = m_InstantiateFunc?.Invoke(m_BlockObject);
@@ -42,14 +47,24 @@ namespace LaserCrush.Manager
 
                 block = obj.GetComponent<Block>();
                 block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(1000, GenerateEntityType(), GenerateItemType(), RemoveBlock);
+
+                obj = m_ItemProbabilityData.GetNullOrItemReference();
+                if (obj is not null) item = m_InstantiateFunc?.Invoke(obj).GetComponent<DroppedItem>();
+                
+                block.Init(1000, GenerateEntityType(), item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
 
-        private void RemoveBlock(Block block)
+        private void RemoveBlock(Block block, DroppedItem droppedItem)
         {
-            //m_ItemManager.AddDroppedItem(block.DroppedItem);
+            if (droppedItem is not null)
+            {
+                Transform tr = m_InstantiateFunc?.Invoke(droppedItem.gameObject).transform;
+                tr.SetParent(m_DroppedItemTransform);
+                tr.transform.position = block.transform.position;
+                m_ItemManager.AddDroppedItem(droppedItem);
+            }
             m_Blocks.Remove(block);
         }
 
@@ -58,37 +73,6 @@ namespace LaserCrush.Manager
             for (int i = 0; i < m_Blocks.Count; i++)
             {
                 m_Blocks[i].transform.position += m_MoveDownVector;
-            }
-        }
-
-        /// <summary>
-        /// 확률 표
-        /// None = 50
-        /// Energy = 30
-        /// Prism_1 = 10
-        /// Prism_2 = 10
-        /// </summary>
-        /// <returns></returns>
-        private EItemType GenerateItemType()
-        {
-            //0~99사이 숫자 생성
-            int prob = UnityEngine.Random.Range(0, 100);
-
-            if (prob < 50)
-            {
-                return EItemType.None;
-            }
-            else if (prob < 80)
-            {
-                return EItemType.Energy;
-            }
-            else if (prob < 90)
-            {
-                return EItemType.Prism_1;
-            }
-            else
-            {
-                return EItemType.Prism_2;
             }
         }
 

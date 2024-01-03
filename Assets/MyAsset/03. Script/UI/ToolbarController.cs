@@ -3,43 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LaserCrush.Entity;
-using LaserCrush.Manager;
+using System;
 
 namespace LaserCrush.UI
 {
     public class ToolbarController : MonoBehaviour
     {
-        [SerializeField] private Transform m_BatchedItemTransform;
+        [SerializeField] private RectTransform m_BatchedItemTransform;
         [SerializeField] private RectTransform m_ContentTransform;
-        [SerializeField] private List<AcquiredItem> m_Items;
 
-        private ItemManager m_ItemManager;
         private AcquiredItem m_CurrentItem;
         private RectTransform m_CurrentItemTransform;
         private Vector2 m_InitPos;
 
-        private void Awake()
-        {
-            AcquireItem();
-        }
+        public event Action<InstalledItem, AcquiredItem> m_AddPrismAction;
 
-        public void Init(ItemManager itemManager)
+        public void AcquireItem(AcquiredItem item)
         {
-            m_ItemManager = itemManager;
-        }
+            m_ContentTransform.sizeDelta = 
+                new Vector2(m_ContentTransform.rect.width + 150, m_ContentTransform.rect.height);
 
-        private void AcquireItem()
-        {
-            foreach (AcquiredItem item in m_Items)
-            {
-                item.PointerDownAction += OnPointerDown;
-                item.PointerUpAction += OnPointerUp;
-                item.DragAction += OnDrag;
-            }
+            RectTransform tr = item.GetComponent<RectTransform>();
+            tr.SetParent(m_ContentTransform, true);
+            tr.localScale = Vector3.one;
+            //tr.position = Vector3.zero;
+
+            item.PointerDownAction += OnPointerDown;
+            item.PointerUpAction += OnPointerUp;
+            item.DragAction += OnDrag;
         }
 
         private void OnPointerDown(AcquiredItem clickedItem)
         {
+            Debug.Log("OnPointerDown");
             m_CurrentItem = clickedItem;
             m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();
             m_CurrentItem.GetComponent<Image>().maskable = false;
@@ -49,27 +45,34 @@ namespace LaserCrush.UI
 
         private void OnPointerUp(Vector2 pos)
         {
+            Debug.Log("OnPointerUp");
             Ray ray = Camera.main.ScreenPointToRay(pos);
             if (!CanBatch(ray.origin))
             {
                 m_CurrentItem.GetComponent<Image>().maskable = true;
                 m_CurrentItemTransform.anchoredPosition = m_InitPos;
             }
-            else
-            {
-                GameObject obj = Instantiate(m_CurrentItem.ItemObject);
-                obj.transform.SetParent(m_BatchedItemTransform);
-                obj.transform.position = ray.origin;
+            else DeAcquireItem(ray.origin);
+        }
 
-                if (!obj.TryGetComponent(out Prism prism)) Debug.LogError("Prism is null");
-                m_ItemManager.AddPrism(prism);
+        private void DeAcquireItem(Vector3 origin)
+        {
+            GameObject obj = Instantiate(m_CurrentItem.ItemObject);
+            obj.transform.SetParent(m_BatchedItemTransform);
+            obj.transform.position = origin;
 
-                Destroy(m_CurrentItem.gameObject);
-            }
+            if (!obj.TryGetComponent(out InstalledItem prism)) Debug.LogError("Prism is null");
+            m_AddPrismAction?.Invoke(prism, m_CurrentItem);
+
+            m_ContentTransform.sizeDelta =
+                new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);
+
+            Destroy(m_CurrentItem.gameObject);
         }
 
         private void OnDrag(Vector2 delta)
         {
+            Debug.Log("OnDrag");
             m_CurrentItemTransform.anchoredPosition += delta;
         }
 
@@ -78,6 +81,11 @@ namespace LaserCrush.UI
             //Raycast 왜 안될까?
             if (Mathf.Abs(pos.x) <= 51 && Mathf.Abs(pos.y) <= 67) return true;
             return false;
+        }
+
+        private void OnDestroy()
+        {
+            m_AddPrismAction = null;
         }
     }
 }
