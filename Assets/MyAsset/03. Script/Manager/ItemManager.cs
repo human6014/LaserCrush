@@ -9,7 +9,7 @@ namespace LaserCrush.Manager
     [System.Serializable]
     public class ItemManager
     {
-        #region property
+        #region Variable
         private List<DroppedItem> m_DroppedItems;
         private List<AcquiredItem> m_AcquiredItems;
         private List<Prism> m_Prisms = new List<Prism>();

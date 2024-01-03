@@ -6,7 +6,7 @@ using LaserCrush.Manager;
 
 namespace LaserCrush.Entity
 {
-    enum LaserStateType // 이름 고민
+    enum ELaserStateType // 이름 고민
     {
         Move,
         Hitting,
@@ -23,7 +23,7 @@ namespace LaserCrush.Entity
         /// m_StartPoint : 레이저 시작점 -> 소멸시 시작점이 이동함
         /// m_EndPoint : 레이저 끝점 -> 발사 시 끝점이 이동함
         /// </summary>
-        #region Property
+        #region Variable
         [SerializeField] private Data.LaserData m_LaserData;
 
         private List<Laser> m_ChildLazers;
@@ -33,13 +33,14 @@ namespace LaserCrush.Entity
         private Func<List<Vector2>, Vector2, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
-        private LaserStateType m_State;
+        private ELaserStateType m_State;
 
         private Vector2 m_StartPoint;
         private Vector2 m_EndPoint;
         private Vector2 m_DirectionVector;
 
         private bool m_IsInitated;
+        private bool m_IsActivated;
 
         #endregion
 
@@ -64,8 +65,8 @@ namespace LaserCrush.Entity
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsInitated = true;
-            m_State = LaserStateType.Move;
-
+            m_State = ELaserStateType.Move;
+            m_IsActivated = true;
             m_ChildLazers.Clear();
             m_LineRenderer.positionCount = 2;
             m_LineRenderer.SetPosition(0, position);
@@ -84,10 +85,10 @@ namespace LaserCrush.Entity
             if (!m_IsInitated) { return; }
             switch (m_State) 
             {
-                case LaserStateType.Move://에너지 소모x 이동만
+                case ELaserStateType.Move://에너지 소모x 이동만
                     Move();
                     break;
-                case LaserStateType.Hitting:
+                case ELaserStateType.Hitting:
                     Hiting();
                     break;
                 default:
@@ -136,6 +137,7 @@ namespace LaserCrush.Entity
         public void Move()
         {
             if(!Energy.CheckEnergy()) { return; }
+            if (!m_IsActivated) { return; }
 
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
 
@@ -143,7 +145,7 @@ namespace LaserCrush.Entity
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
-                m_State = LaserStateType.Hitting;
+                m_State = ELaserStateType.Hitting;
                 AddChild(m_LaserCreateFunc?.Invoke(dir, hit.point));
                 return;
             }
@@ -159,18 +161,16 @@ namespace LaserCrush.Entity
         /// </summary>
         public void Hiting()
         {
-            if (!m_Target.IsGetDamageable())
-            {
-                return;
-            }
+            if (!m_Target.IsGetDamageable()) { return; }
+            if (!m_IsActivated) { return; }
 
             if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
             {
-                if(!m_Target.GetDamage(m_LaserData.Damage))
+                if (!m_Target.GetDamage(m_LaserData.Damage))
                 {
                     m_LaserEraseAction?.Invoke(m_ChildLazers);
                     m_Target = null;
-                    m_State = LaserStateType.Move;
+                    m_State = ELaserStateType.Move;
                 }
             }
         }
@@ -194,5 +194,22 @@ namespace LaserCrush.Entity
             m_LaserCreateFunc = null;
             m_LaserEraseAction = null;
         }
+
+        public void LossParentLasersDeActivate()
+        {
+            Queue<Laser> remover = new Queue<Laser>();
+            remover.Enqueue(this);
+
+            while(remover.Count > 0) 
+            {
+                Laser now = remover.Dequeue();
+                now.m_IsActivated = false;
+                for(int i = 0; i < now.m_ChildLazers.Count; i++) 
+                {
+                    remover.Enqueue(now.m_ChildLazers[i]);
+                }
+            }
+        }
+
     }
 }
