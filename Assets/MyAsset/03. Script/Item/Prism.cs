@@ -13,7 +13,7 @@ public class Prism : Item, ICollisionable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    #region Property
+    #region Variable
     private List<Vector2> m_EjectionPorts = new List<Vector2>();
 
     private const int m_MaxUsingCount = 3;

@@ -6,7 +6,7 @@ using TMPro;
 
 public class Energy : MonoBehaviour
 {
-    #region Property
+    #region Variable
     [SerializeField] private TextMeshProUGUI m_Text;
 
     private static event UnityAction m_TextUpdate;

@@ -6,7 +6,7 @@ namespace LaserCrush.Entity
 {
     public class DroppedItem : Item
     {
-        #region Property
+        #region Variable
         private AcquiredItem m_AcquiredItem; // 이건 없어도 될듯 생성자로 바로 생성해서 넘기려고 함
         #endregion
 

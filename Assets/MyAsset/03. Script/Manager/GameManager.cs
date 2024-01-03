@@ -9,7 +9,7 @@ namespace LaserCrush.Manager
     /// 각 턴마다 적절한 update함수를 호출해준다.
     /// 
     /// </summary>
-    public enum GameStateType
+    public enum EGameStateType
     {
         Deploying,
         BlockUpdating,
@@ -17,7 +17,7 @@ namespace LaserCrush.Manager
     }
     public class GameManager : MonoBehaviour
     {
-        #region Property
+        #region Variable
         [SerializeField] private GameSettingManager m_GameSettingManager;
         [SerializeField] private AudioManager m_AudioManager;
         [SerializeField] private LaserManager m_LaserManager;
@@ -28,7 +28,7 @@ namespace LaserCrush.Manager
 
         [SerializeField] private ClickableObject m_GameStartButton;
 
-        private GameStateType m_GameStateType = GameStateType.BlockUpdating;
+        private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
         #endregion
         
         private void Awake()
@@ -55,13 +55,13 @@ namespace LaserCrush.Manager
             //Debug.Log("m_GameStateType : " + m_GameStateType);
             switch (m_GameStateType) 
             {
-                case GameStateType.Deploying:
+                case EGameStateType.Deploying:
                     //temDeployingComplete();
                     break;
-                case GameStateType.BlockUpdating:
+                case EGameStateType.BlockUpdating:
                     BlockUpdating();
                     break;
-                case GameStateType.LaserActivating:
+                case EGameStateType.LaserActivating:
                     LaserActivating();
                     break;
                 default:
@@ -84,14 +84,14 @@ namespace LaserCrush.Manager
 
         public void temDeployingComplete()
         {
-            m_GameStateType = GameStateType.LaserActivating;
+            m_GameStateType = EGameStateType.LaserActivating;
         }
 
         private void OnDeploying()
         {
             //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
             Debug.Log("배치 턴");
-            m_GameStateType = GameStateType.LaserActivating;
+            m_GameStateType = EGameStateType.LaserActivating;
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace LaserCrush.Manager
             Debug.Log("에너지 보충");
             Energy.ChargeEnergy();
 
-            m_GameStateType = GameStateType.Deploying;
+            m_GameStateType = EGameStateType.Deploying;
         }
 
         private void LaserActivating()
@@ -135,7 +135,7 @@ namespace LaserCrush.Manager
             {
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
-                    m_GameStateType = GameStateType.BlockUpdating;
+                    m_GameStateType = EGameStateType.BlockUpdating;
                 }
             }
         }

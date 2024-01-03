@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Floor : MonoBehaviour, ICollisionable
 {
-    #region Property
+    #region Variable
     private EEntityType m_EntityType;
     #endregion
     public void Awake()

@@ -6,7 +6,7 @@ namespace LaserCrush.Entity
 {
     public class Launcher : MonoBehaviour
     {
-        #region Property
+        #region Variable
         private static Vector2 m_Posion;
         private static Vector2 m_DirectionVector;
         #endregion
