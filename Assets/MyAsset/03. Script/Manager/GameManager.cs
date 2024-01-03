@@ -38,7 +38,7 @@ namespace LaserCrush.Manager
             m_GameSettingManager.Init();
             m_AudioManager.Init();
             m_LaserManager.Init(InstantiateObject, DestroyObject);
-            m_ItemManager.Init();
+            m_ItemManager.Init(DestroyObject);
             m_BlockManager.Init(InstantiateObject, m_ItemManager);
             m_UIManager.Init();
 

@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using LaserCrush.Entity;
 using LaserCrush.Data;
+using Random = UnityEngine.Random;
 
 namespace LaserCrush.Manager
 {
@@ -24,7 +25,7 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
         private event Func<GameObject, GameObject> m_InstantiateFunc;
-        private int m_WidthBlocksCapacity = 6;
+        private readonly int m_WidthBlocksCapacity = 6;
         #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, ItemManager itemManager)
@@ -39,7 +40,9 @@ namespace LaserCrush.Manager
         public void GenerateBlock()
         {
             GameObject obj;
+            GameObject itemObject;
             Block block;
+            DroppedItem item;
 
             HashSet<int> index = GenerateBlockOffset();
             foreach (int i in index)
@@ -49,12 +52,17 @@ namespace LaserCrush.Manager
 
                 block = obj.GetComponent<Block>();
                 block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(GenerateBlockHP(), GenerateEntityType(), GenerateItemType(), RemoveBlock);
 
-                obj = m_ItemProbabilityData.GetNullOrItemReference();
-                if (obj is not null) item = m_InstantiateFunc?.Invoke(obj).GetComponent<DroppedItem>();
+                item = null;
+                if (m_ItemProbabilityData.TryGetItemObject(out GameObject itemPrefab))
+                {
+                    itemObject = m_InstantiateFunc?.Invoke(itemPrefab);
+                    itemObject.SetActive(false);
+                    itemObject.transform.SetParent(m_DroppedItemTransform);
+                    item = itemObject.GetComponent<DroppedItem>();
+                }
                 
-                block.Init(1000, GenerateEntityType(), item, RemoveBlock);
+                block.Init(GenerateBlockHP(), GenerateEntityType(), item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
@@ -63,9 +71,8 @@ namespace LaserCrush.Manager
         {
             if (droppedItem is not null)
             {
-                Transform tr = m_InstantiateFunc?.Invoke(droppedItem.gameObject).transform;
-                tr.SetParent(m_DroppedItemTransform);
-                tr.transform.position = block.transform.position;
+                droppedItem.gameObject.SetActive(true);
+                droppedItem.transform.position = block.transform.position;
                 m_ItemManager.AddDroppedItem(droppedItem);
             }
             m_Blocks.Remove(block);
@@ -85,12 +92,12 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = UnityEngine.Random.Range(1,7);//1~6사이 숫자
+            int randomSize = Random.Range(1,7);//1~6사이 숫자
             HashSet<int> result = new HashSet<int>();
 
             while(result.Count < randomSize)
             {
-                result.Add(UnityEngine.Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity 사이 숫자 생성
+                result.Add(Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity 사이 숫자 생성
             }
             return result;
         }
@@ -104,7 +111,7 @@ namespace LaserCrush.Manager
         {
             int end = ((GameManager.m_StageNum + 2) / 3) * 10;
             int start = end - (end / 2);
-            return UnityEngine.Random.Range(start, end + 1);
+            return Random.Range(start, end + 1);
         }
 
         /// <summary>
@@ -115,16 +122,8 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private EEntityType GenerateEntityType()
         {
-            int prob = UnityEngine.Random.Range(0, 100);
-
-            if (prob < 50)
-            {
-                return EEntityType.NormalBlock;
-            }
-            else
-            {
-                return EEntityType.ReflectBlock;
-            }
+            if (Random.Range(0, 100) < 50) return EEntityType.NormalBlock;
+            else return EEntityType.ReflectBlock;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace LaserCrush.Data
         public int GetItemIndex() 
         {
             float randomPoint = Random.value * 100;
-            int length = m_ItemProbability.ProbabilityArray.Length;
+            int length = m_DroppedItems.Length;
             for (int i = 0; i < length; i++)
             {
                 if (randomPoint < m_ItemProbability[i]) return i;
@@ -37,16 +37,21 @@ namespace LaserCrush.Data
             return length - 1;
         }
 
-        public GameObject GetNullOrItemReference()
+        public bool TryGetItemObject(out GameObject obj)
         {
             float randomPoint = Random.value * 100;
-            int length = m_ItemProbability.ProbabilityArray.Length;
+            int length = m_DroppedItems.Length;
             for (int i = 0; i < length; i++)
             {
-                if (randomPoint < m_ItemProbability[i]) return m_DroppedItems[i];
+                if (randomPoint < m_ItemProbability[i])
+                {
+                    obj = m_DroppedItems[i];
+                    return true;
+                }
                 else randomPoint -= m_ItemProbability[i];
             }
-            return m_DroppedItems[length - 1];
+            obj = m_DroppedItems[length - 1];
+            return false;
         }
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4749280532638309643}
   - component: {fileID: 7660825252361090828}
   - component: {fileID: 4749280532638309641}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Prism2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
