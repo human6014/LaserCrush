@@ -4,14 +4,22 @@ using UnityEngine;
 
 namespace LaserCrush.Entity
 {
-    public class DroppedItem : Item
+    public class DroppedItem : MonoBehaviour
     {
         #region Variable
-        private AcquiredItem m_AcquiredItem; // 이건 없어도 될듯 생성자로 바로 생성해서 넘기려고 함
+        [SerializeField] private AcquiredItem m_AcquiredItem;
+        
+        private EItemState m_State;
+        private EItemType m_Type;
         #endregion
 
+        /// <summary>
+        /// AcquiredItem 오브젝트를 생성 후 반환
+        /// </summary>
+        /// <returns></returns>
         public AcquiredItem GetItem()
         {
+            AcquiredItem acquiredItem = Instantiate(m_AcquiredItem);
             /*TODO
              *해당 인스턴스를 파괴하고 AcquiredItem 개체를 생성한다
              *위 과정에서 애니메이션 효과 사용하면 된다.
@@ -25,7 +33,7 @@ namespace LaserCrush.Entity
                     GetAnimationPrism();
                     break;
             }
-            return m_AcquiredItem; // 여기서 바로 위에 생성한 인스턴스 넘기자
+            return acquiredItem; // 여기서 바로 위에 생성한 인스턴스 넘기자
         }
 
         private void GetAnimationEnergy()
@@ -37,6 +45,5 @@ namespace LaserCrush.Entity
         {
 
         }
-
     }
 }

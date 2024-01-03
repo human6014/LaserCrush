@@ -8,12 +8,12 @@ using UnityEngine;
 /// 해당 방향으로 레이저를 추가 생산
 /// </summary>
 
-public class Prism : Item, ICollisionable
+public class InstalledItem : MonoBehaviour, ICollisionable
 {
+    #region Variable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    #region Variable
     private List<Vector2> m_EjectionPorts = new List<Vector2>();
 
     private const int m_MaxUsingCount = 3;

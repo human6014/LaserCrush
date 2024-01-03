@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using LaserCrush.Entity;
-using TMPro.EditorUtilities;
+using LaserCrush.Data;
 
 namespace LaserCrush.Manager
 {
@@ -10,10 +10,14 @@ namespace LaserCrush.Manager
     public class BlockManager
     {
         #region Variable
+        #region SerializeField
+        [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
+        [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
         [SerializeField] private GameObject m_BlockObject;
         [SerializeField] private Vector2 m_InitPos;
         [SerializeField] private Vector2 m_Offset;
+        #endregion
 
         private Vector3 m_MoveDownVector;
 
@@ -36,20 +40,7 @@ namespace LaserCrush.Manager
         {
             GameObject obj;
             Block block;
-            /* todo
-             * ¿©±â¼­ GenerateBlockOffset¸¦ È£ÃâÇØ¼­ 
-             * Çì½¬¼ÂÀ» ¼øÈ¸ÇÏ¸é¼­ ÇØ´ç ¿ÀÇÁ¼Â¿¡ ºí·° »ı¼ºÇÏ¸é µÊ
-             */
-            /*for (int i = 0; i < 4; i++)
-            {
-                obj = m_InstantiateFunc?.Invoke(m_BlockObject);
-                obj.transform.SetParent(m_BlockTransform);
 
-                block = obj.GetComponent<Block>();
-                block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
-                block.Init(GenerateBlockHP(), GenerateEntityType(), GenerateItemType(), RemoveBlock);
-                m_Blocks.Add(block);
-            }*/
             HashSet<int> index = GenerateBlockOffset();
             foreach (int i in index)
             {
@@ -59,13 +50,24 @@ namespace LaserCrush.Manager
                 block = obj.GetComponent<Block>();
                 block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
                 block.Init(GenerateBlockHP(), GenerateEntityType(), GenerateItemType(), RemoveBlock);
+
+                obj = m_ItemProbabilityData.GetNullOrItemReference();
+                if (obj is not null) item = m_InstantiateFunc?.Invoke(obj).GetComponent<DroppedItem>();
+                
+                block.Init(1000, GenerateEntityType(), item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
 
-        private void RemoveBlock(Block block)
+        private void RemoveBlock(Block block, DroppedItem droppedItem)
         {
-            //m_ItemManager.AddDroppedItem(block.DroppedItem);
+            if (droppedItem is not null)
+            {
+                Transform tr = m_InstantiateFunc?.Invoke(droppedItem.gameObject).transform;
+                tr.SetParent(m_DroppedItemTransform);
+                tr.transform.position = block.transform.position;
+                m_ItemManager.AddDroppedItem(droppedItem);
+            }
             m_Blocks.Remove(block);
         }
 
@@ -78,24 +80,24 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// Áö±İÀº ´Ü¼øÈ÷ ¹«ÀÛÀ§ È®·ü·Î ºí·° À§Ä¡¿Í °¹¼ö¸¦ »ı¼º
+        /// ì§€ê¸ˆì€ ë‹¨ìˆœíˆ ë¬´ì‘ìœ„ í™•ë¥ ë¡œ ë¸”ëŸ­ ìœ„ì¹˜ì™€ ê°¯ìˆ˜ë¥¼ ìƒì„±
         /// </summary>
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = UnityEngine.Random.Range(1,7);//1~6»çÀÌ ¼ıÀÚ
+            int randomSize = UnityEngine.Random.Range(1,7);//1~6ì‚¬ì´ ìˆ«ì
             HashSet<int> result = new HashSet<int>();
 
             while(result.Count < randomSize)
             {
-                result.Add(UnityEngine.Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity »çÀÌ ¼ıÀÚ »ı¼º
+                result.Add(UnityEngine.Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity ì‚¬ì´ ìˆ«ì ìƒì„±
             }
             return result;
         }
 
         /// <summary>
-        /// 3½ºÅ×ÀÌÁö¸¶´Ù °¡ÁßÄ¡ ºÎ¿©
-        /// ±¸°£À» 
+        /// 3ìŠ¤í…Œì´ì§€ë§ˆë‹¤ ê°€ì¤‘ì¹˜ ë¶€ì—¬
+        /// êµ¬ê°„ì„ 
         /// </summary>
         /// <returns></returns>
         private int GenerateBlockHP()
@@ -106,40 +108,9 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// È®·ü Ç¥
-        /// None = 50
-        /// Energy = 30
-        /// Prism_1 = 10
-        /// Prism_2 = 10
-        /// </summary>
-        /// <returns></returns>
-        private EItemType GenerateItemType()
-        {
-            //0~99»çÀÌ ¼ıÀÚ »ı¼º
-            int prob = UnityEngine.Random.Range(0, 100);
-
-            if (prob < 50)
-            {
-                return EItemType.None;
-            }
-            else if (prob < 80)
-            {
-                return EItemType.Energy;
-            }
-            else if (prob < 90)
-            {
-                return EItemType.Prism_1;
-            }
-            else
-            {
-                return EItemType.Prism_2;
-            }
-        }
-
-        /// <summary>
-        /// È®·ü Ç¥
-        /// ÀÏ¹İ ºí·° = 50
-        /// ¹İ»ç ºí·° = 50
+        /// í™•ë¥  í‘œ
+        /// ì¼ë°˜ ë¸”ëŸ­ = 50
+        /// ë°˜ì‚¬ ë¸”ëŸ­ = 50
         /// </summary>
         /// <returns></returns>
         private EEntityType GenerateEntityType()

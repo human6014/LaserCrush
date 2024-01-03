@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2561265107801539127}
   - component: {fileID: 2561265107801539121}
   m_Layer: 5
-  m_Name: AcquiredItemUI
+  m_Name: AcquiredPrism2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 581dfc7316ce4a245ae9ccb30465f9a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ItemObject: {fileID: 4749280532638309637, guid: 2145ab4bf626a65499b8b9653ba8aa0d, type: 3}
+  m_ItemObject: {fileID: 4749280532638309637, guid: 9ffa4268ea575134aab3fc3a229cc3f4, type: 3}
 --- !u!1 &2561265109088368962
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,11 +124,11 @@ RectTransform:
   m_Father: {fileID: 2561265107801539124}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2561265109088368975
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: Prism2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -7,11 +7,10 @@ namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private ToolbarController m_ToolbarController;
 
-        public void Init(ItemManager itemManager)
+        public void Init()
         {
-            m_ToolbarController.Init(itemManager);
+            
         }
     }
 }
