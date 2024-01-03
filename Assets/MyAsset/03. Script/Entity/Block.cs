@@ -9,7 +9,7 @@ namespace LaserCrush
 {
     public class Block : MonoBehaviour, ICollisionable
     {
-        #region Property
+        #region Variable
         [SerializeField] private BlockData m_BlockData;
 
         private DroppedItem m_DroppedItem;
@@ -75,20 +75,13 @@ namespace LaserCrush
 
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
             {
-                int getDamage = Energy.UseEnergy(m_HP); //사용 가능한 에너지를 반환받는다. -> 에너지 차감
-                if (m_HP - getDamage == 0)
-                {
-                    Destroy();
-                    return false;
-                }
-                else
-                {
-                    m_HP -= getDamage;
-                }
+                int getDamage = Energy.UseEnergy(m_HP);
+                Destroy();
+                return false;
             }
             else
             {
-                int getDamage = Energy.UseEnergy(damage);  //사용 가능한 에너지를 반환받는다.
+                int getDamage = Energy.UseEnergy(damage);
                 m_HP -= getDamage;
             }
             m_Text.text = m_HP.ToString();

@@ -6,7 +6,7 @@ namespace LaserCrush.Entity
 
     public class Wall : MonoBehaviour, ICollisionable
     {
-        #region Property
+        #region Variable
         private EEntityType m_EntityType;
         #endregion
         public void Awake()

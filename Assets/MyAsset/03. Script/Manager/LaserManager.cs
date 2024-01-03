@@ -12,7 +12,7 @@ namespace LaserCrush.Manager
     [Serializable]
     public class LaserManager
     {
-        #region Property
+        #region Variable
         [SerializeField] private Laser m_InitLazer;
         [SerializeField] private LineRenderer m_SubLine;
         [SerializeField] private SubLineController m_SubLineController;
@@ -154,6 +154,7 @@ namespace LaserCrush.Manager
             for(int i = 0;i <lasers.Count;i++) 
             {
                 m_LossParentsLaser.Add(lasers[i]);
+                lasers[i].LossParentLasersDeActivate();
             }
         }
 

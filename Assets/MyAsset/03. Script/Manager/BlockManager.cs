@@ -9,6 +9,7 @@ namespace LaserCrush.Manager
     [Serializable]
     public class BlockManager
     {
+        #region Variable
         [SerializeField] private Transform m_BlockTransform;
         [SerializeField] private GameObject m_BlockObject;
         [SerializeField] private Vector2 m_InitPos;
@@ -19,6 +20,7 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
         private event Func<GameObject, GameObject> m_InstantiateFunc;
+        #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, ItemManager itemManager)
         {

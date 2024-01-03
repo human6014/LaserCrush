@@ -8,12 +8,14 @@ namespace LaserCrush.Entity
 {
     public class AcquiredItem : Item, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
+        #region Variable
         [SerializeField] private GameObject m_ItemObject;
 
         private EItemState m_EItemType;
         private EItemState m_EState;
 
         private Prism m_PrismItem;
+        #endregion
 
         private UnityAction<AcquiredItem> m_PointerDownAction;
         private UnityAction<Vector2> m_PointerUpAction;
