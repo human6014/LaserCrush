@@ -20,7 +20,8 @@ namespace LaserCrush.Entity
             Debug.Log("벽과 충돌 후 자식생성");
             Debug.Log("벽과 충돌 후 에너지 사용");
             Energy.CollideWithWall();
-            Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
+            //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
+            Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
             return new List<Vector2>() { dir };
         }
 
