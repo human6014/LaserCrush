@@ -29,8 +29,10 @@ namespace LaserCrush.Manager
         [SerializeField] private ClickableObject m_GameStartButton;
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
+
+        public static int m_StageNum;
         #endregion
-        
+
         private void Awake()
         {
             m_GameSettingManager.Init();
@@ -40,7 +42,8 @@ namespace LaserCrush.Manager
             m_BlockManager.Init(InstantiateObject, m_ItemManager);
             m_UIManager.Init();
 
-            m_GameStartButton.MouseDownAction += OnDeploying; 
+            m_GameStartButton.MouseDownAction += OnDeploying;
+            m_StageNum = 0;
         }
 
         /// <summary>
@@ -79,7 +82,6 @@ namespace LaserCrush.Manager
             /*ToDo
              * m_ItemManager.AddPrism()함수를 사용해 프리즘을 인스턴시에이트 후 배열에 추가
              */
-
         }
 
         public void temDeployingComplete()
@@ -100,23 +102,20 @@ namespace LaserCrush.Manager
         /// </summary>
         private void BlockUpdating()
         {
+            m_StageNum++;
             Debug.Log("필드 위 아이템 획득");
             /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
-             *   -> Time함수 등을 사용
              */
             m_ItemManager.GetDroppedItems();
 
             Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
-            /* ToDo
-             */
             m_ItemManager.CheckDestroyPrisms();
 
             Debug.Log("블럭 생성");
-            //todo//
             m_BlockManager.MoveDownAllBlocks();// 한줄 내려오고
-            m_BlockManager.GenerateBlock(4); // -> 인스턴스화가 안되서 안되는듯
+            m_BlockManager.GenerateBlock(); // -> 인스턴스화가 안되서 안되는듯
 
 
             Debug.Log("에너지 보충");
