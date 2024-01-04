@@ -27,7 +27,7 @@ namespace LaserCrush
         private void Awake()
         {
             m_Text = GetComponentInChildren<TextMeshProUGUI>();
-            m_SpriteRenderer = GetComponent<SpriteRenderer>();
+            m_SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
         /// <summary>

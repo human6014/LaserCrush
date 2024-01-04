@@ -18,15 +18,18 @@ namespace LaserCrush.Manager
     public class GameManager : MonoBehaviour
     {
         #region Variable
+        [Header("Monobehaviour Reference")]
+        [SerializeField] private UIManager m_UIManager;
+        [SerializeField] private ClickableObject m_GameStartButton;
+
+        [Header("Serialized Instance Reference")]
         [SerializeField] private GameSettingManager m_GameSettingManager;
         [SerializeField] private AudioManager m_AudioManager;
         [SerializeField] private LaserManager m_LaserManager;
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
 
-        [SerializeField] private UIManager m_UIManager;
 
-        [SerializeField] private ClickableObject m_GameStartButton;
 
         private SubLineController m_SubLineController;
 

@@ -12,13 +12,25 @@ namespace LaserCrush.Manager
     {
         #region Variable
         #region SerializeField
+        [Header("Block Reference")]
         [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
         [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
         [SerializeField] private GameObject m_BlockObject;
-        [SerializeField] private Vector2 m_InitPos;
-        [SerializeField] private Vector2 m_Offset;
+
+        [Header("Block Grid Instancing")]
+        [SerializeField] private Transform m_TopWall;
+        [SerializeField] private Transform m_LeftWall;
+
+        [Tooltip("블럭 최대 행 개수")] [Range(1, 40)]
+        [SerializeField] private int m_MaxRowCount;
+
+        [Tooltip("블럭 최대 열 개수")] [Range(1, 20)]
+        [SerializeField] private int m_MaxColCount;
         #endregion
+        private Vector2 m_CalculatedInitPos;
+        private Vector2 m_CalculatedOffset;
+        
 
         private Vector3 m_MoveDownVector;
 
@@ -26,7 +38,6 @@ namespace LaserCrush.Manager
         private List<Block> m_Blocks;
         private event Func<GameObject, GameObject> m_InstantiateFunc;
         private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
-        private readonly int m_WidthBlocksCapacity = 6;
         #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, 
@@ -38,7 +49,23 @@ namespace LaserCrush.Manager
             m_InstantiatePosFunc = instantiatePosFunc;
             m_ItemManager = itemManager;
 
-            m_MoveDownVector = new Vector3(0, m_Offset.y, 0);
+            CalculateRowCol();
+        }
+
+        private void CalculateRowCol()
+        {
+            float height = m_LeftWall.localScale.y - 6;
+            float width = m_TopWall.localScale.x - 6;
+
+            float blockHeight = height / m_MaxRowCount;
+            float blockWidth = width / m_MaxColCount;
+
+            m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 0.5f - 2);
+            m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
+
+            m_BlockObject.transform.localScale = new Vector3(blockWidth, blockHeight, 1);
+
+            m_MoveDownVector = new Vector3(0, m_CalculatedOffset.y, 0);
         }
 
         public void GenerateBlock()
@@ -51,7 +78,7 @@ namespace LaserCrush.Manager
             HashSet<int> index = GenerateBlockOffset();
             foreach (int i in index)
             {
-                obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0));
+                obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
                 obj.transform.SetParent(m_BlockTransform);
 
                 block = obj.GetComponent<Block>();
@@ -85,7 +112,7 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_Blocks.Count; i++)
             {
-                m_Blocks[i].transform.position += m_MoveDownVector;
+                m_Blocks[i].transform.position -= m_MoveDownVector;
             }
         }
 
@@ -95,12 +122,14 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = Random.Range(1,7);//1~6사이 숫자
+            //int randomSize = Random.Range(1,7);//1~6사이 숫자
+            int randomSize = Random.Range(1, m_MaxColCount + 1);//1~6사이 숫자
             HashSet<int> result = new HashSet<int>();
 
             while(result.Count < randomSize)
             {
-                result.Add(Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity 사이 숫자 생성
+                //result.Add(Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity 사이 숫자 생성
+                result.Add(Random.Range(0, m_MaxColCount));
             }
             return result;
         }
