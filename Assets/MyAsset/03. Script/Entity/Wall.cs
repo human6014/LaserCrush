@@ -4,7 +4,7 @@ using UnityEngine;
 namespace LaserCrush.Entity
 {
 
-    public class Wall : MonoBehaviour, ICollisionable
+    public sealed class Wall : MonoBehaviour, ICollisionable
     {
         #region Variable
         private EEntityType m_EntityType;

@@ -7,6 +7,6 @@ namespace LaserCrush.Manager
     public static class LayerManager
     {
         public static readonly int s_LaserHitableLayer = 1 << LayerMask.NameToLayer("Reflectable") | 1 << LayerMask.NameToLayer("Absorbable") | 1 << LayerMask.NameToLayer("Continuable");
-        public static readonly int s_TouchableLayer = 1 << LayerMask.NameToLayer("Touchable");
+        public static readonly int s_TouchableAreaLayer = 1 << LayerMask.NameToLayer("TouchableArea");
     }
 }

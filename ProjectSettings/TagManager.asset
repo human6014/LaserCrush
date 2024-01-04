@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - Touchable
+  - TouchableObject
+  - TouchableArea
   - 
   - Reflectable
   - Absorbable

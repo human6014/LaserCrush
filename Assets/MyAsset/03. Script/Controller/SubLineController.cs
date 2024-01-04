@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
-using UnityEngineInternal;
+using LaserCrush.Controller.InputObject;
 
 namespace LaserCrush.Manager
 {
@@ -11,75 +11,85 @@ namespace LaserCrush.Manager
     {
         [SerializeField] private LineRenderer m_SubLineRenderer;
         [SerializeField] private Transform m_LaserInitTransform;
+        [SerializeField] private DragTransfromObject m_DragTransfromObject;
+        [SerializeField] private ClickableArea m_ClickableArea;
 
         private Camera m_MainCamera;
+        private Transform m_DragTransfrom;
 
         private bool m_IsDragInit;
+        private bool m_IsActiveSubLine;
 
-        /// <summary>
-        /// 시작점 드래그로 위치 설정할 때 호출
-        /// </summary>
-        public Action<bool> RepaintInitPointAction { get; set; }
-
-        /// <summary>
-        /// 맵 내부 눌러서 각도 설정할 때 호출
-        /// </summary>
-        public Action RepaintLineAction { get; set; }
-
-        public Vector3 Position { get => m_LaserInitTransform.position; }
+        public Vector3 Position { get => m_DragTransfrom.position + Vector3.up * 2; }
         public Vector3 Direction { get; private set; } = Vector3.up;
-        public bool IsActiveSubLine { get; set; } = true;
+        public bool IsActiveSubLine 
+        {
+            get => m_IsActiveSubLine;
+            set
+            {
+                m_IsActiveSubLine = value;
+                m_SubLineRenderer.enabled = value;
+                if (m_IsActiveSubLine) UpdateLineRenderer();
+            }
+        }
 
         private void Awake()
         {
             m_MainCamera = Camera.main;
 
-            RepaintInitPointAction += (bool isDragInit) =>
-            {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
-                m_IsDragInit = isDragInit;
-                if (!m_IsDragInit) return;
+            m_DragTransfrom = m_DragTransfromObject.transform;
 
-                SetLinePosition();
-            };
-            RepaintLineAction += RepaintLine;
-            SetLinePosition();
+            m_DragTransfromObject.MouseMoveAction += SetInitPos;
+            m_ClickableArea.OnMouseDragAction += SetDirection;
+            UpdateLineRenderer();
         }
 
-        private void SetLinePosition()
+        private void SetInitPos(bool isDragInit)
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!IsActiveSubLine) return;
+
+            m_IsDragInit = isDragInit;
+            if (!m_IsDragInit) return;
+
+            Vector3 objectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            float xPos = Mathf.Clamp(objectPos.x, -44, 44);
+            m_DragTransfrom.position = new Vector3(xPos, -64, 0);
+
+            UpdateLineRenderer();
+        }
+
+        private void UpdateLineRenderer()
         {
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
-            m_SubLineRenderer.SetPosition(1, (Vector3)hit.point - Direction);
+            m_SubLineRenderer.SetPosition(1, hit.point);
         }
 
-        private void RepaintLine()
+        private void SetDirection()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!IsActiveSubLine) return;
             if (m_IsDragInit) return;
 
             Vector3 m_ClickPos = MainScreenToWorldPoint(Input.mousePosition);
-            Direction = (m_ClickPos - Position).normalized;
+            Vector3 differVector = m_ClickPos - Position;
 
-            if (Direction.y <= 0) return;
-            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward,Direction);
+            if (differVector.magnitude < 5) return;
 
-            SetLinePosition();
+            Vector3 tempDirection = differVector.normalized;
+            if (tempDirection.y <= 0) return;
+
+            Direction = tempDirection;
+            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
+
+            UpdateLineRenderer();
         }
-
-        public void SetEnableLine(bool isEnable)
-            => m_SubLineRenderer.enabled = isEnable;
 
         private Vector3 MainScreenToWorldPoint(Vector3 screenPos)
             => m_MainCamera.ScreenToWorldPoint(screenPos) + new Vector3(0, 0, 10);
 
         private bool RaycastToTouchable(Vector3 pos, out RaycastHit hit)
-            => Physics.Raycast(m_MainCamera.ScreenPointToRay(pos), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Touchable"));
-
-        private void OnDestroy()
-        {
-            RepaintInitPointAction = null;
-            RepaintLineAction = null;
-        }
+            => Physics.Raycast(m_MainCamera.ScreenPointToRay(pos), out hit, Mathf.Infinity);
     }
 }

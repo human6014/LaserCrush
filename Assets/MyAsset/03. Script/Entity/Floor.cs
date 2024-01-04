@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : MonoBehaviour, ICollisionable
+public sealed class Floor : MonoBehaviour, ICollisionable
 {
     #region Variable
     private EEntityType m_EntityType;

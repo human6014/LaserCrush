@@ -15,6 +15,7 @@ public class Energy : MonoBehaviour
     private static int m_Energy = 10000;
     private static Vector2 m_Postion;
     #endregion
+
     private void Awake()
     {
         m_TextUpdate = null;
