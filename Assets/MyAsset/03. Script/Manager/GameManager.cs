@@ -28,6 +28,8 @@ namespace LaserCrush.Manager
 
         [SerializeField] private ClickableObject m_GameStartButton;
 
+        private SubLineController m_SubLineController;
+
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
@@ -39,8 +41,10 @@ namespace LaserCrush.Manager
             m_AudioManager.Init();
             m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_ItemManager.Init(DestroyObject);
-            m_BlockManager.Init(InstantiateObject, m_ItemManager);
+            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
             m_UIManager.Init();
+
+            m_SubLineController = GetComponent<SubLineController>();
 
             m_GameStartButton.MouseDownAction += OnDeploying;
             m_StageNum = 0;
@@ -74,6 +78,7 @@ namespace LaserCrush.Manager
         }
 
         private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);
+        private GameObject InstantiateWithPosObject(GameObject obj, Vector3 pos) => Instantiate(obj,pos,Quaternion.identity);
 
         private void DestroyObject(GameObject obj) => Destroy(obj);
 
@@ -84,16 +89,11 @@ namespace LaserCrush.Manager
              */
         }
 
-        public void temDeployingComplete()
-        {
-            m_GameStateType = EGameStateType.LaserActivating;
-        }
-
         private void OnDeploying()
         {
-            //레이저 스테이션 클릭 시 true같은걸 반환해서 게임 상테를 변경
             Debug.Log("배치 턴");
             m_GameStateType = EGameStateType.LaserActivating;
+            m_SubLineController.IsActiveSubLine = false;
         }
 
         /// <summary>
@@ -114,13 +114,13 @@ namespace LaserCrush.Manager
             m_ItemManager.CheckDestroyPrisms();
 
             Debug.Log("블럭 생성");
-            m_BlockManager.MoveDownAllBlocks();// 한줄 내려오고
-            m_BlockManager.GenerateBlock(); // -> 인스턴스화가 안되서 안되는듯
-
+            m_BlockManager.MoveDownAllBlocks();
+            m_BlockManager.GenerateBlock();
 
             Debug.Log("에너지 보충");
             Energy.ChargeEnergy();
 
+            m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
         }
 

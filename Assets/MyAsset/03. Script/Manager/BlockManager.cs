@@ -25,13 +25,17 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
         private event Func<GameObject, GameObject> m_InstantiateFunc;
+        private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
         private readonly int m_WidthBlocksCapacity = 6;
         #endregion
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc, ItemManager itemManager)
+        public void Init(Func<GameObject, GameObject> instantiateFunc, 
+                         Func<GameObject, Vector3, GameObject> instantiatePosFunc, 
+                         ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
             m_InstantiateFunc = instantiateFunc;
+            m_InstantiatePosFunc = instantiatePosFunc;
             m_ItemManager = itemManager;
 
             m_MoveDownVector = new Vector3(0, m_Offset.y, 0);
@@ -47,11 +51,10 @@ namespace LaserCrush.Manager
             HashSet<int> index = GenerateBlockOffset();
             foreach (int i in index)
             {
-                obj = m_InstantiateFunc?.Invoke(m_BlockObject);
+                obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0));
                 obj.transform.SetParent(m_BlockTransform);
 
                 block = obj.GetComponent<Block>();
-                block.transform.position = new Vector3(m_InitPos.x + m_Offset.x * i, m_InitPos.y, 0);
 
                 item = null;
                 if (m_ItemProbabilityData.TryGetItemObject(out GameObject itemPrefab))

@@ -7,7 +7,7 @@ using TMPro;
 
 namespace LaserCrush
 {
-    public class Block : MonoBehaviour, ICollisionable
+    public sealed class Block : MonoBehaviour, ICollisionable
     {
         #region Variable
         [SerializeField] private BlockData m_BlockData;
