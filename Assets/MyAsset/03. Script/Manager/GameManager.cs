@@ -1,26 +1,27 @@
+using LaserCrush.Controller;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace LaserCrush.Manager
 {
-    /// <summary>
-    /// 인풋과 턴 개념을 결정하는 클래스
-    /// 각 턴마다 적절한 update함수를 호출해준다.
-    /// 
-    /// </summary>
-    public enum EGameStateType
-    {
-        Deploying,
-        BlockUpdating,
-        LaserActivating
-    }
     public class GameManager : MonoBehaviour
     {
+        /// <summary>
+        /// 인풋과 턴 개념을 결정하는 클래스
+        /// 각 턴마다 적절한 update함수를 호출해준다.
+        /// </summary>
+        public enum EGameStateType
+        {
+            Deploying,
+            BlockUpdating,
+            LaserActivating
+        }
+
         #region Variable
+        #region SerializeField
         [Header("Monobehaviour Reference")]
         [SerializeField] private UIManager m_UIManager;
-        [SerializeField] private ClickableObject m_GameStartButton;
 
         [Header("Serialized Instance Reference")]
         [SerializeField] private GameSettingManager m_GameSettingManager;
@@ -28,6 +29,7 @@ namespace LaserCrush.Manager
         [SerializeField] private LaserManager m_LaserManager;
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
+        #endregion
 
         private SubLineController m_SubLineController;
 
@@ -36,6 +38,17 @@ namespace LaserCrush.Manager
         public static int m_StageNum;
         private float m_GameTime = 0;
         private float m_GameFrameTime = 0.01666f;
+        #endregion
+
+        #region MonoBehaviour Func
+        private GameObject InstantiateObject(GameObject obj)
+            => Instantiate(obj);
+
+        private GameObject InstantiateWithPosObject(GameObject obj, Vector3 pos)
+            => Instantiate(obj, pos, Quaternion.identity);
+
+        private void DestroyObject(GameObject obj)
+            => Destroy(obj);
         #endregion
 
         private void Awake()
@@ -49,7 +62,7 @@ namespace LaserCrush.Manager
 
             m_SubLineController = GetComponent<SubLineController>();
 
-            m_GameStartButton.MouseDownAction += OnDeploying;
+            m_SubLineController.OnClickAction += OnDeploying;
             m_StageNum = 0;
         }
 
@@ -82,11 +95,6 @@ namespace LaserCrush.Manager
                 }
             }
         }
-
-        private GameObject InstantiateObject(GameObject obj) => Instantiate(obj);
-        private GameObject InstantiateWithPosObject(GameObject obj, Vector3 pos) => Instantiate(obj,pos,Quaternion.identity);
-
-        private void DestroyObject(GameObject obj) => Destroy(obj);
 
         private void OnDeploying() // 배치끝 레이저 발사 시작
         {

@@ -93,8 +93,6 @@ namespace LaserCrush
         }
 
         private void OnDestroy()
-        {
-            m_RemoveBlockAction = null;
-        }
+            => m_RemoveBlockAction = null;
     }
 }

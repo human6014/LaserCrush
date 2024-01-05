@@ -15,6 +15,7 @@ namespace LaserCrush.Entity
 
         private void GetItemWithAnimation()
         {
+            //Do animation
             return;
         }
     }
