@@ -10,11 +10,6 @@ namespace LaserCrush.Entity
     {
         #region Variable
         [SerializeField] private GameObject m_ItemObject;
-
-        private EItemState m_EItemType;
-        private EItemState m_EState;
-
-        private InstalledItem m_PrismItem;
         #endregion
 
         #region Delegate
@@ -45,6 +40,7 @@ namespace LaserCrush.Entity
         public GameObject ItemObject { get => m_ItemObject; }
         #endregion
 
+        #region Handler
         public void OnPointerDown(PointerEventData eventData)
             => m_PointerDownAction?.Invoke(this);
 
@@ -53,6 +49,7 @@ namespace LaserCrush.Entity
 
         public void OnDrag(PointerEventData eventData)
             => m_DragAction?.Invoke(eventData.delta);
+        #endregion
 
         private void OnDestroy()
         {

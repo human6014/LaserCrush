@@ -2665,6 +2665,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0173a05f1e0a7cf4e8eb64a6e90d33ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_UIManager: {fileID: 1573006705}
+  m_GameStartButton: {fileID: 1012169028}
   m_GameSettingManager:
     m_TargetFrameRate: 60
   m_AudioManager:
@@ -2680,16 +2682,12 @@ MonoBehaviour:
     m_DroppedItemTransform: {fileID: 1611000099}
     m_BlockTransform: {fileID: 405668382}
     m_BlockObject: {fileID: 8490572725526608101, guid: d1352bab5a083e343b8eda027c82bb36, type: 3}
-    m_InitPos: {x: -42.5, y: 63.5}
-    m_Offset: {x: 17, y: -11.5}
     m_TopWall: {fileID: 872262233}
     m_LeftWall: {fileID: 910940327}
     m_MaxRowCount: 12
     m_MaxColCount: 6
   m_ItemManager:
     m_ToolbarController: {fileID: 886617866}
-  m_UIManager: {fileID: 1573006705}
-  m_GameStartButton: {fileID: 1012169028}
 --- !u!4 &1292888494
 Transform:
   m_ObjectHideFlags: 0

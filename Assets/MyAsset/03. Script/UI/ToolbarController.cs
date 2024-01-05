@@ -41,6 +41,11 @@ namespace LaserCrush.UI
             m_InitPos = m_CurrentItemTransform.anchoredPosition;
         }
 
+        private void OnDrag(Vector2 delta)
+        {
+            m_CurrentItemTransform.anchoredPosition += delta;
+        }
+
         private void OnPointerUp(Vector2 pos)
         {
             Ray ray = Camera.main.ScreenPointToRay(pos);
@@ -65,11 +70,6 @@ namespace LaserCrush.UI
                 new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);
 
             Destroy(m_CurrentItem.gameObject);
-        }
-
-        private void OnDrag(Vector2 delta)
-        {
-            m_CurrentItemTransform.anchoredPosition += delta;
         }
 
         private bool CanBatch(Vector2 pos)

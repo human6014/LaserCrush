@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class InstalledPrism1 : InstalledItem
+public sealed class InstalledPrism1 : InstalledItem
 {
 
 }

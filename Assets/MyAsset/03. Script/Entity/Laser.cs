@@ -19,10 +19,6 @@ namespace LaserCrush.Entity
     /// </summary>
     public class Laser : MonoBehaviour
     {
-        /// <summary>
-        /// m_StartPoint : 레이저 시작점 -> 소멸시 시작점이 이동함
-        /// m_EndPoint : 레이저 끝점 -> 발사 시 끝점이 이동함
-        /// </summary>
         #region Variable
         [SerializeField] private Data.LaserData m_LaserData;
 
@@ -138,7 +134,7 @@ namespace LaserCrush.Entity
         /// </summary> 
         public void Move()
         {
-            if(!Energy.CheckEnergy()) { return; }
+            if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);

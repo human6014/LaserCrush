@@ -53,7 +53,7 @@ namespace LaserCrush.Manager
             if (!m_IsDragInit) return;
 
             Vector3 objectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float xPos = Mathf.Clamp(objectPos.x, -44, 44);
+            float xPos = Mathf.Clamp(objectPos.x, -45, 45);
             m_DragTransfrom.position = new Vector3(xPos, -64, 0);
 
             UpdateLineRenderer();

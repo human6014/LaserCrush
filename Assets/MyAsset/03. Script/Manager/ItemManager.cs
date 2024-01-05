@@ -38,9 +38,11 @@ namespace LaserCrush.Manager
         {
             foreach (DroppedItem droppedItem in m_DroppedItems)
             {
-                AcquiredItem acquiredItem = droppedItem.GetItem();
-                m_AcquiredItems.Add(acquiredItem);
-                m_ToolbarController.AcquireItem(acquiredItem);
+                if (droppedItem.GetItem(out AcquiredItem acquiredItem))
+                {
+                    m_AcquiredItems.Add(acquiredItem);
+                    m_ToolbarController.AcquireItem(acquiredItem);
+                }
                 m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
             m_DroppedItems.Clear();
