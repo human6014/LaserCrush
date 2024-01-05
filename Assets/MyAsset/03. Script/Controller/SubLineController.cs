@@ -4,24 +4,33 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 using LaserCrush.Controller.InputObject;
+using LaserCrush.Manager;
 
-namespace LaserCrush.Manager
+namespace LaserCrush.Controller
 {
     public sealed class SubLineController : MonoBehaviour
     {
+        #region Variable
+        #region SerializeField
         [SerializeField] private LineRenderer m_SubLineRenderer;
         [SerializeField] private Transform m_LaserInitTransform;
         [SerializeField] private DragTransfromObject m_DragTransfromObject;
         [SerializeField] private ClickableArea m_ClickableArea;
-
+        [SerializeField] private ClickableObject m_ClickableObject;
+        #endregion
         private Camera m_MainCamera;
         private Transform m_DragTransfrom;
+        private Action m_OnClickAction;
 
         private bool m_IsDragInit;
         private bool m_IsActiveSubLine;
+        #endregion
 
+        #region Property
         public Vector3 Position { get => m_DragTransfrom.position + Vector3.up * 2; }
+
         public Vector3 Direction { get; private set; } = Vector3.up;
+
         public bool IsActiveSubLine 
         {
             get => m_IsActiveSubLine;
@@ -33,6 +42,13 @@ namespace LaserCrush.Manager
             }
         }
 
+        public event Action OnClickAction 
+        { 
+            add => m_OnClickAction += value;
+            remove => m_OnClickAction -= value; 
+        }
+        #endregion
+
         private void Awake()
         {
             m_MainCamera = Camera.main;
@@ -41,7 +57,7 @@ namespace LaserCrush.Manager
 
             m_DragTransfromObject.MouseMoveAction += SetInitPos;
             m_ClickableArea.OnMouseDragAction += SetDirection;
-            UpdateLineRenderer();
+            m_ClickableObject.MouseDownAction += () => m_OnClickAction?.Invoke();
         }
 
         private void SetInitPos(bool isDragInit)
@@ -91,5 +107,8 @@ namespace LaserCrush.Manager
 
         private bool RaycastToTouchable(Vector3 pos, out RaycastHit hit)
             => Physics.Raycast(m_MainCamera.ScreenPointToRay(pos), out hit, Mathf.Infinity);
+
+        private void OnDestroy()
+            => m_OnClickAction = null;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace LaserCrush
+namespace LaserCrush.Controller
 {
     public class ClickableObject : MonoBehaviour
     {
@@ -14,10 +14,10 @@ namespace LaserCrush
             remove => m_MouseDownAction -= value; 
         }
 
-        public void OnMouseDown()
-        {
-            Debug.Log("Mouse Down");
-            m_MouseDownAction?.Invoke();
-        }
+        private void OnMouseDown() 
+            => m_MouseDownAction?.Invoke();
+
+        private void OnDestroy()
+            => m_MouseDownAction = null;
     }
 }

@@ -16,7 +16,7 @@ namespace LaserCrush.UI
         private RectTransform m_CurrentItemTransform;
         private Vector2 m_InitPos;
 
-        public event Action<InstalledItem, AcquiredItem> m_AddPrismAction;
+        public event Action<InstalledItem, AcquiredItem, Vector3> m_AddPrismAction;
 
         public void AcquireItem(AcquiredItem item)
         {
@@ -63,8 +63,8 @@ namespace LaserCrush.UI
             obj.transform.SetParent(m_BatchedItemTransform);
             obj.transform.position = origin;
 
-            if (!obj.TryGetComponent(out InstalledItem prism)) Debug.LogError("Prism is null");
-            m_AddPrismAction?.Invoke(prism, m_CurrentItem);
+            InstalledItem prism = obj.GetComponent<InstalledItem>();
+            m_AddPrismAction?.Invoke(prism, m_CurrentItem, origin);
 
             m_ContentTransform.sizeDelta =
                 new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);

@@ -12,15 +12,28 @@ public class Energy : MonoBehaviour
     private static event UnityAction m_TextUpdate;
 
     private static int m_MaxEnergy = 10000;
-    private static int m_Energy = 10000;
+    private static int m_CurrentEnergy = 10000;
     private static Vector2 m_Postion;
     #endregion
+
+    private static int CurrentEnergy 
+    { 
+        get => m_CurrentEnergy;
+        set
+        {
+            m_CurrentEnergy = value;
+            m_TextUpdate?.Invoke();
+        }
+    }
 
     private void Awake()
     {
         m_TextUpdate = null;
-        m_TextUpdate += () => m_Text.text = m_Energy.ToString();
-        m_TextUpdate?.Invoke();
+        m_TextUpdate += () => m_Text.text = m_CurrentEnergy.ToString();
+
+        m_MaxEnergy = 10000;
+        CurrentEnergy = 10000;
+        m_Postion = Vector2.zero;
     }
 
     /// <summary>
@@ -32,7 +45,7 @@ public class Energy : MonoBehaviour
 
     public static int GetEnergy()
     {
-        return m_Energy;
+        return CurrentEnergy;
     }
 
     public static Vector2 GetPosion()
@@ -50,27 +63,26 @@ public class Energy : MonoBehaviour
     /// <returns></returns>
     public static int UseEnergy(int energy)
     {
-        if(energy <= m_Energy) 
+        if (energy <= CurrentEnergy) 
         {
-            m_Energy -= energy;
+            CurrentEnergy -= energy;
         }
         else
         {
-            energy = m_Energy;
-            m_Energy = 0;
+            energy = CurrentEnergy;
+            CurrentEnergy = 0;
         }
-        m_TextUpdate?.Invoke();
         return energy;
     }
     
     public static bool CheckEnergy()
     {
-        return m_Energy > 0;
+        return CurrentEnergy > 0;
     }
 
     public static bool IsAvailable()
     {
-        return m_Energy > 0;
+        return CurrentEnergy > 0;
     }
 
     /// <summary>
@@ -78,14 +90,12 @@ public class Energy : MonoBehaviour
     /// </summary>
     public static void CollideWithWall()
     {
-        m_Energy -= (m_Energy / 10);
-        m_TextUpdate?.Invoke();
+        CurrentEnergy -= (CurrentEnergy / 10);
     }
 
     public static void ChargeEnergy()
     {
-        m_Energy = m_MaxEnergy;
-        m_TextUpdate?.Invoke();
+        CurrentEnergy = m_MaxEnergy;
     }
 
     public static void EnergyUpgrade(int additionalEnergy)
