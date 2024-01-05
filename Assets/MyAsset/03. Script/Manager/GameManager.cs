@@ -79,7 +79,6 @@ namespace LaserCrush.Manager
             if (m_GameTime >= m_GameFrameTime)
             {
                 m_GameTime -= m_GameFrameTime;
-                //Debug.Log("m_GameStateType : " + m_GameStateType);
                 switch (m_GameStateType)
                 {
                     case EGameStateType.Deploying:
@@ -135,7 +134,7 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
-            if (Energy.IsAvailable())
+            if (Energy.CheckEnergy())
             {
                 m_LaserManager.Activate();
             }
