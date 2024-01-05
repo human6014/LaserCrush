@@ -87,4 +87,9 @@ public class Energy : MonoBehaviour
         m_Energy = m_MaxEnergy;
         m_TextUpdate?.Invoke();
     }
+
+    public static void EnergyUpgrade(int additionalEnergy)
+    {
+        m_MaxEnergy += additionalEnergy;
+    }
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3753868951191216464}
   - component: {fileID: 3753868951191216467}
-  - component: {fileID: 2777418016703943695}
+  - component: {fileID: 3319378936386477049}
   m_Layer: 0
   m_Name: DroppedEnergy
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2777418016703943695
+--- !u!114 &3319378936386477049
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3753868951191216476}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 148b19a18f3e68f4c9a4de50f19921e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f038cef16dee9c46b2ca43552d62663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AcquiredItem: {fileID: 2561265107801539121, guid: bf83899dc7a74614194063bbdb82aa41, type: 3}
+  m_AcquiredItem: {fileID: 0}

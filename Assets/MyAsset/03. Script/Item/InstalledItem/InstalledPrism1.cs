@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InstalledPrism1 : InstalledItem
+public sealed class InstalledPrism1 : InstalledItem
 {
 
 }

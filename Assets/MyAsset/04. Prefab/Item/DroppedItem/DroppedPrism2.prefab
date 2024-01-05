@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3753868951191216464}
   - component: {fileID: 3753868951191216467}
-  - component: {fileID: 2777418016703943695}
+  - component: {fileID: 4375627998968989968}
   m_Layer: 0
   m_Name: DroppedPrism2
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2777418016703943695
+--- !u!114 &4375627998968989968
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3753868951191216476}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 148b19a18f3e68f4c9a4de50f19921e6, type: 3}
+  m_Script: {fileID: 11500000, guid: aceecad6b2f2a544795da693ccfa2445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_AcquiredItem: {fileID: 2561265107801539121, guid: 0c44c23ea378de442ab722fa7912e7d5, type: 3}

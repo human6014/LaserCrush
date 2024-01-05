@@ -29,13 +29,13 @@ namespace LaserCrush.Manager
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
 
-
-
         private SubLineController m_SubLineController;
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
+        private float m_GameTime = 0;
+        private float m_GameFrameTime = 0.01666f;
         #endregion
 
         private void Awake()
@@ -62,21 +62,25 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
-            //Debug.Log("m_GameStateType : " + m_GameStateType);
-            switch (m_GameStateType) 
+            m_GameTime += Time.deltaTime;
+            if (m_GameTime >= m_GameFrameTime)
             {
-                case EGameStateType.Deploying:
-                    //temDeployingComplete();
-                    break;
-                case EGameStateType.BlockUpdating:
-                    BlockUpdating();
-                    break;
-                case EGameStateType.LaserActivating:
-                    LaserActivating();
-                    break;
-                default:
-                    Debug.Log("올바르지 않은 게임 상태입니다.");
-                    break;
+                m_GameTime -= m_GameFrameTime;
+                //Debug.Log("m_GameStateType : " + m_GameStateType);
+                switch (m_GameStateType)
+                {
+                    case EGameStateType.Deploying:
+                        break;
+                    case EGameStateType.BlockUpdating:
+                        BlockUpdating();
+                        break;
+                    case EGameStateType.LaserActivating:
+                        LaserActivating();
+                        break;
+                    default:
+                        Debug.Log("올바르지 않은 게임 상태입니다.");
+                        break;
+                }
             }
         }
 
@@ -84,13 +88,6 @@ namespace LaserCrush.Manager
         private GameObject InstantiateWithPosObject(GameObject obj, Vector3 pos) => Instantiate(obj,pos,Quaternion.identity);
 
         private void DestroyObject(GameObject obj) => Destroy(obj);
-
-        public static void DeployingComplete()
-        {
-            /*ToDo
-             * m_ItemManager.AddPrism()함수를 사용해 프리즘을 인스턴시에이트 후 배열에 추가
-             */
-        }
 
         private void OnDeploying()
         {
