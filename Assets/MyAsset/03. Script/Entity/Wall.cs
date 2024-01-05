@@ -12,13 +12,10 @@ namespace LaserCrush.Entity
         public void Awake()
         {
             m_EntityType = EEntityType.Wall;
-            Debug.Log("벽 초기화");
         }
 
         public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
         {
-            Debug.Log("벽과 충돌 후 자식생성");
-            Debug.Log("벽과 충돌 후 에너지 사용");
             Energy.CollideWithWall();
             //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
             Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);

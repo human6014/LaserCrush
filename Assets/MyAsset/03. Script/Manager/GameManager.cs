@@ -47,10 +47,6 @@ namespace LaserCrush.Manager
             m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
             m_UIManager.Init();
 
-            /*
-             * m_블럭 오브제긑~ = PoolingObject.Register(블럭)
-             * m_레이저~~ = = PoolingObject.Register(레이저)
-             */
             m_SubLineController = GetComponent<SubLineController>();
 
             m_GameStartButton.MouseDownAction += OnDeploying;
@@ -70,7 +66,6 @@ namespace LaserCrush.Manager
             if (m_GameTime >= m_GameFrameTime)
             {
                 m_GameTime -= m_GameFrameTime;
-                //Debug.Log("m_GameStateType : " + m_GameStateType);
                 switch (m_GameStateType)
                 {
                     case EGameStateType.Deploying:
@@ -131,7 +126,7 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
-            if (Energy.IsAvailable())
+            if (Energy.CheckEnergy())
             {
                 m_LaserManager.Activate();
             }
