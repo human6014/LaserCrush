@@ -47,6 +47,10 @@ namespace LaserCrush.Manager
             m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
             m_UIManager.Init();
 
+            /*
+             * m_블럭 오브제긑~ = PoolingObject.Register(블럭)
+             * m_레이저~~ = = PoolingObject.Register(레이저)
+             */
             m_SubLineController = GetComponent<SubLineController>();
 
             m_GameStartButton.MouseDownAction += OnDeploying;
@@ -89,7 +93,7 @@ namespace LaserCrush.Manager
 
         private void DestroyObject(GameObject obj) => Destroy(obj);
 
-        private void OnDeploying()
+        private void OnDeploying() // 배치끝 레이저 발사 시작
         {
             Debug.Log("배치 턴");
             m_GameStateType = EGameStateType.LaserActivating;
@@ -117,8 +121,9 @@ namespace LaserCrush.Manager
             m_BlockManager.MoveDownAllBlocks();
             m_BlockManager.GenerateBlock();
 
+            //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             Debug.Log("에너지 보충");
-            Energy.ChargeEnergy();
+            Energy.ChargeEnergy();//에너지가 차오르는 이미지
 
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;

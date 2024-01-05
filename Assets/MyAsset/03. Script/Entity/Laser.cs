@@ -37,7 +37,6 @@ namespace LaserCrush.Entity
 
         private bool m_IsInitated;
         private bool m_IsActivated;
-
         #endregion
 
         private void Awake()
@@ -211,6 +210,5 @@ namespace LaserCrush.Entity
                 }
             }
         }
-
     }
 }

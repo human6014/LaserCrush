@@ -204,9 +204,9 @@ namespace LaserCrush.Manager
 
             for (int i = 0; i < dirVector.Count; i++)
             {
-
                 Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.SetParent(m_LasersTransform);
+
                 laser.transform.position = pos;
                 laser.Init(CreateLaser, LossParent);
                 laser.Activate(pos + dirVector[i], dirVector[i]);
