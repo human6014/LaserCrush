@@ -21,6 +21,13 @@ namespace LaserCrush.Manager
         #endregion
 
         private event Action<GameObject> m_DestroyAction;
+        private Func<Vector3, Vector3> m_GetItemGridPosFunc;
+
+        public event Func<Vector3,Vector3> GetItemGridPosFunc 
+        { 
+            add => m_GetItemGridPosFunc += value;
+            remove => m_GetItemGridPosFunc -= value;
+        }
 
         public void Init(Action<GameObject> destroyAction)
         {
@@ -59,14 +66,12 @@ namespace LaserCrush.Manager
             }
             RemoveBufferFlush();
         }
-
-        /*TODO
-         * 해당 함수를 델리게이트로 블럭에서 아이템 생성해줄때 Prism배열에 넣어주어야 한다.
-         */
-        public void AddPrism(InstalledItem prism, AcquiredItem acquiredItem)
+        private void AddPrism(InstalledItem prism, AcquiredItem acquiredItem, Vector3 pos)
         {
             m_AcquiredItems.Remove(acquiredItem);
             m_Prisms.Add(prism);
+
+            prism.transform.position = (Vector3)(m_GetItemGridPosFunc?.Invoke(pos));
         }
 
         public void AddDroppedItem(DroppedItem item)

@@ -2666,7 +2666,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIManager: {fileID: 1573006705}
-  m_GameStartButton: {fileID: 1012169028}
   m_GameSettingManager:
     m_TargetFrameRate: 60
   m_AudioManager:
@@ -2720,6 +2719,7 @@ MonoBehaviour:
   m_LaserInitTransform: {fileID: 3849716300557570480}
   m_DragTransfromObject: {fileID: 2017001684}
   m_ClickableArea: {fileID: 1694990294}
+  m_ClickableObject: {fileID: 1012169028}
 --- !u!1 &1327292612
 GameObject:
   m_ObjectHideFlags: 0

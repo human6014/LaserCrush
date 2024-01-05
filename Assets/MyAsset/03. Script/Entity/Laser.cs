@@ -22,10 +22,11 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private Data.LaserData m_LaserData;
 
-        private List<Laser> m_ChildLazers;
-
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
+
+        private List<Laser> m_ChildLazers;
         private LineRenderer m_LineRenderer;
+
         private Func<List<Vector2>, Vector2, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
@@ -189,12 +190,6 @@ namespace LaserCrush.Entity
             Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
         }
 
-        private void OnDestroy()
-        {
-            m_LaserCreateFunc = null;
-            m_LaserEraseAction = null;
-        }
-
         public void LossParentLasersDeActivate()
         {
             Queue<Laser> remover = new Queue<Laser>();
@@ -209,6 +204,12 @@ namespace LaserCrush.Entity
                     remover.Enqueue(now.m_ChildLazers[i]);
                 }
             }
+        }
+
+        private void OnDestroy()
+        {
+            m_LaserCreateFunc = null;
+            m_LaserEraseAction = null;
         }
     }
 }

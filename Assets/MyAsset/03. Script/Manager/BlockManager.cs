@@ -28,10 +28,9 @@ namespace LaserCrush.Manager
         [Tooltip("블럭 최대 열 개수")] [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
         #endregion
+
         private Vector2 m_CalculatedInitPos;
         private Vector2 m_CalculatedOffset;
-        
-
         private Vector3 m_MoveDownVector;
 
         private ItemManager m_ItemManager;
@@ -48,8 +47,23 @@ namespace LaserCrush.Manager
             m_InstantiateFunc = instantiateFunc;
             m_InstantiatePosFunc = instantiatePosFunc;
             m_ItemManager = itemManager;
+            m_ItemManager.GetItemGridPosFunc += GetItemGridPosFunc;
 
             CalculateRowCol();
+        }
+
+        private Vector3 GetItemGridPosFunc(Vector3 pos)
+        {
+            float differX = pos.x - m_LeftWall.position.x;
+            float differY = m_TopWall.position.y - pos.y;
+
+            int rowNumber = (int)(differY / m_CalculatedOffset.y);
+            int colNumber = (int)(differX / m_CalculatedOffset.x);
+
+            float newPosX = m_CalculatedInitPos.x + m_CalculatedOffset.x * colNumber;
+            float newPosY = m_CalculatedInitPos.y - m_CalculatedOffset.y * rowNumber;
+
+            return new Vector3(newPosX, newPosY, 0);
         }
 
         private void CalculateRowCol()
@@ -65,7 +79,7 @@ namespace LaserCrush.Manager
 
             m_BlockObject.transform.localScale = new Vector3(blockWidth, blockHeight, 1);
 
-            m_MoveDownVector = new Vector3(0, m_CalculatedOffset.y, 0);
+            m_MoveDownVector = new Vector3(0, -m_CalculatedOffset.y, 0);
         }
 
         public void GenerateBlock()
@@ -112,7 +126,7 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_Blocks.Count; i++)
             {
-                m_Blocks[i].transform.position -= m_MoveDownVector;
+                m_Blocks[i].transform.position += m_MoveDownVector;
             }
         }
 
@@ -122,13 +136,11 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            //int randomSize = Random.Range(1,7);//1~6사이 숫자
-            int randomSize = Random.Range(1, m_MaxColCount + 1);//1~6사이 숫자
+            int randomSize = Random.Range(1, m_MaxColCount + 1);//1 ~ m_MaxColCount사이 숫자
             HashSet<int> result = new HashSet<int>();
 
             while(result.Count < randomSize)
             {
-                //result.Add(Random.Range(0, m_WidthBlocksCapacity));//0 ~ m_WidthBlocksCapacity 사이 숫자 생성
                 result.Add(Random.Range(0, m_MaxColCount));
             }
             return result;
@@ -154,8 +166,7 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private EEntityType GenerateEntityType()
         {
-            if (Random.Range(0, 100) < 50) return EEntityType.NormalBlock;
-            else return EEntityType.ReflectBlock;
+            return Random.Range(0, 100) < 50 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
         }
     }
 }
