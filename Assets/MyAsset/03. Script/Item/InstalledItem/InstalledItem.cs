@@ -1,6 +1,7 @@
 using LaserCrush.Entity;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 /// <summary>
@@ -24,6 +25,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     private bool m_IsActivate = false;
     #endregion
+
 
     /// <summary>
     /// 화면에서 유저 입력을 받아 설치할때 호출할 함수
