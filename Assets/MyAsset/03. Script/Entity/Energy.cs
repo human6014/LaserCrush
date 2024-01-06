@@ -69,13 +69,19 @@ public class Energy : MonoBehaviour
         CurrentEnergy -= (CurrentEnergy / 10);
     }
 
-    public static void ChargeEnergy()
+    public static int ChargeEnergy()
     {
         CurrentEnergy = m_MaxEnergy;
+        return CurrentEnergy;
     }
 
     public static void EnergyUpgrade(int additionalEnergy)
     {
         m_MaxEnergy += additionalEnergy;
+    }
+
+    public static int GetEnergy()
+    {
+        return m_CurrentEnergy;
     }
 }
