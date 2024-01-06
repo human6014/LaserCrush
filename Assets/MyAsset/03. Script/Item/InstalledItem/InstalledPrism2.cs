@@ -8,8 +8,8 @@ public sealed class InstalledPrism2 : InstalledItem
     {
         m_EjectionPorts.Add(new Vector2(1, 0).normalized);
         m_EjectionPorts.Add(new Vector2(-1, 0).normalized);
+        m_UsingCount = m_MaxUsingCount;
         m_IsActivate = false;
-        Debug.Log("√ ±‚»≠µ ");
     }
 
 }
