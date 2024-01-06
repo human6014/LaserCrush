@@ -66,12 +66,14 @@ namespace LaserCrush.Manager
             }
             RemoveBufferFlush();
         }
+
         private void AddPrism(InstalledItem prism, AcquiredItem acquiredItem, Vector3 pos)
         {
             m_AcquiredItems.Remove(acquiredItem);
             m_Prisms.Add(prism);
-
             prism.transform.position = (Vector3)(m_GetItemGridPosFunc?.Invoke(pos));
+            prism.Init();
+            Debug.Log("프리즘 설치");
         }
 
         public void AddDroppedItem(DroppedItem item)

@@ -38,6 +38,9 @@ namespace LaserCrush.Manager
         public static int m_StageNum;
         private float m_GameTime = 0;
         private float m_GameFrameTime = 0.01666f;
+        private float m_ValidTime = 4;
+        private float m_LaserTime;
+        private int m_PreEnergy;
         #endregion
 
         #region MonoBehaviour Func
@@ -62,7 +65,7 @@ namespace LaserCrush.Manager
 
             m_SubLineController = GetComponent<SubLineController>();
 
-            m_SubLineController.OnClickAction += OnDeploying;
+            m_SubLineController.OnClickAction += EndDeploying;
             m_StageNum = 0;
         }
 
@@ -96,7 +99,7 @@ namespace LaserCrush.Manager
             }
         }
 
-        private void OnDeploying() // 배치끝 레이저 발사 시작
+        private void EndDeploying() // 배치끝 레이저 발사 시작
         {
             Debug.Log("배치 턴");
             m_GameStateType = EGameStateType.LaserActivating;
@@ -126,16 +129,30 @@ namespace LaserCrush.Manager
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             Debug.Log("에너지 보충");
-            Energy.ChargeEnergy();//에너지가 차오르는 이미지
-
+            m_PreEnergy = Energy.ChargeEnergy();//에너지가 차오르는 애니메이션
+            m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
         }
 
         private void LaserActivating()
         {
+
             if (Energy.CheckEnergy())
             {
+                Debug.Log("체크");
+                m_LaserTime += Time.deltaTime;
+                //유효시간 넘겼는데 이전에너지랑 같으면
+                if(m_LaserTime > m_ValidTime && (m_PreEnergy == Energy.GetEnergy()))
+                {
+                    Energy.UseEnergy(int.MaxValue);
+                    m_LaserTime = 0;
+                    return;
+                }
+                if(m_LaserTime > m_ValidTime)
+                {
+                    m_LaserTime = 0;
+                }
                 m_LaserManager.Activate();
             }
             else
