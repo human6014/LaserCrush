@@ -19,10 +19,12 @@ public struct LaserInfo
 public class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
+    [SerializeField] private Transform[] m_EjectionPortsTransform;
+
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+    protected List<Vector2> m_EjectionPorts = new List<Vector2>();
 
     private const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 10;
@@ -32,7 +34,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     private bool m_IsActivate = false;
     #endregion
-
 
     /// <summary>
     /// 화면에서 유저 입력을 받아 설치할때 호출할 함수
@@ -83,7 +84,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <returns></returns>
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-/*      if (m_IsActivate)
+      /*if (m_IsActivate)
         {
             Debug.Log("이미 충돌됨 : " + m_IsActivate);
             List<Vector2> answer = new List<Vector2>();
@@ -111,5 +112,11 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     public bool GetDamage(int damage)
     {
         return false;
+    }
+
+    private void OnMouseDrag()
+    {
+        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        transform.rotation = Quaternion.LookRotation(transform.forward, direction);
     }
 }

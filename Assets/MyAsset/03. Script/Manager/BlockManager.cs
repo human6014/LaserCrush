@@ -47,12 +47,27 @@ namespace LaserCrush.Manager
             m_InstantiateFunc = instantiateFunc;
             m_InstantiatePosFunc = instantiatePosFunc;
             m_ItemManager = itemManager;
-            m_ItemManager.GetItemGridPosFunc += GetItemGridPosFunc;
+            m_ItemManager.CheckAvailablePosPredicate += CheckAvailablePos;
+            m_ItemManager.GetItemGridPosFunc += GetItemGridPos;
 
             CalculateRowCol();
         }
 
-        private Vector3 GetItemGridPosFunc(Vector3 pos)
+        private Result CheckAvailablePos(Vector3 pos)
+        {
+            Vector2 newPos = GetItemGridPos(pos);
+            float sqrDist;
+            
+            foreach(Block block in m_Blocks)
+            {
+                sqrDist = ((Vector2)block.transform.position - newPos).sqrMagnitude;
+                if (sqrDist <= 9) return new Result(isAvailable: false, itemGridPos : newPos);
+            }
+
+            return new Result(isAvailable : true, itemGridPos : newPos);
+        }
+
+        private Vector3 GetItemGridPos(Vector3 pos)
         {
             float differX = pos.x - m_LeftWall.position.x;
             float differY = m_TopWall.position.y - pos.y;
@@ -86,8 +101,8 @@ namespace LaserCrush.Manager
         {
             GameObject obj;
             GameObject itemObject;
-            Block block;
             DroppedItem item;
+            Block block;
 
             HashSet<int> index = GenerateBlockOffset();
             foreach (int i in index)

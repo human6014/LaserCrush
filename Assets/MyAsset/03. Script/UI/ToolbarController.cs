@@ -9,15 +9,34 @@ namespace LaserCrush.UI
 {
     public class ToolbarController : MonoBehaviour
     {
-        [SerializeField] private RectTransform m_BatchedItemTransform;
+        [SerializeField] private Canvas m_MainCanvas;
+        [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private RectTransform m_ContentTransform;
 
-        private AcquiredItem m_CurrentItem;
-        private RectTransform m_CurrentItemTransform;
         private Vector2 m_InitPos;
 
-        public event Action<InstalledItem, AcquiredItem, Vector3> m_AddPrismAction;
+        private Camera m_MainCamera;
+        private AcquiredItem m_CurrentItem;
+        private RectTransform m_CurrentItemTransform;
+        
+        private Predicate<Vector3> m_CheckAvailablePosPredicate;
+        private Action<InstalledItem, AcquiredItem, Vector3> m_AddPrismAction;
 
+        public event Predicate<Vector3> CheckAvailablePosPredicate
+        {
+            add => m_CheckAvailablePosPredicate += value;
+            remove => m_CheckAvailablePosPredicate -= value;
+        }
+
+        public event Action<InstalledItem, AcquiredItem, Vector3> AddPrismAction
+        {
+            add => m_AddPrismAction += value;
+            remove => m_AddPrismAction -= value;
+        }
+
+        private void Awake()
+            => m_MainCamera = Camera.main;
+        
         public void AcquireItem(AcquiredItem item)
         {
             m_ContentTransform.sizeDelta = 
@@ -37,31 +56,32 @@ namespace LaserCrush.UI
             m_CurrentItem = clickedItem;
             m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();
             m_CurrentItem.GetComponent<Image>().maskable = false;
+            m_ContentTransform.SetAsLastSibling();
 
             m_InitPos = m_CurrentItemTransform.anchoredPosition;
         }
 
         private void OnDrag(Vector2 delta)
         {
-            m_CurrentItemTransform.anchoredPosition += delta;
+            m_CurrentItemTransform.anchoredPosition += delta / m_MainCanvas.scaleFactor;
         }
 
         private void OnPointerUp(Vector2 pos)
         {
-            Ray ray = Camera.main.ScreenPointToRay(pos);
-            if (!CanBatch(ray.origin))
+            Ray ray = m_MainCamera.ScreenPointToRay(pos);
+            if (!CanBatch(ray.origin) || !BatchAcquireItem(ray.origin))
             {
                 m_CurrentItem.GetComponent<Image>().maskable = true;
                 m_CurrentItemTransform.anchoredPosition = m_InitPos;
             }
-            else DeAcquireItem(ray.origin);
         }
 
-        private void DeAcquireItem(Vector3 origin)
+        private bool BatchAcquireItem(Vector3 origin)
         {
+            if (!(bool)m_CheckAvailablePosPredicate?.Invoke(origin)) return false;
+
             GameObject obj = Instantiate(m_CurrentItem.ItemObject);
             obj.transform.SetParent(m_BatchedItemTransform);
-            obj.transform.position = origin;
 
             InstalledItem prism = obj.GetComponent<InstalledItem>();
             m_AddPrismAction?.Invoke(prism, m_CurrentItem, origin);
@@ -70,6 +90,8 @@ namespace LaserCrush.UI
                 new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);
 
             Destroy(m_CurrentItem.gameObject);
+
+            return true;
         }
 
         private bool CanBatch(Vector2 pos)

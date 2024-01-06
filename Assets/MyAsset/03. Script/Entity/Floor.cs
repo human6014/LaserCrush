@@ -5,12 +5,8 @@ using UnityEngine;
 
 public sealed class Floor : MonoBehaviour, ICollisionable
 {
-    #region Variable
-    private EEntityType m_EntityType;
-    #endregion
     public void Awake()
     {
-        m_EntityType = EEntityType.Floor;
         Debug.Log("바닥 초기화");
     }
 

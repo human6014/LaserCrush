@@ -21,10 +21,10 @@ namespace LaserCrush.Data
         [SerializeField] private GameObject[] m_DroppedItems;
 
         /// È®·ü Ç¥
-        /// None = 50
-        /// Energy = 30
-        /// Prism_1 = 10
-        /// Prism_2 = 10
+        /// Energy = 10
+        /// Prism_1 = 5
+        /// Prism_2 = 5
+        /// None = 80
         public int GetItemIndex() 
         {
             float randomPoint = Random.value * 100;
