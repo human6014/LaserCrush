@@ -215,7 +215,5 @@ namespace LaserCrush.Manager
             }
             return answer;
         }
-
-        
     }
 }

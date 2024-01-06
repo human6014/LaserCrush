@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -149,6 +148,11 @@ namespace LaserCrush.Entity
             {
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
+                //dir이 0인 경우
+                /*
+                 * 1. 흡수 블럭일 경우
+                 * 2. 이미 충돌한 블럭인 경우 
+                 */
                 m_State = ELaserStateType.Hitting;
                 AddChild(m_LaserCreateFunc?.Invoke(dir, hit.point));
                 return;
@@ -186,7 +190,6 @@ namespace LaserCrush.Entity
                 m_ChildLazers.Add(child[i]);
             }
         }
-
 
         public void CollideLauncher(RaycastHit2D hit)
         {
