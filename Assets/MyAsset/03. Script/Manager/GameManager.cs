@@ -101,7 +101,6 @@ namespace LaserCrush.Manager
 
         private void EndDeploying() // 배치끝 레이저 발사 시작
         {
-            Debug.Log("배치 턴");
             m_GameStateType = EGameStateType.LaserActivating;
             m_SubLineController.IsActiveSubLine = false;
         }
@@ -113,22 +112,22 @@ namespace LaserCrush.Manager
         private void BlockUpdating()
         {
             m_StageNum++;
-            Debug.Log("필드 위 아이템 획득");
+            //Debug.Log("필드 위 아이템 획득");
             /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
              */
             m_ItemManager.GetDroppedItems();
 
-            Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
+            //Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
             m_ItemManager.CheckDestroyPrisms();
 
-            Debug.Log("블럭 생성");
+            //Debug.Log("블럭 생성");
             m_BlockManager.MoveDownAllBlocks();
             m_BlockManager.GenerateBlock();
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
-            Debug.Log("에너지 보충");
+            //Debug.Log("에너지 보충");
             m_PreEnergy = Energy.ChargeEnergy();//에너지가 차오르는 애니메이션
             m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
@@ -140,19 +139,18 @@ namespace LaserCrush.Manager
 
             if (Energy.CheckEnergy())
             {
-                Debug.Log("체크");
                 m_LaserTime += Time.deltaTime;
-                //유효시간 넘겼는데 이전에너지랑 같으면
                 if(m_LaserTime > m_ValidTime && (m_PreEnergy == Energy.GetEnergy()))
                 {
                     Energy.UseEnergy(int.MaxValue);
-                    m_LaserTime = 0;
                     return;
                 }
+
                 if(m_LaserTime > m_ValidTime)
                 {
                     m_LaserTime = 0;
                 }
+                m_PreEnergy = Energy.GetEnergy();
                 m_LaserManager.Activate();
             }
             else

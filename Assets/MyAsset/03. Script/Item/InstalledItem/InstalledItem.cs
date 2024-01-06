@@ -22,7 +22,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+    protected List<Vector2> m_EjectionPorts = new List<Vector2>();
 
     private const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 10;
@@ -30,7 +30,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     private int m_UsingCount = 0;
     private int m_ChargingWait;
 
-    private bool m_IsActivate = false;
+    protected bool m_IsActivate = false;
     #endregion
 
 
@@ -46,13 +46,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <summary>
     /// 이거 가상함수로 자식 클래스에서 함수가 호출이 안됨 원인 알면 알려줘
     /// </summary>
-    public virtual void Init() 
-    {
-        //m_EjectionPorts.Add(new Vector2(1, 0));
-        m_IsActivate = false;
-        Debug.Log("m_IsActivate : "  + m_IsActivate);
-        Debug.Log("초기화됨 -> 부모클래스");
-    }
+    public virtual void Init()     {    }
 
     /// <summary>
     /// 활성화 되어있지 않으면 Charging후 레이저에서 새로운 레이저 생성
@@ -83,12 +77,11 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <returns></returns>
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-/*      if (m_IsActivate)
+        if (m_IsActivate)
         {
-            Debug.Log("이미 충돌됨 : " + m_IsActivate);
             List<Vector2> answer = new List<Vector2>();
             return answer;
-        }*/
+        }
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
@@ -96,7 +89,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     public bool IsOverloaded()
     {
-        if(m_UsingCount == 0)
+        m_IsActivate = false;
+        if (m_UsingCount == 0)
         {
             return true;
         }

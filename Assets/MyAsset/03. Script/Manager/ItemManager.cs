@@ -4,6 +4,7 @@ using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.UI;
 using System;
+using Unity.VisualScripting;
 
 namespace LaserCrush.Manager
 {
@@ -86,6 +87,8 @@ namespace LaserCrush.Manager
             for (int i = 0; i < m_PrismRemoveBuffer.Count; i++)
             {
                 m_Prisms.Remove(m_PrismRemoveBuffer[i]);
+                //todo
+                //여기서 프리즘 지워줘야함 ->Destory호출
             }
             m_PrismRemoveBuffer.Clear();
         }
