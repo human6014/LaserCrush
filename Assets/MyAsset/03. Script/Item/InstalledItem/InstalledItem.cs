@@ -9,13 +9,20 @@ using UnityEngine;
 /// 해당 방향으로 레이저를 추가 생산
 /// </summary>
 
+public struct LaserInfo
+{
+    public Vector2 Posion;
+    public Vector2 Direction;
+}
+
+
 public class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    protected List<Vector2> m_EjectionPorts = new List<Vector2>();
+    protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
     private const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 10;
@@ -34,11 +41,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// </summary>
     void RotateEjectionPorts()
     {
-        //입력을 받아 rot를 만든다.
-        for(int i = 0; i < m_EjectionPorts.Count; i++) 
-        {
-            m_EjectionPorts[i] = Quaternion.Euler(0f, 0f, 0f) * m_EjectionPorts[i];
-        }
     }
 
     /// <summary>
@@ -46,10 +48,10 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// </summary>
     public virtual void Init() 
     {
-        m_EjectionPorts.Add(new Vector2(1, 0));
+        //m_EjectionPorts.Add(new Vector2(1, 0));
         m_IsActivate = false;
         Debug.Log("m_IsActivate : "  + m_IsActivate);
-        Debug.Log("초기화됨 -> 부모클래스ㄴ");
+        Debug.Log("초기화됨 -> 부모클래스");
     }
 
     /// <summary>
@@ -81,7 +83,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <returns></returns>
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-/*        if (m_IsActivate)
+/*      if (m_IsActivate)
         {
             Debug.Log("이미 충돌됨 : " + m_IsActivate);
             List<Vector2> answer = new List<Vector2>();
