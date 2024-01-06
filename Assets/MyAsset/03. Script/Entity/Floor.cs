@@ -7,7 +7,7 @@ public sealed class Floor : MonoBehaviour, ICollisionable
 {
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-        Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
+        Energy.UseEnergy(int.MaxValue);
         return new List<Vector2>();
     }
 

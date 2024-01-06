@@ -4,17 +4,11 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-/// <summary>
-/// 레이저가 프리즘과 충돌 시 활성화 되어 있으면 port의 vector를 받아
-/// 해당 방향으로 레이저를 추가 생산
-/// </summary>
-
 public struct LaserInfo
 {
     public Vector2 Posion;
     public Vector2 Direction;
 }
-
 
 public class InstalledItem : MonoBehaviour, ICollisionable
 {

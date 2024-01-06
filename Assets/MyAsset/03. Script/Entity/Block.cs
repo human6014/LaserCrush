@@ -18,6 +18,7 @@ namespace LaserCrush
 
         private EEntityType m_EntityType;
 
+        private uint m_point;
         private int m_HP = 1000;
         private bool m_IsDestroyed;
 
@@ -39,6 +40,7 @@ namespace LaserCrush
         public void Init(int hp, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
         {
             m_HP = hp;
+            m_point = (uint)hp;
             m_EntityType = entityType;
             m_DroppedItem = droppedItem;
 
@@ -52,6 +54,7 @@ namespace LaserCrush
 
         private void Destroy()
         {
+            Score.GetScore(m_point);
             m_IsDestroyed = true;
             m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
             Destroy(gameObject);
