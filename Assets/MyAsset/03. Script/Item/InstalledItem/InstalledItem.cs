@@ -26,10 +26,10 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// </summary>
     protected List<Vector2> m_EjectionPorts = new List<Vector2>();
 
-    private const int m_MaxUsingCount = 3;
+    protected const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 10;
     
-    private int m_UsingCount = 0;
+    protected int m_UsingCount = 0;
     private int m_ChargingWait;
 
     protected bool m_IsActivate = false;
@@ -45,7 +45,9 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     }
 
     /// <summary>
-    /// 이거 가상함수로 자식 클래스에서 함수가 호출이 안됨 원인 알면 알려줘
+    /// 해야할 역할
+    /// 1. m_EjectionPorts 위치와 방향 초기화
+    /// 2. 사용횟수 초기화
     /// </summary>
     public virtual void Init()     {    }
 

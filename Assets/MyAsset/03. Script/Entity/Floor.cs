@@ -5,12 +5,6 @@ using UnityEngine;
 
 public sealed class Floor : MonoBehaviour, ICollisionable
 {
-    public void Awake()
-    {
-        m_EntityType = EEntityType.Floor;
-    }
-
-
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
         Energy.UseEnergy(int.MaxValue);//에너지 모두 소진
@@ -22,7 +16,7 @@ public sealed class Floor : MonoBehaviour, ICollisionable
         return false;
     }
 
-    public bool GetDamage(int  damage)
+    public bool GetDamage(int damage)
     {
         return false;
     }
