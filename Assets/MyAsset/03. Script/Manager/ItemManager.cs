@@ -7,6 +7,18 @@ using System;
 
 namespace LaserCrush.Manager
 {
+    public struct Result
+    {
+        public bool m_IsAvailable;
+        public Vector2 m_ItemGridPos;
+
+        public Result(bool isAvailable, Vector2 itemGridPos)
+        {
+            m_IsAvailable = isAvailable;
+            m_ItemGridPos = itemGridPos;
+        }
+    }
+
     [Serializable]
     public class ItemManager
     {
@@ -15,13 +27,20 @@ namespace LaserCrush.Manager
 
         private List<DroppedItem> m_DroppedItems;
         private List<AcquiredItem> m_AcquiredItems;
-        private List<InstalledItem> m_Prisms = new List<InstalledItem>();
+        private List<InstalledItem> m_InstalledItem = new List<InstalledItem>();
 
-        private List<InstalledItem> m_PrismRemoveBuffer = new List<InstalledItem>();
+        private List<InstalledItem> m_InstalledItemBuffer = new List<InstalledItem>();
         #endregion
 
-        private event Action<GameObject> m_DestroyAction;
+        private Action<GameObject> m_DestroyAction;
+        private Func<Vector3, Result> m_CheckAvailablePosPredicate;
         private Func<Vector3, Vector3> m_GetItemGridPosFunc;
+
+        public event Func<Vector3, Result> CheckAvailablePosPredicate
+        {
+            add => m_CheckAvailablePosPredicate += value;
+            remove => m_CheckAvailablePosPredicate -= value;
+        }
 
         public event Func<Vector3,Vector3> GetItemGridPosFunc 
         { 
@@ -33,12 +52,13 @@ namespace LaserCrush.Manager
         {
             m_DroppedItems = new List<DroppedItem>();
             m_AcquiredItems = new List<AcquiredItem>();
-            m_Prisms = new List<InstalledItem>();
-            m_PrismRemoveBuffer = new List<InstalledItem>();
+            m_InstalledItem = new List<InstalledItem>();
+            m_InstalledItemBuffer = new List<InstalledItem>();
 
             m_DestroyAction = destroyAction;
 
-            m_ToolbarController.m_AddPrismAction += AddPrism;
+            m_ToolbarController.CheckAvailablePosPredicate += CheckAvailablePos;
+            m_ToolbarController.AddPrismAction += AddPrism;
         }
 
         public void GetDroppedItems()
@@ -57,22 +77,42 @@ namespace LaserCrush.Manager
 
         public void CheckDestroyPrisms()
         {
-            for(int i = 0; i < m_Prisms.Count; i++)
+            for(int i = 0; i < m_InstalledItem.Count; i++)
             {
-                if (m_Prisms[i].IsOverloaded())
+                if (m_InstalledItem[i].IsOverloaded())
                 {
-                    m_PrismRemoveBuffer.Add(m_Prisms[i]);
+                    m_InstalledItemBuffer.Add(m_InstalledItem[i]);
                 }
             }
             RemoveBufferFlush();
         }
 
-        private void AddPrism(InstalledItem prism, AcquiredItem acquiredItem, Vector3 pos)
+        private bool CheckAvailablePos(Vector3 pos)
+        {
+            Result result = (Result)(m_CheckAvailablePosPredicate?.Invoke(pos));
+            if (!result.m_IsAvailable) return false;
+
+            Vector2 newPos = result.m_ItemGridPos;
+            float sqrDist;
+            foreach (InstalledItem installedItem in m_InstalledItem)
+            {
+                sqrDist = ((Vector2)installedItem.transform.position - newPos).sqrMagnitude;
+                if (sqrDist <= 9) return false;
+            }
+
+            return true;
+        }
+
+        private void AddPrism(InstalledItem installedItem, AcquiredItem acquiredItem, Vector3 pos)
         {
             m_AcquiredItems.Remove(acquiredItem);
-            m_Prisms.Add(prism);
-            prism.transform.position = (Vector3)(m_GetItemGridPosFunc?.Invoke(pos));
-            prism.Init();
+            m_InstalledItem.Add(installedItem);
+
+            Vector3 batchedPos = (Vector2)(m_GetItemGridPosFunc?.Invoke(pos));
+            batchedPos.z = 0;
+            installedItem.transform.position = batchedPos;
+            installedItem.Init();
+
             Debug.Log("프리즘 설치");
         }
 
@@ -83,11 +123,12 @@ namespace LaserCrush.Manager
 
         private void RemoveBufferFlush()
         {
-            for (int i = 0; i < m_PrismRemoveBuffer.Count; i++)
+            for (int i = 0; i < m_InstalledItemBuffer.Count; i++)
             {
-                m_Prisms.Remove(m_PrismRemoveBuffer[i]);
+                m_DestroyAction?.Invoke(m_InstalledItemBuffer[i].gameObject);
+                m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
             }
-            m_PrismRemoveBuffer.Clear();
+            m_InstalledItemBuffer.Clear();
         }
     }
 }

@@ -1408,6 +1408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 792d36c02925856439721aaa6e7e037d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MainCanvas: {fileID: 2058530983}
   m_BatchedItemTransform: {fileID: 555224050}
   m_ContentTransform: {fileID: 1616628847}
 --- !u!1 &905272569
@@ -2183,7 +2184,7 @@ Transform:
   - {fileID: 1012169026}
   - {fileID: 605760578}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1150538501
 GameObject:
@@ -3356,7 +3357,7 @@ Transform:
   - {fileID: 1436713812}
   - {fileID: 67470574}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1573006704
 MonoBehaviour:
