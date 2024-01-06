@@ -5,9 +5,6 @@ using UnityEngine;
 
 public sealed class Floor : MonoBehaviour, ICollisionable
 {
-    #region Variable
-    private EEntityType m_EntityType;
-    #endregion
     public void Awake()
     {
         m_EntityType = EEntityType.Floor;
@@ -16,7 +13,7 @@ public sealed class Floor : MonoBehaviour, ICollisionable
 
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-        Energy.UseEnergy(int.MaxValue);//¿¡³ÊÁö ¸ğµÎ ¼ÒÁø
+        Energy.UseEnergy(int.MaxValue);//ì—ë„ˆì§€ ëª¨ë‘ ì†Œì§„
         return new List<Vector2>();
     }
 

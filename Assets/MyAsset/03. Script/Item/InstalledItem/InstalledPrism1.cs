@@ -9,7 +9,7 @@ public sealed class InstalledPrism1 : InstalledItem
     {
         m_EjectionPorts.Add(new Vector2(1, 0));
         m_IsActivate = false;
-        Debug.Log("�ʱ�ȭ��");
+        Debug.Log("ÃÊ±âÈ­µÊ");
     }
 
 }
