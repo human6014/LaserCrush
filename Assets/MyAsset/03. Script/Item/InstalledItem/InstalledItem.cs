@@ -15,7 +15,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    private List<Vector2> m_EjectionPorts = new List<Vector2>();
+    protected List<Vector2> m_EjectionPorts = new List<Vector2>();
 
     private const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 10;
@@ -32,13 +32,24 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// 아이템에서 보조선이 나와 각도를 시각화 해준다
     /// 수정 필요
     /// </summary>
-    void SetEjectionPorts()
+    void RotateEjectionPorts()
     {
         //입력을 받아 rot를 만든다.
         for(int i = 0; i < m_EjectionPorts.Count; i++) 
         {
             m_EjectionPorts[i] = Quaternion.Euler(0f, 0f, 0f) * m_EjectionPorts[i];
         }
+    }
+
+    /// <summary>
+    /// 이거 가상함수로 자식 클래스에서 함수가 호출이 안됨 원인 알면 알려줘
+    /// </summary>
+    public virtual void Init() 
+    {
+        m_EjectionPorts.Add(new Vector2(1, 0));
+        m_IsActivate = false;
+        Debug.Log("m_IsActivate : "  + m_IsActivate);
+        Debug.Log("초기화됨 -> 부모클래스ㄴ");
     }
 
     /// <summary>
@@ -49,11 +60,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     public bool IsActivate()
     {
         return m_IsActivate;
-    }
-
-    public List<Vector2> GetEjectionPorts()
-    {
-        return m_EjectionPorts;
     }
 
     public void Charging()
@@ -68,16 +74,22 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     /// <summary>
     /// 해당 함수가 호출되면 프리즘이 활성화되며 사용 횟수가1회 차감
+    /// 야매로 처리 충돌 튕기는거 잘 처리해야할듯
     /// </summary>
     /// <param name="hit"></param>
     /// <param name="parentDirVector"></param>
     /// <returns></returns>
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
+/*        if (m_IsActivate)
+        {
+            Debug.Log("이미 충돌됨 : " + m_IsActivate);
+            List<Vector2> answer = new List<Vector2>();
+            return answer;
+        }*/
         m_IsActivate = true;
         m_UsingCount--;
-        List<Vector2> answer = new List<Vector2>();
-        return answer;
+        return m_EjectionPorts;
     }
 
     public bool IsOverloaded()

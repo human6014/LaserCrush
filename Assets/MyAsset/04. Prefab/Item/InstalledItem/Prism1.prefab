@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4749280532638309642}
   - component: {fileID: 4749280532638309643}
   - component: {fileID: 7660825252361090828}
-  - component: {fileID: 4749280532638309641}
+  - component: {fileID: 7490058736852071359}
   m_Layer: 11
   m_Name: Prism1
   m_TagString: Untagged
@@ -102,7 +102,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.69
---- !u!114 &4749280532638309641
+--- !u!114 &7490058736852071359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,6 +111,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4749280532638309637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b187db775c14c943921380996d03a75, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d78e132bfec2f14db94507c475c5dcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
