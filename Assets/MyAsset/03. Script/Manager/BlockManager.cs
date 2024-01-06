@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using LaserCrush.Entity;
 using LaserCrush.Data;
+using LaserCrush.Controller;
 using Random = UnityEngine.Random;
 
 namespace LaserCrush.Manager
@@ -19,6 +20,7 @@ namespace LaserCrush.Manager
         [SerializeField] private GameObject m_BlockObject;
 
         [Header("Block Grid Instancing")]
+        [SerializeField] private GridLineController m_GridLineController;
         [SerializeField] private Transform m_TopWall;
         [SerializeField] private Transform m_LeftWall;
 
@@ -34,46 +36,60 @@ namespace LaserCrush.Manager
         private Vector3 m_MoveDownVector;
 
         private ItemManager m_ItemManager;
+        private UIManager m_UIManager;
         private List<Block> m_Blocks;
+
         private event Func<GameObject, GameObject> m_InstantiateFunc;
         private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
         #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, 
                          Func<GameObject, Vector3, GameObject> instantiatePosFunc, 
-                         ItemManager itemManager)
+                         ItemManager itemManager, UIManager UIManager)
         {
             m_Blocks = new List<Block>();
             m_InstantiateFunc = instantiateFunc;
             m_InstantiatePosFunc = instantiatePosFunc;
-            m_ItemManager = itemManager;
-            m_ItemManager.CheckAvailablePosPredicate += CheckAvailablePos;
-            m_ItemManager.GetItemGridPosFunc += GetItemGridPos;
 
-            CalculateRowCol();
+            m_ItemManager = itemManager;
+            m_UIManager = UIManager;
+            m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
+
+            CalculateGridRowCol();
+
+            m_GridLineController.SetGridLineObjects(m_CalculatedInitPos, m_CalculatedOffset, m_MaxRowCount, m_MaxColCount);
+            m_GridLineController.OnOffGridLine(false);
         }
 
         private Result CheckAvailablePos(Vector3 pos)
         {
-            Vector2 newPos = GetItemGridPos(pos);
-            float sqrDist;
-            
-            foreach(Block block in m_Blocks)
+            Vector2 newPos = GetItemGridPos(pos, out int rowNumber, out int colNumber);
+
+            Result result = new Result(
+                    isAvailable: false,
+                    itemGridPos: newPos,
+                    rowNumber: rowNumber,
+                    colNumber: colNumber
+                    );
+
+            foreach (Block block in m_Blocks)
             {
-                sqrDist = ((Vector2)block.transform.position - newPos).sqrMagnitude;
-                if (sqrDist <= 9) return new Result(isAvailable: false, itemGridPos : newPos);
+                if (rowNumber == block.RowNumber &&
+                    colNumber == block.ColNumber) 
+                    return result;
             }
 
-            return new Result(isAvailable : true, itemGridPos : newPos);
+            result.m_IsAvailable = true;
+            return result;
         }
 
-        private Vector3 GetItemGridPos(Vector3 pos)
+        private Vector3 GetItemGridPos(Vector3 pos, out int rowNumber, out int colNumber)
         {
             float differX = pos.x - m_LeftWall.position.x;
             float differY = m_TopWall.position.y - pos.y;
 
-            int rowNumber = (int)(differY / m_CalculatedOffset.y);
-            int colNumber = (int)(differX / m_CalculatedOffset.x);
+            rowNumber = (int)(differY / m_CalculatedOffset.y);
+            colNumber = (int)(differX / m_CalculatedOffset.x);
 
             float newPosX = m_CalculatedInitPos.x + m_CalculatedOffset.x * colNumber;
             float newPosY = m_CalculatedInitPos.y - m_CalculatedOffset.y * rowNumber;
@@ -81,7 +97,7 @@ namespace LaserCrush.Manager
             return new Vector3(newPosX, newPosY, 0);
         }
 
-        private void CalculateRowCol()
+        private void CalculateGridRowCol()
         {
             float height = m_LeftWall.localScale.y - 6;
             float width = m_TopWall.localScale.x - 6;
@@ -121,7 +137,7 @@ namespace LaserCrush.Manager
                     item = itemObject.GetComponent<DroppedItem>();
                 }
                 
-                block.Init(GenerateBlockHP(), GenerateEntityType(), item, RemoveBlock);
+                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(),item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
@@ -134,6 +150,7 @@ namespace LaserCrush.Manager
                 droppedItem.transform.position = block.transform.position;
                 m_ItemManager.AddDroppedItem(droppedItem);
             }
+            m_UIManager.SetScore(block.BlockScore);
             m_Blocks.Remove(block);
         }
 
@@ -141,7 +158,8 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_Blocks.Count; i++)
             {
-                m_Blocks[i].transform.position += m_MoveDownVector;
+                m_Blocks[i].MoveDown(m_MoveDownVector);
+                m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
             }
         }
 

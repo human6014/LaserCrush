@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
-using LaserCrush.UI;
+using LaserCrush.Controller;
 using System;
-using Unity.VisualScripting;
 
 namespace LaserCrush.Manager
 {
@@ -12,11 +11,15 @@ namespace LaserCrush.Manager
     {
         public bool m_IsAvailable;
         public Vector2 m_ItemGridPos;
+        public int m_RowNumber;
+        public int m_ColNumber;
 
-        public Result(bool isAvailable, Vector2 itemGridPos)
+        public Result(bool isAvailable, Vector2 itemGridPos, int rowNumber, int colNumber)
         {
             m_IsAvailable = isAvailable;
             m_ItemGridPos = itemGridPos;
+            m_RowNumber = rowNumber;
+            m_ColNumber = colNumber;
         }
     }
 
@@ -34,19 +37,12 @@ namespace LaserCrush.Manager
         #endregion
 
         private Action<GameObject> m_DestroyAction;
-        private Func<Vector3, Result> m_CheckAvailablePosPredicate;
-        private Func<Vector3, Vector3> m_GetItemGridPosFunc;
+        private Func<Vector3, Result> m_CheckAvailablePosFunc;
 
-        public event Func<Vector3, Result> CheckAvailablePosPredicate
+        public event Func<Vector3, Result> CheckAvailablePosFunc
         {
-            add => m_CheckAvailablePosPredicate += value;
-            remove => m_CheckAvailablePosPredicate -= value;
-        }
-
-        public event Func<Vector3,Vector3> GetItemGridPosFunc 
-        { 
-            add => m_GetItemGridPosFunc += value;
-            remove => m_GetItemGridPosFunc -= value;
+            add => m_CheckAvailablePosFunc += value;
+            remove => m_CheckAvailablePosFunc -= value;
         }
 
         public void Init(Action<GameObject> destroyAction)
@@ -58,8 +54,8 @@ namespace LaserCrush.Manager
 
             m_DestroyAction = destroyAction;
 
-            m_ToolbarController.CheckAvailablePosPredicate += CheckAvailablePos;
-            m_ToolbarController.AddPrismAction += AddPrism;
+            m_ToolbarController.CheckAvailablePosFunc += CheckAvailablePos;
+            m_ToolbarController.AddInstalledItemAction += AddInstalledItem;
         }
 
         public void GetDroppedItems()
@@ -88,31 +84,38 @@ namespace LaserCrush.Manager
             RemoveBufferFlush();
         }
 
-        private bool CheckAvailablePos(Vector3 pos)
+        public void CheckDuplicatePosWithBlock(int rowNumber, int colNumber)
         {
-            Result result = (Result)(m_CheckAvailablePosPredicate?.Invoke(pos));
-            if (!result.m_IsAvailable) return false;
-
-            Vector2 newPos = result.m_ItemGridPos;
-            float sqrDist;
-            foreach (InstalledItem installedItem in m_InstalledItem)
+            foreach(InstalledItem installedItem in m_InstalledItem)
             {
-                sqrDist = ((Vector2)installedItem.transform.position - newPos).sqrMagnitude;
-                if (sqrDist <= 9) return false;
+                if(rowNumber == installedItem.RowNumber && colNumber == installedItem.ColNumber)
+                {
+                    m_InstalledItem.Remove(installedItem);
+                    m_DestroyAction?.Invoke(installedItem.gameObject);
+                    return;
+                }
             }
-
-            return true;
         }
 
-        private void AddPrism(InstalledItem installedItem, AcquiredItem acquiredItem, Vector3 pos)
+        private Result CheckAvailablePos(Vector3 pos)
+        {
+            Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(pos));
+            if (!result.m_IsAvailable) return result;
+
+            foreach (InstalledItem installedItem in m_InstalledItem)
+            {
+                if (result.m_RowNumber == installedItem.RowNumber &&
+                    result.m_ColNumber == installedItem.ColNumber) 
+                    return new Result(false, result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
+            }
+
+            return result;
+        }
+
+        private void AddInstalledItem(InstalledItem installedItem, AcquiredItem acquiredItem)
         {
             m_AcquiredItems.Remove(acquiredItem);
             m_InstalledItem.Add(installedItem);
-
-            Vector3 batchedPos = (Vector2)(m_GetItemGridPosFunc?.Invoke(pos));
-            batchedPos.z = 0;
-            installedItem.transform.position = batchedPos;
-            installedItem.Init();
         }
 
         public void AddDroppedItem(DroppedItem item)
@@ -124,7 +127,6 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_InstalledItemBuffer.Count; i++)
             {
-                m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
                 m_DestroyAction?.Invoke(m_InstalledItemBuffer[i].gameObject);
                 m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
             }

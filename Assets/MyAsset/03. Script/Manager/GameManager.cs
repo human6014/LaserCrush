@@ -60,12 +60,12 @@ namespace LaserCrush.Manager
             m_AudioManager.Init();
             m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_ItemManager.Init(DestroyObject);
-            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
+            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager, m_UIManager);
             m_UIManager.Init();
 
             m_SubLineController = GetComponent<SubLineController>();
-
             m_SubLineController.OnClickAction += EndDeploying;
+
             m_StageNum = 0;
         }
 

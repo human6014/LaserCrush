@@ -232,7 +232,7 @@ Transform:
   - {fileID: 910940327}
   - {fileID: 905272570}
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &67470570
 GameObject:
@@ -901,7 +901,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &485105735
 GameObject:
@@ -1414,7 +1414,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
@@ -1652,6 +1652,7 @@ MonoBehaviour:
   m_MainCanvas: {fileID: 0}
   m_BatchedItemTransform: {fileID: 555224050}
   m_ContentTransform: {fileID: 1616628847}
+  m_GridLineController: {fileID: 1147887874}
 --- !u!1 &905272569
 GameObject:
   m_ObjectHideFlags: 0
@@ -2020,7 +2021,7 @@ GameObject:
   - component: {fileID: 1012169028}
   - component: {fileID: 1012169030}
   m_Layer: 0
-  m_Name: EnergyObject
+  m_Name: EnergyPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2040,7 +2041,7 @@ Transform:
   m_Children:
   - {fileID: 1054098793}
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1012169027
 SpriteRenderer:
@@ -2245,7 +2246,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: -992286955
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1101057674
 GameObject:
@@ -2398,6 +2399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1147887873}
+  - component: {fileID: 1147887874}
   m_Layer: 0
   m_Name: BoardMap
   m_TagString: Untagged
@@ -2418,6 +2420,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1694990292}
+  - {fileID: 1305678648}
   - {fileID: 57829694}
   - {fileID: 1647738487}
   - {fileID: 405668382}
@@ -2428,6 +2431,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1147887874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147887872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 031388cbe38acbb49b880e6449a63d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GridLinePrefab: {fileID: 5185051364227018575, guid: a6adbf04c1c952248a4c7fac0ad4a561, type: 3}
+  m_ParentGameObject: {fileID: 1305678647}
 --- !u!1 &1150538501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2924,6 +2941,7 @@ MonoBehaviour:
     m_DroppedItemTransform: {fileID: 1611000099}
     m_BlockTransform: {fileID: 405668382}
     m_BlockObject: {fileID: 8490572725526608101, guid: d1352bab5a083e343b8eda027c82bb36, type: 3}
+    m_GridLineController: {fileID: 1147887874}
     m_TopWall: {fileID: 872262233}
     m_LeftWall: {fileID: 910940327}
     m_MaxRowCount: 12
@@ -2963,6 +2981,37 @@ MonoBehaviour:
   m_DragTransfromObject: {fileID: 2017001684}
   m_ClickableArea: {fileID: 1694990294}
   m_ClickableObject: {fileID: 1012169028}
+--- !u!1 &1305678647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1305678648}
+  m_Layer: 0
+  m_Name: GridLinePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1305678648
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305678647}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1147887873}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1327292612
 GameObject:
   m_ObjectHideFlags: 0
@@ -3080,8 +3129,9 @@ GameObject:
   - component: {fileID: 1365907255}
   - component: {fileID: 1365907257}
   - component: {fileID: 1365907256}
+  - component: {fileID: 1365907258}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3204,6 +3254,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365907254}
   m_CullTransparentMesh: 1
+--- !u!114 &1365907258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365907254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b127455fdf4f947af99b1a33d06694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1380143812
 GameObject:
   m_ObjectHideFlags: 0
@@ -3633,6 +3695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1608670bb2e13ca478f1fb593a187f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Score: {fileID: 1365907258}
 --- !u!1 &1611000098
 GameObject:
   m_ObjectHideFlags: 0
@@ -3758,7 +3821,7 @@ Transform:
   - {fileID: 1611000099}
   - {fileID: 555224050}
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1651790765
 GameObject:
@@ -4080,7 +4143,7 @@ Transform:
   m_Children:
   - {fileID: 3849716300557570480}
   m_Father: {fileID: 1147887873}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &2017001683
 CircleCollider2D:

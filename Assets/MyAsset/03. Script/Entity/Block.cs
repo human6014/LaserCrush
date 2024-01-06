@@ -18,12 +18,15 @@ namespace LaserCrush
 
         private EEntityType m_EntityType;
 
-        private uint m_point;
         private int m_HP = 1000;
         private bool m_IsDestroyed;
 
         private Action<Block, DroppedItem> m_RemoveBlockAction;
         #endregion
+
+        public int BlockScore { get; private set; }
+        public int RowNumber { get; private set; }
+        public int ColNumber { get; private set; }
 
         private void Awake()
         {
@@ -37,10 +40,12 @@ namespace LaserCrush
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public void Init(int hp, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
+        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
         {
             m_HP = hp;
-            m_point = (uint)hp;
+            BlockScore = hp;
+            RowNumber = rowNumber;
+            ColNumber = colNumber;
             m_EntityType = entityType;
             m_DroppedItem = droppedItem;
 
@@ -54,7 +59,6 @@ namespace LaserCrush
 
         private void Destroy()
         {
-            Score.GetScore(m_point);
             m_IsDestroyed = true;
             m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
             Destroy(gameObject);
@@ -93,6 +97,12 @@ namespace LaserCrush
             }
             m_Text.text = m_HP.ToString();
             return answer;
+        }
+
+        public void MoveDown(Vector3 moveDownVector)
+        {
+            transform.position += moveDownVector;
+            RowNumber++;
         }
 
         private void OnDestroy()
