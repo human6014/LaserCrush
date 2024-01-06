@@ -113,8 +113,6 @@ namespace LaserCrush.Manager
             batchedPos.z = 0;
             installedItem.transform.position = batchedPos;
             installedItem.Init();
-
-            Debug.Log("ÇÁ¸®Áò ¼³Ä¡");
         }
 
         public void AddDroppedItem(DroppedItem item)
@@ -126,9 +124,7 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_InstalledItemBuffer.Count; i++)
             {
-                m_Prisms.Remove(m_PrismRemoveBuffer[i]);
-                //todo
-                //¿©±â¼­ ÇÁ¸®Áò Áö¿öÁà¾ßÇÔ ->DestoryÈ£Ãâ
+                m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
                 m_DestroyAction?.Invoke(m_InstalledItemBuffer[i].gameObject);
                 m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
             }
