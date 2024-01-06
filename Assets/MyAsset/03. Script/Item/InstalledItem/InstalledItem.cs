@@ -27,6 +27,9 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     private int m_ChargingWait;
 
     protected bool m_IsActivate = false;
+
+    public int RowNumber { get; private set; }
+    public int ColNumber { get; private set; }
     #endregion
 
     /// <summary>
@@ -43,7 +46,18 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// 1. m_EjectionPorts 위치와 방향 초기화
     /// 2. 사용횟수 초기화
     /// </summary>
-    public virtual void Init()     {    }
+    public void Init(int rowNumber, int colNumber)
+    {
+        RowNumber = rowNumber;
+        ColNumber = colNumber;
+        foreach (Transform tr in m_EjectionPortsTransform)
+        {
+            m_EjectionPorts.Add(tr.rotation.eulerAngles);
+        }
+
+        m_UsingCount = m_MaxUsingCount;
+        m_IsActivate = false;
+    }
 
     /// <summary>
     /// 활성화 되어있지 않으면 Charging후 레이저에서 새로운 레이저 생성

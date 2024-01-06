@@ -1,34 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using LaserCrush.Entity;
-using System;
+using LaserCrush.Manager;
 
-namespace LaserCrush.UI
+namespace LaserCrush.Controller
 {
     public class ToolbarController : MonoBehaviour
     {
         [SerializeField] private Canvas m_MainCanvas;
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private RectTransform m_ContentTransform;
+        [SerializeField] private GridLineController m_GridLineController;
 
         private Vector2 m_InitPos;
 
         private Camera m_MainCamera;
         private AcquiredItem m_CurrentItem;
         private RectTransform m_CurrentItemTransform;
-        
-        private Predicate<Vector3> m_CheckAvailablePosPredicate;
-        private Action<InstalledItem, AcquiredItem, Vector3> m_AddPrismAction;
 
-        public event Predicate<Vector3> CheckAvailablePosPredicate
+        private Func<Vector3, Result> m_CheckAvailablePosFunc;
+        private Action<InstalledItem, AcquiredItem> m_AddPrismAction;
+
+        public event Func<Vector3, Result> CheckAvailablePosFunc
         {
-            add => m_CheckAvailablePosPredicate += value;
-            remove => m_CheckAvailablePosPredicate -= value;
+            add => m_CheckAvailablePosFunc += value;
+            remove => m_CheckAvailablePosFunc -= value;
         }
 
-        public event Action<InstalledItem, AcquiredItem, Vector3> AddPrismAction
+        public event Action<InstalledItem, AcquiredItem> AddInstalledItemAction
         {
             add => m_AddPrismAction += value;
             remove => m_AddPrismAction -= value;
@@ -59,6 +61,7 @@ namespace LaserCrush.UI
             m_ContentTransform.SetAsLastSibling();
 
             m_InitPos = m_CurrentItemTransform.anchoredPosition;
+            m_GridLineController.OnOffGridLine(true);
         }
 
         private void OnDrag(Vector2 delta)
@@ -74,17 +77,21 @@ namespace LaserCrush.UI
                 m_CurrentItem.GetComponent<Image>().maskable = true;
                 m_CurrentItemTransform.anchoredPosition = m_InitPos;
             }
+            m_GridLineController.OnOffGridLine(false);
         }
 
         private bool BatchAcquireItem(Vector3 origin)
         {
-            if (!(bool)m_CheckAvailablePosPredicate?.Invoke(origin)) return false;
+            Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
+            if (!result.m_IsAvailable) return false;
 
             GameObject obj = Instantiate(m_CurrentItem.ItemObject);
             obj.transform.SetParent(m_BatchedItemTransform);
+            obj.transform.position = result.m_ItemGridPos;
 
-            InstalledItem prism = obj.GetComponent<InstalledItem>();
-            m_AddPrismAction?.Invoke(prism, m_CurrentItem, origin);
+            InstalledItem installedItem = obj.GetComponent<InstalledItem>();
+            m_AddPrismAction?.Invoke(installedItem, m_CurrentItem);
+            installedItem.Init(result.m_RowNumber, result.m_ColNumber);
 
             m_ContentTransform.sizeDelta =
                 new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);

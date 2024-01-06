@@ -1,24 +1,29 @@
-
 using TMPro;
 using UnityEngine;
 
-public class Score : MonoBehaviour
+namespace LaserCrush.UI
 {
-    #region Variable
-    public static uint m_Score = 0;
-    [SerializeField] private static TextMeshProUGUI m_Text;
-
-    #endregion
-
-    private void Awake()
+    public class Score : MonoBehaviour
     {
-        m_Text = GetComponentInChildren<TextMeshProUGUI>();
+        #region Variable
+        private TextMeshProUGUI m_Text;
 
-    }
+        private int m_CurrentScore;
+        #endregion
 
-    public static void GetScore(uint score)
-    {
-        m_Score += score;
-        m_Text.text = score.ToString();
+        public int CurrentScore 
+        { 
+            get => m_CurrentScore;
+            set
+            {
+                m_CurrentScore = value;
+                m_Text.text = "Score : " + m_CurrentScore.ToString();
+            }
+        }
+
+        public void Init()
+        {
+            m_Text = GetComponent<TextMeshProUGUI>();
+        }
     }
 }
