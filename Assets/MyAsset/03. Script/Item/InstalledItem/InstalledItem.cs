@@ -5,8 +5,8 @@ using System.Threading;
 using UnityEngine;
 
 /// <summary>
-/// ·¹ÀÌÀú°¡ ÇÁ¸®Áò°ú Ãæµ¹ ½Ã È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é portÀÇ vector¸¦ ¹Ş¾Æ
-/// ÇØ´ç ¹æÇâÀ¸·Î ·¹ÀÌÀú¸¦ Ãß°¡ »ı»ê
+/// ë ˆì´ì €ê°€ í”„ë¦¬ì¦˜ê³¼ ì¶©ëŒ ì‹œ í™œì„±í™” ë˜ì–´ ìˆìœ¼ë©´ portì˜ vectorë¥¼ ë°›ì•„
+/// í•´ë‹¹ ë°©í–¥ìœ¼ë¡œ ë ˆì´ì €ë¥¼ ì¶”ê°€ ìƒì‚°
 /// </summary>
 
 public struct LaserInfo
@@ -22,7 +22,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
 
     /// <summary>
-    /// m_EjectionPorts : °¢ »çÃâ±¸ÀÇ ¹æÇâº¤ÅÍ
+    /// m_EjectionPorts : ê° ì‚¬ì¶œêµ¬ì˜ ë°©í–¥ë²¡í„°
     /// </summary>
     protected List<Vector2> m_EjectionPorts = new List<Vector2>();
 
@@ -32,32 +32,26 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     private int m_UsingCount = 0;
     private int m_ChargingWait;
 
-    private bool m_IsActivate = false;
+    protected bool m_IsActivate = false;
     #endregion
 
     /// <summary>
-    /// È­¸é¿¡¼­ À¯Àú ÀÔ·ÂÀ» ¹Ş¾Æ ¼³Ä¡ÇÒ¶§ È£ÃâÇÒ ÇÔ¼ö
-    /// ¾ÆÀÌÅÛ¿¡¼­ º¸Á¶¼±ÀÌ ³ª¿Í °¢µµ¸¦ ½Ã°¢È­ ÇØÁØ´Ù
-    /// ¼öÁ¤ ÇÊ¿ä
+    /// í™”ë©´ì—ì„œ ìœ ì € ì…ë ¥ì„ ë°›ì•„ ì„¤ì¹˜í• ë•Œ í˜¸ì¶œí•  í•¨ìˆ˜
+    /// ì•„ì´í…œì—ì„œ ë³´ì¡°ì„ ì´ ë‚˜ì™€ ê°ë„ë¥¼ ì‹œê°í™” í•´ì¤€ë‹¤
+    /// ìˆ˜ì • í•„ìš”
     /// </summary>
     void RotateEjectionPorts()
     {
     }
 
     /// <summary>
-    /// ÀÌ°Å °¡»óÇÔ¼ö·Î ÀÚ½Ä Å¬·¡½º¿¡¼­ ÇÔ¼ö°¡ È£ÃâÀÌ ¾ÈµÊ ¿øÀÎ ¾Ë¸é ¾Ë·ÁÁà
+    /// ì´ê±° ê°€ìƒí•¨ìˆ˜ë¡œ ìì‹ í´ë˜ìŠ¤ì—ì„œ í•¨ìˆ˜ê°€ í˜¸ì¶œì´ ì•ˆë¨ ì›ì¸ ì•Œë©´ ì•Œë ¤ì¤˜
     /// </summary>
-    public virtual void Init() 
-    {
-        //m_EjectionPorts.Add(new Vector2(1, 0));
-        m_IsActivate = false;
-        Debug.Log("m_IsActivate : "  + m_IsActivate);
-        Debug.Log("ÃÊ±âÈ­µÊ -> ºÎ¸ğÅ¬·¡½º");
-    }
+    public virtual void Init()     {    }
 
     /// <summary>
-    /// È°¼ºÈ­ µÇ¾îÀÖÁö ¾ÊÀ¸¸é ChargingÈÄ ·¹ÀÌÀú¿¡¼­ »õ·Î¿î ·¹ÀÌÀú »ı¼º
-    /// È°¼ºÈ­ µÈ »óÅÂ¸é ·¹ÀÌÀú »ı¼º x ÀÌ¹Ì ·¹ÀÌÀú Á¸Àç
+    /// í™œì„±í™” ë˜ì–´ìˆì§€ ì•Šìœ¼ë©´ Chargingí›„ ë ˆì´ì €ì—ì„œ ìƒˆë¡œìš´ ë ˆì´ì € ìƒì„±
+    /// í™œì„±í™” ëœ ìƒíƒœë©´ ë ˆì´ì € ìƒì„± x ì´ë¯¸ ë ˆì´ì € ì¡´ì¬
     /// </summary>
     /// <returns></returns>
     public bool IsActivate()
@@ -67,7 +61,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     public void Charging()
     {
-        //½Ã°£°æ°ú
+        //ì‹œê°„ê²½ê³¼
         m_ChargingWait++;
         if(m_ChargingWait >= m_ChargingTime)
         {
@@ -76,20 +70,19 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     }
 
     /// <summary>
-    /// ÇØ´ç ÇÔ¼ö°¡ È£ÃâµÇ¸é ÇÁ¸®ÁòÀÌ È°¼ºÈ­µÇ¸ç »ç¿ë È½¼ö°¡1È¸ Â÷°¨
-    /// ¾ß¸Å·Î Ã³¸® Ãæµ¹ Æ¨±â´Â°Å Àß Ã³¸®ÇØ¾ßÇÒµí
+    /// í•´ë‹¹ í•¨ìˆ˜ê°€ í˜¸ì¶œë˜ë©´ í”„ë¦¬ì¦˜ì´ í™œì„±í™”ë˜ë©° ì‚¬ìš© íšŸìˆ˜ê°€1íšŒ ì°¨ê°
+    /// ì•¼ë§¤ë¡œ ì²˜ë¦¬ ì¶©ëŒ íŠ•ê¸°ëŠ”ê±° ì˜ ì²˜ë¦¬í•´ì•¼í• ë“¯
     /// </summary>
     /// <param name="hit"></param>
     /// <param name="parentDirVector"></param>
     /// <returns></returns>
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-      /*if (m_IsActivate)
+        if (m_IsActivate)
         {
-            Debug.Log("ÀÌ¹Ì Ãæµ¹µÊ : " + m_IsActivate);
             List<Vector2> answer = new List<Vector2>();
             return answer;
-        }*/
+        }
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
@@ -97,7 +90,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     public bool IsOverloaded()
     {
-        if(m_UsingCount == 0)
+        m_IsActivate = false;
+        if (m_UsingCount == 0)
         {
             return true;
         }

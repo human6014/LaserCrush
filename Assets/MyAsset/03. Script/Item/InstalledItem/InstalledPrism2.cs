@@ -6,8 +6,9 @@ public sealed class InstalledPrism2 : InstalledItem
 {
     public override void Init()
     {
-        m_EjectionPorts.Add(new Vector2(1, 1).normalized);
-        m_EjectionPorts.Add(new Vector2(-1, 1).normalized);
+        m_EjectionPorts.Add(new Vector2(1, 0).normalized);
+        m_EjectionPorts.Add(new Vector2(-1, 0).normalized);
+        m_IsActivate = false;
         Debug.Log("√ ±‚»≠µ ");
     }
 

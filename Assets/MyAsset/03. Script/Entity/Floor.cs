@@ -7,14 +7,13 @@ public sealed class Floor : MonoBehaviour, ICollisionable
 {
     public void Awake()
     {
-        Debug.Log("¹Ù´Ú ÃÊ±âÈ­");
+        m_EntityType = EEntityType.Floor;
     }
 
 
     public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
     {
-        Debug.Log("¹Ù´Ú°ú Ãæµ¹ ¿¡³ÊÁö °¨¼Ò");
-        Energy.UseEnergy(int.MaxValue);//¿¡³ÊÁö ¸ğµÎ ¼ÒÁø
+        Energy.UseEnergy(int.MaxValue);//ì—ë„ˆì§€ ëª¨ë‘ ì†Œì§„
         return new List<Vector2>();
     }
 
