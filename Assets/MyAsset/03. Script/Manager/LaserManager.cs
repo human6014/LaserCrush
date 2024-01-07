@@ -207,9 +207,9 @@ namespace LaserCrush.Manager
                 Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.SetParent(m_LasersTransform);
 
-                laser.transform.position = dirVector[i].Posion;
+                laser.transform.position = dirVector[i].Position;
                 laser.Init(CreateLaser, LossParent);
-                laser.Activate(dirVector[i].Posion + dirVector[i].Direction, dirVector[i].Direction);
+                laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }

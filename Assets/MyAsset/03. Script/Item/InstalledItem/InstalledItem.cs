@@ -6,8 +6,14 @@ using UnityEngine;
 
 public struct LaserInfo
 {
-    public Vector2 Posion;
+    public Vector2 Position;
     public Vector2 Direction;
+
+    public LaserInfo(Vector2 position, Vector2 direction)
+    {
+        Position = position;
+        Direction = direction;
+    }
 }
 
 public class InstalledItem : MonoBehaviour, ICollisionable
@@ -27,6 +33,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     private int m_ChargingWait;
 
     protected bool m_IsActivate = false;
+
+    private bool m_IsFixedDirection;
 
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
@@ -63,11 +71,25 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         ColNumber = colNumber;
         foreach (Transform tr in m_EjectionPortsTransform)
         {
-            //m_EjectionPorts.Add(tr.rotation.eulerAngles);
+            m_EjectionPorts.Add(new LaserInfo(position : tr.position, direction : tr.up));
         }
 
         m_UsingCount = m_MaxUsingCount;
         m_IsActivate = false;
+    }
+
+    public void FixDirection()
+    {
+        if (m_IsFixedDirection) return;
+        m_IsFixedDirection = true;
+
+        for(int i = 0; i < m_EjectionPorts.Count; i++)
+        {
+            m_EjectionPorts[i] = new LaserInfo(
+                position: m_EjectionPortsTransform[i].position, 
+                direction: m_EjectionPortsTransform[i].up
+                );
+        }
     }
 
     /// <summary>
@@ -113,6 +135,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     private void OnMouseDrag()
     {
+        if (m_IsFixedDirection) return;
         Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction);
     }

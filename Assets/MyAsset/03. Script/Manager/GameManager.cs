@@ -38,7 +38,7 @@ namespace LaserCrush.Manager
         public static int m_StageNum;
         private float m_GameTime = 0;
         private float m_GameFrameTime = 0.01666f;
-        private float m_ValidTime = 4;
+        private float m_ValidTime = 8;
         private float m_LaserTime;
         private int m_PreEnergy;
         #endregion
@@ -99,12 +99,6 @@ namespace LaserCrush.Manager
             }
         }
 
-        private void EndDeploying() // 배치끝 레이저 발사 시작
-        {
-            m_GameStateType = EGameStateType.LaserActivating;
-            m_SubLineController.IsActiveSubLine = false;
-        }
-
         /// <summary>
         /// 로그에 찍힌 순서대로 진행된다 한 업데이트에 일어날 수 도 있고 Time함수 같은 걸 써서
         /// 딜레이를 줘도 되고
@@ -132,6 +126,15 @@ namespace LaserCrush.Manager
             m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
+        }
+
+        private void EndDeploying() // 배치끝 레이저 발사 시작
+        {
+            if (m_GameStateType == EGameStateType.LaserActivating) return;
+
+            m_ItemManager.FixInstalledItemDirection();
+            m_GameStateType = EGameStateType.LaserActivating;
+            m_SubLineController.IsActiveSubLine = false;
         }
 
         private void LaserActivating()
