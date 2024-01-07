@@ -27,7 +27,7 @@ namespace LaserCrush.Entity
 
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
         private LineRenderer m_LineRenderer;
-        private Func<List<Vector2>, Vector2, List<Laser>> m_LaserCreateFunc;
+        private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
         private ELaserStateType m_State;
@@ -41,7 +41,7 @@ namespace LaserCrush.Entity
 
         //tem
         RaycastHit2D m_Hit;
-        List<Vector2> m_Dir;
+        List<LaserInfo> m_LaserInfo;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace LaserCrush.Entity
             if (m_LineRenderer is null) Debug.LogError("m_LineRenderer is Null");
         }
 
-        public void Init(Func<List<Vector2>, Vector2, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
+        public void Init(Func<List<LaserInfo>, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
         {
             m_LaserCreateFunc = laserCreateFunc;
             m_LaserEraseAction = laserEraseAction;
@@ -156,9 +156,9 @@ namespace LaserCrush.Entity
             if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
             {
                 m_Target = m_Hit.transform.GetComponent<ICollisionable>();
-                m_Dir = m_Target.Hitted(m_Hit, m_DirectionVector, this);
+                m_LaserInfo = m_Target.Hitted(m_Hit, m_DirectionVector, this);
                 if (m_State == ELaserStateType.Wait) { return; }
-                AddChild(m_LaserCreateFunc?.Invoke(m_Dir, m_Hit.point));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_LaserData.ShootingVelocity;
@@ -174,7 +174,8 @@ namespace LaserCrush.Entity
         {
             if(m_Target.Waiting())
             {
-                AddChild(m_LaserCreateFunc?.Invoke(m_Dir, m_Hit.point));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
+                m_State = ELaserStateType.Hitting;
             }
         }
 

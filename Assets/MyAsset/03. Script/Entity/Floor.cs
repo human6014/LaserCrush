@@ -5,11 +5,11 @@ using UnityEngine;
 
 public sealed class Floor : MonoBehaviour, ICollisionable
 {
-    public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
+    public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         Energy.UseEnergy(int.MaxValue);
         laser.ChangeLaserState(ELaserStateType.Hitting);
-        return new List<Vector2>();
+        return new List<LaserInfo>();
     }
 
     public bool IsGetDamageable()

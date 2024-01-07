@@ -18,7 +18,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <summary>
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
-    protected List<Vector2> m_EjectionPorts = new List<Vector2>();
+    protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
     protected const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 120;
@@ -63,21 +63,11 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         ColNumber = colNumber;
         foreach (Transform tr in m_EjectionPortsTransform)
         {
-            m_EjectionPorts.Add(tr.rotation.eulerAngles);
+            //m_EjectionPorts.Add(tr.rotation.eulerAngles);
         }
 
         m_UsingCount = m_MaxUsingCount;
         m_IsActivate = false;
-    }
-
-    /// <summary>
-    /// 활성화 되어있지 않으면 Charging후 레이저에서 새로운 레이저 생성
-    /// 활성화 된 상태면 레이저 생성 x 이미 레이저 존재
-    /// </summary>
-    /// <returns></returns>
-    public bool IsActivate()
-    {
-        return m_IsActivate;
     }
 
     /// <summary>
@@ -87,11 +77,11 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <param name="hit"></param>
     /// <param name="parentDirVector"></param>
     /// <returns></returns>
-    public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
+    public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
         {
-            List<Vector2> answer = new List<Vector2>();
+            List<LaserInfo> answer = new List<LaserInfo>();
             return answer;
         }
         laser.ChangeLaserState(ELaserStateType.Wait);
