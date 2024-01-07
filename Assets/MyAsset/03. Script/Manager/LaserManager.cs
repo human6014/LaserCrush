@@ -74,7 +74,7 @@ namespace LaserCrush.Manager
                 {
                     if (Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
                     {
-                        m_Lasers[i].ManagedUpdate();
+                        m_Lasers[i].Run();
                     }
                 }
                 ActivateBufferFlush();

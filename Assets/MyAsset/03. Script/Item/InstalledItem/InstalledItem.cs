@@ -19,9 +19,9 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// m_EjectionPorts : 각 사출구의 방향벡터
     /// </summary>
     protected List<Vector2> m_EjectionPorts = new List<Vector2>();
-
+    private Laser m_HittingLaser;
     protected const int m_MaxUsingCount = 3;
-    private const int m_ChargingTime = 10;
+    private const int m_ChargingTime = 120;
     
     protected int m_UsingCount = 0;
     private int m_ChargingWait;
@@ -39,6 +39,17 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// </summary>
     void RotateEjectionPorts()
     {
+    }
+
+    public bool Waiting()
+    {
+        m_ChargingWait++;
+        if (m_ChargingWait >= m_ChargingTime)
+        {
+            m_IsActivate = true;
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -69,16 +80,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         return m_IsActivate;
     }
 
-    public void Charging()
-    {
-        //시간경과
-        m_ChargingWait++;
-        if(m_ChargingWait >= m_ChargingTime)
-        {
-            m_IsActivate = true;
-        }
-    }
-
     /// <summary>
     /// 해당 함수가 호출되면 프리즘이 활성화되며 사용 횟수가1회 차감
     /// 야매로 처리 충돌 튕기는거 잘 처리해야할듯
@@ -86,13 +87,15 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// <param name="hit"></param>
     /// <param name="parentDirVector"></param>
     /// <returns></returns>
-    public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+    public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
         {
             List<Vector2> answer = new List<Vector2>();
             return answer;
         }
+        laser.ChangeLaserState(ELaserStateType.Wait);
+        m_HittingLaser = laser;
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;

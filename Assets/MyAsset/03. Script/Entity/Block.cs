@@ -85,14 +85,19 @@ namespace LaserCrush
             return true;
         }
 
-        public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector)
+        public bool Waiting()
+        {
+            return true;
+        }
+
+        public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             List<Vector2> answer = new List<Vector2>();
+            laser.ChangeLaserState(ELaserStateType.Hitting);
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
                 //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
                 Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
-
                 return new List<Vector2>() { dir };
             }
             m_Text.text = m_HP.ToString();
