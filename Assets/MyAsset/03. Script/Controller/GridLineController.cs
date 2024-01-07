@@ -8,6 +8,7 @@ namespace LaserCrush.Controller
     {
         [SerializeField] private GameObject m_GridLinePrefab;
         [SerializeField] private GameObject m_ParentGameObject;
+        [SerializeField] private GameObject m_ScreenDim;
 
         private LineRenderer[] m_RowlineRenderers;  //Y
         private LineRenderer[] m_CollineRenderers;  //X
@@ -40,6 +41,7 @@ namespace LaserCrush.Controller
         public void OnOffGridLine(bool isActive)
         {
             m_ParentGameObject.SetActive(isActive);
+            m_ScreenDim.SetActive(isActive);
         }
     }
 }

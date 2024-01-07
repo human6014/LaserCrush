@@ -97,6 +97,14 @@ namespace LaserCrush.Manager
             }
         }
 
+        public void FixInstalledItemDirection()
+        {
+            foreach(InstalledItem installedItem in m_InstalledItem)
+            {
+                installedItem.FixDirection();
+            }
+        }
+
         private Result CheckAvailablePos(Vector3 pos)
         {
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(pos));

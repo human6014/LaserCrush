@@ -13,7 +13,7 @@ namespace LaserCrush.Entity
             //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
             LaserInfo info = new LaserInfo();
             info.Direction = Vector2.Reflect(parentDirVector, hit.normal);
-            info.Posion = hit.point;
+            info.Position = hit.point;
 
             return new List<LaserInfo>() { info };
         }
