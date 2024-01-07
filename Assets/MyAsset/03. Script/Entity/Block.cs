@@ -49,7 +49,7 @@ namespace LaserCrush
             m_EntityType = entityType;
             m_DroppedItem = droppedItem;
 
-            m_Text.text = m_HP.ToString();
+            m_Text.text = GetHP().ToString();
             m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ? 
                 m_BlockData.NormalBlockColor : 
                 m_BlockData.ReflectBlockColor;
@@ -75,8 +75,13 @@ namespace LaserCrush
                 return false;
             }
             else m_HP -= Energy.UseEnergy(damage);
-
-            m_Text.text = m_HP.ToString();
+            //임시 코드
+            if(GetHP() == 0)
+            {
+                Destroy();
+                return false;
+            }
+            m_Text.text = GetHP().ToString();
             return true;
         }
 
@@ -102,7 +107,7 @@ namespace LaserCrush
                 info.Position = hit.point;
                 return new List<LaserInfo>() { info };
             }
-            m_Text.text = m_HP.ToString();
+            m_Text.text = GetHP().ToString();
             return answer;
         }
 
@@ -114,5 +119,10 @@ namespace LaserCrush
 
         private void OnDestroy()
             => m_RemoveBlockAction = null;
+
+        private int GetHP()
+        {
+            return m_HP / 100;
+        }
     }
 }

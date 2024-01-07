@@ -17,7 +17,7 @@ namespace LaserCrush.UI
             set
             {
                 m_CurrentScore = value;
-                m_Text.text = "Score : " + m_CurrentScore.ToString();
+                m_Text.text = "Score : " + GetScore().ToString();
             }
         }
 
@@ -25,6 +25,11 @@ namespace LaserCrush.UI
         {
             m_Text = GetComponent<TextMeshProUGUI>();
             CurrentScore = 0;
+        }
+
+        private int GetScore() 
+        {
+            return (m_CurrentScore / 100);
         }
     }
 }

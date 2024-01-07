@@ -188,7 +188,7 @@ namespace LaserCrush.Manager
         {
             int end = ((GameManager.m_StageNum + 2) / 3) * 10;
             int start = end - (end / 2);
-            return Random.Range(start, end + 1);
+            return Random.Range(start, end + 1) * 100;
         }
 
         /// <summary>

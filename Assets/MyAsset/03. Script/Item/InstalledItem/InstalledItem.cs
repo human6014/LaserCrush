@@ -27,7 +27,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
     protected const int m_MaxUsingCount = 3;
-    private const int m_ChargingTime = 120;
+    private const int m_ChargingTime = 100;
     
     protected int m_UsingCount = 0;
     private int m_ChargingWait;
@@ -116,6 +116,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     public bool IsOverloaded()
     {
         m_IsActivate = false;
+        m_ChargingWait = 0;
         if (m_UsingCount == 0)
         {
             return true;
