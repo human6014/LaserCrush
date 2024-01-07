@@ -6,11 +6,11 @@ using LaserCrush.Manager;
 
 namespace LaserCrush.Entity
 {
-    enum ELaserStateType // 이름 고민
+    public enum ELaserStateType // 이름 고민
     {
         Move,
         Hitting,
-        Done
+        Wait
     }
 
     /// <summary>
@@ -38,6 +38,11 @@ namespace LaserCrush.Entity
 
         private bool m_IsInitated;
         private bool m_IsActivated;
+
+        //tem
+        RaycastHit2D m_Hit;
+        List<Vector2> m_Dir;
+
         #endregion
 
         private void Awake()
@@ -79,7 +84,7 @@ namespace LaserCrush.Entity
         /// [충돌] : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 고격
         ///          레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
         /// </summary>
-        public void ManagedUpdate()
+        public void Run()
         {
             if (!m_IsInitated) { return; }
             switch (m_State) 
@@ -89,6 +94,9 @@ namespace LaserCrush.Entity
                     break;
                 case ELaserStateType.Hitting:
                     Hiting();
+                    break;
+                case ELaserStateType.Wait:
+                    Wait();
                     break;
                 default:
                     Debug.Log("잘못된 레이저 상태입니다.");
@@ -143,23 +151,31 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
+            m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
 
-            if (hit.collider != null && Vector2.Distance(m_EndPoint, hit.point) <= m_LaserData.ShootingVelocity)
+            if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
             {
-                m_Target = hit.transform.GetComponent<ICollisionable>();
-                List<Vector2> dir = m_Target.Hitted(hit, m_DirectionVector);
-                //dir이 0인 경우
-                /*
-                 * 1. 흡수 블럭일 경우
-                 * 2. 이미 충돌한 블럭인 경우 
-                 */
-                m_State = ELaserStateType.Hitting;
-                AddChild(m_LaserCreateFunc?.Invoke(dir, hit.point));
+                m_Target = m_Hit.transform.GetComponent<ICollisionable>();
+                m_Dir = m_Target.Hitted(m_Hit, m_DirectionVector, this);
+                if (m_State == ELaserStateType.Wait) { return; }
+                AddChild(m_LaserCreateFunc?.Invoke(m_Dir, m_Hit.point));
                 return;
             }
             m_EndPoint += m_DirectionVector * m_LaserData.ShootingVelocity;
             m_LineRenderer.SetPosition(1, m_EndPoint);
+        }
+
+        public void ChangeLaserState(ELaserStateType type)
+        {
+            m_State = type;
+        }
+
+        public void Wait()
+        {
+            if(m_Target.Waiting())
+            {
+                AddChild(m_LaserCreateFunc?.Invoke(m_Dir, m_Hit.point));
+            }
         }
 
         /// <summary>
