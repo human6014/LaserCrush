@@ -11,8 +11,8 @@ public class Energy : MonoBehaviour
 
     private static event UnityAction m_TextUpdate;
 
-    private static int m_MaxEnergy = 10000;
-    private static int m_CurrentEnergy = 10000;
+    private static int m_MaxEnergy;
+    private static int m_CurrentEnergy;
     private static Vector2 m_Postion;
     #endregion
 
@@ -29,7 +29,7 @@ public class Energy : MonoBehaviour
     private void Awake()
     {
         m_TextUpdate = null;
-        m_TextUpdate += () => m_Text.text = m_CurrentEnergy.ToString();
+        m_TextUpdate += () => m_Text.text = (m_CurrentEnergy / 100).ToString();
 
         m_MaxEnergy = 10000;
         CurrentEnergy = 10000;
@@ -84,4 +84,5 @@ public class Energy : MonoBehaviour
     {
         return m_CurrentEnergy;
     }
+
 }
