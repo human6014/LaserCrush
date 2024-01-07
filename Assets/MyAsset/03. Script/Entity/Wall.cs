@@ -6,13 +6,16 @@ namespace LaserCrush.Entity
 
     public sealed class Wall : MonoBehaviour, ICollisionable
     {
-        public List<Vector2> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
+        public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             Energy.CollideWithWall();
-            //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
-            Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
             laser.ChangeLaserState(ELaserStateType.Hitting);
-            return new List<Vector2>() { dir };
+            //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
+            LaserInfo info = new LaserInfo();
+            info.Direction = Vector2.Reflect(parentDirVector, hit.normal);
+            info.Posion = hit.point;
+
+            return new List<LaserInfo>() { info };
         }
 
         public bool IsGetDamageable()
