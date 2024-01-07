@@ -24,6 +24,7 @@ namespace LaserCrush.UI
         public void Init()
         {
             m_Text = GetComponent<TextMeshProUGUI>();
+            CurrentScore = 0;
         }
     }
 }
