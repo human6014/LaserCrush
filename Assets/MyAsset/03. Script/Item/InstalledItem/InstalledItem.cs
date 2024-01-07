@@ -20,10 +20,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
-
-    /// <summary>
-    /// m_EjectionPorts : 각 사출구의 방향벡터
-    /// </summary>
     protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
     protected const int m_MaxUsingCount = 3;
@@ -92,13 +88,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         }
     }
 
-    /// <summary>
-    /// 해당 함수가 호출되면 프리즘이 활성화되며 사용 횟수가1회 차감
-    /// 야매로 처리 충돌 튕기는거 잘 처리해야할듯
-    /// </summary>
-    /// <param name="hit"></param>
-    /// <param name="parentDirVector"></param>
-    /// <returns></returns>
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
@@ -117,6 +106,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_IsActivate = false;
         m_ChargingWait = 0;
+
         if (m_UsingCount == 0)
         {
             return true;
