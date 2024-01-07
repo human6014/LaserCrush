@@ -198,7 +198,7 @@ namespace LaserCrush.Manager
 
         }
 
-        public List<Laser> CreateLaser(List<Vector2> dirVector, Vector2 pos)
+        public List<Laser> CreateLaser(List<LaserInfo> dirVector)
         {
             List<Laser> answer = new List<Laser>();
 
@@ -207,9 +207,9 @@ namespace LaserCrush.Manager
                 Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
                 laser.transform.SetParent(m_LasersTransform);
 
-                laser.transform.position = pos;
+                laser.transform.position = dirVector[i].Posion;
                 laser.Init(CreateLaser, LossParent);
-                laser.Activate(pos + dirVector[i], dirVector[i]);
+                laser.Activate(dirVector[i].Posion + dirVector[i].Direction, dirVector[i].Direction);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }
