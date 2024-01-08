@@ -1,7 +1,5 @@
 using LaserCrush.Entity;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public struct LaserInfo
