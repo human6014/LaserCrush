@@ -103,21 +103,6 @@ namespace LaserCrush.Entity
                     break;
             }
         }
-
-        public void Done()
-        {
-            return;
-        }
-
-        public bool HasChild()
-        {
-            if (m_ChildLazers.Count == 0)
-            {
-                return false;
-            }
-            return true;
-        }
-
         public List<Laser> GetChildLazer()
         {
             return m_ChildLazers;
@@ -207,11 +192,6 @@ namespace LaserCrush.Entity
             {
                 m_ChildLazers.Add(child[i]);
             }
-        }
-
-        public void CollideLauncher(RaycastHit2D hit)
-        {
-            Vector2 dir = hit.collider.GetComponent<Launcher>().GetDirectionVector();
         }
 
         private void OnDestroy()

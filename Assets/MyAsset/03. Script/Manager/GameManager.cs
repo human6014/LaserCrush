@@ -1,6 +1,4 @@
 using LaserCrush.Controller;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LaserCrush.Manager
@@ -128,7 +126,7 @@ namespace LaserCrush.Manager
             m_GameStateType = EGameStateType.Deploying;
         }
 
-        private void EndDeploying() // 배치끝 레이저 발사 시작
+        private void EndDeploying() // 배치 끝 레이저 발사 시작
         {
             if (m_GameStateType == EGameStateType.LaserActivating) return;
 
