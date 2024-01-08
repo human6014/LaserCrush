@@ -29,7 +29,9 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     protected int m_UsingCount = 0;
     private int m_ChargingWait;
 
-    protected bool m_IsActivate;
+    private Vector2 m_DirVector;
+    protected bool m_IsActivate = false;
+
     private bool m_IsFixedDirection;
     #endregion
 
@@ -39,6 +41,17 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
     #endregion
+
+    public bool Waiting()
+    {
+        m_ChargingWait++;
+        if (m_ChargingWait >= m_ChargingTime)
+        {
+            m_IsActivate = true;
+            return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// 해야할 역할
@@ -54,6 +67,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
             m_EjectionPorts.Add(new LaserInfo(position : tr.position, direction : tr.up));
         }
 
+        //todo
+        //m_DirVector -> 방향벡터 초기화
         m_UsingCount = m_MaxUsingCount;
         m_IsFixedDirection = false;
         m_IsActivate = false;
@@ -76,6 +91,23 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         m_OnMouseItemAction?.Invoke(false);
     }
 
+    /// <summary>
+    /// 반시계 방향의 각도
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    private Vector2 Rotate(float angle)
+    {
+        m_DirVector.x = m_DirVector.x * Mathf.Cos(angle) - m_DirVector.y * Mathf.Sin(angle);
+        m_DirVector.y = m_DirVector.x * Mathf.Sin(angle) + m_DirVector.y * Mathf.Cos(angle);
+        m_DirVector.Normalize();
+        //FixDirection();
+        //TODO
+        //위에 함수를 잘 수정해야 할 듯
+
+        return m_DirVector;
+    }
+
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
@@ -87,17 +119,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
-    }
-
-    public bool Waiting()
-    {
-        m_ChargingWait++;
-        if (m_ChargingWait >= m_ChargingTime)
-        {
-            m_IsActivate = true;
-            return true;
-        }
-        return false;
     }
 
     public bool IsOverloaded()
@@ -145,4 +166,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
+
+    
+
+
 }
