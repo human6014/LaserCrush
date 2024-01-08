@@ -146,17 +146,17 @@ namespace LaserCrush.Manager
             if (Energy.CheckEnergy())
             {
                 m_LaserTime += Time.deltaTime;
-                if(m_LaserTime > m_ValidTime && (m_PreEnergy == Energy.GetEnergy()))
+                if (m_LaserTime > m_ValidTime && m_PreEnergy == Energy.GetEnergy())
                 {
                     Energy.UseEnergy(int.MaxValue);
                     return;
                 }
 
-                if(m_LaserTime > m_ValidTime)
+                if(m_PreEnergy != Energy.GetEnergy()) 
                 {
+                    m_PreEnergy = Energy.GetEnergy();
                     m_LaserTime = 0;
                 }
-                m_PreEnergy = Energy.GetEnergy();
                 m_LaserManager.Activate();
             }
             else
@@ -169,3 +169,4 @@ namespace LaserCrush.Manager
         }
     }
 }
+ 
