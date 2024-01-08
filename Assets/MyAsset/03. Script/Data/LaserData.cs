@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LaserCrush.Data
 {
-    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Laser Data", order = int.MaxValue)]
+    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/Laser Data", order = int.MaxValue)]
     public class LaserData : ScriptableObject
     {
         [Tooltip("1 프레임당 데미지")]

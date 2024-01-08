@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Damage: 5
   m_EraseVelocity: 4
-  m_ShootingVelocity: 1
+  m_ShootingVelocity: 2
