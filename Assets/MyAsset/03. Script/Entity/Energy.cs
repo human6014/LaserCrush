@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
@@ -13,7 +11,6 @@ public class Energy : MonoBehaviour
 
     private static int m_MaxEnergy;
     private static int m_CurrentEnergy;
-    private static Vector2 m_Postion;
     #endregion
 
     private static int CurrentEnergy 
@@ -33,7 +30,6 @@ public class Energy : MonoBehaviour
 
         m_MaxEnergy = 10000;
         CurrentEnergy = 10000;
-        m_Postion = Vector2.zero;
     }
     /// 반환형은 총 사용한 에너지의 양이다.
     /// 적게남
