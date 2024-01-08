@@ -30,13 +30,12 @@ namespace LaserCrush.Manager
 
         private List<DroppedItem> m_DroppedItems;
         private List<AcquiredItem> m_AcquiredItems;
-        private List<InstalledItem> m_InstalledItem = new List<InstalledItem>();
-
-        private List<InstalledItem> m_InstalledItemBuffer = new List<InstalledItem>();
-        #endregion
-
+        private List<InstalledItem> m_InstalledItem;
+        private List<InstalledItem> m_InstalledItemBuffer;
+        
         private Action<GameObject> m_DestroyAction;
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
+        #endregion
 
         public event Func<Vector3, Result> CheckAvailablePosFunc
         {

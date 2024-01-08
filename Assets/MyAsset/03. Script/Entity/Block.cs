@@ -59,6 +59,7 @@ namespace LaserCrush
 
         private void Destroy()
         {
+            Manager.AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
             m_IsDestroyed = true;
             m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
             Destroy(gameObject);
@@ -105,9 +106,11 @@ namespace LaserCrush
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
                 //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
-                LaserInfo info = new LaserInfo();
-                info.Direction = Vector2.Reflect(parentDirVector, hit.normal);
-                info.Position = hit.point;
+                LaserInfo info = new LaserInfo
+                {
+                    Direction = Vector2.Reflect(parentDirVector, hit.normal),
+                    Position = hit.point
+                };
                 return new List<LaserInfo>() { info };
             }
             m_Text.text = GetHP().ToString();

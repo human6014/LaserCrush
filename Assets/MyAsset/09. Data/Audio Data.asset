@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0cdd4113d428a48a4eceb56f399b41, type: 3}
+  m_Name: Audio Data
+  m_EditorClassIdentifier: 
+  m_BGMAudioGroups:
+  - m_AudioName: MainBGM
+    m_AudioClip: {fileID: 8300000, guid: 044824519b05abe4cbb6d3b3c9930a86, type: 3}
+  m_SENormalAudioGroups:
+  - m_AudioName: Laser
+    m_AudioClip: {fileID: 8300000, guid: 64c2aa29c42c7a447b817c42ebad13dd, type: 3}
+  - m_AudioName: BlockDestroy
+    m_AudioClip: {fileID: 8300000, guid: cc9e7bc5efe32994fbc0f8539826c449, type: 3}
+  - m_AudioName: PrismCharging
+    m_AudioClip: {fileID: 8300000, guid: 523db141b42bd3b4bb899b5cc864eb73, type: 3}
+  - m_AudioName: PrismBatch
+    m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}
+  m_SEUIAudioGroups:
+  - m_AudioName: InventoryItemSelect
+    m_AudioClip: {fileID: 8300000, guid: 42acc02a3539187438a4649dd63e7750, type: 3}

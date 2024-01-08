@@ -1,15 +1,68 @@
+using LaserCrush.Data;
 using UnityEngine;
 
 namespace LaserCrush.Manager
 {
-    [System.Serializable]
-    public class AudioManager
+    public class AudioManager : MonoBehaviour
     {
-        [SerializeField] private AudioSource m_AudioSource;
+        [SerializeField] private AudioData m_AudioData;
+        [SerializeField] private AudioSource m_BGMAudioSource;
+        [SerializeField] private AudioSource m_SEAudioSource;
+
+        private bool isAutoBGMMode;
+
+        private static AudioManager m_AudioManager;
+
+        public static AudioManager AudioManagerInstance
+        {
+            get => m_AudioManager;
+        }
 
         public void Init()
         {
+            if (m_AudioManager == null)
+            {
+                m_AudioManager = this;
+                DontDestroyOnLoad(gameObject);
+                m_AudioData.DataToDictionary();
+            }
+            else Destroy(gameObject);
+        }
 
+        public void OnOffAutoBGMLoop(bool isOnOff)
+        {
+            isAutoBGMMode = isOnOff;
+        }
+
+        private void Update()
+        {
+            if (!isAutoBGMMode) return;
+
+            if (m_BGMAudioSource.isPlaying) return;
+
+            string randomKey = m_AudioData.GetRandomBGMKey();
+            PlayBGM(randomKey);
+        }
+
+        public void PlayBGM(string audioName)
+        {
+            if (m_AudioData.GetBGM(audioName, out AudioClip audioClip))
+            {
+                m_BGMAudioSource.clip = audioClip;
+                m_BGMAudioSource.Play();
+            }
+        }
+
+        public void PlayOneShotNormalSE(string audioName)
+        {
+            if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
+                m_SEAudioSource.PlayOneShot(audioClip);
+        }
+
+        public void PlayOneShotUISE(string audioName)
+        {
+            if (m_AudioData.GetSEUI(audioName, out AudioClip audioClip))
+                m_SEAudioSource.PlayOneShot(audioClip);
         }
     }
 }

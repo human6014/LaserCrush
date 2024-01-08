@@ -22,7 +22,8 @@ namespace LaserCrush.Controller
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
 
-        private bool m_IsDragInit;
+        private bool m_IsInitPosDrag;
+        private bool m_IsInitItemDrag;
         private bool m_IsActiveSubLine;
         #endregion
 
@@ -60,17 +61,22 @@ namespace LaserCrush.Controller
             m_ClickableObject.MouseDownAction += () => m_OnClickAction?.Invoke();
         }
 
+        public void IsInitItemDrag(bool isInitItemDrag)
+        {
+            m_IsInitItemDrag = isInitItemDrag;
+        }
+
         private void SetInitPos(bool isDragInit)
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!IsActiveSubLine) return;
 
-            m_IsDragInit = isDragInit;
-            if (!m_IsDragInit) return;
+            m_IsInitPosDrag = isDragInit;
+            if (!m_IsInitPosDrag) return;
 
             Vector3 objectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             float xPos = Mathf.Clamp(objectPos.x, -45, 45);
-            m_DragTransfrom.position = new Vector3(xPos, -64, 0);
+            m_DragTransfrom.position = new Vector3(xPos, -59, 0);
 
             UpdateLineRenderer();
         }
@@ -86,10 +92,10 @@ namespace LaserCrush.Controller
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!IsActiveSubLine) return;
-            if (m_IsDragInit) return;
+            if (m_IsInitPosDrag | m_IsInitItemDrag) return;
 
-            Vector3 m_ClickPos = MainScreenToWorldPoint(Input.mousePosition);
-            Vector3 differVector = m_ClickPos - Position;
+            Vector3 clickPos = MainScreenToWorldPoint(Input.mousePosition);
+            Vector3 differVector = clickPos - Position;
 
             if (differVector.magnitude < 5) return;
 
