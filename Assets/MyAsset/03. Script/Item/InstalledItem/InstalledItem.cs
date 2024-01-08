@@ -1,5 +1,6 @@
 using LaserCrush.Entity;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public struct LaserInfo
@@ -18,18 +19,25 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
+
     protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
     protected const int m_MaxUsingCount = 3;
     private const int m_ChargingTime = 100;
+    //시간 기준 아님 수정 필요함 - 승현이가 나중에 할 예정
     
     protected int m_UsingCount = 0;
     private int m_ChargingWait;
+
     private Vector2 m_DirVector;
     protected bool m_IsActivate = false;
 
     private bool m_IsFixedDirection;
+    #endregion
 
+    private Action<bool> m_OnMouseItemAction;
+
+    #region Property
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
     #endregion
@@ -50,7 +58,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     /// 1. m_EjectionPorts 위치와 방향 초기화
     /// 2. 사용횟수 초기화
     /// </summary>
-    public void Init(int rowNumber, int colNumber)
+    public void Init(int rowNumber, int colNumber, Action<bool> onMouseItemAction)
     {
         RowNumber = rowNumber;
         ColNumber = colNumber;
@@ -62,7 +70,9 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         //todo
         //m_DirVector -> 방향벡터 초기화
         m_UsingCount = m_MaxUsingCount;
+        m_IsFixedDirection = false;
         m_IsActivate = false;
+        m_OnMouseItemAction = onMouseItemAction;
     }
 
     public void FixDirection()
@@ -77,20 +87,32 @@ public class InstalledItem : MonoBehaviour, ICollisionable
                 direction: m_EjectionPortsTransform[i].up
                 );
         }
+
+        m_OnMouseItemAction?.Invoke(false);
     }
 
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
         {
-            List<LaserInfo> answer = new List<LaserInfo>();
-            return answer;
+            return new List<LaserInfo>();
         }
         laser.ChangeLaserState(ELaserStateType.Wait);
         m_HittingLaser = laser;
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
+    }
+
+    public bool Waiting()
+    {
+        m_ChargingWait++;
+        if (m_ChargingWait >= m_ChargingTime)
+        {
+            m_IsActivate = true;
+            return true;
+        }
+        return false;
     }
 
     public bool IsOverloaded()
@@ -115,12 +137,19 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
+    private void OnMouseDown()
+    {
+        if (m_IsFixedDirection) return;
+        m_OnMouseItemAction?.Invoke(true);
+    }
+
     private void OnMouseDrag()
     {
         if (m_IsFixedDirection) return;
         Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction);
     }
+
 
     /// <summary>
     /// 반시계 방향의 각도
@@ -136,5 +165,16 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         //위에 함수를 잘 수정해야 할 듯
 
         return m_DirVector;
+    }
+
+    private void OnMouseUp()
+    {
+        if (m_IsFixedDirection) return;
+        m_OnMouseItemAction?.Invoke(false);
+    }
+
+    private void OnDestroy()
+    {
+        m_OnMouseItemAction = null;
     }
 }

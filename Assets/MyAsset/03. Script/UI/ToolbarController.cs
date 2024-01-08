@@ -12,6 +12,7 @@ namespace LaserCrush.Controller
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private RectTransform m_ContentTransform;
         [SerializeField] private GridLineController m_GridLineController;
+        [SerializeField] private SubLineController m_SubLineController;
 
         private Vector2 m_InitPos;
 
@@ -69,13 +70,22 @@ namespace LaserCrush.Controller
 
         private void OnPointerUp(Vector2 pos)
         {
+            m_GridLineController.OnOffGridLine(false);
+            if (!m_SubLineController.IsActiveSubLine)
+            {
+                MoveBackOriginal();
+                return;
+            }
+
             Ray ray = m_MainCamera.ScreenPointToRay(pos);
             if (!CanBatch(ray.origin) || !BatchAcquireItem(ray.origin))
-            {
-                m_CurrentItem.GetComponent<Image>().maskable = true;
-                m_CurrentItemTransform.anchoredPosition = m_InitPos;
-            }
-            m_GridLineController.OnOffGridLine(false);
+                MoveBackOriginal();
+        }
+
+        private void MoveBackOriginal()
+        {
+            m_CurrentItem.GetComponent<Image>().maskable = true;
+            m_CurrentItemTransform.anchoredPosition = m_InitPos;
         }
 
         private bool BatchAcquireItem(Vector3 origin)
@@ -83,16 +93,17 @@ namespace LaserCrush.Controller
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
             if (!result.m_IsAvailable) return false;
 
-            GameObject obj = Instantiate(m_CurrentItem.ItemObject);
+            GameObject obj = Instantiate(m_CurrentItem.ItemObject, result.m_ItemGridPos, Quaternion.identity);
             obj.transform.SetParent(m_BatchedItemTransform);
-            obj.transform.position = result.m_ItemGridPos;
 
             InstalledItem installedItem = obj.GetComponent<InstalledItem>();
             m_AddPrismAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(result.m_RowNumber, result.m_ColNumber);
+            installedItem.Init(result.m_RowNumber, result.m_ColNumber, m_SubLineController.IsInitItemDrag);
 
             m_ContentTransform.sizeDelta =
                 new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);
+
+            m_SubLineController.IsActiveSubLine = true;
 
             Destroy(m_CurrentItem.gameObject);
 

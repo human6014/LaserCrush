@@ -14,7 +14,7 @@ namespace LaserCrush.Data
         public float this[int index] { get => probability[index]; }
     }
 
-    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "ItemProbability Data", order = int.MaxValue)]
+    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/ItemProbability Data", order = int.MaxValue)]
     public class ItemProbabilityData : ScriptableObject
     {
         [SerializeField] private ItemProbability m_ItemProbability;

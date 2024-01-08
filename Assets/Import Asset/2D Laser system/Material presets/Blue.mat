@@ -35,9 +35,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _Amplitude: 0.159
-    - _Dissolve: 0
+    - _Dissolve: 0.134
     - _DissolveScale: 68.35
-    - _DissolveWidth: 0.2
+    - _DissolveWidth: 0.092
     - _EdgeSharpness: 0
     - _EndDistance: 0.8
     - _Fill: 1
@@ -62,7 +62,7 @@ Material:
     - _StartDistance: 0.9
     - _Value: -0.25
     m_Colors:
-    - _DissolveColor: {r: 20.155134, g: 0, b: 10.446901, a: 1}
+    - _DissolveColor: {r: 0.45710218, g: 0.5947615, b: 0.9056604, a: 1}
     - _LineColor: {r: 0.109803915, g: 0.69870377, b: 0.7647059, a: 1}
     - _MiddleColor: {r: 1.2281493, g: 0.7118186, b: 17.148375, a: 1}
     - _OutlineColor: {r: 0.16386802, g: 3.0303404, b: 10.43295, a: 0.76862746}

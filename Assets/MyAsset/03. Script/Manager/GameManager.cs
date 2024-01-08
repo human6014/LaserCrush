@@ -20,10 +20,10 @@ namespace LaserCrush.Manager
         #region SerializeField
         [Header("Monobehaviour Reference")]
         [SerializeField] private UIManager m_UIManager;
+        [SerializeField] private AudioManager m_AudioManager;
 
         [Header("Serialized Instance Reference")]
         [SerializeField] private GameSettingManager m_GameSettingManager;
-        [SerializeField] private AudioManager m_AudioManager;
         [SerializeField] private LaserManager m_LaserManager;
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
@@ -36,7 +36,8 @@ namespace LaserCrush.Manager
         public static int m_StageNum;
         private float m_GameTime = 0;
         private float m_GameFrameTime = 0.01666f;
-        private float m_ValidTime = 2;
+        private float m_ValidTime = 3;
+
         private float m_LaserTime;
         private int m_PreEnergy;
         #endregion
@@ -64,7 +65,13 @@ namespace LaserCrush.Manager
             m_SubLineController = GetComponent<SubLineController>();
             m_SubLineController.OnClickAction += EndDeploying;
 
+
             m_StageNum = 0;
+        }
+
+        private void Start()
+        {
+            m_AudioManager.OnOffAutoBGMLoop(true);
         }
 
         /// <summary>
@@ -137,7 +144,6 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
-
             if (Energy.CheckEnergy())
             {
                 m_LaserTime += Time.deltaTime;

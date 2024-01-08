@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LaserCrush.Data
 {
-    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Block Data", order = int.MaxValue)]
+    [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/Block Data", order = int.MaxValue)]
     public class BlockData : ScriptableObject
     {
         [SerializeField] private Color m_NormalBlockColor;
