@@ -37,6 +37,7 @@ namespace LaserCrush.Manager
         private float m_GameTime = 0;
         private float m_GameFrameTime = 0.01666f;
         private float m_ValidTime = 3;
+
         private float m_LaserTime;
         private int m_PreEnergy;
         #endregion
