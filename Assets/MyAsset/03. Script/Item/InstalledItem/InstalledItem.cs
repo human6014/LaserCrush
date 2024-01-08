@@ -91,6 +91,23 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         m_OnMouseItemAction?.Invoke(false);
     }
 
+    /// <summary>
+    /// 반시계 방향의 각도
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    private Vector2 Rotate(float angle)
+    {
+        m_DirVector.x = m_DirVector.x * Mathf.Cos(angle) - m_DirVector.y * Mathf.Sin(angle);
+        m_DirVector.y = m_DirVector.x * Mathf.Sin(angle) + m_DirVector.y * Mathf.Cos(angle);
+        m_DirVector.Normalize();
+        //FixDirection();
+        //TODO
+        //위에 함수를 잘 수정해야 할 듯
+
+        return m_DirVector;
+    }
+
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
@@ -102,17 +119,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
-    }
-
-    public bool Waiting()
-    {
-        m_ChargingWait++;
-        if (m_ChargingWait >= m_ChargingTime)
-        {
-            m_IsActivate = true;
-            return true;
-        }
-        return false;
     }
 
     public bool IsOverloaded()
@@ -150,23 +156,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         transform.rotation = Quaternion.LookRotation(transform.forward, direction);
     }
 
-
-    /// <summary>
-    /// 반시계 방향의 각도
-    /// </summary>
-    /// <param name="angle"></param>
-    /// <returns></returns>
-    private Vector2 Rotate(float angle)
-    {
-        m_DirVector.x = m_DirVector.x * Mathf.Cos(angle) - m_DirVector.y*Mathf.Sin(angle);
-        m_DirVector.y = m_DirVector.x*Mathf.Sin(angle) + m_DirVector.y * Mathf.Cos(angle);
-        //FixDirection();
-        //TODO
-        //위에 함수를 잘 수정해야 할 듯
-
-        return m_DirVector;
-    }
-
     private void OnMouseUp()
     {
         if (m_IsFixedDirection) return;
@@ -177,4 +166,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
+
+    
+
+
 }
