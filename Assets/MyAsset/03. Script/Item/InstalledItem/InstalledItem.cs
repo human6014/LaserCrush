@@ -25,7 +25,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     
     protected int m_UsingCount = 0;
     private int m_ChargingWait;
-
+    private Vector2 m_DirVector;
     protected bool m_IsActivate = false;
 
     private bool m_IsFixedDirection;
@@ -33,15 +33,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
     #endregion
-
-    /// <summary>
-    /// 화면에서 유저 입력을 받아 설치할때 호출할 함수
-    /// 아이템에서 보조선이 나와 각도를 시각화 해준다
-    /// 수정 필요
-    /// </summary>
-    void RotateEjectionPorts()
-    {
-    }
 
     public bool Waiting()
     {
@@ -68,6 +59,8 @@ public class InstalledItem : MonoBehaviour, ICollisionable
             m_EjectionPorts.Add(new LaserInfo(position : tr.position, direction : tr.up));
         }
 
+        //todo
+        //m_DirVector -> 방향벡터 초기화
         m_UsingCount = m_MaxUsingCount;
         m_IsActivate = false;
     }
@@ -127,5 +120,21 @@ public class InstalledItem : MonoBehaviour, ICollisionable
         if (m_IsFixedDirection) return;
         Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction);
+    }
+
+    /// <summary>
+    /// 반시계 방향의 각도
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    private Vector2 Rotate(float angle)
+    {
+        m_DirVector.x = m_DirVector.x * Mathf.Cos(angle) - m_DirVector.y*Mathf.Sin(angle);
+        m_DirVector.y = m_DirVector.x*Mathf.Sin(angle) + m_DirVector.y * Mathf.Cos(angle);
+        //FixDirection();
+        //TODO
+        //위에 함수를 잘 수정해야 할 듯
+
+        return m_DirVector;
     }
 }
