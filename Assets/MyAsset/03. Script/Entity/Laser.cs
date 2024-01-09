@@ -24,10 +24,13 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private Data.LaserData m_LaserData;
 
-        private List<Laser> m_ChildLazers;
+        private LaserParticle m_LaserParticle;
+
+        private List<Laser> m_ChildLazers = new List<Laser>();
+        private List<LaserInfo> m_LaserInfo;
 
         private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
-        private LineRenderer m_LineRenderer;
+
         private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
@@ -36,22 +39,20 @@ namespace LaserCrush.Entity
         private Vector2 m_StartPoint;
         private Vector2 m_EndPoint;
         private Vector2 m_DirectionVector;
+        private Vector2 m_HitNormal;
 
         private bool m_IsInitated;
         private bool m_IsActivated;
-
-        //tem
-        RaycastHit2D m_Hit;
-        List<LaserInfo> m_LaserInfo;
-
         #endregion
 
         private void Awake()
         {
-            m_ChildLazers = new List<Laser>();
             m_IsInitated = false;
 
-            m_LineRenderer = GetComponent<LineRenderer>();
+            m_LaserParticle = new LaserParticle(
+                    transform.GetChild(0).GetComponent<ParticleSystem>(), 
+                    transform.GetChild(1).GetComponent<ParticleSystem>()
+                    );
         }
 
         public void Init(Func<List<LaserInfo>, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
@@ -72,9 +73,9 @@ namespace LaserCrush.Entity
             m_State = ELaserStateType.Move;
             
             m_ChildLazers.Clear();
-            m_LineRenderer.positionCount = 2;
-            m_LineRenderer.SetPosition(0, position);
-            m_LineRenderer.SetPosition(1, position);
+
+            m_LaserParticle.OffEffectParticle();
+            m_LaserParticle.OffHitParticle();
         }
 
         /// <summary>
@@ -114,14 +115,17 @@ namespace LaserCrush.Entity
         /// </summary>
         public bool Erase()
         {
-            if (Vector2.Distance(m_StartPoint, m_EndPoint) <= m_LaserData.EraseVelocity)
+            float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
+            if (dist <= m_LaserData.EraseVelocity)
             {
-                m_StartPoint = m_EndPoint;
-                if(m_LineRenderer != null) m_LineRenderer.SetPosition(0, m_StartPoint);
+                MoveStartPoint(m_StartPoint, dist);
+
+                m_LaserParticle.OffEffectParticle();
+                m_LaserParticle.OffHitParticle();
                 return true;
             }
-            m_StartPoint += m_DirectionVector * m_LaserData.EraseVelocity;
-            m_LineRenderer.SetPosition(0, m_StartPoint);
+
+            MoveStartPoint(m_StartPoint + m_DirectionVector * m_LaserData.EraseVelocity, dist);
             return false;
         }
 
@@ -136,18 +140,35 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
+            RaycastHit2D m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
 
+            float dist = Vector2.Distance(m_EndPoint, m_Hit.point);
             if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
             {
+                MoveEndPoint(m_Hit.point);
+                
+                m_HitNormal = m_Hit.normal;
                 m_Target = m_Hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(m_Hit, m_DirectionVector, this);
-                if (m_State == ELaserStateType.Wait) { return; }
+                if (m_State == ELaserStateType.Wait) return; 
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
-            m_EndPoint += m_DirectionVector * m_LaserData.ShootingVelocity;
-            m_LineRenderer.SetPosition(1, m_EndPoint);
+
+            MoveEndPoint(m_EndPoint + m_DirectionVector * m_LaserData.ShootingVelocity);
+        }
+
+        private void MoveStartPoint(Vector2 pos, float dist)
+        {
+            
+            m_LaserParticle.SetLaserEffectErase(dist, m_LaserData.EraseVelocity, m_StartPoint);
+            m_StartPoint = pos;
+        }
+
+        private void MoveEndPoint(Vector2 pos)
+        {
+            m_EndPoint = pos;
+            m_LaserParticle.SetLaserEffectMove(Vector2.Distance(m_StartPoint, m_EndPoint), m_StartPoint, m_DirectionVector);
         }
 
         public void ChangeLaserState(ELaserStateType type)
@@ -179,10 +200,12 @@ namespace LaserCrush.Entity
             {
                 if (!m_Target.GetDamage(m_LaserData.Damage))
                 {
+                    m_LaserParticle.OffHitParticle();
                     m_LaserEraseAction?.Invoke(m_ChildLazers);
                     m_Target = null;
                     m_State = ELaserStateType.Move;
                 }
+                else m_LaserParticle.SetHitEffectPosition(m_EndPoint, m_HitNormal);
             }
         }
 
@@ -192,12 +215,6 @@ namespace LaserCrush.Entity
             {
                 m_ChildLazers.Add(child[i]);
             }
-        }
-
-        private void OnDestroy()
-        {
-            m_LaserCreateFunc = null;
-            m_LaserEraseAction = null;
         }
 
         public void LossParentLasersDeActivate()
@@ -214,6 +231,12 @@ namespace LaserCrush.Entity
                     remover.Enqueue(now.m_ChildLazers[i]);
                 }
             }
+        }
+
+        private void OnDestroy()
+        {
+            m_LaserCreateFunc = null;
+            m_LaserEraseAction = null;
         }
     }
 }
