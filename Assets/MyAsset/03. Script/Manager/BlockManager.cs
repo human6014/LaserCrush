@@ -91,7 +91,10 @@ namespace LaserCrush.Manager
                 if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
             }
             Debug.Log(MaxRow);
-            if(MaxRow == m_MaxRowCount - 1) return true;
+            //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
+            //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
+            //if(MaxRow == m_MaxRowCount - 2) return true;
+            if (MaxRow == m_MaxRowCount - 1) return true;
             return false;
         }
 
