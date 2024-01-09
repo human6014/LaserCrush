@@ -27,7 +27,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
 
     private const int m_MaxUsingCount = 3;
     private const float m_ChargingTime = 0.5f;
-    //시간 기준 아님 수정 필요함 - 승현이가 나중에 할 예정
 
     private int m_UsingCount = 0;
     private float m_ChargingWait;
