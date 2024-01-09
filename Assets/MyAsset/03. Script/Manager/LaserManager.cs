@@ -53,12 +53,6 @@ namespace LaserCrush.Manager
 
         public void Activate()
         {
-            /*
-             * 턴 시작
-             * 1. 루트 배열 비우기
-             * 2. 시작 레이저 셋팅 후 루트배열과 레이저 배열에 추가
-             * 3. 초기화변수 셋팅
-             */
             if (!m_Initialized)//턴 첫 시작
             {
                 m_InitLazer.Activate(m_SubLineController.Position, m_SubLineController.Direction);
@@ -72,13 +66,12 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if (Energy.CheckEnergy()) // 에너지 없으면 호출의 의미가 없다 -> 최적화?
+                    if (Energy.CheckEnergy())
                     {
                         m_Lasers[i].Run();
                     }
                 }
                 ActivateBufferFlush();
-
 
                 //중간에 부모를 잃은 레이저 처리하는 함수
                 RemoveLossParentsLaser();
@@ -106,7 +99,6 @@ namespace LaserCrush.Manager
              * 3 끝점과 시작점이 만나면 레이저를 루트배열에서 삭제하고 자식레이저를 배열에 추가
              * 4 위 과정을 레이저 배열이 빌때까지 진행한다.
              */
-            //Debug.Log("m_RootLazer : " + m_RootLazer.Count);
             for (int i = 0; i < m_RootLazer.Count; i++)
             {
                 if (m_RootLazer[i].Erase())

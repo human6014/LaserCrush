@@ -103,6 +103,13 @@ namespace LaserCrush.Manager
         /// </summary>
         private void BlockUpdating()
         {
+            //게임 종료 체크
+            if(m_BlockManager.IsGameOver())
+            {
+                //TODO -> 게임 종료
+                Debug.Log("GAME OVER");
+            }
+
             m_StageNum++;
             //Debug.Log("필드 위 아이템 획득");
             /*ToDo

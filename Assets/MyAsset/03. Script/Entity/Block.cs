@@ -76,9 +76,7 @@ namespace LaserCrush
                 return false;
             }
             else m_HP -= Energy.UseEnergy(damage);
-            //임시 코드
-            //피가 100(나누는 값) 이하면 0으로 표기된다. 중간에 레이저의 hit가 멈추면 0인채로 블럭이 부서지지 않는다
-            //해당 버그 방지용
+
             if(GetHP() == 0)
             {
                 Energy.UseEnergy(m_HP);

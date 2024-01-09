@@ -85,6 +85,22 @@ namespace LaserCrush.Manager
             return result;
         }
 
+
+        public bool IsGameOver()
+        {
+            int MaxRow = -1;
+            foreach (Block block in m_Blocks)
+            {
+                if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
+            }
+            Debug.Log(MaxRow);
+            //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
+            //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
+            //if(MaxRow == m_MaxRowCount - 2) return true;
+            if (MaxRow == m_MaxRowCount - 1) return true;
+            return false;
+        }
+
         private bool InBoardArea(Vector2 pos)
         {
             return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) && 
