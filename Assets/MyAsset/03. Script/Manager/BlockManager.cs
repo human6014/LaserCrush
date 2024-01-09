@@ -83,6 +83,18 @@ namespace LaserCrush.Manager
             return result;
         }
 
+        public bool IsGameOver()
+        {
+            int MaxRow = -1;
+            foreach (Block block in m_Blocks)
+            {
+                if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
+            }
+            Debug.Log(MaxRow);
+            if(MaxRow == m_MaxRowCount - 1) return true;
+            return false;
+        }
+
         private Vector3 GetItemGridPos(Vector3 pos, out int rowNumber, out int colNumber)
         {
             float differX = pos.x - m_LeftWall.position.x;
