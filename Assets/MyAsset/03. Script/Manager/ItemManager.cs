@@ -27,9 +27,11 @@ namespace LaserCrush.Manager
     {
         #region Variable
         [SerializeField] private ToolbarController m_ToolbarController;
+        [SerializeField] private AcquiredItemUI[] m_AcquiredItemUI;
+
+        private int[] m_AcquiredItemCounts;
 
         private List<DroppedItem> m_DroppedItems;
-        private List<AcquiredItem> m_AcquiredItems;
         private List<InstalledItem> m_InstalledItem;
         private List<InstalledItem> m_InstalledItemBuffer;
         
@@ -46,24 +48,28 @@ namespace LaserCrush.Manager
         public void Init(Action<GameObject> destroyAction)
         {
             m_DroppedItems = new List<DroppedItem>();
-            m_AcquiredItems = new List<AcquiredItem>();
             m_InstalledItem = new List<InstalledItem>();
             m_InstalledItemBuffer = new List<InstalledItem>();
+            m_AcquiredItemCounts = new int[m_AcquiredItemUI.Length];
 
             m_DestroyAction = destroyAction;
 
             m_ToolbarController.CheckAvailablePosFunc += CheckAvailablePos;
             m_ToolbarController.AddInstalledItemAction += AddInstalledItem;
+
+            m_ToolbarController.Init(m_AcquiredItemUI);
         }
 
         public void GetDroppedItems()
         {
+            int itemIndex;
             foreach (DroppedItem droppedItem in m_DroppedItems)
             {
-                if (droppedItem.GetItem(out AcquiredItem acquiredItem))
+                itemIndex = droppedItem.GetItemIndex();
+                if (itemIndex != -1)
                 {
-                    m_AcquiredItems.Add(acquiredItem);
-                    m_ToolbarController.AcquireItem(acquiredItem);
+                    m_AcquiredItemCounts[itemIndex]++;
+                    m_AcquiredItemUI[itemIndex].HasCount++;
                 }
                 m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
@@ -112,15 +118,16 @@ namespace LaserCrush.Manager
             {
                 if (result.m_RowNumber == installedItem.RowNumber &&
                     result.m_ColNumber == installedItem.ColNumber) 
-                    return new Result(false, result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
+                    return new Result(false, Vector3.zero, result.m_RowNumber, result.m_ColNumber);
             }
 
             return result;
         }
 
-        private void AddInstalledItem(InstalledItem installedItem, AcquiredItem acquiredItem)
+        private void AddInstalledItem(InstalledItem installedItem, AcquiredItemUI acquiredItem)
         {
-            m_AcquiredItems.Remove(acquiredItem);
+            acquiredItem.HasCount--;
+            m_AcquiredItemCounts[acquiredItem.ItemIndex]--;
             m_InstalledItem.Add(installedItem);
         }
 

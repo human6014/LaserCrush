@@ -5,9 +5,16 @@ namespace LaserCrush.Entity
     public abstract class DroppedItem : MonoBehaviour
     {
         #region Variable
-        [SerializeField] protected AcquiredItem m_AcquiredItem;
+        [SerializeField] protected int m_AcquiredItemIndex;
         #endregion
 
-        public abstract bool GetItem(out AcquiredItem acquiredItem);
+        public int GetItemIndex()
+        {
+            GetItemWithAnimation();
+
+            return m_AcquiredItemIndex;
+        }
+
+        protected abstract void GetItemWithAnimation();
     }
 }

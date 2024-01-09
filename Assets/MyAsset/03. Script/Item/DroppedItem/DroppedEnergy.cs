@@ -2,15 +2,9 @@ namespace LaserCrush.Entity
 {
     public sealed class DroppedEnergy : DroppedItem
     {
-        public override bool GetItem(out AcquiredItem acquiredItem)
+        protected override void GetItemWithAnimation()
         {
-            acquiredItem = null;
-            GetItemWithAnimation();
-            return false;
-        }
-
-        private void GetItemWithAnimation()
-        {
+            //Do animation
             Energy.EnergyUpgrade(10);
             return;
         }

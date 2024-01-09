@@ -2,14 +2,7 @@ namespace LaserCrush.Entity
 {
     public sealed class DroppedPrism : DroppedItem
     {
-        public override bool GetItem(out AcquiredItem acquiredItem)
-        {
-            acquiredItem = Instantiate(m_AcquiredItem);
-            GetItemWithAnimation();
-            return true;
-        }
-
-        private void GetItemWithAnimation()
+        protected override void GetItemWithAnimation()
         {
             //Do animation
             return;
