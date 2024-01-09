@@ -63,11 +63,12 @@ namespace LaserCrush.Manager
 
         private Result CheckAvailablePos(Vector3 pos)
         {
+            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0); 
             Vector2 newPos = GetItemGridPos(pos, out int rowNumber, out int colNumber);
 
             Result result = new Result(
                     isAvailable: false,
-                    itemGridPos: newPos,
+                    itemGridPos: Vector3.zero,
                     rowNumber: rowNumber,
                     colNumber: colNumber
                     );
@@ -80,7 +81,15 @@ namespace LaserCrush.Manager
             }
 
             result.m_IsAvailable = true;
+            result.m_ItemGridPos = newPos;
             return result;
+        }
+
+        private bool InBoardArea(Vector2 pos)
+        {
+            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) && 
+                pos.y >= -m_TopWall.position.y + 7 && 
+                pos.y <= m_TopWall.position.y;
         }
 
         private Vector3 GetItemGridPos(Vector3 pos, out int rowNumber, out int colNumber)

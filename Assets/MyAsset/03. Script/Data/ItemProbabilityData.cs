@@ -24,7 +24,8 @@ namespace LaserCrush.Data
         /// Energy = 10
         /// Prism_1 = 5
         /// Prism_2 = 5
-        /// None = 80
+        /// Prism_3 = 5
+        /// None = 75
         public int GetItemIndex() 
         {
             float randomPoint = Random.value * 100;
