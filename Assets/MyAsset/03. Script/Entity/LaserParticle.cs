@@ -38,6 +38,8 @@ namespace LaserCrush.Entity
 
         public void SetLaserEffectMove(float length, Vector2 pos, Vector2 dir)
         {
+            if (m_LaserEffectParticleRenderer is null) return;
+
             m_LaserEffectParticleRenderer.lengthScale = length;
             if (!m_LaserEffectParticle.isPlaying)
             {
@@ -48,7 +50,7 @@ namespace LaserCrush.Entity
 
         public void SetLaserEffectErase(float length, float velocity, Vector2 pos)
         {
-            if (m_LaserEffectParticle.isStopped) return;
+            if (m_LaserEffectParticle is null || m_LaserEffectParticle.isStopped) return;
 
             m_LaserEffectParticleTransform.position = pos;
             m_LaserEffectParticleRenderer.lengthScale = length;
