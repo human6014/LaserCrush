@@ -6,7 +6,7 @@ public class Energy : MonoBehaviour
 {
     #region Variable
     [SerializeField] private TextMeshProUGUI m_Text;
-
+    [SerializeField] private int INITENERGY = 10000;
     private static event UnityAction m_TextUpdate;
 
     private static int m_MaxEnergy;
@@ -28,8 +28,8 @@ public class Energy : MonoBehaviour
         m_TextUpdate = null;
         m_TextUpdate += () => m_Text.text = (m_CurrentEnergy / 100).ToString();
 
-        m_MaxEnergy = 10000;
-        CurrentEnergy = 10000;
+        m_MaxEnergy = INITENERGY;
+        CurrentEnergy = INITENERGY;
     }
     /// 반환형은 총 사용한 에너지의 양이다.
     /// 적게남
@@ -79,6 +79,20 @@ public class Energy : MonoBehaviour
     public static int GetEnergy()
     {
         return m_CurrentEnergy;
+    }
+    
+    //-95 ~ 95
+    //게이지 표시 경우 -95 + GetGaugeNum으로 해줘야되더라
+    //Fill Green
+    private int GetGaugeNum()
+    {
+        return (190 * m_CurrentEnergy) / m_MaxEnergy;
+    }
+
+    public void Reset()
+    {
+        m_MaxEnergy = INITENERGY;
+        m_CurrentEnergy = INITENERGY;
     }
 
 }

@@ -34,7 +34,7 @@ namespace LaserCrush.Manager
         private List<DroppedItem> m_DroppedItems;
         private List<InstalledItem> m_InstalledItem;
         private List<InstalledItem> m_InstalledItemBuffer;
-        
+
         private Action<GameObject> m_DestroyAction;
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
         #endregion
@@ -78,7 +78,7 @@ namespace LaserCrush.Manager
 
         public void CheckDestroyPrisms()
         {
-            for(int i = 0; i < m_InstalledItem.Count; i++)
+            for (int i = 0; i < m_InstalledItem.Count; i++)
             {
                 if (m_InstalledItem[i].IsOverloaded())
                 {
@@ -90,9 +90,9 @@ namespace LaserCrush.Manager
 
         public void CheckDuplicatePosWithBlock(int rowNumber, int colNumber)
         {
-            foreach(InstalledItem installedItem in m_InstalledItem)
+            foreach (InstalledItem installedItem in m_InstalledItem)
             {
-                if(rowNumber == installedItem.RowNumber && colNumber == installedItem.ColNumber)
+                if (rowNumber == installedItem.RowNumber && colNumber == installedItem.ColNumber)
                 {
                     m_InstalledItem.Remove(installedItem);
                     m_DestroyAction?.Invoke(installedItem.gameObject);
@@ -103,7 +103,7 @@ namespace LaserCrush.Manager
 
         public void FixInstalledItemDirection()
         {
-            foreach(InstalledItem installedItem in m_InstalledItem)
+            foreach (InstalledItem installedItem in m_InstalledItem)
             {
                 installedItem.FixDirection();
             }
@@ -117,7 +117,7 @@ namespace LaserCrush.Manager
             foreach (InstalledItem installedItem in m_InstalledItem)
             {
                 if (result.m_RowNumber == installedItem.RowNumber &&
-                    result.m_ColNumber == installedItem.ColNumber) 
+                    result.m_ColNumber == installedItem.ColNumber)
                     return new Result(false, Vector3.zero, result.m_RowNumber, result.m_ColNumber);
             }
 
@@ -144,6 +144,18 @@ namespace LaserCrush.Manager
                 m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
             }
             m_InstalledItemBuffer.Clear();
+        }
+
+        public void Reset()
+        {
+            //설치된 아이템 모두 제거
+            for (int i = 0; i < m_InstalledItem.Count; i++)
+            {
+                m_InstalledItemBuffer.Add(m_InstalledItem[i]);
+            }
+            RemoveBufferFlush();
+
+            m_DroppedItems.Clear();
         }
     }
 }

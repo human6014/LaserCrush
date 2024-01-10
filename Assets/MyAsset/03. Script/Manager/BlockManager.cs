@@ -231,5 +231,14 @@ namespace LaserCrush.Manager
                 block.GetDamage(int.MaxValue);
             }
         }
+
+        public void Reset()
+        {
+            foreach (var block in m_Blocks)
+            {
+                block.DestoryGameOver();
+            }
+            m_Blocks.Clear();
+        }
     }
 }

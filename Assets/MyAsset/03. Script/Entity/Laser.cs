@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -67,7 +66,7 @@ namespace LaserCrush.Entity
             m_StartPoint = position;
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
-
+            m_IsErased = false;
             m_IsInitated = true;
             m_IsActivated = true;
             m_IsErased = false;
@@ -118,19 +117,18 @@ namespace LaserCrush.Entity
         /// </summary>
         public bool Erase()
         {
-            if (m_IsErased) return true;
+            if (m_IsErased) { return true; }
 
             float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
             if (dist <= m_LaserData.EraseVelocity)
             {
                 m_IsErased = true;
                 MoveStartPoint(m_StartPoint, dist);
-
                 m_LaserParticle.OffEffectParticle();
                 m_LaserParticle.OffHitParticle();
+                m_IsErased = true;
                 return true;
             }
-
             MoveStartPoint(m_StartPoint + m_DirectionVector * m_LaserData.EraseVelocity, dist);
             return false;
         }
