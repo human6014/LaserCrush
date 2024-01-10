@@ -87,7 +87,6 @@ public class InstalledItem : MonoBehaviour, ICollisionable
                 direction: m_EjectionPortsTransform[i].up
                 );
         }
-
         m_OnMouseItemAction?.Invoke(false);
     }
 

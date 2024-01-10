@@ -90,7 +90,6 @@ namespace LaserCrush.Manager
             {
                 if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
             }
-            Debug.Log(MaxRow);
             //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
             //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
             //if(MaxRow == m_MaxRowCount - 2) return true;
@@ -215,6 +214,14 @@ namespace LaserCrush.Manager
         private EEntityType GenerateEntityType()
         {
             return Random.Range(0, 100) < 50 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
+        }
+
+        public void FeverTime()
+        {
+            foreach(var block in m_Blocks) 
+            {
+                block.GetDamage(int.MaxValue);
+            }
         }
     }
 }
