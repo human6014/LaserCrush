@@ -20,17 +20,17 @@ namespace LaserCrush.Manager
         [SerializeField] private Transform m_LasersTransform;
 
         //lazer저장하는 자료구조
-        private List<Laser> m_Lasers = new List<Laser>();
-        private List<Laser> m_LaserAddBuffer = new List<Laser>();
-        private List<Laser> m_LaserRemoveBuffer = new List<Laser>();
+        private List<Laser> m_Lasers;
+        private List<Laser> m_LaserAddBuffer;
+        private List<Laser> m_LaserRemoveBuffer;
 
         //지우기 시작할 레이저보관 자료구조
-        private List<Laser> m_RootLazer = new List<Laser>();
+        private List<Laser> m_RootLazer;
 
         //중간에 부모를 잃은 레이저 지우는 자료구조
-        private List<Laser> m_LossParentsLaser = new List<Laser>();
-        private List<Laser> m_LossParentsLaserAddBuffer = new List<Laser>();
-        private List<Laser> m_LossParentsLaserRemoveBuffer = new List<Laser>();
+        private List<Laser> m_LossParentsLaser;
+        private List<Laser> m_LossParentsLaserAddBuffer;
+        private List<Laser> m_LossParentsLaserRemoveBuffer;
 
         private bool m_Initialized = false;
         #endregion
@@ -45,6 +45,10 @@ namespace LaserCrush.Manager
             m_LaserAddBuffer = new List<Laser>();
             m_LaserRemoveBuffer = new List<Laser>();
             m_RootLazer = new List<Laser>();
+            m_LossParentsLaser = new List<Laser>();
+            m_LossParentsLaserAddBuffer = new List<Laser>();
+            m_LossParentsLaserRemoveBuffer = new List<Laser>();
+
 
             m_InstantiateFunc = instantiateFunc;
             m_DestroyAction = destroyAction;
@@ -206,6 +210,17 @@ namespace LaserCrush.Manager
                 answer.Add(laser);
             }
             return answer;
+        }
+
+        public void Reset()
+        {
+            m_Lasers.Clear();
+            m_LaserAddBuffer.Clear();
+            m_LaserRemoveBuffer.Clear();
+            m_RootLazer.Clear();
+            m_LossParentsLaser.Clear();
+            m_LossParentsLaserAddBuffer.Clear();
+            m_LossParentsLaserRemoveBuffer.Clear();
         }
     }
 }

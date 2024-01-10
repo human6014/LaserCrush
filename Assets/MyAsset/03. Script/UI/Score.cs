@@ -31,5 +31,10 @@ namespace LaserCrush.UI
         {
             return (m_CurrentScore / 100);
         }
+
+        public void Reset()
+        {
+            m_CurrentScore = 0;
+        }
     }
 }

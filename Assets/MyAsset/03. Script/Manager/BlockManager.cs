@@ -96,7 +96,7 @@ namespace LaserCrush.Manager
             //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
             //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
             //if(MaxRow == m_MaxRowCount - 2) return true;
-            if (MaxRow == m_MaxRowCount - 1) return true;
+            if (MaxRow == m_MaxRowCount - 2) return true;
             return false;
         }
 
@@ -232,6 +232,15 @@ namespace LaserCrush.Manager
             {
                 block.GetDamage(int.MaxValue);
             }
+        }
+
+        public void Reset()
+        {
+            foreach (var block in m_Blocks)
+            {
+                block.DestoryGameOver();
+            }
+            m_Blocks.Clear();
         }
     }
 }

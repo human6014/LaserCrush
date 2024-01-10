@@ -63,7 +63,6 @@ namespace LaserCrush.Manager
             m_SubLineController = GetComponent<SubLineController>();
             m_SubLineController.OnClickAction += EndDeploying;
 
-
             m_StageNum = 0;
         }
 
@@ -106,8 +105,10 @@ namespace LaserCrush.Manager
             //게임 종료 체크
             if(m_BlockManager.IsGameOver())
             {
-                //TODO -> 게임 종료
                 Debug.Log("GAME OVER");
+                ResetGame();
+                m_GameStateType = EGameStateType.BlockUpdating;
+                return;
             }
 
             m_StageNum++;
@@ -173,6 +174,14 @@ namespace LaserCrush.Manager
         {
             //모든 블럭 파괴
             m_BlockManager.FeverTime();
+        }
+
+        private void ResetGame()
+        {
+            m_LaserManager.Reset();
+            m_ItemManager.Reset();
+            m_BlockManager.Reset();
+            m_StageNum = 0;
         }
     }
 }
