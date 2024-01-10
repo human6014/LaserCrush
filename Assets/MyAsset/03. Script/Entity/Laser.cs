@@ -147,7 +147,6 @@ namespace LaserCrush.Entity
             if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
             {
                 MoveEndPoint(m_Hit.point);
-                
                 m_HitNormal = m_Hit.normal;
                 m_Target = m_Hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(m_Hit, m_DirectionVector, this);

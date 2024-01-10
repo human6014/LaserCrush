@@ -11,6 +11,8 @@ public class Energy : MonoBehaviour
 
     private static int m_MaxEnergy;
     private static int m_CurrentEnergy;
+
+    private static int m_HittingFloorLaserNum;
     #endregion
 
     private static int CurrentEnergy 
@@ -62,12 +64,19 @@ public class Energy : MonoBehaviour
     /// </summary>
     public static void CollideWithWall()
     {
-        CurrentEnergy -= (CurrentEnergy / 10);
+        UseEnergy(m_MaxEnergy / 10);
+    }
+
+    public static void CollideWithFloor()
+    {
+        UseEnergy(m_MaxEnergy / 5);
+        //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
     }
 
     public static int ChargeEnergy()
     {
         CurrentEnergy = m_MaxEnergy;
+        m_HittingFloorLaserNum = 0;
         return CurrentEnergy;
     }
 
