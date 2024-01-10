@@ -65,6 +65,12 @@ namespace LaserCrush
             Destroy(gameObject);
         }
 
+        public void DestoryGameOver()
+        {
+            m_IsDestroyed = true;
+            Destroy(gameObject);
+        }
+
         public bool GetDamage(int damage)
         {
             if (m_IsDestroyed) return false;
