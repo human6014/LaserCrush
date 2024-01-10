@@ -79,7 +79,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
                     Mathf.Cos(dif * i * Mathf.Deg2Rad),
                     Mathf.Sin(dif * i * Mathf.Deg2Rad)).normalized);
             }
-            
         }
     }
 
