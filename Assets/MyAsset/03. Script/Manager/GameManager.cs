@@ -168,6 +168,12 @@ namespace LaserCrush.Manager
                 }
             }
         }
+
+        private void FeverTime()
+        {
+            //모든 블럭 파괴
+            m_BlockManager.FeverTime();
+        }
     }
 }
  
