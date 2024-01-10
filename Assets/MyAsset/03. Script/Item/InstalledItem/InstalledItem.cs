@@ -2,6 +2,9 @@ using LaserCrush.Entity;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEditor.Rendering;
+using TMPro.EditorUtilities;
 
 public struct LaserInfo
 {
@@ -32,6 +35,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private float m_ChargingWait;
 
     private Vector2 m_DirVector;
+    private Vector2 m_Posion;
+
+    private static List<Vector2> UnitCircle = new List<Vector2>();
 
     private bool m_IsActivate;
     private bool m_IsFixedDirection;
@@ -55,10 +61,23 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
+    //아래 나눌 숫자를 바꾸고 싶으면 180적혀있는 칸에 갯수를 적으면 됨
     private void Awake()
     {
         m_CircleCollider2D = GetComponent<CircleCollider2D>();
         m_CircleCollider2D.enabled = false;
+        //단위원에서 각도별 좌표 생성
+        if(UnitCircle.Count == 0)
+        {
+            float dif = 360 / 180;
+            for(int i = 1; i < 181; i++) 
+            {
+                UnitCircle.Add(new Vector2(
+                    Mathf.Cos(dif * i * Mathf.Deg2Rad),
+                    Mathf.Sin(dif * i * Mathf.Deg2Rad)).normalized);
+            }
+            
+        }
     }
 
     /// <summary>
@@ -82,6 +101,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         m_IsFixedDirection = false;
         m_IsActivate = false;
         m_OnMouseItemAction = onMouseItemAction;
+
     }
 
     public void FixDirection()
@@ -99,21 +119,34 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         m_OnMouseItemAction?.Invoke(false);
     }
 
-    /// <summary>
-    /// 반시계 방향의 각도
-    /// </summary>
-    /// <param name="angle"></param>
-    /// <returns></returns>
-    private Vector2 Rotate(float angle)
-    {
-        m_DirVector.x = m_DirVector.x * Mathf.Cos(angle) - m_DirVector.y * Mathf.Sin(angle);
-        m_DirVector.y = m_DirVector.x * Mathf.Sin(angle) + m_DirVector.y * Mathf.Cos(angle);
-        m_DirVector.Normalize();
-        //FixDirection();
-        //TODO
-        //위에 함수를 잘 수정해야 할 듯
 
-        return m_DirVector;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="vec">
+    /// 마우스로 가리킬 프리즘의 방향
+    /// </param>
+    /// <param name="div">
+    /// 360도를 몇개로 나눌지
+    /// </param>
+    /// <returns></returns>
+    private Vector2 Rotate(Vector2 vec)
+    {
+        Vector2 answer = Vector2.one;
+
+        //프리즘을 기준으로 마우스가 가르키는 방향의 단위 백터
+        Vector2 dir = (vec - m_Posion).normalized;
+
+        float dif = float.MaxValue;
+        foreach(Vector2 unit in UnitCircle)
+        {
+            if(Vector2.Distance(dir, unit) < dif)
+            {
+                answer = unit;
+                dif = Vector2.Distance(dir, unit);
+            }
+        }
+        return answer;
     }
 
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
