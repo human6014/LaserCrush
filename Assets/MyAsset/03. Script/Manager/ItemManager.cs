@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
-using LaserCrush.Controller;
+using LaserCrush.Controller.InputObject;
 using System;
 
 namespace LaserCrush.Manager

@@ -1,23 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System;
 
 namespace LaserCrush.Controller
 {
-    public class ClickableObject : MonoBehaviour
+    public class ClickableObject : MonoBehaviour, IPointerClickHandler
     {
-        private Action m_MouseDownAction;
-        public event Action MouseDownAction 
+        private Action m_MouseClickAction;
+        public event Action MouseClickAction 
         { 
-            add => m_MouseDownAction += value; 
-            remove => m_MouseDownAction -= value; 
+            add => m_MouseClickAction += value; 
+            remove => m_MouseClickAction -= value; 
         }
 
-        private void OnMouseDown() 
-            => m_MouseDownAction?.Invoke();
+        public void OnPointerClick(PointerEventData eventData)
+            => m_MouseClickAction?.Invoke();
 
         private void OnDestroy()
-            => m_MouseDownAction = null;
+            => m_MouseClickAction = null;
     }
 }

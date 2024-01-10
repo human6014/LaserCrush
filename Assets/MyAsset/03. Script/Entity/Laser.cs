@@ -69,6 +69,7 @@ namespace LaserCrush.Entity
             m_IsErased = false;
             m_IsInitated = true;
             m_IsActivated = true;
+            m_IsErased = false;
 
             m_State = ELaserStateType.Move;
             
@@ -104,6 +105,7 @@ namespace LaserCrush.Entity
                     break;
             }
         }
+
         public List<Laser> GetChildLazer()
         {
             return m_ChildLazers;
@@ -120,6 +122,7 @@ namespace LaserCrush.Entity
             float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
             if (dist <= m_LaserData.EraseVelocity)
             {
+                m_IsErased = true;
                 MoveStartPoint(m_StartPoint, dist);
                 m_LaserParticle.OffEffectParticle();
                 m_LaserParticle.OffHitParticle();
@@ -141,7 +144,7 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
+            RaycastHit2D m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
 
             float dist = Vector2.Distance(m_EndPoint, m_Hit.point);
             if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
@@ -161,7 +164,6 @@ namespace LaserCrush.Entity
 
         private void MoveStartPoint(Vector2 pos, float dist)
         {
-            
             m_LaserParticle.SetLaserEffectErase(dist, m_LaserData.EraseVelocity, m_StartPoint);
             m_StartPoint = pos;
         }

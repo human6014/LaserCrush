@@ -1,4 +1,4 @@
-using LaserCrush.Controller;
+using LaserCrush.Controller.InputObject;
 using UnityEngine;
 
 namespace LaserCrush.Manager
@@ -59,6 +59,8 @@ namespace LaserCrush.Manager
             m_ItemManager.Init(DestroyObject);
             m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager, m_UIManager);
             m_UIManager.Init();
+
+            RayManager.MainCamera = Camera.main;
 
             m_SubLineController = GetComponent<SubLineController>();
             m_SubLineController.OnClickAction += EndDeploying;

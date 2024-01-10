@@ -27,6 +27,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
 
     private List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
+    private Vector2 m_DirVector;
 
     private const int m_MaxUsingCount = 3;
     private const float m_ChargingTime = 0.5f;
@@ -40,14 +41,16 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private static List<Vector2> UnitCircle = new List<Vector2>();
 
     private bool m_IsActivate;
-    private bool m_IsFixedDirection;
+    
+    private Action<bool> m_OnMouseItemAction;
     #endregion
 
-    private Action<bool> m_OnMouseItemAction;
+
 
     #region Property
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
+    public bool IsFixedDirection { get; private set; }
     #endregion
 
     public bool Waiting()
@@ -98,7 +101,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         //m_DirVector -> 방향벡터 초기화
         m_CircleCollider2D.enabled = true;
         m_UsingCount = m_MaxUsingCount;
-        m_IsFixedDirection = false;
+        IsFixedDirection = false;
         m_IsActivate = false;
         m_OnMouseItemAction = onMouseItemAction;
 
@@ -106,8 +109,8 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
 
     public void FixDirection()
     {
-        if (m_IsFixedDirection) return;
-        m_IsFixedDirection = true;
+        if (IsFixedDirection) return;
+        IsFixedDirection = true;
 
         for(int i = 0; i < m_EjectionPorts.Count; i++)
         {
@@ -184,24 +187,30 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
-    private void OnMouseDown()
+    public void SetDirection(Vector2 pos)
     {
-        if (m_IsFixedDirection) return;
-        m_OnMouseItemAction?.Invoke(true);
-    }
-
-    private void OnMouseDrag()
-    {
-        if (m_IsFixedDirection) return;
-        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        Vector2 direction = (pos - (Vector2)transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction);
     }
 
-    private void OnMouseUp()
-    {
-        if (m_IsFixedDirection) return;
-        m_OnMouseItemAction?.Invoke(false);
-    }
+    //private void OnMouseDown()
+    //{
+    //    if (IsFixedDirection) return;
+    //    m_OnMouseItemAction?.Invoke(true);
+    //}
+
+    //private void OnMouseDrag()
+    //{
+    //    if (IsFixedDirection) return;
+    //    Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+    //    transform.rotation = Quaternion.LookRotation(transform.forward, direction);
+    //}
+
+    //private void OnMouseUp()
+    //{
+    //    if (IsFixedDirection) return;
+    //    m_OnMouseItemAction?.Invoke(false);
+    //}
 
     private void OnDestroy()
     {

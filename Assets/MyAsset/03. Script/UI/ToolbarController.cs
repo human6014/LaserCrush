@@ -2,9 +2,8 @@ using System;
 using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Manager;
-using LaserCrush.Controller.InputObject;
 
-namespace LaserCrush.Controller
+namespace LaserCrush.Controller.InputObject
 {
     public class ToolbarController : MonoBehaviour
     {
@@ -12,7 +11,6 @@ namespace LaserCrush.Controller
         [SerializeField] private GridLineController m_GridLineController;
         [SerializeField] private SubLineController m_SubLineController;
 
-        private Camera m_MainCamera;
         private AcquiredItemUI m_CurrentItem;
         private GameObject m_CurrentInstallingItem;
         private GameObject m_InstantiatingObject;
@@ -34,9 +32,6 @@ namespace LaserCrush.Controller
             add => m_AddInstallItemAction += value;
             remove => m_AddInstallItemAction -= value;
         }
-
-        private void Awake()
-            => m_MainCamera = Camera.main;
 
         public void Init(AcquiredItemUI[] acquiredItemUI)
         {
@@ -68,14 +63,16 @@ namespace LaserCrush.Controller
 
         private void EditorOrWindow()
         {
-            bool isHit = RaycastToTouchable(out RaycastHit2D hit2D);
+            if (!Input.GetMouseButtonDown(0) && !m_IsDragging) return;
+
             if (Input.GetMouseButtonDown(0) && !m_IsDragging)
             {
                 m_IsDragging = true;
-                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, hit2D.point, Quaternion.identity);
+                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, Vector2.zero, Quaternion.identity);
                 m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
             }
 
+            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
             if (m_IsDragging)
             {
                 if (!isHit) m_InstantiatingObject.transform.position = Vector3.zero;
@@ -100,7 +97,7 @@ namespace LaserCrush.Controller
         private void AndroidOrIOS()
         {
             //¹Ì¿Ï¼º
-            bool isHit = RaycastToTouchable(out RaycastHit2D hit2D);
+            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
             if (Input.GetMouseButtonDown(0) && !m_IsDragging)
             {
                 m_IsDragging = true;
@@ -144,12 +141,6 @@ namespace LaserCrush.Controller
             m_GridLineController.OnOffGridLine(false);
             m_SubLineController.IsInitItemDrag(false);
             m_SubLineController.UpdateLineRenderer();
-        }
-
-        private bool RaycastToTouchable(out RaycastHit2D hit)
-        {
-            hit = Physics2D.Raycast(m_MainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, LayerManager.s_TouchableAreaLayer);
-            return hit.collider != null;
         }
 
         private void OnDestroy()
