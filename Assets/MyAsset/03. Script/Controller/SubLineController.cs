@@ -25,6 +25,7 @@ namespace LaserCrush.Controller
         private bool m_IsInitPosDrag;
         private bool m_IsInitItemDrag;
         private bool m_IsActiveSubLine;
+
         #endregion
 
         #region Property
@@ -81,7 +82,7 @@ namespace LaserCrush.Controller
             UpdateLineRenderer();
         }
 
-        private void UpdateLineRenderer()
+        public void UpdateLineRenderer()
         {
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, LayerManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
@@ -92,7 +93,7 @@ namespace LaserCrush.Controller
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!IsActiveSubLine) return;
-            if (m_IsInitPosDrag | m_IsInitItemDrag) return;
+            if (m_IsInitPosDrag || m_IsInitItemDrag) return;
 
             Vector3 clickPos = MainScreenToWorldPoint(Input.mousePosition);
             Vector3 differVector = clickPos - Position;
@@ -111,8 +112,11 @@ namespace LaserCrush.Controller
         private Vector3 MainScreenToWorldPoint(Vector3 screenPos)
             => m_MainCamera.ScreenToWorldPoint(screenPos) + new Vector3(0, 0, 10);
 
-        private bool RaycastToTouchable(Vector3 pos, out RaycastHit hit)
-            => Physics.Raycast(m_MainCamera.ScreenPointToRay(pos), out hit, Mathf.Infinity);
+        private bool RaycastToTouchable(out RaycastHit2D hit)
+        {
+            hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            return hit.collider != null;
+        }
 
         private void OnDestroy()
             => m_OnClickAction = null;

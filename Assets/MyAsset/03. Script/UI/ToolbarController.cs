@@ -1,27 +1,27 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using LaserCrush.Entity;
 using LaserCrush.Manager;
+using LaserCrush.Controller.InputObject;
 
 namespace LaserCrush.Controller
 {
     public class ToolbarController : MonoBehaviour
     {
-        [SerializeField] private Canvas m_MainCanvas;
         [SerializeField] private Transform m_BatchedItemTransform;
-        [SerializeField] private RectTransform m_ContentTransform;
         [SerializeField] private GridLineController m_GridLineController;
         [SerializeField] private SubLineController m_SubLineController;
 
-        private Vector2 m_InitPos;
-
         private Camera m_MainCamera;
-        private AcquiredItem m_CurrentItem;
-        private RectTransform m_CurrentItemTransform;
+        private AcquiredItemUI m_CurrentItem;
+        private GameObject m_CurrentInstallingItem;
+        private GameObject m_InstantiatingObject;
 
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
-        private Action<InstalledItem, AcquiredItem> m_AddPrismAction;
+        private Action<InstalledItem, AcquiredItemUI> m_AddInstallItemAction;
+
+        private bool m_IsInstallMode;
+        private bool m_IsDragging;
 
         public event Func<Vector3, Result> CheckAvailablePosFunc
         {
@@ -29,63 +29,98 @@ namespace LaserCrush.Controller
             remove => m_CheckAvailablePosFunc -= value;
         }
 
-        public event Action<InstalledItem, AcquiredItem> AddInstalledItemAction
+        public event Action<InstalledItem, AcquiredItemUI> AddInstalledItemAction
         {
-            add => m_AddPrismAction += value;
-            remove => m_AddPrismAction -= value;
+            add => m_AddInstallItemAction += value;
+            remove => m_AddInstallItemAction -= value;
         }
 
         private void Awake()
             => m_MainCamera = Camera.main;
-        
-        public void AcquireItem(AcquiredItem item)
+
+        public void Init(AcquiredItemUI[] acquiredItemUI)
         {
-            m_ContentTransform.sizeDelta = 
-                new Vector2(m_ContentTransform.rect.width + 150, m_ContentTransform.rect.height);
-
-            RectTransform tr = item.GetComponent<RectTransform>();
-            tr.SetParent(m_ContentTransform, true);
-            tr.localScale = Vector3.one;
-
-            item.PointerDownAction += OnPointerDown;
-            item.PointerUpAction += OnPointerUp;
-            item.DragAction += OnDrag;
+            foreach(AcquiredItemUI acquiredItem in acquiredItemUI)
+                acquiredItem.PointerDownAction += OnPointerDown;
         }
 
-        private void OnPointerDown(AcquiredItem clickedItem)
+        private void OnPointerDown(AcquiredItemUI clickedItem)
         {
+            if (clickedItem.HasCount <= 0) return;
+
             m_CurrentItem = clickedItem;
-            m_CurrentItemTransform = clickedItem.GetComponent<RectTransform>();
-            m_CurrentItem.GetComponent<Image>().maskable = false;
-            m_ContentTransform.SetAsLastSibling();
-
-            m_InitPos = m_CurrentItemTransform.anchoredPosition;
+            m_CurrentInstallingItem = m_CurrentItem.ItemObject;
             m_GridLineController.OnOffGridLine(true);
+            m_SubLineController.IsInitItemDrag(true);
+            m_IsInstallMode = true;
         }
 
-        private void OnDrag(Vector2 delta)
+        private void Update()
         {
-            m_CurrentItemTransform.anchoredPosition += delta / m_MainCanvas.scaleFactor;
+            if (!m_IsInstallMode) return;
+
+            #if UNITY_EDITOR
+            EditorOrWindow();
+            #elif UNITY_ANDROID || UNITY_IOS
+            AndroidOrIOS();
+            #endif
         }
 
-        private void OnPointerUp(Vector2 pos)
+        private void EditorOrWindow()
         {
-            m_GridLineController.OnOffGridLine(false);
-            if (!m_SubLineController.IsActiveSubLine)
+            bool isHit = RaycastToTouchable(out RaycastHit2D hit2D);
+            if (Input.GetMouseButtonDown(0) && !m_IsDragging)
             {
-                MoveBackOriginal();
-                return;
+                m_IsDragging = true;
+                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, hit2D.point, Quaternion.identity);
+                m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
             }
 
-            Ray ray = m_MainCamera.ScreenPointToRay(pos);
-            if (!CanBatch(ray.origin) || !BatchAcquireItem(ray.origin))
-                MoveBackOriginal();
+            if (m_IsDragging)
+            {
+                if (!isHit) m_InstantiatingObject.transform.position = Vector3.zero;
+                else
+                {
+                    Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(hit2D.point));
+                    if (!result.m_IsAvailable) m_InstantiatingObject.transform.position = Vector3.zero;
+                    else m_InstantiatingObject.transform.position = result.m_ItemGridPos;
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
+                if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
+                    Destroy(m_InstantiatingObject);
+
+                BatchComp();
+            }
         }
 
-        private void MoveBackOriginal()
+        private void AndroidOrIOS()
         {
-            m_CurrentItem.GetComponent<Image>().maskable = true;
-            m_CurrentItemTransform.anchoredPosition = m_InitPos;
+            //미완성
+            bool isHit = RaycastToTouchable(out RaycastHit2D hit2D);
+            if (Input.GetMouseButtonDown(0) && !m_IsDragging)
+            {
+                m_IsDragging = true;
+                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, hit2D.point, Quaternion.identity);
+                m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
+            }
+
+            if (m_IsDragging)
+            {
+                m_InstantiatingObject.transform.position = hit2D.point;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
+                if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
+                    Destroy(m_InstantiatingObject);
+
+                BatchComp();
+            }
         }
 
         private bool BatchAcquireItem(Vector3 origin)
@@ -93,33 +128,33 @@ namespace LaserCrush.Controller
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
             if (!result.m_IsAvailable) return false;
 
-            GameObject obj = Instantiate(m_CurrentItem.ItemObject, result.m_ItemGridPos, Quaternion.identity);
-            obj.transform.SetParent(m_BatchedItemTransform);
+            m_InstantiatingObject.transform.position = result.m_ItemGridPos;
 
-            InstalledItem installedItem = obj.GetComponent<InstalledItem>();
-            m_AddPrismAction?.Invoke(installedItem, m_CurrentItem);
+            InstalledItem installedItem = m_InstantiatingObject.GetComponent<InstalledItem>();
+            m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
             installedItem.Init(result.m_RowNumber, result.m_ColNumber, m_SubLineController.IsInitItemDrag);
-
-            m_ContentTransform.sizeDelta =
-                new Vector2(m_ContentTransform.rect.width - 150, m_ContentTransform.rect.height);
-
-            m_SubLineController.IsActiveSubLine = true;
-
-            Destroy(m_CurrentItem.gameObject);
 
             return true;
         }
 
-        private bool CanBatch(Vector2 pos)
+        private void BatchComp()
         {
-            //Raycast 왜 안될까?
-            if (Mathf.Abs(pos.x) <= 51 && Mathf.Abs(pos.y) <= 67) return true;
-            return false;
+            m_IsDragging = false;
+            m_IsInstallMode = false;
+            m_GridLineController.OnOffGridLine(false);
+            m_SubLineController.IsInitItemDrag(false);
+            m_SubLineController.UpdateLineRenderer();
+        }
+
+        private bool RaycastToTouchable(out RaycastHit2D hit)
+        {
+            hit = Physics2D.Raycast(m_MainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, LayerManager.s_TouchableAreaLayer);
+            return hit.collider != null;
         }
 
         private void OnDestroy()
         {
-            m_AddPrismAction = null;
+            m_AddInstallItemAction = null;
         }
     }
 }

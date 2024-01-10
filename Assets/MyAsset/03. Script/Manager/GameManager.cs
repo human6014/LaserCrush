@@ -34,8 +34,6 @@ namespace LaserCrush.Manager
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
-        private float m_GameTime = 0;
-        private float m_GameFrameTime = 0.01666f;
         private float m_ValidTime = 3;
 
         private float m_LaserTime;
@@ -83,24 +81,19 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
-            m_GameTime += Time.deltaTime;
-            if (m_GameTime >= m_GameFrameTime)
+            switch (m_GameStateType)
             {
-                m_GameTime -= m_GameFrameTime;
-                switch (m_GameStateType)
-                {
-                    case EGameStateType.Deploying:
-                        break;
-                    case EGameStateType.BlockUpdating:
-                        BlockUpdating();
-                        break;
-                    case EGameStateType.LaserActivating:
-                        LaserActivating();
-                        break;
-                    default:
-                        Debug.Log("올바르지 않은 게임 상태입니다.");
-                        break;
-                }
+                case EGameStateType.Deploying:
+                    break;
+                case EGameStateType.BlockUpdating:
+                    BlockUpdating();
+                    break;
+                case EGameStateType.LaserActivating:
+                    LaserActivating();
+                    break;
+                default:
+                    Debug.Log("올바르지 않은 게임 상태입니다.");
+                    break;
             }
         }
 

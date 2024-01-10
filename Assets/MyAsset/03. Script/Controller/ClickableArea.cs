@@ -9,6 +9,7 @@ namespace LaserCrush.Controller.InputObject
     public class ClickableArea : MonoBehaviour
     {
         private Action m_OnMouseDragAction;
+
         public event Action OnMouseDragAction 
         {
             add => m_OnMouseDragAction += value;
@@ -20,5 +21,6 @@ namespace LaserCrush.Controller.InputObject
 
         private void OnDestroy()
             => m_OnMouseDragAction = null;
+        
     }
 }

@@ -15,23 +15,26 @@ public struct LaserInfo
     }
 }
 
-public class InstalledItem : MonoBehaviour, ICollisionable
+public sealed class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
 
-    protected List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+    private CircleCollider2D m_CircleCollider2D;
+
+    private List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
     private Laser m_HittingLaser;
-    protected const int m_MaxUsingCount = 3;
-    private const int m_ChargingTime = 100;
+
+    private const int m_MaxUsingCount = 3;
+    private const float m_ChargingTime = 0.5f;
     //시간 기준 아님 수정 필요함 - 승현이가 나중에 할 예정
-    
-    protected int m_UsingCount = 0;
-    private int m_ChargingWait;
+
+    private int m_UsingCount = 0;
+    private float m_ChargingWait;
 
     private Vector2 m_DirVector;
-    protected bool m_IsActivate = false;
 
+    private bool m_IsActivate;
     private bool m_IsFixedDirection;
     #endregion
 
@@ -44,13 +47,19 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
     public bool Waiting()
     {
-        m_ChargingWait++;
+        m_ChargingWait += Time.deltaTime;
         if (m_ChargingWait >= m_ChargingTime)
         {
             m_IsActivate = true;
             return true;
         }
         return false;
+    }
+
+    private void Awake()
+    {
+        m_CircleCollider2D = GetComponent<CircleCollider2D>();
+        m_CircleCollider2D.enabled = false;
     }
 
     /// <summary>
@@ -69,6 +78,7 @@ public class InstalledItem : MonoBehaviour, ICollisionable
 
         //todo
         //m_DirVector -> 방향벡터 초기화
+        m_CircleCollider2D.enabled = true;
         m_UsingCount = m_MaxUsingCount;
         m_IsFixedDirection = false;
         m_IsActivate = false;
@@ -165,8 +175,4 @@ public class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
-
-    
-
-
 }
