@@ -80,5 +80,13 @@ public class Energy : MonoBehaviour
     {
         return m_CurrentEnergy;
     }
+    
+    //-95 ~ 95
+    //게이지 표시 경우 -95 + GetGaugeNum으로 해줘야되더라
+    //Fill Green
+    private int GetGaugeNum()
+    {
+        return (190 * m_CurrentEnergy) / m_MaxEnergy;
+    }
 
 }
