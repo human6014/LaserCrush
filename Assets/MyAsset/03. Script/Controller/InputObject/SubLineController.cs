@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 using LaserCrush.Manager;
+using LaserCrush.Extension;
 
 namespace LaserCrush.Controller.InputObject
 {
@@ -139,7 +140,7 @@ namespace LaserCrush.Controller.InputObject
 
         public void UpdateLineRenderer()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(Position, ((Vector2)Direction).DiscreteDirection(1), Mathf.Infinity, RayManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
         }
@@ -159,7 +160,7 @@ namespace LaserCrush.Controller.InputObject
             if (tempDirection.y <= 0) return;
 
             Direction = tempDirection;
-            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
+            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, ((Vector2)Direction).DiscreteDirection(1));
 
             UpdateLineRenderer();
         }

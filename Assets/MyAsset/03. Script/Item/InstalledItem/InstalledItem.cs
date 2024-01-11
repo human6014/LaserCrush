@@ -2,9 +2,7 @@ using LaserCrush.Entity;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEditor.Rendering;
-using TMPro.EditorUtilities;
+using LaserCrush.Extension;
 
 public struct LaserInfo
 {
@@ -26,8 +24,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private CircleCollider2D m_CircleCollider2D;
 
     private List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
-    private Laser m_HittingLaser;
-    private Vector2 m_DirVector;
 
     private const int m_MaxUsingCount = 3;
     private const float m_ChargingTime = 0.5f;
@@ -43,8 +39,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     
     private Action<bool> m_OnMouseItemAction;
     #endregion
-
-
 
     #region Property
     public int RowNumber { get; private set; }
@@ -68,17 +62,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_CircleCollider2D = GetComponent<CircleCollider2D>();
         m_CircleCollider2D.enabled = false;
-        //단위원에서 각도별 좌표 생성
-        if(UnitCircle.Count == 0)
-        {
-            float dif = 360 / 180;
-            for(int i = 1; i < 181; i++) 
-            {
-                UnitCircle.Add(new Vector2(
-                    Mathf.Cos(dif * i * Mathf.Deg2Rad),
-                    Mathf.Sin(dif * i * Mathf.Deg2Rad)).normalized);
-            }
-        }
     }
 
     /// <summary>
@@ -102,7 +85,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         IsFixedDirection = false;
         m_IsActivate = false;
         m_OnMouseItemAction = onMouseItemAction;
-
     }
 
     public void FixDirection()
@@ -120,40 +102,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         m_OnMouseItemAction?.Invoke(false);
     }
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="vec">
-    /// 마우스로 가리킬 프리즘의 방향
-    /// </param>
-    /// <param name="div">
-    /// 360도를 몇개로 나눌지
-    /// </param>
-    /// <returns></returns>
-    private Vector2 Rotate(Vector2 vec)
-    {
-        Vector2 answer = Vector2.one;
-
-        //프리즘을 기준으로 마우스가 가르키는 방향의 단위 백터
-        Vector2 dir = (vec - m_Posion).normalized;
-
-        float dif = float.MaxValue;
-        foreach(Vector2 unit in UnitCircle)
-        {
-            if(Vector2.Distance(dir, unit) < dif)
-            {
-                answer = unit;
-                dif = Vector2.Distance(dir, unit);
-            }
-        }
-        //기존 방향벡터와 새로 선택된 방향백터의 각도 차이
-        GetAngle(dir, m_DirVector);
-
-        m_DirVector = answer;
-        return answer;
-    }
-
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
         if (m_IsActivate)
@@ -161,7 +109,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
             return new List<LaserInfo>();
         }
         laser.ChangeLaserState(ELaserStateType.Wait);
-        m_HittingLaser = laser;
         m_IsActivate = true;
         m_UsingCount--;
         return m_EjectionPorts;
@@ -192,27 +139,8 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     public void SetDirection(Vector2 pos)
     {
         Vector2 direction = (pos - (Vector2)transform.position).normalized;
-        transform.rotation = Quaternion.LookRotation(transform.forward, direction);
+        transform.rotation = Quaternion.LookRotation(transform.forward, direction.DiscreteDirection(10));
     }
-
-    //private void OnMouseDown()
-    //{
-    //    if (IsFixedDirection) return;
-    //    m_OnMouseItemAction?.Invoke(true);
-    //}
-
-    //private void OnMouseDrag()
-    //{
-    //    if (IsFixedDirection) return;
-    //    Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-    //    transform.rotation = Quaternion.LookRotation(transform.forward, direction);
-    //}
-
-    //private void OnMouseUp()
-    //{
-    //    if (IsFixedDirection) return;
-    //    m_OnMouseItemAction?.Invoke(false);
-    //}
 
     private void OnDestroy()
     {
