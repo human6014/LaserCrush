@@ -141,4 +141,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
+
+    public EEntityType GetEEntityType()
+    {
+        return EEntityType.Prisim;
+    }
 }

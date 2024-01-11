@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 using LaserCrush.Manager;
 using System;
+
 
 namespace LaserCrush.Entity
 {
@@ -77,6 +79,26 @@ namespace LaserCrush.Entity
             return CurrentEnergy > 0;
         }
 
+
+    public static void CollideWithFloor()
+    {
+        m_HittingFloorLaserNum++;
+        //UseEnergy(m_MaxEnergy / 5);
+        //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
+    }
+
+    public static void DeCollideWithFloor()
+    {
+        m_HittingFloorLaserNum--;
+    }
+
+    public static int ChargeEnergy()
+    {
+        CurrentEnergy = m_MaxEnergy;
+        m_HittingFloorLaserNum = 0;
+        return CurrentEnergy;
+    }
+
         /// <summary>
         /// 일단 부딪힐 마다 10퍼 삭제
         /// </summary>
@@ -85,18 +107,8 @@ namespace LaserCrush.Entity
             UseEnergy(MaxEnergy / 10);
         }
 
-        public static void CollideWithFloor()
-        {
-            UseEnergy(MaxEnergy / 5);
-            //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
-        }
 
-        public static int ChargeEnergy()
-        {
-            CurrentEnergy = MaxEnergy;
-            m_HittingFloorLaserNum = 0;
-            return CurrentEnergy;
-        }
+
 
         public static void EnergyUpgrade(int additionalEnergy)
         {
@@ -115,6 +127,11 @@ namespace LaserCrush.Entity
         {
             return (190 * m_CurrentEnergy) / m_MaxEnergy;
         }
+
+
+    public static int GetHittingFloorLaserNum()
+    {
+        return m_HittingFloorLaserNum;
 
         private void OnDestroy()
         {

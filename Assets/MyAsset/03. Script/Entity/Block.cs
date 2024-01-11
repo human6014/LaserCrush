@@ -134,5 +134,10 @@ namespace LaserCrush
         {
             return m_HP / 100;
         }
+
+        EEntityType ICollisionable.GetEEntityType()
+        {
+            return EEntityType.NormalBlock;
+        }
     }
 }

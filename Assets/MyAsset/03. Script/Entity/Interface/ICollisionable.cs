@@ -13,5 +13,7 @@ namespace LaserCrush.Entity
         public bool GetDamage(int damage);
 
         public bool Waiting();
+
+        public EEntityType GetEEntityType();
     }
 }

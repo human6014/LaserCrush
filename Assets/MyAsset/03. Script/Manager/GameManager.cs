@@ -35,7 +35,7 @@ namespace LaserCrush.Manager
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
-        private float m_ValidTime = 3;
+        private float m_ValidTime = 2;
 
         private float m_LaserTime;
         private int m_PreEnergy;
@@ -131,7 +131,7 @@ namespace LaserCrush.Manager
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             //Debug.Log("에너지 보충");
-            m_PreEnergy = Energy.ChargeEnergy();//에너지가 차오르는 애니메이션
+            m_PreEnergy = Energy.ChargeEnergy();
             m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
