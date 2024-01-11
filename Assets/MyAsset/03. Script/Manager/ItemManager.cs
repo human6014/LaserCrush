@@ -146,7 +146,7 @@ namespace LaserCrush.Manager
             m_InstalledItemBuffer.Clear();
         }
 
-        public void Reset()
+        public void ResetGame()
         {
             //설치된 아이템 모두 제거
             for (int i = 0; i < m_InstalledItem.Count; i++)

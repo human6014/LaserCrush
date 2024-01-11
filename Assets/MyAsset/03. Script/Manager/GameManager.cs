@@ -35,7 +35,7 @@ namespace LaserCrush.Manager
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
-        private float m_ValidTime = 3;
+        private float m_ValidTime = 2;
 
         private float m_LaserTime;
         private int m_PreEnergy;
@@ -106,7 +106,7 @@ namespace LaserCrush.Manager
         private void BlockUpdating()
         {
             //게임 종료 체크
-            if(m_BlockManager.IsGameOver())
+            if (m_BlockManager.IsGameOver())
             {
                 Debug.Log("GAME OVER");
                 ResetGame();
@@ -131,7 +131,7 @@ namespace LaserCrush.Manager
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             //Debug.Log("에너지 보충");
-            m_PreEnergy = Energy.ChargeEnergy();//에너지가 차오르는 애니메이션
+            m_PreEnergy = Energy.ChargeEnergy();
             m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
@@ -157,7 +157,7 @@ namespace LaserCrush.Manager
                     return;
                 }
 
-                if(m_PreEnergy != Energy.GetEnergy()) 
+                if (m_PreEnergy != Energy.GetEnergy())
                 {
                     m_PreEnergy = Energy.GetEnergy();
                     m_LaserTime = 0;
@@ -181,11 +181,14 @@ namespace LaserCrush.Manager
 
         private void ResetGame()
         {
-            m_LaserManager.Reset();
-            m_ItemManager.Reset();
-            m_BlockManager.Reset();
+            m_LaserManager.ResetGame();
+            m_ItemManager.ResetGame();
+            m_BlockManager.ResetGame();
+            Energy.ResetGame();
+
+            //TODO
+            //스코러 리셋여기 적어야 할 듯
             m_StageNum = 0;
         }
     }
 }
- 

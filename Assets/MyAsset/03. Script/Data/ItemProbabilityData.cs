@@ -20,13 +20,7 @@ namespace LaserCrush.Data
         [SerializeField] private ItemProbability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
 
-        /// È®·ü Ç¥
-        /// Energy = 10
-        /// Prism_1 = 5
-        /// Prism_2 = 5
-        /// Prism_3 = 5
-        /// None = 75
-        public int GetItemIndex() 
+        public int GetItemIndex()
         {
             float randomPoint = Random.value * 100;
             int length = m_DroppedItems.Length;

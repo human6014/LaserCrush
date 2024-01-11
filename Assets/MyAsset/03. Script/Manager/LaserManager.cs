@@ -79,6 +79,11 @@ namespace LaserCrush.Manager
 
                 //중간에 부모를 잃은 레이저 처리하는 함수
                 RemoveLossParentsLaser();
+
+                if (CheckCollideWithFloor())
+                {
+                    Energy.UseEnergy(int.MaxValue);
+                }
             }
         }
 
@@ -142,12 +147,9 @@ namespace LaserCrush.Manager
             LossParentsLaserBufferFlush();
         }
 
-        /// <summary>
-        /// CreateLaser처럼 함수 포인터를 넘겨줘서 작동시켜야 할 듯
-        /// </summary>
         public void LossParent(List<Laser> lasers)
         {
-            for(int i = 0;i <lasers.Count;i++) 
+            for (int i = 0; i < lasers.Count; i++)
             {
                 m_LossParentsLaser.Add(lasers[i]);
                 lasers[i].LossParentLasersDeActivate();
@@ -212,7 +214,7 @@ namespace LaserCrush.Manager
             return answer;
         }
 
-        public void Reset()
+        public void ResetGame()
         {
             m_Lasers.Clear();
             m_LaserAddBuffer.Clear();
@@ -221,6 +223,22 @@ namespace LaserCrush.Manager
             m_LossParentsLaser.Clear();
             m_LossParentsLaserAddBuffer.Clear();
             m_LossParentsLaserRemoveBuffer.Clear();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns> true : 충돌가능한 모든 레이저가 바닥과 충돌 중(?)</returns>
+        private bool CheckCollideWithFloor()
+        {
+            int count = 0;
+            for (int i = 0; i < m_Lasers.Count; i++)
+            {
+                if (m_Lasers[i].GetELaserStateType() == ELaserStateType.Move || m_Lasers[i].GetELaserStateType() == ELaserStateType.Wait) { return false; }
+                if (m_Lasers[i].IsHittingDamagable()) count++;
+            }
+            if (Energy.GetHittingFloorLaserNum() == count && count != 0) { return true; }
+            return false;
         }
     }
 }

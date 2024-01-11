@@ -36,7 +36,7 @@ namespace LaserCrush.Controller.InputObject
 
         public Vector3 Direction { get; private set; } = Vector3.up;
 
-        public bool IsActiveSubLine 
+        public bool IsActiveSubLine
         {
             get => m_IsActiveSubLine;
             set
@@ -47,10 +47,10 @@ namespace LaserCrush.Controller.InputObject
             }
         }
 
-        public event Action OnClickAction 
-        { 
+        public event Action OnClickAction
+        {
             add => m_OnClickAction += value;
-            remove => m_OnClickAction -= value; 
+            remove => m_OnClickAction -= value;
         }
         #endregion
 
@@ -66,11 +66,11 @@ namespace LaserCrush.Controller.InputObject
         {
             if (m_IsInitItemDrag) return;
 
-            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
             EditorOrWindow();
-            #else
+#else
             AndroidOrIOS();
-            #endif
+#endif
         }
 
         private void EditorOrWindow()

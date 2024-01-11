@@ -50,7 +50,7 @@ namespace LaserCrush.Entity
             m_IsInitated = false;
 
             m_LaserParticle = new LaserParticle(
-                    transform.GetChild(0).GetComponent<ParticleSystem>(), 
+                    transform.GetChild(0).GetComponent<ParticleSystem>(),
                     transform.GetChild(1).GetComponent<ParticleSystem>()
                     );
         }
@@ -72,7 +72,7 @@ namespace LaserCrush.Entity
             m_IsErased = false;
 
             m_State = ELaserStateType.Move;
-            
+
             m_ChildLazers.Clear();
 
             m_LaserParticle.OffEffectParticle();
@@ -88,7 +88,7 @@ namespace LaserCrush.Entity
         public void Run()
         {
             if (!m_IsInitated) { return; }
-            switch (m_State) 
+            switch (m_State)
             {
                 case ELaserStateType.Move://에너지 소모x 이동만
                     Move();
@@ -126,6 +126,10 @@ namespace LaserCrush.Entity
                 m_LaserParticle.OffEffectParticle();
                 m_LaserParticle.OffHitParticle();
                 m_IsErased = true;
+                if (m_Target != null)
+                {
+                    if (m_Target.GetEEntityType() == EEntityType.Floor) { Energy.DeCollideWithFloor(); }
+                }
                 return true;
             }
             MoveStartPoint(m_StartPoint + m_DirectionVector * m_LaserData.EraseVelocity, dist);
@@ -152,11 +156,10 @@ namespace LaserCrush.Entity
                 m_HitNormal = m_Hit.normal;
                 m_Target = m_Hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(m_Hit, m_DirectionVector, this);
-                if (m_State == ELaserStateType.Wait) return; 
+                if (m_State == ELaserStateType.Wait) return;
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
-
             MoveEndPoint(m_EndPoint + m_DirectionVector * m_LaserData.ShootingVelocity);
         }
 
@@ -179,7 +182,7 @@ namespace LaserCrush.Entity
 
         public void Wait()
         {
-            if(m_Target.Waiting())
+            if (m_Target.Waiting())
             {
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 m_State = ELaserStateType.Hitting;
@@ -212,22 +215,23 @@ namespace LaserCrush.Entity
 
         private void AddChild(List<Laser> child)
         {
-            for(int i = 0; i < child.Count; i++) 
+            for (int i = 0; i < child.Count; i++)
             {
                 m_ChildLazers.Add(child[i]);
             }
         }
 
+        //자신을 기반을 생긴 자식 레이저의 상태를 비활성화로 만든다.
         public void LossParentLasersDeActivate()
         {
             Queue<Laser> remover = new Queue<Laser>();
             remover.Enqueue(this);
 
-            while(remover.Count > 0) 
+            while (remover.Count > 0)
             {
                 Laser now = remover.Dequeue();
                 now.m_IsActivated = false;
-                for(int i = 0; i < now.m_ChildLazers.Count; i++) 
+                for (int i = 0; i < now.m_ChildLazers.Count; i++)
                 {
                     remover.Enqueue(now.m_ChildLazers[i]);
                 }
@@ -238,6 +242,20 @@ namespace LaserCrush.Entity
         {
             m_LaserCreateFunc = null;
             m_LaserEraseAction = null;
+        }
+
+
+        public bool IsHittingDamagable()
+        {
+            if (m_Target == null) return false;
+            if (m_Target.IsGetDamageable()) return true;
+
+            return false;
+        }
+
+        public ELaserStateType GetELaserStateType()
+        {
+            return m_State;
         }
     }
 }

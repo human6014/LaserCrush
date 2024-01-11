@@ -24,10 +24,12 @@ namespace LaserCrush.Manager
         [SerializeField] private Transform m_TopWall;
         [SerializeField] private Transform m_LeftWall;
 
-        [Tooltip("블럭 최대 행 개수")] [Range(1, 40)]
+        [Tooltip("블럭 최대 행 개수")]
+        [Range(1, 40)]
         [SerializeField] private int m_MaxRowCount;
 
-        [Tooltip("블럭 최대 열 개수")] [Range(1, 20)]
+        [Tooltip("블럭 최대 열 개수")]
+        [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
         #endregion
         private ItemManager m_ItemManager;
@@ -37,13 +39,19 @@ namespace LaserCrush.Manager
         private event Func<GameObject, GameObject> m_InstantiateFunc;
         private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
 
+        //유니티스럽게 바꾸면 좋을듯 인스펙터에서 수정할 수 있게
+        //앞에서부터1~6
+        private static List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
+        private static int s_MaxWightSum = 151;
+        //
+
         private Vector2 m_CalculatedInitPos;
         private Vector2 m_CalculatedOffset;
         private Vector3 m_MoveDownVector;
         #endregion
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc, 
-                         Func<GameObject, Vector3, GameObject> instantiatePosFunc, 
+        public void Init(Func<GameObject, GameObject> instantiateFunc,
+                         Func<GameObject, Vector3, GameObject> instantiatePosFunc,
                          ItemManager itemManager, UIManager UIManager)
         {
             m_Blocks = new List<Block>();
@@ -62,7 +70,7 @@ namespace LaserCrush.Manager
 
         private Result CheckAvailablePos(Vector3 pos)
         {
-            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0); 
+            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0);
             Vector2 newPos = GetItemGridPos(pos, out int rowNumber, out int colNumber);
 
             Result result = new Result(
@@ -75,7 +83,7 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 if (rowNumber == block.RowNumber &&
-                    colNumber == block.ColNumber) 
+                    colNumber == block.ColNumber)
                     return result;
             }
 
@@ -89,18 +97,18 @@ namespace LaserCrush.Manager
             int MaxRow = -1;
             foreach (Block block in m_Blocks)
             {
-                if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
+                if (block.RowNumber > MaxRow) MaxRow = block.RowNumber;
             }
             //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
             //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
-            if(MaxRow == m_MaxRowCount - 2) return true;
+            if (MaxRow == m_MaxRowCount - 2) return true;
             return false;
         }
 
         private bool InBoardArea(Vector2 pos)
         {
-            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) && 
-                pos.y >= -m_TopWall.position.y + 7 && 
+            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) &&
+                pos.y >= -m_TopWall.position.y + 7 &&
                 pos.y <= m_TopWall.position.y;
         }
 
@@ -157,8 +165,8 @@ namespace LaserCrush.Manager
                     itemObject.transform.SetParent(m_DroppedItemTransform);
                     item = itemObject.GetComponent<DroppedItem>();
                 }
-                
-                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(),item, RemoveBlock);
+
+                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(), item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
@@ -190,10 +198,10 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = Random.Range(1, m_MaxColCount + 1);//1 ~ m_MaxColCount사이 숫자
+            int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
             HashSet<int> result = new HashSet<int>();
 
-            while(result.Count < randomSize)
+            while (result.Count < randomSize)
             {
                 result.Add(Random.Range(0, m_MaxColCount));
             }
@@ -201,14 +209,14 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// 3스테이지마다 가중치 부여
-        /// 구간을 
+        /// 5스테이지마다 가중치 부여
+        /// 각 블럭의 생성 범위는  최대 최소차이가 10%
         /// </summary>
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.m_StageNum + 2) / 3) * 10;
-            int start = end - (end / 2);
+            int end = ((GameManager.m_StageNum + 4) / 5) * 10;
+            int start = end - (end / 10);
             return Random.Range(start, end + 1) * 100;
         }
 
@@ -225,13 +233,13 @@ namespace LaserCrush.Manager
 
         public void FeverTime()
         {
-            foreach(var block in m_Blocks) 
+            foreach (var block in m_Blocks)
             {
                 block.GetDamage(int.MaxValue);
             }
         }
 
-        public void Reset()
+        public void ResetGame()
         {
             foreach (var block in m_Blocks)
             {
@@ -239,5 +247,21 @@ namespace LaserCrush.Manager
             }
             m_Blocks.Clear();
         }
+
+        private int GetWeightedRandomNum()
+        {
+            int randomSize = Random.Range(1, s_MaxWightSum);
+
+            for (int i = 0; i < s_Probabilitytable.Count; i++)
+            {
+                if (randomSize < s_Probabilitytable[i])
+                {
+                    return i + 1;
+                }
+                randomSize -= s_Probabilitytable[i];
+            }
+            return s_Probabilitytable.Count - 1;
+        }
+
     }
 }
