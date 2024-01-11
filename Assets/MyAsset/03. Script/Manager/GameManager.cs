@@ -181,9 +181,13 @@ namespace LaserCrush.Manager
 
         private void ResetGame()
         {
-            m_LaserManager.Reset();
-            m_ItemManager.Reset();
-            m_BlockManager.Reset();
+            m_LaserManager.ResetGame();
+            m_ItemManager.ResetGame();
+            m_BlockManager.ResetGame();
+            Energy.ResetGame();
+
+            //TODO
+            //스코러 리셋여기 적어야 할 듯
             m_StageNum = 0;
         }
     }

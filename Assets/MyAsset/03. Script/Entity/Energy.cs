@@ -11,7 +11,7 @@ namespace LaserCrush.Entity
     {
         #region Variable
         [SerializeField] private UIManager m_UIManager;
-        [SerializeField] private int m_InitEnergy = 10000;
+        [SerializeField] private static int m_InitEnergy = 10000;
 
         private static event Action m_MaxEnergyUpdate;
         private static event Action m_CurrentEnergyUpdate;
@@ -128,9 +128,9 @@ namespace LaserCrush.Entity
             m_CurrentEnergyUpdate = null;
         }
 
-        public void Reset()
+        public static void ResetGame()
         {
-            MaxEnergy = m_InitEnergy;
+            m_MaxEnergy = m_InitEnergy;
             m_CurrentEnergy = m_InitEnergy;
         }
 

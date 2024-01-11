@@ -239,7 +239,7 @@ namespace LaserCrush.Manager
             }
         }
 
-        public void Reset()
+        public void ResetGame()
         {
             foreach (var block in m_Blocks)
             {
