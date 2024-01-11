@@ -7,11 +7,10 @@ public class Energy : MonoBehaviour
     #region Variable
     [SerializeField] private TextMeshProUGUI m_Text;
     [SerializeField] private int INITENERGY = 10000;
-    private static event UnityAction m_TextUpdate;
 
+    private static event UnityAction m_TextUpdate;
     private static int m_MaxEnergy;
     private static int m_CurrentEnergy;
-
     private static int m_HittingFloorLaserNum;
     #endregion
 
@@ -33,6 +32,7 @@ public class Energy : MonoBehaviour
         m_MaxEnergy = INITENERGY;
         CurrentEnergy = INITENERGY;
     }
+
     /// 반환형은 총 사용한 에너지의 양이다.
     /// 적게남
     /// </summary>

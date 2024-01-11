@@ -54,9 +54,9 @@ namespace LaserCrush.Controller.InputObject
         {
             if (!m_IsInstallMode) return;
 
-            #if UNITY_EDITOR
+            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             EditorOrWindow();
-            #elif UNITY_ANDROID || UNITY_IOS
+            #else
             AndroidOrIOS();
             #endif
         }
@@ -72,7 +72,7 @@ namespace LaserCrush.Controller.InputObject
                 m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
             }
 
-            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
+            bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
             if (m_IsDragging)
             {
                 if (!isHit) m_InstantiatingObject.transform.position = Vector3.zero;
@@ -96,21 +96,29 @@ namespace LaserCrush.Controller.InputObject
 
         private void AndroidOrIOS()
         {
-            //미완성
-            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
-            if (Input.GetMouseButtonDown(0) && !m_IsDragging)
+            if (Input.touchCount <= 0 && !m_IsDragging) return;
+
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began && !m_IsDragging)
             {
                 m_IsDragging = true;
-                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, hit2D.point, Quaternion.identity);
+                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, Vector2.zero, Quaternion.identity);
                 m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
             }
 
+            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer, touch);
             if (m_IsDragging)
             {
-                m_InstantiatingObject.transform.position = hit2D.point;
+                if (!isHit) m_InstantiatingObject.transform.position = Vector3.zero;
+                else
+                {
+                    Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(hit2D.point));
+                    if (!result.m_IsAvailable) m_InstantiatingObject.transform.position = Vector3.zero;
+                    else m_InstantiatingObject.transform.position = result.m_ItemGridPos;
+                }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
                 //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
                 if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))

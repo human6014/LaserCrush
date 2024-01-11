@@ -4,15 +4,15 @@ namespace LaserCrush.Manager
 {
     public static class RayManager
     {
-        public static readonly int s_AllObjectLayer = 
-            1 << LayerMask.NameToLayer("Reflectable") | 
-            1 << LayerMask.NameToLayer("Absorbable") | 
-            1 << LayerMask.NameToLayer("Continuable") | 
+        public static readonly int s_AllObjectLayer =
+            1 << LayerMask.NameToLayer("Reflectable") |
+            1 << LayerMask.NameToLayer("Absorbable") |
+            1 << LayerMask.NameToLayer("Continuable") |
             1 << LayerMask.NameToLayer("TouchableArea");
 
-        public static readonly int s_LaserHitableLayer = 
-            1 << LayerMask.NameToLayer("Reflectable") | 
-            1 << LayerMask.NameToLayer("Absorbable") | 
+        public static readonly int s_LaserHitableLayer =
+            1 << LayerMask.NameToLayer("Reflectable") |
+            1 << LayerMask.NameToLayer("Absorbable") |
             1 << LayerMask.NameToLayer("Continuable");
 
         public static readonly int s_TouchableAreaLayer = 1 << LayerMask.NameToLayer("TouchableArea");
@@ -20,7 +20,8 @@ namespace LaserCrush.Manager
 
         public static Camera MainCamera { get; set; }
 
-        public static bool RaycastToTouchable(out RaycastHit2D hit, int layer)
+
+        public static bool RaycastToClickable(out RaycastHit2D hit, int layer)
         {
             hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, layer);
             return hit.collider != null;
@@ -28,6 +29,15 @@ namespace LaserCrush.Manager
 
         public static Vector3 MousePointToWorldPoint()
             => MainCamera.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 10);
-        
+
+
+        public static bool RaycastToTouchable(out RaycastHit2D hit, int layer, Touch touch)
+        {
+            hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(touch.position), Vector2.zero, layer);
+            return hit.collider != null;
+        }
+
+        public static Vector3 TouchPointToWorldPoint(Touch touch)
+            => MainCamera.ScreenToWorldPoint(touch.position) + new Vector3(0, 0, 10);
     }
 }
