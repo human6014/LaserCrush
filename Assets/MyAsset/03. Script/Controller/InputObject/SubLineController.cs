@@ -15,11 +15,11 @@ namespace LaserCrush.Controller.InputObject
         [SerializeField] private LineRenderer m_SubLineRenderer;
         [SerializeField] private Transform m_LaserInitTransform;
         [SerializeField] private DragTransfromObject m_DragTransfromObject;
-        [SerializeField] private ClickableArea m_ClickableArea;
         [SerializeField] private ClickableObject m_ClickableObject;
         [SerializeField] private GridLineController m_GridLineController;
         #endregion
 
+        private InstalledItem m_AdjustingInstalledItem;
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
 
@@ -29,8 +29,6 @@ namespace LaserCrush.Controller.InputObject
 
         private bool m_ClickItem;
         private bool m_InstalledItemAdjustMode;
-
-        private InstalledItem m_AdjustingInstalledItem;
         #endregion
 
         #region Property
@@ -61,7 +59,6 @@ namespace LaserCrush.Controller.InputObject
             m_DragTransfrom = m_DragTransfromObject.transform;
 
             m_DragTransfromObject.MouseMoveAction += SetInitPos;
-            //m_ClickableArea.OnMouseDragAction += SetDirection;
             m_ClickableObject.MouseClickAction += () => m_OnClickAction?.Invoke();
         }
 
@@ -69,6 +66,15 @@ namespace LaserCrush.Controller.InputObject
         {
             if (m_IsInitItemDrag) return;
 
+            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            EditorOrWindow();
+            #else
+            AndroidOrIOS();
+            #endif
+        }
+
+        private void EditorOrWindow()
+        {
             if (m_InstalledItemAdjustMode)
             {
                 m_ClickItem = false;
@@ -95,11 +101,11 @@ namespace LaserCrush.Controller.InputObject
 
             if (Input.GetMouseButtonDown(0) && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
+                bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
                 if (!isHit) return;
 
-                if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer)return;
-                
+                if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
+
                 m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
                 if (m_AdjustingInstalledItem.IsFixedDirection) return;
                 m_ClickItem = true;
@@ -111,7 +117,62 @@ namespace LaserCrush.Controller.InputObject
             {
                 if (Input.GetMouseButton(0))
                 {
-                    bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
+                    bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
+                    if (!isHit) return;
+                    SetDirection(hit.point);
+                }
+            }
+        }
+
+        private void AndroidOrIOS()
+        {
+            if (Input.touchCount <= 0) return;
+            Touch touch = Input.GetTouch(0);
+
+            if (m_InstalledItemAdjustMode)
+            {
+                m_ClickItem = false;
+                bool m_BeforeClicked = false;
+
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    m_BeforeClicked = true;
+                    m_AdjustingInstalledItem.SetDirection(RayManager.TouchPointToWorldPoint(touch));
+                }
+
+                if (!m_BeforeClicked && touch.phase == TouchPhase.Ended)
+                {
+                    m_InstalledItemAdjustMode = false;
+                    m_GridLineController.OnOffGridLine(false);
+                }
+                return;
+            }
+
+            if (touch.phase == TouchPhase.Ended && m_ClickItem && !m_InstalledItemAdjustMode)
+            {
+                m_InstalledItemAdjustMode = true;
+                m_GridLineController.OnOffGridLine(true);
+            }
+
+            if (touch.phase == TouchPhase.Began && !m_ClickItem && !m_InstalledItemAdjustMode)
+            {
+                bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch);
+                if (!isHit) return;
+
+                if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
+
+                m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
+                if (m_AdjustingInstalledItem.IsFixedDirection) return;
+                m_ClickItem = true;
+
+                return;
+            }
+
+            if (!m_ClickItem && !m_InstalledItemAdjustMode)
+            {
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch);
                     if (!isHit) return;
                     SetDirection(hit.point);
                 }
@@ -151,7 +212,7 @@ namespace LaserCrush.Controller.InputObject
             if (!IsActiveSubLine) return;
             if (m_IsInitPosDrag || m_IsInitItemDrag) return;
 
-            Vector3 clickPos = pos;//LayerManager.MainScreenToWorldPoint();
+            Vector3 clickPos = pos;
             Vector3 differVector = clickPos - Position;
 
             if (differVector.magnitude < 5) return;
