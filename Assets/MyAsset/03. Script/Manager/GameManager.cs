@@ -1,6 +1,7 @@
 using LaserCrush.Controller.InputObject;
 using LaserCrush.Entity;
 using UnityEngine;
+using System;
 
 namespace LaserCrush.Manager
 {
@@ -20,7 +21,6 @@ namespace LaserCrush.Manager
         #region Variable
         #region SerializeField
         [Header("Monobehaviour Reference")]
-        [SerializeField] private UIManager m_UIManager;
         [SerializeField] private AudioManager m_AudioManager;
 
         [Header("Serialized Instance Reference")]
@@ -35,10 +35,23 @@ namespace LaserCrush.Manager
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
         public static int m_StageNum;
-        private float m_ValidTime = 2;
 
-        private float m_LaserTime;
         private int m_PreEnergy;
+
+        private float m_ValidTime = 2;
+        private float m_LaserTime;
+
+        private bool m_IsGameOver;
+
+        private Action m_GameOverAction;
+        #endregion
+
+        #region Property
+        public event Action GameOverAction 
+        { 
+            add => m_GameOverAction += value; 
+            remove => m_GameOverAction -= value; 
+        }
         #endregion
 
         #region MonoBehaviour Func
@@ -58,8 +71,7 @@ namespace LaserCrush.Manager
             m_AudioManager.Init();
             m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_ItemManager.Init(DestroyObject);
-            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager, m_UIManager);
-            m_UIManager.Init();
+            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
 
             RayManager.MainCamera = Camera.main;
 
@@ -83,6 +95,8 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
+            if (m_IsGameOver) return;
+
             switch (m_GameStateType)
             {
                 case EGameStateType.Deploying:
@@ -105,14 +119,9 @@ namespace LaserCrush.Manager
         /// </summary>
         private void BlockUpdating()
         {
+            m_IsGameOver = m_BlockManager.IsGameOver();
             //게임 종료 체크
-            if (m_BlockManager.IsGameOver())
-            {
-                Debug.Log("GAME OVER");
-                ResetGame();
-                m_GameStateType = EGameStateType.BlockUpdating;
-                return;
-            }
+
 
             m_StageNum++;
             //Debug.Log("필드 위 아이템 획득");
@@ -135,6 +144,14 @@ namespace LaserCrush.Manager
             m_LaserTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
+
+            if (m_IsGameOver)
+            {
+                Debug.Log("GAME OVER");
+                m_GameOverAction?.Invoke();
+                //ResetGame();
+                return;
+            }
         }
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
@@ -179,16 +196,17 @@ namespace LaserCrush.Manager
             m_BlockManager.FeverTime();
         }
 
-        private void ResetGame()
+        public void ResetGame()
         {
             m_LaserManager.ResetGame();
             m_ItemManager.ResetGame();
             m_BlockManager.ResetGame();
             Energy.ResetGame();
 
-            //TODO
-            //스코러 리셋여기 적어야 할 듯
+            m_IsGameOver = false;
             m_StageNum = 0;
+
+            m_GameStateType = EGameStateType.BlockUpdating;
         }
     }
 }
