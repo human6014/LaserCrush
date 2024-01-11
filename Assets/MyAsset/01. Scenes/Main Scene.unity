@@ -4034,7 +4034,7 @@ AudioSource:
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -5871,7 +5871,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIManager: {fileID: 1573006705}
-  m_InitEnergy: 10000
 --- !u!114 &2661706540201721804
 MonoBehaviour:
   m_ObjectHideFlags: 0
