@@ -31,6 +31,10 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private int m_UsingCount = 0;
     private float m_ChargingWait;
 
+    private Vector2 m_Posion;
+
+    private static List<Vector2> UnitCircle = new List<Vector2>();
+
     private bool m_IsActivate;
     
     private Action<bool> m_OnMouseItemAction;
@@ -142,4 +146,11 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
+
+    private float GetAngle(Vector3 from, Vector3 to)
+    {
+        Vector3 v = to - from;
+        return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+    }
+
 }
