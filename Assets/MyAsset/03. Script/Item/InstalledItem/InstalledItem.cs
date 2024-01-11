@@ -78,7 +78,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
                     Mathf.Cos(dif * i * Mathf.Deg2Rad),
                     Mathf.Sin(dif * i * Mathf.Deg2Rad)).normalized);
             }
-        }
+        } 
     }
 
     /// <summary>
@@ -124,13 +124,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="vec">
-    /// 마우스로 가리킬 프리즘의 방향
-    /// </param>
-    /// <param name="div">
-    /// 360도를 몇개로 나눌지
-    /// </param>
-    /// <returns></returns>
+    /// <param name="vec">마우스로 가리킬 프리즘의 방향</param>
+    /// <param name="div">360도를 몇개로 나눌지</param>
+    /// <returns>프리즘의 방향백터</returns>
     private Vector2 Rotate(Vector2 vec)
     {
         Vector2 answer = Vector2.one;
@@ -225,4 +221,8 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
     }
 
+    public EEntityType GetEEntityType()
+    {
+        return EEntityType.Prisim;
+    }
 }

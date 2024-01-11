@@ -32,5 +32,10 @@ namespace LaserCrush.Entity
         {
             return true;
         }
+
+        public EEntityType GetEEntityType()
+        {
+            return EEntityType.Wall;
+        }
     }
 }

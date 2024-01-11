@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using LaserCrush.Manager;
 
 public class Energy : MonoBehaviour
 {
@@ -69,8 +70,14 @@ public class Energy : MonoBehaviour
 
     public static void CollideWithFloor()
     {
-        UseEnergy(m_MaxEnergy / 5);
+        m_HittingFloorLaserNum++;
+        //UseEnergy(m_MaxEnergy / 5);
         //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
+    }
+
+    public static void DeCollideWithFloor()
+    {
+        m_HittingFloorLaserNum--;
     }
 
     public static int ChargeEnergy()
@@ -104,4 +111,8 @@ public class Energy : MonoBehaviour
         m_CurrentEnergy = INITENERGY;
     }
 
+    public static int GetHittingFloorLaserNum()
+    {
+        return m_HittingFloorLaserNum;
+    }
 }
