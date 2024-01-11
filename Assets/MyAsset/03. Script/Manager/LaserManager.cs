@@ -80,7 +80,7 @@ namespace LaserCrush.Manager
                 //중간에 부모를 잃은 레이저 처리하는 함수
                 RemoveLossParentsLaser();
 
-                if(CheckCollideWithFloor())
+                if (CheckCollideWithFloor())
                 {
                     Energy.UseEnergy(int.MaxValue);
                 }
@@ -149,7 +149,7 @@ namespace LaserCrush.Manager
 
         public void LossParent(List<Laser> lasers)
         {
-            for(int i = 0;i <lasers.Count;i++) 
+            for (int i = 0; i < lasers.Count; i++)
             {
                 m_LossParentsLaser.Add(lasers[i]);
                 lasers[i].LossParentLasersDeActivate();

@@ -80,24 +80,24 @@ namespace LaserCrush.Entity
         }
 
 
-    public static void CollideWithFloor()
-    {
-        m_HittingFloorLaserNum++;
-        //UseEnergy(m_MaxEnergy / 5);
-        //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
-    }
+        public static void CollideWithFloor()
+        {
+            m_HittingFloorLaserNum++;
+            //UseEnergy(m_MaxEnergy / 5);
+            //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
+        }
 
-    public static void DeCollideWithFloor()
-    {
-        m_HittingFloorLaserNum--;
-    }
+        public static void DeCollideWithFloor()
+        {
+            m_HittingFloorLaserNum--;
+        }
 
-    public static int ChargeEnergy()
-    {
-        CurrentEnergy = m_MaxEnergy;
-        m_HittingFloorLaserNum = 0;
-        return CurrentEnergy;
-    }
+        public static int ChargeEnergy()
+        {
+            CurrentEnergy = m_MaxEnergy;
+            m_HittingFloorLaserNum = 0;
+            return CurrentEnergy;
+        }
 
         /// <summary>
         /// 일단 부딪힐 마다 10퍼 삭제
@@ -106,8 +106,6 @@ namespace LaserCrush.Entity
         {
             UseEnergy(MaxEnergy / 10);
         }
-
-
 
 
         public static void EnergyUpgrade(int additionalEnergy)
@@ -120,19 +118,10 @@ namespace LaserCrush.Entity
             return m_CurrentEnergy;
         }
 
-        //-95 ~ 95
-        //게이지 표시 경우 -95 + GetGaugeNum으로 해줘야되더라
-        //Fill Green
-        private int GetGaugeNum()
+        public static int GetHittingFloorLaserNum()
         {
-            return (190 * m_CurrentEnergy) / m_MaxEnergy;
+            return m_HittingFloorLaserNum;
         }
-
-
-    public static int GetHittingFloorLaserNum()
-    {
-        return m_HittingFloorLaserNum;
-
         private void OnDestroy()
         {
             m_MaxEnergyUpdate = null;
@@ -144,5 +133,6 @@ namespace LaserCrush.Entity
             MaxEnergy = m_InitEnergy;
             m_CurrentEnergy = m_InitEnergy;
         }
+
     }
 }

@@ -32,7 +32,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private float m_ChargingWait;
 
     private bool m_IsActivate;
-    
+
     private Action<bool> m_OnMouseItemAction;
     #endregion
 
@@ -59,7 +59,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         ColNumber = colNumber;
         foreach (Transform tr in m_EjectionPortsTransform)
         {
-            m_EjectionPorts.Add(new LaserInfo(position : tr.position, direction : tr.up));
+            m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
         }
 
         //todo
@@ -76,10 +76,10 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         if (IsFixedDirection) return;
         IsFixedDirection = true;
 
-        for(int i = 0; i < m_EjectionPorts.Count; i++)
+        for (int i = 0; i < m_EjectionPorts.Count; i++)
         {
             m_EjectionPorts[i] = new LaserInfo(
-                position: m_EjectionPortsTransform[i].position, 
+                position: m_EjectionPortsTransform[i].position,
                 direction: m_EjectionPortsTransform[i].up
                 );
         }
@@ -118,7 +118,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         {
             return true;
         }
-        return false; 
+        return false;
     }
 
     public bool IsGetDamageable()
