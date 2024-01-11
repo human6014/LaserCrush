@@ -214,7 +214,7 @@ namespace LaserCrush.Manager
             return answer;
         }
 
-        public void Reset()
+        public void ResetGame()
         {
             m_Lasers.Clear();
             m_LaserAddBuffer.Clear();
