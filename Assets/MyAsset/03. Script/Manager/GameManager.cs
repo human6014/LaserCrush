@@ -106,7 +106,7 @@ namespace LaserCrush.Manager
         private void BlockUpdating()
         {
             //게임 종료 체크
-            if(m_BlockManager.IsGameOver())
+            if (m_BlockManager.IsGameOver())
             {
                 Debug.Log("GAME OVER");
                 ResetGame();
@@ -157,7 +157,7 @@ namespace LaserCrush.Manager
                     return;
                 }
 
-                if(m_PreEnergy != Energy.GetEnergy()) 
+                if (m_PreEnergy != Energy.GetEnergy())
                 {
                     m_PreEnergy = Energy.GetEnergy();
                     m_LaserTime = 0;
@@ -188,4 +188,3 @@ namespace LaserCrush.Manager
         }
     }
 }
- 

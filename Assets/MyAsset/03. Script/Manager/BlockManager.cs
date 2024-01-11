@@ -24,10 +24,12 @@ namespace LaserCrush.Manager
         [SerializeField] private Transform m_TopWall;
         [SerializeField] private Transform m_LeftWall;
 
-        [Tooltip("블럭 최대 행 개수")] [Range(1, 40)]
+        [Tooltip("블럭 최대 행 개수")]
+        [Range(1, 40)]
         [SerializeField] private int m_MaxRowCount;
 
-        [Tooltip("블럭 최대 열 개수")] [Range(1, 20)]
+        [Tooltip("블럭 최대 열 개수")]
+        [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
         #endregion
         private ItemManager m_ItemManager;
@@ -42,8 +44,8 @@ namespace LaserCrush.Manager
         private Vector3 m_MoveDownVector;
         #endregion
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc, 
-                         Func<GameObject, Vector3, GameObject> instantiatePosFunc, 
+        public void Init(Func<GameObject, GameObject> instantiateFunc,
+                         Func<GameObject, Vector3, GameObject> instantiatePosFunc,
                          ItemManager itemManager, UIManager UIManager)
         {
             m_Blocks = new List<Block>();
@@ -62,7 +64,7 @@ namespace LaserCrush.Manager
 
         private Result CheckAvailablePos(Vector3 pos)
         {
-            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0); 
+            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0);
             Vector2 newPos = GetItemGridPos(pos, out int rowNumber, out int colNumber);
 
             Result result = new Result(
@@ -75,7 +77,7 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 if (rowNumber == block.RowNumber &&
-                    colNumber == block.ColNumber) 
+                    colNumber == block.ColNumber)
                     return result;
             }
 
@@ -89,18 +91,18 @@ namespace LaserCrush.Manager
             int MaxRow = -1;
             foreach (Block block in m_Blocks)
             {
-                if(block.RowNumber > MaxRow) MaxRow = block.RowNumber;
+                if (block.RowNumber > MaxRow) MaxRow = block.RowNumber;
             }
             //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
             //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
-            if(MaxRow == m_MaxRowCount - 2) return true;
+            if (MaxRow == m_MaxRowCount - 2) return true;
             return false;
         }
 
         private bool InBoardArea(Vector2 pos)
         {
-            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) && 
-                pos.y >= -m_TopWall.position.y + 7 && 
+            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) &&
+                pos.y >= -m_TopWall.position.y + 7 &&
                 pos.y <= m_TopWall.position.y;
         }
 
@@ -157,8 +159,8 @@ namespace LaserCrush.Manager
                     itemObject.transform.SetParent(m_DroppedItemTransform);
                     item = itemObject.GetComponent<DroppedItem>();
                 }
-                
-                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(),item, RemoveBlock);
+
+                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(), item, RemoveBlock);
                 m_Blocks.Add(block);
             }
         }
@@ -193,7 +195,7 @@ namespace LaserCrush.Manager
             int randomSize = Random.Range(1, m_MaxColCount + 1);//1 ~ m_MaxColCount사이 숫자
             HashSet<int> result = new HashSet<int>();
 
-            while(result.Count < randomSize)
+            while (result.Count < randomSize)
             {
                 result.Add(Random.Range(0, m_MaxColCount));
             }
@@ -225,7 +227,7 @@ namespace LaserCrush.Manager
 
         public void FeverTime()
         {
-            foreach(var block in m_Blocks) 
+            foreach (var block in m_Blocks)
             {
                 block.GetDamage(int.MaxValue);
             }

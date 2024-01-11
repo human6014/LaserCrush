@@ -20,7 +20,7 @@ public sealed class Floor : MonoBehaviour, ICollisionable
     //weight는 가중치 -> 레이저 데미지보다 몇배를 줄지 결정
     public bool IsGetDamageable()
     {
-        return  true;
+        return true;
     }
 
     //딜 계속 박히게 하고 싶으면 주석 풀고 true반환

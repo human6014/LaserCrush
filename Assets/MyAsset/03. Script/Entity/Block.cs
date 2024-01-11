@@ -50,8 +50,8 @@ namespace LaserCrush
             m_DroppedItem = droppedItem;
 
             m_Text.text = GetHP().ToString();
-            m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ? 
-                m_BlockData.NormalBlockColor : 
+            m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ?
+                m_BlockData.NormalBlockColor :
                 m_BlockData.ReflectBlockColor;
 
             m_RemoveBlockAction = removeBlockAction;
@@ -83,7 +83,7 @@ namespace LaserCrush
             }
             else m_HP -= Energy.UseEnergy(damage);
 
-            if(GetHP() == 0)
+            if (GetHP() == 0)
             {
                 Energy.UseEnergy(m_HP);
                 Destroy();
