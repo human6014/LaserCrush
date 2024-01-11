@@ -39,6 +39,12 @@ namespace LaserCrush.Manager
         private event Func<GameObject, GameObject> m_InstantiateFunc;
         private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
 
+        //유니티스럽게 바꾸면 좋을듯 인스펙터에서 수정할 수 있게
+        //앞에서부터1~6
+        private static List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
+        private static int s_MaxWightSum = 151;
+        //
+
         private Vector2 m_CalculatedInitPos;
         private Vector2 m_CalculatedOffset;
         private Vector3 m_MoveDownVector;
@@ -192,7 +198,7 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = Random.Range(1, m_MaxColCount + 1);//1 ~ m_MaxColCount사이 숫자
+            int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
             HashSet<int> result = new HashSet<int>();
 
             while (result.Count < randomSize)
@@ -203,14 +209,14 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// 3스테이지마다 가중치 부여
-        /// 구간을 
+        /// 5스테이지마다 가중치 부여
+        /// 각 블럭의 생성 범위는  최대 최소차이가 10%
         /// </summary>
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.m_StageNum + 2) / 3) * 10;
-            int start = end - (end / 2);
+            int end = ((GameManager.m_StageNum + 4) / 5) * 10;
+            int start = end - (end / 10);
             return Random.Range(start, end + 1) * 100;
         }
 
@@ -241,5 +247,21 @@ namespace LaserCrush.Manager
             }
             m_Blocks.Clear();
         }
+
+        private int GetWeightedRandomNum()
+        {
+            int randomSize = Random.Range(1, s_MaxWightSum);
+
+            for (int i = 0; i < s_Probabilitytable.Count; i++)
+            {
+                if (randomSize < s_Probabilitytable[i])
+                {
+                    return i + 1;
+                }
+                randomSize -= s_Probabilitytable[i];
+            }
+            return s_Probabilitytable.Count - 1;
+        }
+
     }
 }

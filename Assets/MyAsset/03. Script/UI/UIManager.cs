@@ -20,7 +20,7 @@ namespace LaserCrush.Manager
 
         public void SetScore(int additionalScore)
             => m_ScoreTextController.SetText("Score : " + (m_Score + additionalScore) / 100);
-        
+
         public void SetCurrentMaxEnergy(int current, int max)
             => m_EnergySliderController.SetMaxValue(current, max);
 
