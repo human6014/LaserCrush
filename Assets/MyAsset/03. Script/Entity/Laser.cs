@@ -28,7 +28,7 @@ namespace LaserCrush.Entity
         private List<Laser> m_ChildLazers = new List<Laser>();
         private List<LaserInfo> m_LaserInfo;
 
-        private ICollisionable m_Target = null; // 이부분도 고민 해봐야함
+        private ICollisionable m_Target = null;
 
         private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
@@ -80,11 +80,10 @@ namespace LaserCrush.Entity
         }
 
         /// <summary>
-        /// 레이저 총 상태
-        /// 이름 바꾸는게 어떨까?
-        /// [움직임] : 충돌 전 상태 업데이트마다 방향벡터 방향으로 이동
-        /// [충돌] : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 고격
-        ///          레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
+        /// [움직임]  : 충돌 전 상태 업데이트마다 방향벡터 방향으로 이동
+        /// [충돌]    : 최초 충돌에서 자식 레이저 생성, 주기마다 에너지 체크 후 충돌 블럭 공격
+        ///             레이저의 생성(분기)는 움직임 상태에서 최초 충돌을 감지한 순간 수행된다.
+        /// [대기]    : 에니메이션 또는 이벤트 동기화로 대기하는 상태             
         /// </summary>
         public void Run()
         {

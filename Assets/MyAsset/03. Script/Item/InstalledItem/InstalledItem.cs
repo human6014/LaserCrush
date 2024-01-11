@@ -35,7 +35,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private int m_UsingCount = 0;
     private float m_ChargingWait;
 
-    private Vector2 m_DirVector;
     private Vector2 m_Posion;
 
     private static List<Vector2> UnitCircle = new List<Vector2>();
@@ -148,6 +147,10 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
                 dif = Vector2.Distance(dir, unit);
             }
         }
+        //기존 방향벡터와 새로 선택된 방향백터의 각도 차이
+        GetAngle(dir, m_DirVector);
+
+        m_DirVector = answer;
         return answer;
     }
 
@@ -215,4 +218,11 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_OnMouseItemAction = null;
     }
+
+    private float GetAngle(Vector3 from, Vector3 to)
+    {
+        Vector3 v = to - from;
+        return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+    }
+
 }
