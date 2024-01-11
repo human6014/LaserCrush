@@ -13,6 +13,9 @@ namespace LaserCrush.Manager
     {
         #region Variable
         #region SerializeField
+        [Header("Monobehaviour Reference")]
+        [SerializeField] private UIManager m_UIManager;
+
         [Header("Block Reference")]
         [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
         [SerializeField] private Transform m_DroppedItemTransform;
@@ -32,8 +35,8 @@ namespace LaserCrush.Manager
         [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
         #endregion
+
         private ItemManager m_ItemManager;
-        private UIManager m_UIManager;
         private List<Block> m_Blocks;
 
         private event Func<GameObject, GameObject> m_InstantiateFunc;
@@ -52,14 +55,13 @@ namespace LaserCrush.Manager
 
         public void Init(Func<GameObject, GameObject> instantiateFunc,
                          Func<GameObject, Vector3, GameObject> instantiatePosFunc,
-                         ItemManager itemManager, UIManager UIManager)
+                         ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
             m_InstantiateFunc = instantiateFunc;
             m_InstantiatePosFunc = instantiatePosFunc;
 
             m_ItemManager = itemManager;
-            m_UIManager = UIManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
             CalculateGridRowCol();
@@ -99,8 +101,7 @@ namespace LaserCrush.Manager
             {
                 if (block.RowNumber > MaxRow) MaxRow = block.RowNumber;
             }
-            //블럭이 바닥으로 내려왔을때 발사 가능한 상황 
-            //만약 바닥에 닿는 순간 게임 종료를 원하면 아래 코드 사용
+
             if (MaxRow == m_MaxRowCount - 2) return true;
             return false;
         }
@@ -262,6 +263,5 @@ namespace LaserCrush.Manager
             }
             return s_Probabilitytable.Count - 1;
         }
-
     }
 }

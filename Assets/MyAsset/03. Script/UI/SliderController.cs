@@ -10,13 +10,9 @@ namespace LaserCrush.UI.Controller
         [SerializeField] private Image m_SliderImage;
 
         public void SetMaxValue(int current, int max)
-        {
-            m_SliderImage.fillAmount = (float)current / max;
-        }
-
+            => m_SliderImage.fillAmount = (float)current / max;
+        
         public void SetCurrentValue(int current, int max)
-        {
-            m_SliderImage.fillAmount = (float)current / max;
-        }
+            => m_SliderImage.fillAmount = (float)current / max;
     }
 }
