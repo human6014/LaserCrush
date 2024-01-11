@@ -30,17 +30,16 @@ namespace LaserCrush.Manager
         [Tooltip("블럭 최대 열 개수")] [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
         #endregion
-
-        private Vector2 m_CalculatedInitPos;
-        private Vector2 m_CalculatedOffset;
-        private Vector3 m_MoveDownVector;
-
         private ItemManager m_ItemManager;
         private UIManager m_UIManager;
         private List<Block> m_Blocks;
 
         private event Func<GameObject, GameObject> m_InstantiateFunc;
         private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
+
+        private Vector2 m_CalculatedInitPos;
+        private Vector2 m_CalculatedOffset;
+        private Vector3 m_MoveDownVector;
         #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, 

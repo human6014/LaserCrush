@@ -1,4 +1,5 @@
 using LaserCrush.Controller.InputObject;
+using LaserCrush.Entity;
 using UnityEngine;
 
 namespace LaserCrush.Manager
