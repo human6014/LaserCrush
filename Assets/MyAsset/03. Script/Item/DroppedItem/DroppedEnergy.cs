@@ -5,7 +5,7 @@ namespace LaserCrush.Entity
         protected override void GetItemWithAnimation()
         {
             //Do animation
-            Energy.EnergyUpgrade(10);
+            Energy.EnergyUpgrade(1000);
             return;
         }
     }

@@ -2,71 +2,83 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using LaserCrush.Manager;
+using System;
 
-public class Energy : MonoBehaviour
+
+namespace LaserCrush.Entity
 {
-    #region Variable
-    [SerializeField] private TextMeshProUGUI m_Text;
-    [SerializeField] private int INITENERGY = 10000;
-    private static event UnityAction m_TextUpdate;
+    public class Energy : MonoBehaviour
+    {
+        #region Variable
+        [SerializeField] private UIManager m_UIManager;
+        [SerializeField] private int m_InitEnergy = 10000;
 
-    private static int m_MaxEnergy;
-    private static int m_CurrentEnergy;
+        private static event Action m_MaxEnergyUpdate;
+        private static event Action m_CurrentEnergyUpdate;
 
-    private static int m_HittingFloorLaserNum;
-    #endregion
+        private static int m_MaxEnergy;
+        private static int m_CurrentEnergy;
+        private static int m_HittingFloorLaserNum;
+        #endregion
 
-    private static int CurrentEnergy 
-    { 
-        get => m_CurrentEnergy;
-        set
+        private static int MaxEnergy
         {
-            m_CurrentEnergy = value;
-            m_TextUpdate?.Invoke();
+            get => m_MaxEnergy;
+            set
+            {
+                m_MaxEnergy = value;
+                m_MaxEnergyUpdate?.Invoke();
+            }
         }
-    }
 
-    private void Awake()
-    {
-        m_TextUpdate = null;
-        m_TextUpdate += () => m_Text.text = (m_CurrentEnergy / 100).ToString();
-
-        m_MaxEnergy = INITENERGY;
-        CurrentEnergy = INITENERGY;
-    }
-    /// 반환형은 총 사용한 에너지의 양이다.
-    /// 적게남
-    /// </summary>
-    /// <param name="energy">
-    /// 사용할 에너지
-    /// </param>
-    /// <returns></returns>
-    public static int UseEnergy(int energy)
-    {
-        if (energy <= CurrentEnergy) 
+        private static int CurrentEnergy
         {
-            CurrentEnergy -= energy;
+            get => m_CurrentEnergy;
+            set
+            {
+                m_CurrentEnergy = value;
+                m_CurrentEnergyUpdate?.Invoke();
+            }
         }
-        else
-        {
-            energy = CurrentEnergy;
-            CurrentEnergy = 0;
-        }
-        return energy;
-    }
-    
-    public static bool CheckEnergy()
-    {
-        return CurrentEnergy > 0;
-    }
 
-    /// <summary>
-    /// 일단 부딪힐 마다 10퍼 삭제
-    /// </summary>
-    public static void CollideWithWall()
-    {
-        UseEnergy(m_MaxEnergy / 10);
-    }
+        private void Awake()
+        {
+            m_MaxEnergyUpdate = null;
+            m_CurrentEnergyUpdate = null;
+
+            MaxEnergy = m_InitEnergy;
+            CurrentEnergy = m_InitEnergy;
+
+            m_MaxEnergyUpdate += () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
+            m_CurrentEnergyUpdate += () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+        }
+
+        /// 반환형은 총 사용한 에너지의 양이다.
+        /// 적게남
+        /// </summary>
+        /// <param name="energy">
+        /// 사용할 에너지
+        /// </param>
+        /// <returns></returns>
+        public static int UseEnergy(int energy)
+        {
+            if (energy <= CurrentEnergy)
+            {
+                CurrentEnergy -= energy;
+            }
+            else
+            {
+                energy = CurrentEnergy;
+                CurrentEnergy = 0;
+            }
+            return energy;
+        }
+
+        public static bool CheckEnergy()
+        {
+            return CurrentEnergy > 0;
+        }
+
 
     public static void CollideWithFloor()
     {
@@ -87,32 +99,50 @@ public class Energy : MonoBehaviour
         return CurrentEnergy;
     }
 
-    public static void EnergyUpgrade(int additionalEnergy)
-    {
-        m_MaxEnergy += additionalEnergy;
-    }
+        /// <summary>
+        /// 일단 부딪힐 마다 10퍼 삭제
+        /// </summary>
+        public static void CollideWithWall()
+        {
+            UseEnergy(MaxEnergy / 10);
+        }
 
-    public static int GetEnergy()
-    {
-        return m_CurrentEnergy;
-    }
-    
-    //-95 ~ 95
-    //게이지 표시 경우 -95 + GetGaugeNum으로 해줘야되더라
-    //Fill Green
-    private int GetGaugeNum()
-    {
-        return (190 * m_CurrentEnergy) / m_MaxEnergy;
-    }
 
-    public void Reset()
-    {
-        m_MaxEnergy = INITENERGY;
-        m_CurrentEnergy = INITENERGY;
-    }
+
+
+        public static void EnergyUpgrade(int additionalEnergy)
+        {
+            MaxEnergy += additionalEnergy;
+        }
+
+        public static int GetEnergy()
+        {
+            return m_CurrentEnergy;
+        }
+
+        //-95 ~ 95
+        //게이지 표시 경우 -95 + GetGaugeNum으로 해줘야되더라
+        //Fill Green
+        private int GetGaugeNum()
+        {
+            return (190 * m_CurrentEnergy) / m_MaxEnergy;
+        }
+
 
     public static int GetHittingFloorLaserNum()
     {
         return m_HittingFloorLaserNum;
+
+        private void OnDestroy()
+        {
+            m_MaxEnergyUpdate = null;
+            m_CurrentEnergyUpdate = null;
+        }
+
+        public void Reset()
+        {
+            MaxEnergy = m_InitEnergy;
+            m_CurrentEnergy = m_InitEnergy;
+        }
     }
 }
