@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PoolableScript : MonoBehaviour
+namespace LaserCrush.Entity
 {
-    protected Manager.ObjectPoolManager.PoolingObject m_PoolingObject;
-    public abstract void ReturnObject();
+    public abstract class PoolableScript : MonoBehaviour
+    {
+        public abstract void ReturnObject();
+    }
 }

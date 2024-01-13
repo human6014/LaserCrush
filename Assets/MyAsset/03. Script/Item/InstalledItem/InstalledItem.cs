@@ -23,6 +23,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
     [SerializeField] private LineRenderer[] m_LineRenderers;
     [SerializeField] private GameObject[] m_AdjustModeObjects;
+    [SerializeField] private GameObject[] m_InitDeActiveObjects;
 
     private CircleCollider2D m_CircleCollider2D;
 
@@ -78,8 +79,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
             m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
         }
 
-        //todo
-        //m_DirVector -> 방향벡터 초기화
+        foreach(GameObject go in m_InitDeActiveObjects)
+            go.SetActive(false);
+
         m_CircleCollider2D.enabled = true;
         m_UsingCount = m_MaxUsingCount;
         IsFixedDirection = false;
@@ -165,7 +167,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     public void SetDirection(Vector2 pos)
     {
         Vector2 direction = (pos - (Vector2)transform.position).normalized;
-        transform.rotation = Quaternion.LookRotation(transform.forward, direction.DiscreteDirection(10));
+        transform.rotation = Quaternion.LookRotation(transform.forward, direction.DiscreteDirection(5));
         PaintLineRenderer();
     }
 
