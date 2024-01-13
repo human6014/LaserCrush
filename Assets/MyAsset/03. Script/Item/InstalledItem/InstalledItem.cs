@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using LaserCrush.Extension;
+using LaserCrush.Manager;
 
 public struct LaserInfo
 {
@@ -20,6 +21,8 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
 {
     #region Variable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
+    [SerializeField] private LineRenderer[] m_LineRenderers;
+    [SerializeField] private GameObject[] m_AdjustModeObjects;
 
     private CircleCollider2D m_CircleCollider2D;
 
@@ -32,11 +35,24 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private float m_ChargingWait;
 
     private bool m_IsActivate;
+    private bool m_IsAdjustMode;
 
     private Action<bool> m_OnMouseItemAction;
     #endregion
 
     #region Property
+    public bool IsAdjustMode 
+    { 
+        get => m_IsAdjustMode;
+        set
+        {
+            m_IsAdjustMode = value;
+            foreach(GameObject go in m_AdjustModeObjects)
+                go.SetActive(value);
+
+            if(m_IsAdjustMode) PaintLineRenderer();
+        } 
+    }
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
     public bool IsFixedDirection { get; private set; }
@@ -131,19 +147,35 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
+    private void PaintLineRenderer()
+    {
+        for (int i = 0; i < m_LineRenderers.Length; i++)
+        {
+            Vector2 linePos = m_LineRenderers[i].transform.position;
+            Vector2 lineDir = m_LineRenderers[i].transform.up;
+
+            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+
+            m_LineRenderers[i].positionCount = 2;
+            m_LineRenderers[i].SetPosition(0, linePos);
+            m_LineRenderers[i].SetPosition(1, hit.point);
+        }
+    }
+
     public void SetDirection(Vector2 pos)
     {
         Vector2 direction = (pos - (Vector2)transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction.DiscreteDirection(10));
-    }
-
-    private void OnDestroy()
-    {
-        m_OnMouseItemAction = null;
+        PaintLineRenderer();
     }
 
     public EEntityType GetEEntityType()
     {
         return EEntityType.Prisim;
+    }
+
+    private void OnDestroy()
+    {
+        m_OnMouseItemAction = null;
     }
 }

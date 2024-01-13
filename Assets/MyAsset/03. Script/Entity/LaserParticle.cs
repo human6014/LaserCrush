@@ -40,7 +40,7 @@ namespace LaserCrush.Entity
         {
             if (m_LaserEffectParticleRenderer is null) return;
 
-            m_LaserEffectParticleRenderer.lengthScale = length;
+            m_LaserEffectParticleRenderer.lengthScale = length + 0.75f;
             if (!m_LaserEffectParticle.isPlaying)
             {
                 m_LaserEffectParticleTransform.SetPositionAndRotation(pos, Quaternion.LookRotation(dir));

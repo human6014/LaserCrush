@@ -149,7 +149,6 @@ namespace LaserCrush.Manager
             {
                 Debug.Log("GAME OVER");
                 m_GameOverAction?.Invoke();
-                //ResetGame();
                 return;
             }
         }
@@ -179,7 +178,7 @@ namespace LaserCrush.Manager
                     m_PreEnergy = Energy.GetEnergy();
                     m_LaserTime = 0;
                 }
-                m_LaserManager.Activate();
+                m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
             }
             else
             {
