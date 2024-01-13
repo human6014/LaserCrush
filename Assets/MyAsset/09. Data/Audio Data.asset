@@ -25,9 +25,9 @@ MonoBehaviour:
   - m_AudioName: Laser
     m_AudioClip: {fileID: 8300000, guid: 64c2aa29c42c7a447b817c42ebad13dd, type: 3}
   - m_AudioName: BlockDestroy
-    m_AudioClip: {fileID: 8300000, guid: 446d63118a6288943afa2ec1dd92e15e, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: af91eddd4f8360d47bdbae934ee406b5, type: 3}
   - m_AudioName: PrismCharging
-    m_AudioClip: {fileID: 8300000, guid: 523db141b42bd3b4bb899b5cc864eb73, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 2875e24b64ae4cf41b40bfe7127531df, type: 3}
   - m_AudioName: PrismBatch
     m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}
   m_SEUIAudioGroups:

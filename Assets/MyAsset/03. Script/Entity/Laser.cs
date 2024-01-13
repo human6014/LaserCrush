@@ -17,7 +17,6 @@ namespace LaserCrush.Entity
     /// 충돌관련 로직은 모두 레이저에서 처리 후 각 개체에 통보하는 방식
     ///     ex) 충돌 오브젝트 탐색 후 hp, 타입등 읽어온 후 로직 처리 후 각 개체에 통보
     /// </summary>
-    [RequireComponent(typeof(LineRenderer))]
     public class Laser : MonoBehaviour
     {
         #region Variable

@@ -14,8 +14,6 @@ namespace LaserCrush.Manager
     {
         #region Variable
         [SerializeField] private Laser m_InitLazer;
-        [SerializeField] private LineRenderer m_SubLine;
-        [SerializeField] private SubLineController m_SubLineController;
         [SerializeField] private GameObject m_LaserObject;
         [SerializeField] private Transform m_LasersTransform;
 
@@ -55,11 +53,11 @@ namespace LaserCrush.Manager
             m_InitLazer.Init(CreateLaser, LossParent);
         }
 
-        public void Activate()
+        public void Activate(Vector3 pos, Vector3 dir)
         {
             if (!m_Initialized)//턴 첫 시작
             {
-                m_InitLazer.Activate(m_SubLineController.Position, m_SubLineController.Direction);
+                m_InitLazer.Activate(pos, dir);
 
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);

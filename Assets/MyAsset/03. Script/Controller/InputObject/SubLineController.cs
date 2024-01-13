@@ -32,9 +32,9 @@ namespace LaserCrush.Controller.InputObject
         #endregion
 
         #region Property
-        public Vector3 Position { get => m_DragTransfrom.position + Vector3.up * 2; }
+        public Vector2 Position { get => (Vector2)m_DragTransfrom.position + Vector2.up * 2; }
 
-        public Vector3 Direction { get; private set; } = Vector3.up;
+        public Vector2 Direction { get; private set; } = Vector2.up;
 
         public bool IsActiveSubLine
         {
@@ -88,6 +88,7 @@ namespace LaserCrush.Controller.InputObject
                 if (!m_BeforeClicked && Input.GetMouseButtonUp(0))
                 {
                     m_InstalledItemAdjustMode = false;
+                    m_AdjustingInstalledItem.IsAdjustMode = false;
                     m_GridLineController.OnOffGridLine(false);
                 }
                 return;
@@ -96,6 +97,7 @@ namespace LaserCrush.Controller.InputObject
             if (Input.GetMouseButtonUp(0) && m_ClickItem && !m_InstalledItemAdjustMode)
             {
                 m_InstalledItemAdjustMode = true;
+                m_AdjustingInstalledItem.IsAdjustMode = true;
                 m_GridLineController.OnOffGridLine(true);
             }
 
@@ -143,6 +145,7 @@ namespace LaserCrush.Controller.InputObject
                 if (!m_BeforeClicked && touch.phase == TouchPhase.Ended)
                 {
                     m_InstalledItemAdjustMode = false;
+                    m_AdjustingInstalledItem.IsAdjustMode = false;
                     m_GridLineController.OnOffGridLine(false);
                 }
                 return;
@@ -151,6 +154,7 @@ namespace LaserCrush.Controller.InputObject
             if (touch.phase == TouchPhase.Ended && m_ClickItem && !m_InstalledItemAdjustMode)
             {
                 m_InstalledItemAdjustMode = true;
+                m_AdjustingInstalledItem.IsAdjustMode = true;
                 m_GridLineController.OnOffGridLine(true);
             }
 
@@ -163,6 +167,7 @@ namespace LaserCrush.Controller.InputObject
 
                 m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
                 if (m_AdjustingInstalledItem.IsFixedDirection) return;
+
                 m_ClickItem = true;
 
                 return;
@@ -201,7 +206,7 @@ namespace LaserCrush.Controller.InputObject
 
         public void UpdateLineRenderer()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, ((Vector2)Direction).DiscreteDirection(1), Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
         }
@@ -212,16 +217,16 @@ namespace LaserCrush.Controller.InputObject
             if (!IsActiveSubLine) return;
             if (m_IsInitPosDrag || m_IsInitItemDrag) return;
 
-            Vector3 clickPos = pos;
-            Vector3 differVector = clickPos - Position;
+            Vector2 clickPos = pos;
+            Vector2 differVector = clickPos - Position;
 
             if (differVector.magnitude < 5) return;
 
-            Vector3 tempDirection = differVector.normalized;
+            Vector2 tempDirection = differVector.normalized;
             if (tempDirection.y <= 0) return;
 
-            Direction = tempDirection;
-            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, ((Vector2)Direction).DiscreteDirection(1));
+            Direction = tempDirection.DiscreteDirection(1);
+            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
 
             UpdateLineRenderer();
         }
