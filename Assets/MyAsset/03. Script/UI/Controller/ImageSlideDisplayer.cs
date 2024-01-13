@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LaserCrush.UI.Controller
 {
-    public class SliderController : MonoBehaviour
+    public class ImageSlideDisplayer : MonoBehaviour
     {
         [SerializeField] private Image m_SliderImage;
 

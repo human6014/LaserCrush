@@ -22,6 +22,7 @@ namespace LaserCrush.Manager
         #region SerializeField
         [Header("Monobehaviour Reference")]
         [SerializeField] private AudioManager m_AudioManager;
+        [SerializeField] private ObjectPoolManager m_ObjectPoolManager;
 
         [Header("Serialized Instance Reference")]
         [SerializeField] private GameSettingManager m_GameSettingManager;

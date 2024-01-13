@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace LaserCrush.Editor
+namespace LaserCrush.UI.EditorOnly
 {
     [Serializable]
     public struct CanvasGroupData

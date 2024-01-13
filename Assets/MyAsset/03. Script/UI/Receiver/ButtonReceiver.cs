@@ -4,9 +4,9 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace LaserCrush.UI.Controller
+namespace LaserCrush.UI.Receiver
 {
-    public class ButtonController : MonoBehaviour, IPointerClickHandler
+    public class ButtonReceiver : MonoBehaviour, IPointerClickHandler
     {
         private Action m_ButtonClickAction;
 

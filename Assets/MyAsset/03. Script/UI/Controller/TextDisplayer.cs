@@ -1,9 +1,9 @@
 using TMPro;
 using UnityEngine;
 
-namespace LaserCrush.UI.Controller
+namespace LaserCrush.UI.Displayer
 {
-    public class TextController : MonoBehaviour
+    public class TextDisplayer : MonoBehaviour
     {
         private TextMeshProUGUI m_Text;
 
