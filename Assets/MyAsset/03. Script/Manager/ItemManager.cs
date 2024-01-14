@@ -3,6 +3,7 @@ using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Controller.InputObject;
 using System;
+using System.Collections;
 
 namespace LaserCrush.Manager
 {
@@ -28,6 +29,7 @@ namespace LaserCrush.Manager
         #region Variable
         [SerializeField] private ToolbarController m_ToolbarController;
         [SerializeField] private AcquiredItemUI[] m_AcquiredItemUI;
+        [SerializeField] private Transform[] m_GetAnimationDestination;
 
         private int[] m_AcquiredItemCounts;
 
@@ -66,12 +68,15 @@ namespace LaserCrush.Manager
             foreach (DroppedItem droppedItem in m_DroppedItems)
             {
                 itemIndex = droppedItem.GetItemIndex();
+
+                Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
+                droppedItem.GetItemWithAnimation(destination);
                 if (itemIndex != -1)
                 {
                     m_AcquiredItemCounts[itemIndex]++;
                     m_AcquiredItemUI[itemIndex].HasCount++;
                 }
-                m_DestroyAction?.Invoke(droppedItem.gameObject);
+                //m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
             m_DroppedItems.Clear();
         }

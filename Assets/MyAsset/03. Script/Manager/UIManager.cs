@@ -16,15 +16,15 @@ namespace LaserCrush.Manager
 
         [Header("Controlling Contoller | UI component")]
         [Header("MainCanvas")]
-        [SerializeField] private TextDisplayer m_ScoreTextController;
-        [SerializeField] private TextDisplayer m_EnergyTextController;
+        [SerializeField] private TextDisplayer m_ScoreTextDisplayer;
+        [SerializeField] private TextDisplayer m_EnergyTextDisplayer;
         
         [SerializeField] private ImageSlideDisplayer m_EnergySliderController;
 
         [SerializeField] private ButtonReceiver m_SettingButtonReceiver;
 
         [Header("GameOverCanvas")]
-        [SerializeField] private TextDisplayer m_DefeatScoreTextController;
+        [SerializeField] private TextDisplayer m_DefeatScoreTextDisplayer;
         [SerializeField] private ButtonReceiver m_DefeatRestartButtonReceiver;
 
         [Header("SettingCanvas")]
@@ -43,9 +43,9 @@ namespace LaserCrush.Manager
         private void Awake()
         {
             m_Score = 0;
-            m_ScoreTextController.Init();
-            m_EnergyTextController.Init();
-            m_DefeatScoreTextController.Init();
+            m_ScoreTextDisplayer.Init();
+            m_EnergyTextDisplayer.Init();
+            m_DefeatScoreTextDisplayer.Init();
             m_FloatingTextController.Init();
 
             m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
@@ -63,11 +63,11 @@ namespace LaserCrush.Manager
         {
             m_Score += additionalScore;
             m_FloatingTextController.PlayFloatingText(additionalScore / 100);
-            m_ScoreTextController.SetText("Score : " + m_Score / 100);
+            m_ScoreTextDisplayer.SetText("Score : " + m_Score / 100);
         }
 
         private void SetGameOverScore()
-            => m_DefeatScoreTextController.SetTextWithThousandsSeparate((m_Score / 100).ToString());
+            => m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
 
         public void SetCurrentMaxEnergy(int current, int max)
             => m_EnergySliderController.SetMaxValue(current, max);
@@ -75,7 +75,7 @@ namespace LaserCrush.Manager
         public void SetCurrentEnergy(int current, int max)
         {
             m_EnergySliderController.SetCurrentValue(current, max);
-            m_EnergyTextController.SetText((current / 100).ToString());
+            m_EnergyTextDisplayer.SetText((current / 100).ToString());
         }
 
         private void OnOffSettingCanvas(bool isOnOff)
@@ -94,7 +94,7 @@ namespace LaserCrush.Manager
             m_GameManager.ResetGame();
             OnOffGameOverCanvas(false);
             m_Score = 0;
-            m_ScoreTextController.SetText("Score : " + m_Score / 100);
+            m_ScoreTextDisplayer.SetText("Score : " + m_Score / 100);
         }
     }
 }

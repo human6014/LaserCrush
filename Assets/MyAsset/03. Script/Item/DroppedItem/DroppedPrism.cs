@@ -1,10 +1,12 @@
+using UnityEngine;
+
 namespace LaserCrush.Entity
 {
     public sealed class DroppedPrism : DroppedItem
     {
-        protected override void GetItemWithAnimation()
+        public override void GetItemWithAnimation(Vector2 pos)
         {
-            //Do animation
+            StartCoroutine(GetItemAnimation(pos));
             return;
         }
     }

@@ -1,10 +1,12 @@
+using UnityEngine;
+
 namespace LaserCrush.Entity
 {
     public sealed class DroppedEnergy : DroppedItem
     {
-        protected override void GetItemWithAnimation()
+        public override void GetItemWithAnimation(Vector2 pos)
         {
-            //Do animation
+            StartCoroutine(GetItemAnimation(pos));
             Energy.EnergyUpgrade(1000);
             return;
         }
