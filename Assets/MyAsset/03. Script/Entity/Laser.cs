@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using LaserCrush.Manager;
+using static UnityEngine.AdaptivePerformance.Provider.AdaptivePerformanceSubsystemDescriptor;
+using Unity.Burst.CompilerServices;
 
 namespace LaserCrush.Entity
 {
@@ -146,20 +148,34 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D m_Hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
 
-            float dist = Vector2.Distance(m_EndPoint, m_Hit.point);
-            if (m_Hit.collider != null && Vector2.Distance(m_EndPoint, m_Hit.point) <= m_LaserData.ShootingVelocity)
+            float dist = Vector2.Distance(m_EndPoint, hit.point);
+            if (hit.collider != null && Vector2.Distance(m_EndPoint, hit.point) <= m_LaserData.ShootingVelocity)
             {
-                MoveEndPoint(m_Hit.point);
-                m_HitNormal = m_Hit.normal;
-                m_Target = m_Hit.transform.GetComponent<ICollisionable>();
-                m_LaserInfo = m_Target.Hitted(m_Hit, m_DirectionVector, this);
+                MoveEndPoint(hit.point);
+                m_HitNormal = hit.normal;
+                m_Target = hit.transform.GetComponent<ICollisionable>();
+                m_LaserInfo = m_Target.Hitted(hit, m_DirectionVector, this);
                 if (m_State == ELaserStateType.Wait) return;
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
             MoveEndPoint(m_EndPoint + m_DirectionVector * m_LaserData.ShootingVelocity);
+        }
+
+        /// <summary>
+        /// 보조선 반사각 구하는 
+        /// </summary>
+        public void AuxiliaryLineCollide()
+        {
+            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            if (hit.collider != null)
+            {
+
+                Vector2 hitNoraml = hit.normal;
+                Vector2 AuxiliaryLineDir = Vector2.Reflect(m_DirectionVector, hitNoraml);
+            }
         }
 
         private void MoveStartPoint(Vector2 pos, float dist)
