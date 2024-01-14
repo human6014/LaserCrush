@@ -18,7 +18,8 @@ namespace LaserCrush
 
         private EEntityType m_EntityType;
 
-        private int m_HP = 1000;
+        private int m_HP;
+        private int m_AttackCount;
         private bool m_IsDestroyed;
 
         private Action<Block, DroppedItem> m_RemoveBlockAction;
@@ -48,7 +49,7 @@ namespace LaserCrush
             ColNumber = colNumber;
             m_EntityType = entityType;
             m_DroppedItem = droppedItem;
-
+            m_AttackCount = 0;
             m_Text.text = GetHP().ToString();
             m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ?
                 m_BlockData.NormalBlockColor :
@@ -73,6 +74,9 @@ namespace LaserCrush
 
         public bool GetDamage(int damage)
         {
+            m_AttackCount++;
+            damage = damage * (int)(1.5 * (m_AttackCount / 15));
+
             if (m_IsDestroyed) return false;
 
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
