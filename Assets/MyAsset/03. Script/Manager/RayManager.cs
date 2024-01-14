@@ -30,7 +30,6 @@ namespace LaserCrush.Manager
         public static Vector3 MousePointToWorldPoint()
             => MainCamera.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 10);
 
-
         public static bool RaycastToTouchable(out RaycastHit2D hit, int layer, Touch touch)
         {
             hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(touch.position), Vector2.zero, layer);
