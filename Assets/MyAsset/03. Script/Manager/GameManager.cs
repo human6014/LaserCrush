@@ -39,7 +39,7 @@ namespace LaserCrush.Manager
 
         private int m_PreEnergy;
 
-        private float m_ValidTime = 2;
+        private float m_ValidTime = 30;
         private float m_LaserTime;
 
         private bool m_IsGameOver;
@@ -48,10 +48,10 @@ namespace LaserCrush.Manager
         #endregion
 
         #region Property
-        public event Action GameOverAction 
-        { 
-            add => m_GameOverAction += value; 
-            remove => m_GameOverAction -= value; 
+        public event Action GameOverAction
+        {
+            add => m_GameOverAction += value;
+            remove => m_GameOverAction -= value;
         }
         #endregion
 

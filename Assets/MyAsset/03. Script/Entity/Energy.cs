@@ -19,6 +19,8 @@ namespace LaserCrush.Entity
         private static int m_MaxEnergy;
         private static int m_CurrentEnergy;
         private static int m_HittingFloorLaserNum;
+
+        private static int m_HittingWallLaserNum;
         #endregion
 
         private static int MaxEnergy
@@ -96,15 +98,32 @@ namespace LaserCrush.Entity
         {
             CurrentEnergy = m_MaxEnergy;
             m_HittingFloorLaserNum = 0;
+            m_HittingWallLaserNum = 0;
             return CurrentEnergy;
         }
 
-        /// <summary>
-        /// 일단 부딪힐 마다 10퍼 삭제
-        /// </summary>
         public static void CollideWithWall()
         {
-            UseEnergy(MaxEnergy / 10);
+            /*Case 벽에 튕기면 전체 10%감소 
+             * 패널티가 너무 강력하고 튕기는 맛이 너무 적다 피드백 받음
+             */
+            //UseEnergy(MaxEnergy / 10);
+
+            /*Case 벽에 튕기면 눈 속임으로 1 데미지 주면서 계속 진행
+             * 바닥에 모든 레이저 가닥이 도착하는 경우가 아니면 계속 진행 가능
+             * 단점 1. 가끔 어 왜 에너지가 닳지 하는 상황발생 -> 시작할때1 감소, 후로는 잘 안보임
+             */
+            //UseEnergy(1);
+
+            /*Case 벽에 튕기면 가중치로 점점 데미지 증가
+             */
+            /*m_HittingWallLaserNum++;
+            UseEnergy((MaxEnergy / 100) * (int)(m_HittingWallLaserNum * 1.5));*/
+
+            /*Case 최초 N회까지 충돌은 무료 이후 충돌에 에너지 소모 적용
+             */
+            m_HittingWallLaserNum++;
+            if (m_HittingWallLaserNum > 15) { UseEnergy(MaxEnergy / 10); }
         }
 
 
