@@ -11,8 +11,8 @@ namespace LaserCrush.Manager
         [SerializeField] private GameManager m_GameManager;
 
         [Header("Controlling Canvas")]
-        [SerializeField] private Canvas m_GameOverCanvas;
-        [SerializeField] private Canvas m_SettingCanvas;
+        [SerializeField] private GameObject m_GameOverCanvas;
+        [SerializeField] private GameObject m_SettingCanvas;
 
         [Header("Controlling Contoller | UI component")]
         [Header("MainCanvas")]
@@ -22,18 +22,24 @@ namespace LaserCrush.Manager
         [SerializeField] private ImageSlideDisplayer m_EnergySliderController;
 
         [SerializeField] private ButtonReceiver m_SettingButtonReceiver;
+        [SerializeField] private ButtonReceiver m_PatronageButtonReceiver;
 
         [Header("GameOverCanvas")]
         [SerializeField] private TextDisplayer m_DefeatScoreTextDisplayer;
         [SerializeField] private ButtonReceiver m_DefeatRestartButtonReceiver;
 
         [Header("SettingCanvas")]
+        [SerializeField] private GameObject m_SettingPanel;
+        [SerializeField] private GameObject m_PatronagePanel;
+
         [SerializeField] private SliderReceiver m_SettingMasterSliderReceiver;
         [SerializeField] private SliderReceiver m_SettingBgmSliderReceiver;
         [SerializeField] private SliderReceiver m_SettingSESliderReceiver;
 
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
+        [SerializeField] private ButtonReceiver m_PatronageResumeButtonReceiver;
+        [SerializeField] private ButtonReceiver m_PatronageDonateButtonReceiver;
 
         [Header("Controller")]
         [SerializeField] private FloatingTextController m_FloatingTextController;
@@ -49,14 +55,18 @@ namespace LaserCrush.Manager
             m_FloatingTextController.Init();
 
             m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
+
+            m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
+            m_PatronageButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(true);
             m_DefeatRestartButtonReceiver.ButtonClickAction += ResetGame;
+            m_SettingResumeButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(false);
             m_SettingRestartButtonReceiver.ButtonClickAction += () =>
             {
                 ResetGame(); //확인창 한번 필요함
                 OnOffSettingCanvas(false);
             };
-            m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
-            m_SettingResumeButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(false);
+            m_PatronageResumeButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(false);
+            m_PatronageDonateButtonReceiver.ButtonClickAction += () => Debug.Log("Donate Button Clicked");
         }
 
         public void SetScore(int additionalScore)
@@ -80,13 +90,22 @@ namespace LaserCrush.Manager
 
         private void OnOffSettingCanvas(bool isOnOff)
         {
-            m_SettingCanvas.gameObject.SetActive(isOnOff);
+            if (m_SettingCanvas.activeSelf && isOnOff) return;
+            m_SettingCanvas.SetActive(isOnOff);
+            m_SettingPanel.SetActive(isOnOff);
+        }
+
+        private void OnOffPatronageCanvas(bool isOnOff)
+        {
+            if (m_SettingCanvas.activeSelf && isOnOff) return; 
+            m_SettingCanvas.SetActive(isOnOff);
+            m_PatronagePanel.SetActive(isOnOff);
         }
 
         private void OnOffGameOverCanvas(bool isOnOff)
         {
             SetGameOverScore();
-            m_GameOverCanvas.gameObject.SetActive(isOnOff);
+            m_GameOverCanvas.SetActive(isOnOff);
         }
 
         private void ResetGame()

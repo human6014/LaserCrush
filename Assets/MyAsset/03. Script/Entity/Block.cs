@@ -13,6 +13,7 @@ namespace LaserCrush
         #region Variable
         [SerializeField] private BlockData m_BlockData;
 
+        private Animator m_Animator;
         private DroppedItem m_DroppedItem;
         private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
@@ -32,6 +33,7 @@ namespace LaserCrush
 
         private void Awake()
         {
+            m_Animator = GetComponent<Animator>();
             m_Text = GetComponentInChildren<TextMeshProUGUI>();
             m_SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
@@ -61,7 +63,7 @@ namespace LaserCrush
 
         private void Destroy()
         {
-            Manager.AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
             m_IsDestroyed = true;
             m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
             Destroy(gameObject);
@@ -76,13 +78,10 @@ namespace LaserCrush
         public bool GetDamage(int damage)
         {
             m_AttackCount++;
-            // 타격횟수 비례 대미지
-            //damage = damage * (int)(1.5 * (m_AttackCount / 15));
-
-            //게임 스테이지 비례 대미지 방식
-            damage = damage * (int)(GameManager.m_StageNum + 1 / 2);
+            damage *= GameManager.m_StageNum + 1 / 2;
 
             if (m_IsDestroyed) return false;
+            m_Animator.SetTrigger("Hit");
 
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
             {
