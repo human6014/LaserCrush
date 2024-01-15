@@ -102,7 +102,7 @@ namespace LaserCrush.Manager
         private void Start()
         {
             m_AudioManager.OnOffAutoBGMLoop(true);
-            m_StageNum = 1;
+            s_StageNum = 1;
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace LaserCrush.Manager
             s_ValidHit = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
-            m_StageNum++;
+            s_StageNum++;
             CheckValueUpdate(false);
             if (m_IsGameOver)
             {
