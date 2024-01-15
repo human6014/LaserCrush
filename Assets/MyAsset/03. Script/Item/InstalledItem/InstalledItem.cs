@@ -23,7 +23,6 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
     [SerializeField] private LineRenderer[] m_LineRenderers;
     [SerializeField] private GameObject[] m_AdjustModeObjects;
-    [SerializeField] private GameObject[] m_InitDeActiveObjects;
 
     private CircleCollider2D m_CircleCollider2D;
 
@@ -42,17 +41,17 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     #endregion
 
     #region Property
-    public bool IsAdjustMode 
-    { 
+    public bool IsAdjustMode
+    {
         get => m_IsAdjustMode;
         set
         {
             m_IsAdjustMode = value;
-            foreach(GameObject go in m_AdjustModeObjects)
+            foreach (GameObject go in m_AdjustModeObjects)
                 go.SetActive(value);
 
-            if(m_IsAdjustMode) PaintLineRenderer();
-        } 
+            if (m_IsAdjustMode) PaintLineRenderer();
+        }
     }
     public int RowNumber { get; private set; }
     public int ColNumber { get; private set; }
@@ -63,6 +62,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     {
         m_CircleCollider2D = GetComponent<CircleCollider2D>();
         m_CircleCollider2D.enabled = false;
+        IsAdjustMode = true;
     }
 
     /// <summary>
@@ -79,11 +79,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
             m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
         }
 
-        foreach(GameObject go in m_InitDeActiveObjects)
-            go.SetActive(false);
-
         m_CircleCollider2D.enabled = true;
         m_UsingCount = m_MaxUsingCount;
+        IsAdjustMode = false;
         IsFixedDirection = false;
         m_IsActivate = false;
         m_OnMouseItemAction = onMouseItemAction;
@@ -132,11 +130,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         m_IsActivate = false;
         m_ChargingWait = 0;
 
-        if (m_UsingCount == 0)
-        {
-            return true;
-        }
-        return false;
+        return m_UsingCount == 0;
     }
 
     public bool IsGetDamageable()
@@ -149,7 +143,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
-    private void PaintLineRenderer()
+    public void PaintLineRenderer()
     {
         for (int i = 0; i < m_LineRenderers.Length; i++)
         {

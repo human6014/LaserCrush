@@ -9,8 +9,10 @@ namespace LaserCrush.Data
     {
         [SerializeField] private Color m_NormalBlockColor;
         [SerializeField] private Color m_ReflectBlockColor;
+        [SerializeField] private Vector2 m_InitScale;
 
         public Color NormalBlockColor { get => m_NormalBlockColor; }
         public Color ReflectBlockColor { get => m_ReflectBlockColor; }
+        public Vector2 InitScale { get => m_InitScale; }
     }
 }
