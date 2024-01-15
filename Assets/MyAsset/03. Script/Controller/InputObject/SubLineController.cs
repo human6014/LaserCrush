@@ -60,6 +60,8 @@ namespace LaserCrush.Controller.InputObject
 
             m_DragTransfromObject.MouseMoveAction += SetInitPos;
             m_ClickableObject.MouseClickAction += () => m_OnClickAction?.Invoke();
+
+            m_SubLineRenderer.positionCount = 3;
         }
 
         private void Update()
@@ -209,6 +211,12 @@ namespace LaserCrush.Controller.InputObject
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
+
+            Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
+            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, 5, RayManager.s_LaserHitableLayer);
+
+            Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * 5 : hit2.point;
+            m_SubLineRenderer.SetPosition(2, reflectPos);
         }
 
         private void SetDirection(Vector2 pos)
