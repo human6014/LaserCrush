@@ -35,16 +35,20 @@ namespace LaserCrush.Manager
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
-        public static int m_StageNum;
+        public static int s_StageNum;
+        public static int s_ValidHit;
 
-        private int m_PreEnergy;
+        private int m_PreValidHit;
+
 
         private float m_ValidTime = 4;
+
         private float m_LaserTime;
 
         private bool m_IsInit;
 
         private bool m_IsGameOver;
+
         private bool m_IsCheckGetItem;
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
@@ -91,6 +95,12 @@ namespace LaserCrush.Manager
             m_SubLineController.OnClickAction += EndDeploying;
             m_SubLineController.Init();
 
+            s_ValidHit = 0;
+            s_StageNum = 0;
+        }
+
+        private void Start()
+        {
             m_AudioManager.OnOffAutoBGMLoop(true);
             m_StageNum = 1;
         }
@@ -139,6 +149,8 @@ namespace LaserCrush.Manager
         {
             m_IsGameOver = m_BlockManager.IsGameOver();
             //게임 종료 체크
+
+            s_StageNum++;
             //Debug.Log("필드 위 아이템 획득");
             /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
@@ -173,8 +185,9 @@ namespace LaserCrush.Manager
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             //Debug.Log("에너지 보충");
-            m_PreEnergy = Energy.ChargeEnergy();
+            Energy.ChargeEnergy();
             m_LaserTime = 0;
+            s_ValidHit = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
             m_StageNum++;
@@ -201,15 +214,15 @@ namespace LaserCrush.Manager
             if (Energy.CheckEnergy())
             {
                 m_LaserTime += Time.deltaTime;
-                if (m_LaserTime > m_ValidTime && m_PreEnergy == Energy.GetEnergy())
+                if (m_LaserTime > m_ValidTime && m_PreValidHit == s_ValidHit)
                 {
                     Energy.UseEnergy(int.MaxValue);
                     return;
                 }
 
-                if (m_PreEnergy != Energy.GetEnergy())
+                if (m_PreValidHit != s_ValidHit)
                 {
-                    m_PreEnergy = Energy.GetEnergy();
+                    m_PreValidHit = s_ValidHit;
                     m_LaserTime = 0;
                 }
                 m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
@@ -237,7 +250,7 @@ namespace LaserCrush.Manager
             Energy.ResetGame();
 
             m_IsGameOver = false;
-            m_StageNum = 0;
+            s_StageNum = 0;
 
             m_GameStateType = EGameStateType.BlockUpdating;
         }
