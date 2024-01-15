@@ -12,7 +12,6 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private UIManager m_UIManager;
         [SerializeField] private static int m_InitEnergy = 10000;
-
         private static event Action m_MaxEnergyUpdate;
         private static event Action m_CurrentEnergyUpdate;
 

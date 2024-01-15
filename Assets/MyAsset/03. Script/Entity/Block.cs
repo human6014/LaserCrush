@@ -4,6 +4,7 @@ using UnityEngine;
 using LaserCrush.Data;
 using System;
 using TMPro;
+using LaserCrush.Manager;
 
 namespace LaserCrush
 {
@@ -75,7 +76,11 @@ namespace LaserCrush
         public bool GetDamage(int damage)
         {
             m_AttackCount++;
-            damage = damage * (int)(1.5 * (m_AttackCount / 15));
+            // 타격횟수 비례 대미지
+            //damage = damage * (int)(1.5 * (m_AttackCount / 15));
+
+            //게임 스테이지 비례 대미지 방식
+            damage = damage * (int)(GameManager.m_StageNum + 1 / 2);
 
             if (m_IsDestroyed) return false;
 
