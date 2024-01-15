@@ -62,7 +62,7 @@ namespace LaserCrush.Manager
             m_ToolbarController.Init(m_AcquiredItemUI);
         }
 
-        public void GetDroppedItems()
+        public bool GetDroppedItems()
         {
             int itemIndex;
             foreach (DroppedItem droppedItem in m_DroppedItems)
@@ -79,9 +79,11 @@ namespace LaserCrush.Manager
                 //m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
             m_DroppedItems.Clear();
+
+            return true;
         }
 
-        public void CheckDestroyPrisms()
+        public bool CheckDestroyPrisms()
         {
             for (int i = 0; i < m_InstalledItem.Count; i++)
             {
@@ -91,6 +93,7 @@ namespace LaserCrush.Manager
                 }
             }
             RemoveBufferFlush();
+            return true;
         }
 
         public void CheckDuplicatePosWithBlock(int rowNumber, int colNumber)

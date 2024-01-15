@@ -7,19 +7,25 @@ namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
     {
+        [Header("Editor Setting")]
+        [SerializeField] private bool m_HasTutorial;
+
         [Header("Other Managers")]
         [SerializeField] private GameManager m_GameManager;
 
-        [Header("Controlling Canvas")]
+        [Header("Controlling Canvas | Panel")]
+        [SerializeField] private GameObject m_MainCanvas;
         [SerializeField] private GameObject m_GameOverCanvas;
         [SerializeField] private GameObject m_SettingCanvas;
 
-        [Header("Controlling Contoller | UI component")]
+        [SerializeField] private GameObject m_InGamePanel;
+
+        [Header("Controlling Displayer | Receiver")]
         [Header("MainCanvas")]
         [SerializeField] private TextDisplayer m_ScoreTextDisplayer;
         [SerializeField] private TextDisplayer m_EnergyTextDisplayer;
         
-        [SerializeField] private ImageSlideDisplayer m_EnergySliderController;
+        [SerializeField] private ImageSlideDisplayer m_EnergySliderDisplayer;
 
         [SerializeField] private ButtonReceiver m_SettingButtonReceiver;
         [SerializeField] private ButtonReceiver m_PatronageButtonReceiver;
@@ -42,20 +48,30 @@ namespace LaserCrush.Manager
         [SerializeField] private ButtonReceiver m_PatronageDonateButtonReceiver;
 
         [Header("Controller")]
+        [SerializeField] private TutorialPanelController m_TutorialPanelController;
         [SerializeField] private FloatingTextController m_FloatingTextController;
 
         private int m_Score;
 
         private void Awake()
         {
+            if (m_HasTutorial)
+            {
+                m_TutorialPanelController.gameObject.SetActive(true);
+                m_InGamePanel.SetActive(false);
+                m_TutorialPanelController.Init();
+                m_TutorialPanelController.TutorialEndAction += OffTutorialPanel;
+            }
+            else m_GameManager.Init();
+
             m_Score = 0;
             m_ScoreTextDisplayer.Init();
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
             m_FloatingTextController.Init();
 
-            m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
 
+            m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
             m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
             m_PatronageButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(true);
             m_DefeatRestartButtonReceiver.ButtonClickAction += ResetGame;
@@ -80,12 +96,19 @@ namespace LaserCrush.Manager
             => m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
 
         public void SetCurrentMaxEnergy(int current, int max)
-            => m_EnergySliderController.SetMaxValue(current, max);
+            => m_EnergySliderDisplayer.SetMaxValue(current, max);
 
         public void SetCurrentEnergy(int current, int max)
         {
-            m_EnergySliderController.SetCurrentValue(current, max);
+            m_EnergySliderDisplayer.SetCurrentValue(current, max);
             m_EnergyTextDisplayer.SetText((current / 100).ToString());
+        }
+
+        private void OffTutorialPanel()
+        {
+            m_TutorialPanelController.gameObject.SetActive(false);
+            m_InGamePanel.SetActive(true);
+            m_GameManager.Init();
         }
 
         private void OnOffSettingCanvas(bool isOnOff)

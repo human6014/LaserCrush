@@ -34,6 +34,10 @@ namespace LaserCrush.Manager
         [Tooltip("블럭 최대 열 개수")]
         [Range(1, 20)]
         [SerializeField] private int m_MaxColCount;
+
+        [Header("Time Related")]
+        [SerializeField] private float m_MoveDownTime;
+        [SerializeField] private float m_GenerateTime;
         #endregion
 
         private ItemManager m_ItemManager;
@@ -48,9 +52,12 @@ namespace LaserCrush.Manager
         private static int s_MaxWightSum = 151;
         //
 
+        private float m_MoveDownElapsedTime;
+        private float m_GenerateElapsedTime;
+
         private Vector2 m_CalculatedInitPos;
         private Vector2 m_CalculatedOffset;
-        private Vector3 m_MoveDownVector;
+        private Vector2 m_MoveDownVector;
         #endregion
 
         public void Init(Func<GameObject, GameObject> instantiateFunc,
@@ -130,7 +137,7 @@ namespace LaserCrush.Manager
         private void CalculateGridRowCol()
         {
             float height = m_LeftWall.localScale.y - 6;
-            float width = m_TopWall.localScale.x - 6;
+            float width = m_TopWall.localScale.x - 4;
 
             float blockHeight = height / m_MaxRowCount;
             float blockWidth = width / m_MaxColCount;
@@ -140,36 +147,47 @@ namespace LaserCrush.Manager
 
             m_BlockObject.transform.localScale = new Vector3(blockWidth, blockHeight, 1);
 
-            m_MoveDownVector = new Vector3(0, -m_CalculatedOffset.y, 0);
+            m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
         }
 
-        public void GenerateBlock()
+        public bool GenerateBlock()
         {
-            GameObject obj;
-            GameObject itemObject;
-            DroppedItem item;
-            Block block;
-
-            HashSet<int> index = GenerateBlockOffset();
-            foreach (int i in index)
+            if (m_GenerateElapsedTime == 0)
             {
-                obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
-                obj.transform.SetParent(m_BlockTransform);
+                GameObject obj;
+                GameObject itemObject;
+                DroppedItem item;
+                Block block;
 
-                block = obj.GetComponent<Block>();
-
-                item = null;
-                if (m_ItemProbabilityData.TryGetItemObject(out GameObject itemPrefab))
+                HashSet<int> index = GenerateBlockOffset();
+                foreach (int i in index)
                 {
-                    itemObject = m_InstantiateFunc?.Invoke(itemPrefab);
-                    itemObject.SetActive(false);
-                    itemObject.transform.SetParent(m_DroppedItemTransform);
-                    item = itemObject.GetComponent<DroppedItem>();
-                }
+                    obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
+                    obj.transform.SetParent(m_BlockTransform);
 
-                block.Init(GenerateBlockHP(), 0, i, GenerateEntityType(), item, RemoveBlock);
-                m_Blocks.Add(block);
+                    block = obj.GetComponent<Block>();
+
+                    item = null;
+                    if (m_ItemProbabilityData.TryGetItemObject(out GameObject itemPrefab))
+                    {
+                        itemObject = m_InstantiateFunc?.Invoke(itemPrefab);
+                        itemObject.SetActive(false);
+                        itemObject.transform.SetParent(m_DroppedItemTransform);
+                        item = itemObject.GetComponent<DroppedItem>();
+                    }
+
+                    block.Init(GenerateBlockHP(), 0, i, m_GenerateTime, GenerateEntityType(), item, RemoveBlock);
+                    m_Blocks.Add(block);
+                }
             }
+
+            m_GenerateElapsedTime += Time.deltaTime;
+            if(m_GenerateElapsedTime >= m_GenerateTime)
+            {
+                m_GenerateElapsedTime = 0;
+                return true;
+            }
+            return false;
         }
 
         private void RemoveBlock(Block block, DroppedItem droppedItem)
@@ -184,13 +202,24 @@ namespace LaserCrush.Manager
             m_Blocks.Remove(block);
         }
 
-        public void MoveDownAllBlocks()
+        public bool MoveDownAllBlocks()
         {
-            for (int i = 0; i < m_Blocks.Count; i++)
+            if (m_MoveDownElapsedTime == 0)
             {
-                m_Blocks[i].MoveDown(m_MoveDownVector);
-                m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                for (int i = 0; i < m_Blocks.Count; i++)
+                {
+                    m_Blocks[i].MoveDown(m_MoveDownVector, m_MoveDownTime);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                }
             }
+
+            m_MoveDownElapsedTime += Time.deltaTime;
+            if (m_MoveDownElapsedTime >= m_MoveDownTime)
+            {
+                m_MoveDownElapsedTime = 0;
+                return true;
+            }
+            else return false;
         }
 
         /// <summary>

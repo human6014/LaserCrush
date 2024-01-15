@@ -9,7 +9,8 @@ namespace LaserCrush.Manager
         [SerializeField] private AudioSource m_BGMAudioSource;
         [SerializeField] private AudioSource m_SEAudioSource;
 
-        private bool isAutoBGMMode;
+        private bool m_IsAutoBGMMode;
+        private bool m_IsInit;
 
         private static AudioManager m_AudioManager;
 
@@ -31,12 +32,12 @@ namespace LaserCrush.Manager
 
         public void OnOffAutoBGMLoop(bool isOnOff)
         {
-            isAutoBGMMode = isOnOff;
+            m_IsAutoBGMMode = isOnOff;
         }
 
         private void Update()
         {
-            if (!isAutoBGMMode) return;
+            if (!m_IsAutoBGMMode) return;
 
             if (m_BGMAudioSource.isPlaying) return;
 

@@ -12,12 +12,13 @@ namespace LaserCrush.Controller.InputObject
         [SerializeField] private SubLineController m_SubLineController;
 
         private AcquiredItemUI m_CurrentItem;
-        private GameObject m_CurrentInstallingItem;
+        private InstalledItem m_InstalledItem;
         private GameObject m_InstantiatingObject;
 
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
         private Action<InstalledItem, AcquiredItemUI> m_AddInstallItemAction;
 
+        private bool m_IsInit;
         private bool m_IsInstallMode;
         private bool m_IsDragging;
 
@@ -35,7 +36,8 @@ namespace LaserCrush.Controller.InputObject
 
         public void Init(AcquiredItemUI[] acquiredItemUI)
         {
-            foreach(AcquiredItemUI acquiredItem in acquiredItemUI)
+            m_IsInit = true;
+            foreach (AcquiredItemUI acquiredItem in acquiredItemUI)
                 acquiredItem.PointerDownAction += OnPointerDown;
         }
 
@@ -44,7 +46,6 @@ namespace LaserCrush.Controller.InputObject
             if (clickedItem.HasCount <= 0) return;
 
             m_CurrentItem = clickedItem;
-            m_CurrentInstallingItem = m_CurrentItem.ItemObject;
             m_GridLineController.OnOffGridLine(true);
             m_SubLineController.IsInitItemDrag(true);
             m_IsInstallMode = true;
@@ -52,6 +53,7 @@ namespace LaserCrush.Controller.InputObject
 
         private void Update()
         {
+            if (!m_IsInit) return;
             if (!m_IsInstallMode) return;
 
             #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -68,8 +70,8 @@ namespace LaserCrush.Controller.InputObject
             if (Input.GetMouseButtonDown(0) && !m_IsDragging)
             {
                 m_IsDragging = true;
-                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, Vector2.zero, Quaternion.identity);
-                m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
+                m_InstantiatingObject = Instantiate(m_CurrentItem.ItemObject, Vector2.zero, Quaternion.identity, m_BatchedItemTransform);
+                m_InstalledItem = m_InstantiatingObject.GetComponent<InstalledItem>();
             }
 
             bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
@@ -82,6 +84,7 @@ namespace LaserCrush.Controller.InputObject
                     if (!result.m_IsAvailable) m_InstantiatingObject.transform.position = Vector3.zero;
                     else m_InstantiatingObject.transform.position = result.m_ItemGridPos;
                 }
+                m_InstalledItem.PaintLineRenderer();
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -102,8 +105,8 @@ namespace LaserCrush.Controller.InputObject
             if (touch.phase == TouchPhase.Began && !m_IsDragging)
             {
                 m_IsDragging = true;
-                m_InstantiatingObject = Instantiate(m_CurrentInstallingItem, Vector2.zero, Quaternion.identity);
-                m_InstantiatingObject.transform.SetParent(m_BatchedItemTransform);
+                m_InstantiatingObject = Instantiate(m_CurrentItem.ItemObject, Vector2.zero, Quaternion.identity, m_BatchedItemTransform);
+                m_InstalledItem = m_InstantiatingObject.GetComponent<InstalledItem>();
             }
 
             bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer, touch);
@@ -116,6 +119,7 @@ namespace LaserCrush.Controller.InputObject
                     if (!result.m_IsAvailable) m_InstantiatingObject.transform.position = Vector3.zero;
                     else m_InstantiatingObject.transform.position = result.m_ItemGridPos;
                 }
+                m_InstalledItem.PaintLineRenderer();
             }
 
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)

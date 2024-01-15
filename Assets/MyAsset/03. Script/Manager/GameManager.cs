@@ -40,11 +40,20 @@ namespace LaserCrush.Manager
 
         private int m_PreValidHit;
 
-        private float m_ValidTime = 3;
+
+        private float m_ValidTime = 4;
+
         private float m_LaserTime;
 
+        private bool m_IsInit;
+
         private bool m_IsGameOver;
-        
+
+        private bool m_IsCheckGetItem;
+        private bool m_IsCheckDestroyItem;
+        private bool m_IsCheckMoveDownBlock;
+        private bool m_IsCheckGenerateBlock;
+
         private Action m_GameOverAction;
         #endregion
 
@@ -69,16 +78,22 @@ namespace LaserCrush.Manager
 
         private void Awake()
         {
+            RayManager.MainCamera = Camera.main;
             m_GameSettingManager.Init();
             m_AudioManager.Init();
+        }
+
+        public void Init()
+        {
+            m_IsInit = true;
+
             m_LaserManager.Init(InstantiateObject, DestroyObject);
             m_ItemManager.Init(DestroyObject);
             m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
 
-            RayManager.MainCamera = Camera.main;
-
             m_SubLineController = GetComponent<SubLineController>();
             m_SubLineController.OnClickAction += EndDeploying;
+            m_SubLineController.Init();
 
             s_ValidHit = 0;
             s_StageNum = 0;
@@ -87,6 +102,7 @@ namespace LaserCrush.Manager
         private void Start()
         {
             m_AudioManager.OnOffAutoBGMLoop(true);
+            m_StageNum = 1;
         }
 
         /// <summary>
@@ -98,6 +114,7 @@ namespace LaserCrush.Manager
         /// </summary>
         private void Update()
         {
+            if (!m_IsInit) return;
             if (m_IsGameOver) return;
 
             switch (m_GameStateType)
@@ -116,6 +133,14 @@ namespace LaserCrush.Manager
             }
         }
 
+        private void CheckValueUpdate(bool value)
+        {
+            m_IsCheckGetItem = value;
+            m_IsCheckDestroyItem = value;
+            m_IsCheckMoveDownBlock = value;
+            m_IsCheckGenerateBlock = value;
+        }
+
         /// <summary>
         /// 로그에 찍힌 순서대로 진행된다 한 업데이트에 일어날 수 도 있고 Time함수 같은 걸 써서
         /// 딜레이를 줘도 되고
@@ -125,21 +150,38 @@ namespace LaserCrush.Manager
             m_IsGameOver = m_BlockManager.IsGameOver();
             //게임 종료 체크
 
-
             s_StageNum++;
             //Debug.Log("필드 위 아이템 획득");
             /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
              * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
              */
-            m_ItemManager.GetDroppedItems();
+            if (!m_IsCheckGetItem)
+            {
+                m_IsCheckGetItem = m_ItemManager.GetDroppedItems();
+                if (!m_IsCheckGetItem) return;
+            }
 
-            //Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
-            m_ItemManager.CheckDestroyPrisms();
+            if (!m_IsCheckDestroyItem)
+            {
+                //Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
+                m_IsCheckDestroyItem = m_ItemManager.CheckDestroyPrisms();
+                if (!m_IsCheckDestroyItem) return;
+            }
 
-            //Debug.Log("블럭 생성");
-            m_BlockManager.MoveDownAllBlocks();
-            m_BlockManager.GenerateBlock();
+            if (!m_IsCheckMoveDownBlock)
+            {
+                //Debug.Log("블럭 생성");
+                m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                if (!m_IsCheckMoveDownBlock) return;
+            }
+
+            if (!m_IsCheckGenerateBlock)
+            {
+                m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                if (!m_IsCheckGenerateBlock) return;
+            }
+            
 
             //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
             //Debug.Log("에너지 보충");
@@ -148,7 +190,8 @@ namespace LaserCrush.Manager
             s_ValidHit = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
-
+            m_StageNum++;
+            CheckValueUpdate(false);
             if (m_IsGameOver)
             {
                 Debug.Log("GAME OVER");

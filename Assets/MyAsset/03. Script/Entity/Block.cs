@@ -5,6 +5,7 @@ using LaserCrush.Data;
 using System;
 using TMPro;
 using LaserCrush.Manager;
+using System.Collections;
 
 namespace LaserCrush
 {
@@ -44,7 +45,7 @@ namespace LaserCrush
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
+        public void Init(int hp, int rowNumber, int colNumber, float animationTime, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
         {
             m_HP = hp;
             BlockScore = hp;
@@ -59,6 +60,23 @@ namespace LaserCrush
                 m_BlockData.ReflectBlockColor;
 
             m_RemoveBlockAction = removeBlockAction;
+
+            StartCoroutine(InitAnimation(animationTime));
+        }
+
+        public IEnumerator InitAnimation(float totalTime)
+        {
+            Vector2 startScale = m_BlockData.InitScale;
+            Vector2 endScale = transform.localScale;
+            float elapsedTime = 0;
+            while (elapsedTime <= totalTime)
+            {
+                elapsedTime += Time.deltaTime;
+                transform.localScale = Vector2.Lerp(startScale, endScale, elapsedTime / totalTime);
+                yield return null;
+            }
+
+            transform.localScale = endScale;
         }
 
         private void Destroy()
@@ -131,10 +149,24 @@ namespace LaserCrush
             return answer;
         }
 
-        public void MoveDown(Vector3 moveDownVector)
+        public void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
-            transform.position += moveDownVector;
+            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
             RowNumber++;
+        }
+
+        private IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
+        {
+            Vector2 startPos = transform.position;
+            Vector2 endPos = startPos + moveDownVector;
+            float elapsedTime = 0;
+            while (elapsedTime < moveDownTime)
+            {
+                elapsedTime += Time.deltaTime;
+                transform.position = Vector2.Lerp(startPos, endPos, elapsedTime / moveDownTime);
+                yield return null;
+            }
+            transform.position = endPos;
         }
 
         private void OnDestroy()

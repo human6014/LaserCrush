@@ -164,20 +164,6 @@ namespace LaserCrush.Entity
             MoveEndPoint(m_EndPoint + m_DirectionVector * m_LaserData.ShootingVelocity);
         }
 
-        /// <summary>
-        /// 보조선 반사각 구하는 
-        /// </summary>
-        public void AuxiliaryLineCollide()
-        {
-            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
-            if (hit.collider != null)
-            {
-
-                Vector2 hitNoraml = hit.normal;
-                Vector2 AuxiliaryLineDir = Vector2.Reflect(m_DirectionVector, hitNoraml);
-            }
-        }
-
         private void MoveStartPoint(Vector2 pos, float dist)
         {
             m_LaserParticle.SetLaserEffectErase(dist, m_LaserData.EraseVelocity, m_StartPoint);
