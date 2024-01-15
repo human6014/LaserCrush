@@ -16,5 +16,15 @@ namespace LaserCrush.Extension
 
             return new Vector2(Mathf.Cos(fixedAngle * Mathf.Deg2Rad), Mathf.Sin(fixedAngle * Mathf.Deg2Rad));
         }
+
+        public static Vector2 ClampDirection(this Vector2 direction, int min, int max)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // x축 양 기준으로 각도를 15도에서 165도로 제한
+            float clampedAngle = Mathf.Clamp(angle, min, max);
+
+            return new Vector2(Mathf.Cos(clampedAngle * Mathf.Deg2Rad), Mathf.Sin(clampedAngle * Mathf.Deg2Rad));
+        }
     }
 }

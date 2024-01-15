@@ -23,6 +23,8 @@ namespace LaserCrush.Controller.InputObject
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
 
+        private bool m_IsInit;
+
         private bool m_IsInitPosDrag;
         private bool m_IsInitItemDrag;
         private bool m_IsActiveSubLine;
@@ -54,18 +56,23 @@ namespace LaserCrush.Controller.InputObject
         }
         #endregion
 
-        private void Awake()
+        public void Init()
         {
-            m_DragTransfrom = m_DragTransfromObject.transform;
+            m_IsInit = true;
 
+            m_DragTransfromObject.gameObject.SetActive(true);
+            m_DragTransfrom = m_DragTransfromObject.transform;
             m_DragTransfromObject.MouseMoveAction += SetInitPos;
+
             m_ClickableObject.MouseClickAction += () => m_OnClickAction?.Invoke();
 
+            m_SubLineRenderer.gameObject.SetActive(true);
             m_SubLineRenderer.positionCount = 3;
         }
 
         private void Update()
         {
+            if (!m_IsInit) return;
             if (m_IsInitItemDrag) return;
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -201,7 +208,7 @@ namespace LaserCrush.Controller.InputObject
 
             Vector3 objectPos = RayManager.MousePointToWorldPoint();
             float xPos = Mathf.Clamp(objectPos.x, -44, 44);
-            m_DragTransfrom.position = new Vector3(xPos, -59, 0);
+            m_DragTransfrom.position = new Vector3(xPos, -58, 0);
 
             UpdateLineRenderer();
         }
@@ -213,9 +220,9 @@ namespace LaserCrush.Controller.InputObject
             m_SubLineRenderer.SetPosition(1, hit.point);
 
             Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
-            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, 5, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, 8.5f, RayManager.s_LaserHitableLayer);
 
-            Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * 5 : hit2.point;
+            Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * 8.5f : hit2.point;
             m_SubLineRenderer.SetPosition(2, reflectPos);
         }
 
@@ -233,7 +240,7 @@ namespace LaserCrush.Controller.InputObject
             Vector2 tempDirection = differVector.normalized;
             if (tempDirection.y <= 0) return;
 
-            Direction = tempDirection.DiscreteDirection(1);
+            Direction = tempDirection.ClampDirection(10, 170).DiscreteDirection(1);
             m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
 
             UpdateLineRenderer();
