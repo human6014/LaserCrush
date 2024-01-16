@@ -15,7 +15,6 @@ namespace LaserCrush.Manager
 
         public void SetFrame()
         {
-            QualitySettings.vSyncCount = 1;
             Application.targetFrameRate = m_TargetFrameRate;
         }
 

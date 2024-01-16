@@ -176,7 +176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &971415807734838352
 Transform:
   m_ObjectHideFlags: 0
@@ -314,7 +314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2298647595268646340
 Transform:
   m_ObjectHideFlags: 0
@@ -604,10 +604,7 @@ MonoBehaviour:
   m_LineRenderers:
   - {fileID: 5067567773675762732}
   - {fileID: 412092582601600343}
-  m_AdjustModeObjects:
-  - {fileID: 3650988789473642483}
-  - {fileID: 3286972220794101411}
-  - {fileID: 7125055214427198481}
+  m_DeActiveCanvas: {fileID: 7125055214427198481}
 --- !u!1 &7125055214427198481
 GameObject:
   m_ObjectHideFlags: 0

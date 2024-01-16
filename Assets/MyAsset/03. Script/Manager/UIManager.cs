@@ -55,6 +55,7 @@ namespace LaserCrush.Manager
 
         private bool IsOnOffSettingCanvas 
         {
+            get => m_IsOnOffSettingCanvas;
             set 
             {
                 m_IsOnOffSettingCanvas = value;
@@ -62,7 +63,8 @@ namespace LaserCrush.Manager
             }
         }
         private bool IsOnOffGameOverCanvas 
-        { 
+        {
+            get => m_IsOnOffGameOverCanvas;
             set
             {
                 m_IsOnOffGameOverCanvas = value;
