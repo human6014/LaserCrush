@@ -27,11 +27,10 @@ namespace LaserCrush.Manager
     public class ItemManager
     {
         #region Variable
-        [SerializeField] private ToolbarController m_ToolbarController;
         [SerializeField] private AcquiredItemUI[] m_AcquiredItemUI;
         [SerializeField] private Transform[] m_GetAnimationDestination;
 
-        private int[] m_AcquiredItemCounts;
+        private ToolbarController m_ToolbarController;
 
         private List<DroppedItem> m_DroppedItems;
         private List<InstalledItem> m_InstalledItem;
@@ -39,6 +38,8 @@ namespace LaserCrush.Manager
 
         private Action<GameObject> m_DestroyAction;
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
+
+        private int[] m_AcquiredItemCounts;
         #endregion
 
         public event Func<Vector3, Result> CheckAvailablePosFunc
@@ -47,7 +48,7 @@ namespace LaserCrush.Manager
             remove => m_CheckAvailablePosFunc -= value;
         }
 
-        public void Init(Action<GameObject> destroyAction)
+        public void Init(Action<GameObject> destroyAction, ToolbarController toolbarController)
         {
             m_DroppedItems = new List<DroppedItem>();
             m_InstalledItem = new List<InstalledItem>();
@@ -56,6 +57,7 @@ namespace LaserCrush.Manager
 
             m_DestroyAction = destroyAction;
 
+            m_ToolbarController = toolbarController;
             m_ToolbarController.CheckAvailablePosFunc += CheckAvailablePos;
             m_ToolbarController.AddInstalledItemAction += AddInstalledItem;
 
@@ -162,6 +164,12 @@ namespace LaserCrush.Manager
                 m_InstalledItemBuffer.Add(m_InstalledItem[i]);
             }
             RemoveBufferFlush();
+
+            for(int i = 0; i < m_AcquiredItemUI.Length; i++)
+            {
+                m_AcquiredItemCounts[i] = 0;
+                m_AcquiredItemUI[i].HasCount = 0;
+            }
 
             m_DroppedItems.Clear();
         }

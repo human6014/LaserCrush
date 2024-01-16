@@ -8,9 +8,9 @@ namespace LaserCrush.Controller.InputObject
     public class ToolbarController : MonoBehaviour
     {
         [SerializeField] private Transform m_BatchedItemTransform;
-        [SerializeField] private GridLineController m_GridLineController;
-        [SerializeField] private SubLineController m_SubLineController;
 
+        private GridLineController m_GridLineController;
+        private SubLineController m_SubLineController;
         private AcquiredItemUI m_CurrentItem;
         private InstalledItem m_InstalledItem;
         private GameObject m_InstantiatingObject;
@@ -21,6 +21,9 @@ namespace LaserCrush.Controller.InputObject
         private bool m_IsInit;
         private bool m_IsInstallMode;
         private bool m_IsDragging;
+        private bool m_CanInteraction;
+
+        #region Property
 
         public event Func<Vector3, Result> CheckAvailablePosFunc
         {
@@ -33,9 +36,13 @@ namespace LaserCrush.Controller.InputObject
             add => m_AddInstallItemAction += value;
             remove => m_AddInstallItemAction -= value;
         }
+        #endregion
 
         public void Init(AcquiredItemUI[] acquiredItemUI)
         {
+            m_GridLineController = GetComponent<GridLineController>();
+            m_SubLineController = GetComponent<SubLineController>();
+
             m_IsInit = true;
             foreach (AcquiredItemUI acquiredItem in acquiredItemUI)
                 acquiredItem.PointerDownAction += OnPointerDown;
@@ -53,7 +60,7 @@ namespace LaserCrush.Controller.InputObject
 
         private void Update()
         {
-            if (!m_IsInit) return;
+            if (!m_IsInit || m_CanInteraction) return;
             if (!m_IsInstallMode) return;
 
             #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -154,6 +161,11 @@ namespace LaserCrush.Controller.InputObject
             m_GridLineController.OnOffGridLine(false);
             m_SubLineController.IsInitItemDrag(false);
             m_SubLineController.UpdateLineRenderer();
+        }
+
+        public void CanInteraction(bool canInteraction)
+        {
+            m_CanInteraction = canInteraction;
         }
 
         private void OnDestroy()

@@ -24,6 +24,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     [SerializeField] private LineRenderer[] m_LineRenderers;
     [SerializeField] private GameObject[] m_AdjustModeObjects;
 
+    private Animator m_Animator;
     private CircleCollider2D m_CircleCollider2D;
 
     private List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
@@ -60,6 +61,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
 
     private void Awake()
     {
+        m_Animator = GetComponent<Animator>();
         m_CircleCollider2D = GetComponent<CircleCollider2D>();
         m_CircleCollider2D.enabled = false;
         IsAdjustMode = true;
@@ -100,6 +102,11 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
                 );
         }
         m_OnMouseItemAction?.Invoke(false);
+    }
+
+    public void PlayFixNoticeAnimation()
+    {
+        m_Animator.SetTrigger("FixedNotice");
     }
 
     public bool Waiting()
