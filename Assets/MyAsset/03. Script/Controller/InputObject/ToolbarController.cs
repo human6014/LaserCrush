@@ -142,6 +142,7 @@ namespace LaserCrush.Controller.InputObject
             InstalledItem installedItem = m_InstantiatingObject.GetComponent<InstalledItem>();
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
             installedItem.Init(result.m_RowNumber, result.m_ColNumber, m_SubLineController.IsInitItemDrag);
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
 
             return true;
         }

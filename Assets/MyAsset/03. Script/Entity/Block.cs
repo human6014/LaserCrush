@@ -95,11 +95,13 @@ namespace LaserCrush
 
         public bool GetDamage(int damage)
         {
+            if (m_IsDestroyed) return false;
+
+            if (m_AttackCount % 5 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDamage");
             m_AttackCount++;
             GameManager.s_ValidHit++;
             damage *= GameManager.s_StageNum + 1 / 2;
 
-            if (m_IsDestroyed) return false;
             m_Animator.SetTrigger("Hit");
 
             if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우

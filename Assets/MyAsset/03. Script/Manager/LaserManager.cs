@@ -38,7 +38,6 @@ namespace LaserCrush.Manager
 
         public void Init(Func<GameObject, GameObject> instantiateFunc, Action<GameObject> destroyAction)
         {
-
             m_Lasers = new List<Laser>();
             m_LaserAddBuffer = new List<Laser>();
             m_LaserRemoveBuffer = new List<Laser>();
@@ -66,6 +65,7 @@ namespace LaserCrush.Manager
             }
             else
             {
+                //AudioManager.AudioManagerInstance.PlayNormalSE("Laser");
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
                     if (Energy.CheckEnergy())
@@ -98,6 +98,7 @@ namespace LaserCrush.Manager
                     m_DestroyAction?.Invoke(tr.gameObject);
                 }
                 m_Initialized = false;
+                //AudioManager.AudioManagerInstance.StopNormalSE("Laser");
                 return true;
             }
             /*

@@ -96,13 +96,12 @@ namespace LaserCrush.Manager
             m_SubLineController.Init();
 
             s_ValidHit = 0;
-            s_StageNum = 0;
+            s_StageNum = 1;
         }
 
         private void Start()
         {
             m_AudioManager.OnOffAutoBGMLoop(true);
-            s_StageNum = 1;
         }
 
         /// <summary>
@@ -147,10 +146,6 @@ namespace LaserCrush.Manager
         /// </summary>
         private void BlockUpdating()
         {
-            m_IsGameOver = m_BlockManager.IsGameOver();
-            //게임 종료 체크
-
-            s_StageNum++;
             //Debug.Log("필드 위 아이템 획득");
             /*ToDo
              * 블럭 생성및 화면에 존재하는 아이템 획득
@@ -192,6 +187,9 @@ namespace LaserCrush.Manager
             m_GameStateType = EGameStateType.Deploying;
             s_StageNum++;
             CheckValueUpdate(false);
+
+            //게임 종료 체크
+            m_IsGameOver = m_BlockManager.IsGameOver();
             if (m_IsGameOver)
             {
                 Debug.Log("GAME OVER");
@@ -250,7 +248,7 @@ namespace LaserCrush.Manager
             Energy.ResetGame();
 
             m_IsGameOver = false;
-            s_StageNum = 0;
+            s_StageNum = 1;
 
             m_GameStateType = EGameStateType.BlockUpdating;
         }
