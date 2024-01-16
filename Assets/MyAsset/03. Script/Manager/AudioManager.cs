@@ -30,6 +30,7 @@ namespace LaserCrush.Manager
             else Destroy(gameObject);
         }
 
+        #region BGM
         public void OnOffAutoBGMLoop(bool isOnOff)
         {
             m_IsAutoBGMMode = isOnOff;
@@ -52,6 +53,24 @@ namespace LaserCrush.Manager
                 m_BGMAudioSource.clip = audioClip;
                 m_BGMAudioSource.Play();
             }
+        }
+        #endregion
+
+
+        public void PlayNormalSE(string audioName)
+        {
+            if (m_SEAudioSource.isPlaying) return;
+            if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
+            {
+                m_SEAudioSource.clip = audioClip;
+                m_SEAudioSource.Play();
+            }
+        }
+
+        public void StopNormalSE(string audioName)
+        {
+            if (!m_SEAudioSource.isPlaying) return;
+            if (m_SEAudioSource.clip is not null && m_SEAudioSource.clip.name == audioName) m_SEAudioSource.Stop();
         }
 
         public void PlayOneShotNormalSE(string audioName)

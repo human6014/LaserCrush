@@ -38,10 +38,6 @@ namespace LaserCrush.Manager
         [SerializeField] private GameObject m_SettingPanel;
         [SerializeField] private GameObject m_PatronagePanel;
 
-        [SerializeField] private SliderReceiver m_SettingMasterSliderReceiver;
-        [SerializeField] private SliderReceiver m_SettingBgmSliderReceiver;
-        [SerializeField] private SliderReceiver m_SettingSESliderReceiver;
-
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
         [SerializeField] private ButtonReceiver m_PatronageResumeButtonReceiver;
@@ -50,6 +46,8 @@ namespace LaserCrush.Manager
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
         [SerializeField] private FloatingTextController m_FloatingTextController;
+        [SerializeField] private SettingPanelController m_SettingPanelController;
+        [SerializeField] private PatronageController m_PatronageController;
 
         private int m_Score;
 
@@ -69,7 +67,8 @@ namespace LaserCrush.Manager
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
             m_FloatingTextController.Init();
-
+            m_SettingPanelController.Init();
+            m_PatronageController.Init();
 
             m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
             m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
@@ -89,7 +88,7 @@ namespace LaserCrush.Manager
         {
             m_Score += additionalScore;
             m_FloatingTextController.PlayFloatingText(additionalScore / 100);
-            m_ScoreTextDisplayer.SetText("Score : " + m_Score / 100);
+            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
         }
 
         private void SetGameOverScore()

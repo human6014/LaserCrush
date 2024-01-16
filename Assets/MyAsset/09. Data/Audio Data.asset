@@ -30,6 +30,8 @@ MonoBehaviour:
     m_AudioClip: {fileID: 8300000, guid: 2875e24b64ae4cf41b40bfe7127531df, type: 3}
   - m_AudioName: PrismBatch
     m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}
+  - m_AudioName: BlockDamage
+    m_AudioClip: {fileID: 8300000, guid: 6e806885cb1cb244baf9dfd0b94de0ea, type: 3}
   m_SEUIAudioGroups:
   - m_AudioName: InventoryItemSelect
     m_AudioClip: {fileID: 8300000, guid: 42acc02a3539187438a4649dd63e7750, type: 3}

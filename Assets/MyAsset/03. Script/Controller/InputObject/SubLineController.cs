@@ -120,7 +120,7 @@ namespace LaserCrush.Controller.InputObject
                 m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
                 if (m_AdjustingInstalledItem.IsFixedDirection) return;
                 m_ClickItem = true;
-
+                AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
                 return;
             }
 
