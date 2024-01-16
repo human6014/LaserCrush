@@ -119,6 +119,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         {
             return new List<LaserInfo>();
         }
+        GameManager.s_ValidHit++;
         laser.ChangeLaserState(ELaserStateType.Wait);
         m_IsActivate = true;
         m_UsingCount--;

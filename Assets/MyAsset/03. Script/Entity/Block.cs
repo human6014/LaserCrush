@@ -96,7 +96,8 @@ namespace LaserCrush
         public bool GetDamage(int damage)
         {
             m_AttackCount++;
-            damage *= GameManager.m_StageNum + 1 / 2;
+            GameManager.s_ValidHit++;
+            damage *= GameManager.s_StageNum + 1 / 2;
 
             if (m_IsDestroyed) return false;
             m_Animator.SetTrigger("Hit");
@@ -144,6 +145,7 @@ namespace LaserCrush
                 return new List<LaserInfo>() { info };
             }
             m_Text.text = GetHP().ToString();
+            GameManager.s_ValidHit++;
             return answer;
         }
 
