@@ -6,14 +6,16 @@ namespace LaserCrush.Manager
     public class GameSettingManager
     {
         [SerializeField] private int m_TargetFrameRate = 60;
+
         public void Init()
         {
             SetFrame();
             SetResolution();
         }
 
-        private void SetFrame()
+        public void SetFrame()
         {
+            QualitySettings.vSyncCount = 1;
             Application.targetFrameRate = m_TargetFrameRate;
         }
 

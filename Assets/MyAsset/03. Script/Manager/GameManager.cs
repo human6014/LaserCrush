@@ -32,6 +32,7 @@ namespace LaserCrush.Manager
         #endregion
 
         private SubLineController m_SubLineController;
+        private ToolbarController m_ToolbarController;
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
@@ -55,6 +56,7 @@ namespace LaserCrush.Manager
         private bool m_IsCheckGenerateBlock;
 
         private Action m_GameOverAction;
+
         #endregion
 
         #region Property
@@ -63,6 +65,8 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
+        public Action<bool> SubLineInteractionAction { get; set; }
+        public Action<bool> ToolbarInteractionAction { get; set; }
         #endregion
 
         #region MonoBehaviour Func
@@ -82,18 +86,22 @@ namespace LaserCrush.Manager
             m_GameSettingManager.Init();
             m_AudioManager.Init();
         }
-
         public void Init()
         {
             m_IsInit = true;
 
+            m_SubLineController = GetComponent<SubLineController>();
+            m_ToolbarController = GetComponent<ToolbarController>();
+
             m_LaserManager.Init(InstantiateObject, DestroyObject);
-            m_ItemManager.Init(DestroyObject);
+            m_ItemManager.Init(DestroyObject, m_ToolbarController);
             m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
 
-            m_SubLineController = GetComponent<SubLineController>();
             m_SubLineController.OnClickAction += EndDeploying;
             m_SubLineController.Init();
+
+            SubLineInteractionAction += m_SubLineController.CanInteraction;
+            ToolbarInteractionAction = m_ToolbarController.CanInteraction;
 
             s_ValidHit = 0;
             s_StageNum = 1;
@@ -102,6 +110,7 @@ namespace LaserCrush.Manager
         private void Start()
         {
             m_AudioManager.OnOffAutoBGMLoop(true);
+            m_GameSettingManager.SetFrame();
         }
 
         /// <summary>

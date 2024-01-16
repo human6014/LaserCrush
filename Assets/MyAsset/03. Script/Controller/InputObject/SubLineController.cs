@@ -16,9 +16,9 @@ namespace LaserCrush.Controller.InputObject
         [SerializeField] private Transform m_LaserInitTransform;
         [SerializeField] private DragTransfromObject m_DragTransfromObject;
         [SerializeField] private ClickableObject m_ClickableObject;
-        [SerializeField] private GridLineController m_GridLineController;
         #endregion
 
+        private GridLineController m_GridLineController;
         private InstalledItem m_AdjustingInstalledItem;
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
@@ -31,9 +31,11 @@ namespace LaserCrush.Controller.InputObject
 
         private bool m_ClickItem;
         private bool m_InstalledItemAdjustMode;
+        private bool m_CanInteraction;
         #endregion
 
         #region Property
+
         public Vector2 Position { get => (Vector2)m_DragTransfrom.position + Vector2.up * 2; }
 
         public Vector2 Direction { get; private set; } = Vector2.up;
@@ -60,6 +62,8 @@ namespace LaserCrush.Controller.InputObject
         {
             m_IsInit = true;
 
+            m_GridLineController = GetComponent<GridLineController>();
+
             m_DragTransfromObject.gameObject.SetActive(true);
             m_DragTransfrom = m_DragTransfromObject.transform;
             m_DragTransfromObject.MouseMoveAction += SetInitPos;
@@ -72,7 +76,7 @@ namespace LaserCrush.Controller.InputObject
 
         private void Update()
         {
-            if (!m_IsInit) return;
+            if (!m_IsInit || m_CanInteraction) return;
             if (m_IsInitItemDrag) return;
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -118,7 +122,11 @@ namespace LaserCrush.Controller.InputObject
                 if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
 
                 m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
-                if (m_AdjustingInstalledItem.IsFixedDirection) return;
+                if (m_AdjustingInstalledItem.IsFixedDirection)
+                {
+                    m_AdjustingInstalledItem.PlayFixNoticeAnimation();
+                    return;
+                }
                 m_ClickItem = true;
                 AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
                 return;
@@ -175,9 +183,14 @@ namespace LaserCrush.Controller.InputObject
                 if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
 
                 m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
-                if (m_AdjustingInstalledItem.IsFixedDirection) return;
+                if (m_AdjustingInstalledItem.IsFixedDirection)
+                {
+                    m_AdjustingInstalledItem.PlayFixNoticeAnimation();
+                    return;
+                }
 
                 m_ClickItem = true;
+                AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
 
                 return;
             }
@@ -191,6 +204,11 @@ namespace LaserCrush.Controller.InputObject
                     SetDirection(hit.point);
                 }
             }
+        }
+
+        public void CanInteraction(bool canInteraction)
+        {
+            m_CanInteraction = canInteraction;
         }
 
         public void IsInitItemDrag(bool isInitItemDrag)

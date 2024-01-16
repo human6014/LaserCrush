@@ -11,10 +11,10 @@ namespace LaserCrush.Data
         [SerializeField] private int m_Damage = 1;
 
         [Tooltip("레이저 삭제하는 속도")]
-        [SerializeField] private float m_EraseVelocity = 0.4f;
+        [SerializeField] private float m_EraseVelocity = 150;
 
         [Tooltip("레이저 발사하는 속도")]
-        [SerializeField] private float m_ShootingVelocity = 0.2f;
+        [SerializeField] private float m_ShootingVelocity = 90;
 
         public int Damage { get => m_Damage; }
         public float EraseVelocity { get => m_EraseVelocity; }

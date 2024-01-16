@@ -49,7 +49,26 @@ namespace LaserCrush.Manager
         [SerializeField] private SettingPanelController m_SettingPanelController;
         [SerializeField] private PatronageController m_PatronageController;
 
+        private bool m_IsOnOffSettingCanvas;
+        private bool m_IsOnOffGameOverCanvas;
         private int m_Score;
+
+        private bool IsOnOffSettingCanvas 
+        {
+            set 
+            {
+                m_IsOnOffSettingCanvas = value;
+                m_GameManager.SubLineInteractionAction?.Invoke(value);
+            }
+        }
+        private bool IsOnOffGameOverCanvas 
+        { 
+            set
+            {
+                m_IsOnOffGameOverCanvas = value;
+                m_GameManager.ToolbarInteractionAction?.Invoke(value);
+            }
+        }
 
         private void Awake()
         {
@@ -113,13 +132,15 @@ namespace LaserCrush.Manager
         private void OnOffSettingCanvas(bool isOnOff)
         {
             if (m_SettingCanvas.activeSelf && isOnOff) return;
+            IsOnOffSettingCanvas = isOnOff;
             m_SettingCanvas.SetActive(isOnOff);
             m_SettingPanel.SetActive(isOnOff);
         }
 
         private void OnOffPatronageCanvas(bool isOnOff)
         {
-            if (m_SettingCanvas.activeSelf && isOnOff) return; 
+            if (m_SettingCanvas.activeSelf && isOnOff) return;
+            IsOnOffSettingCanvas = isOnOff;
             m_SettingCanvas.SetActive(isOnOff);
             m_PatronagePanel.SetActive(isOnOff);
         }
@@ -127,6 +148,7 @@ namespace LaserCrush.Manager
         private void OnOffGameOverCanvas(bool isOnOff)
         {
             SetGameOverScore();
+            IsOnOffGameOverCanvas = isOnOff;
             m_GameOverCanvas.SetActive(isOnOff);
         }
 

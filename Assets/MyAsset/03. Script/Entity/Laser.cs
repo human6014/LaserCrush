@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using LaserCrush.Manager;
-using static UnityEngine.AdaptivePerformance.Provider.AdaptivePerformanceSubsystemDescriptor;
-using Unity.Burst.CompilerServices;
 
 namespace LaserCrush.Entity
 {
@@ -29,10 +27,10 @@ namespace LaserCrush.Entity
         private List<Laser> m_ChildLazers = new List<Laser>();
         private List<LaserInfo> m_LaserInfo;
 
-        private ICollisionable m_Target = null;
-
         private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
+
+        private ICollisionable m_Target = null;
 
         private ELaserStateType m_State;
 
@@ -120,10 +118,11 @@ namespace LaserCrush.Entity
             if (m_IsErased) { return true; }
 
             float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
-            if (dist <= m_LaserData.EraseVelocity)
+            float eraseVelocity = m_LaserData.EraseVelocity * Time.deltaTime;
+            if (dist <= eraseVelocity)
             {
                 m_IsErased = true;
-                MoveStartPoint(m_StartPoint, dist);
+                MoveStartPoint(m_StartPoint, eraseVelocity, dist);
                 m_LaserParticle.OffEffectParticle();
                 m_LaserParticle.OffHitParticle();
                 m_IsErased = true;
@@ -133,7 +132,7 @@ namespace LaserCrush.Entity
                 }
                 return true;
             }
-            MoveStartPoint(m_StartPoint + m_DirectionVector * m_LaserData.EraseVelocity, dist);
+            MoveStartPoint(m_StartPoint + eraseVelocity * m_DirectionVector, eraseVelocity, dist);
             return false;
         }
 
@@ -151,7 +150,8 @@ namespace LaserCrush.Entity
             RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
 
             float dist = Vector2.Distance(m_EndPoint, hit.point);
-            if (hit.collider != null && Vector2.Distance(m_EndPoint, hit.point) <= m_LaserData.ShootingVelocity)
+            float shootingVelocity = m_LaserData.ShootingVelocity * Time.deltaTime;
+            if (hit.collider != null && dist <= shootingVelocity)
             {
                 MoveEndPoint(hit.point);
                 m_HitNormal = hit.normal;
@@ -161,12 +161,12 @@ namespace LaserCrush.Entity
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
-            MoveEndPoint(m_EndPoint + m_DirectionVector * m_LaserData.ShootingVelocity);
+            MoveEndPoint(m_EndPoint + shootingVelocity * m_DirectionVector);
         }
 
-        private void MoveStartPoint(Vector2 pos, float dist)
+        private void MoveStartPoint(Vector2 pos, float velocity, float dist)
         {
-            m_LaserParticle.SetLaserEffectErase(dist, m_LaserData.EraseVelocity, m_StartPoint);
+            m_LaserParticle.SetLaserEffectErase(dist, velocity, m_StartPoint);
             m_StartPoint = pos;
         }
 
