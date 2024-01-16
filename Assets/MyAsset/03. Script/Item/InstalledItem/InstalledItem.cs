@@ -22,15 +22,17 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     #region Variable
     [SerializeField] private Transform[] m_EjectionPortsTransform;
     [SerializeField] private LineRenderer[] m_LineRenderers;
-    [SerializeField] private GameObject[] m_AdjustModeObjects;
+    [SerializeField] private GameObject m_DeActiveCanvas;
 
     private Animator m_Animator;
     private CircleCollider2D m_CircleCollider2D;
 
-    private List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+    private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+    private Action<bool> m_OnMouseItemAction;
 
     private const int m_MaxUsingCount = 3;
     private const float m_ChargingTime = 0.5f;
+    private const float m_SubLineLength = 5;
 
     private int m_UsingCount = 0;
     private float m_ChargingWait;
@@ -38,7 +40,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private bool m_IsActivate;
     private bool m_IsAdjustMode;
 
-    private Action<bool> m_OnMouseItemAction;
+    
     #endregion
 
     #region Property
@@ -48,10 +50,10 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         set
         {
             m_IsAdjustMode = value;
-            foreach (GameObject go in m_AdjustModeObjects)
-                go.SetActive(value);
+            m_DeActiveCanvas.SetActive(value);
 
-            if (m_IsAdjustMode) PaintLineRenderer();
+            if (m_IsAdjustMode) PaintAdjustLine();
+            else PaintNormalLine();
         }
     }
     public int RowNumber { get; private set; }
@@ -151,26 +153,36 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         return false;
     }
 
-    public void PaintLineRenderer()
+    private void PaintNormalLine()
     {
         for (int i = 0; i < m_LineRenderers.Length; i++)
-        {
-            Vector2 linePos = m_LineRenderers[i].transform.position;
-            Vector2 lineDir = m_LineRenderers[i].transform.up;
+            PaintLine(i, m_SubLineLength);
+    }
 
-            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+    public void PaintAdjustLine()
+    {
+        for (int i = 0; i < m_LineRenderers.Length; i++)
+            PaintLine(i, Mathf.Infinity);
+    }
 
-            m_LineRenderers[i].positionCount = 2;
-            m_LineRenderers[i].SetPosition(0, linePos);
-            m_LineRenderers[i].SetPosition(1, hit.point);
-        }
+    private void PaintLine(int i, float length)
+    {
+        Vector2 linePos = m_LineRenderers[i].transform.position;
+        Vector2 lineDir = m_LineRenderers[i].transform.up;
+
+        RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.s_LaserHitableLayer);
+        Vector2 secondPos = hit.collider is null ? linePos + lineDir * length : hit.point;
+
+        m_LineRenderers[i].positionCount = 2;
+        m_LineRenderers[i].SetPosition(0, linePos);
+        m_LineRenderers[i].SetPosition(1, secondPos);
     }
 
     public void SetDirection(Vector2 pos)
     {
         Vector2 direction = (pos - (Vector2)transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(transform.forward, direction.DiscreteDirection(5));
-        PaintLineRenderer();
+        PaintAdjustLine();
     }
 
     public EEntityType GetEEntityType()

@@ -41,13 +41,10 @@ namespace LaserCrush.Manager
 
         private int m_PreValidHit;
 
-
-        private float m_ValidTime = 4;
-
+        private readonly float m_ValidTime = 4;
         private float m_LaserTime;
 
         private bool m_IsInit;
-
         private bool m_IsGameOver;
 
         private bool m_IsCheckGetItem;

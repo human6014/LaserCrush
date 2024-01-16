@@ -108,38 +108,25 @@ namespace LaserCrush.Controller.InputObject
             }
 
             if (Input.GetMouseButtonUp(0) && m_ClickItem && !m_InstalledItemAdjustMode)
-            {
-                m_InstalledItemAdjustMode = true;
-                m_AdjustingInstalledItem.IsAdjustMode = true;
-                m_GridLineController.OnOffGridLine(true);
-            }
+                PointUpProcess();
 
             if (Input.GetMouseButtonDown(0) && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
-                if (!isHit) return;
-
-                if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
-
-                m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
-                if (m_AdjustingInstalledItem.IsFixedDirection)
-                {
-                    m_AdjustingInstalledItem.PlayFixNoticeAnimation();
+                if (!RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer)) 
                     return;
-                }
-                m_ClickItem = true;
-                AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
+
+                PointDownProcess(ref hit);
+
                 return;
             }
 
             if (!m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (Input.GetMouseButton(0))
-                {
-                    bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer);
-                    if (!isHit) return;
-                    SetDirection(hit.point);
-                }
+                if (!Input.GetMouseButton(0)) return;
+                if (!RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer))
+                    return;
+
+                SetDirection(hit.point);
             }
         }
 
@@ -169,41 +156,48 @@ namespace LaserCrush.Controller.InputObject
             }
 
             if (touch.phase == TouchPhase.Ended && m_ClickItem && !m_InstalledItemAdjustMode)
-            {
-                m_InstalledItemAdjustMode = true;
-                m_AdjustingInstalledItem.IsAdjustMode = true;
-                m_GridLineController.OnOffGridLine(true);
-            }
+                PointUpProcess();
 
             if (touch.phase == TouchPhase.Began && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch);
-                if (!isHit) return;
+                if (!RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch)) return;
 
-                if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
-
-                m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
-                if (m_AdjustingInstalledItem.IsFixedDirection)
-                {
-                    m_AdjustingInstalledItem.PlayFixNoticeAnimation();
-                    return;
-                }
-
-                m_ClickItem = true;
-                AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
+                PointDownProcess(ref hit);
 
                 return;
             }
 
             if (!m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (touch.phase == TouchPhase.Moved)
-                {
-                    bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch);
-                    if (!isHit) return;
-                    SetDirection(hit.point);
-                }
+                if (touch.phase != TouchPhase.Moved) return;
+
+                if (!RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch))
+                    return;
+
+                SetDirection(hit.point);
             }
+        }
+
+        private void PointDownProcess(ref RaycastHit2D hit)
+        {
+            if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
+
+            m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
+            if (m_AdjustingInstalledItem.IsFixedDirection)
+            {
+                m_AdjustingInstalledItem.PlayFixNoticeAnimation();
+                return;
+            }
+
+            m_ClickItem = true;
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
+        }
+
+        private void PointUpProcess()
+        {
+            m_InstalledItemAdjustMode = true;
+            m_AdjustingInstalledItem.IsAdjustMode = true;
+            m_GridLineController.OnOffGridLine(true);
         }
 
         public void CanInteraction(bool canInteraction)
