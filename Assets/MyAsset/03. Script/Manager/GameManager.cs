@@ -98,7 +98,7 @@ namespace LaserCrush.Manager
             m_SubLineController.OnClickAction += EndDeploying;
             m_SubLineController.Init();
 
-            SubLineInteractionAction += m_SubLineController.CanInteraction;
+            SubLineInteractionAction = m_SubLineController.CanInteraction;
             ToolbarInteractionAction = m_ToolbarController.CanInteraction;
 
             s_ValidHit = 0;

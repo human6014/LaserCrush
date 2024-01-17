@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
-using LaserCrush.Entity;
 using LaserCrush.Manager;
+using LaserCrush.Entity;
+using LaserCrush.Entity.Item;
 
 namespace LaserCrush.Controller.InputObject
 {

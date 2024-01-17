@@ -17,18 +17,18 @@ namespace LaserCrush.Manager
         /// <param name="poolableScript"> PoolableScript를 상속받는 객체 </param>
         /// <param name="parent"> Hierarchy 오브젝트 위치 </param>
         /// <returns>PoolingObject</returns>
-        public static PoolingObject Register(PoolableScript poolableScript, Transform parent) => new(poolableScript, parent);
+        public static PoolingObject Register(PoolableMonoBehaviour poolableScript, Transform parent) => new(poolableScript, parent);
 
         /// <summary>
         /// Pooling 정보 객체
         /// </summary>
         public class PoolingObject
         {
-            private readonly Queue<PoolableScript> poolableQueue;
-            private readonly PoolableScript script;
+            private readonly Queue<PoolableMonoBehaviour> poolableQueue;
+            private readonly PoolableMonoBehaviour script;
             private readonly Transform parent;
 
-            public PoolingObject(PoolableScript script, Transform parent)
+            public PoolingObject(PoolableMonoBehaviour script, Transform parent)
             {
                 poolableQueue = new();
                 this.script = script;
@@ -48,7 +48,7 @@ namespace LaserCrush.Manager
             /// 오브젝트 생성
             /// </summary>
             /// <returns></returns>
-            private PoolableScript CreateNewObject() 
+            private PoolableMonoBehaviour CreateNewObject() 
             {
                 var newObj = Instantiate(script);
                 newObj.gameObject.SetActive(false);
@@ -61,9 +61,9 @@ namespace LaserCrush.Manager
             /// </summary>
             /// <param name="preActive">오브젝트를 미리 활성화 할것인가</param>
             /// <returns>PoolableScript로 반환</returns>
-            public PoolableScript GetObject(bool preActive)
+            public PoolableMonoBehaviour GetObject(bool preActive)
             {
-                PoolableScript obj;
+                PoolableMonoBehaviour obj;
                 if (poolableQueue.Count > 0) obj = poolableQueue.Dequeue();
                 else                         obj = CreateNewObject();
 
@@ -77,7 +77,7 @@ namespace LaserCrush.Manager
             /// 오브젝트 Pool로 반납
             /// </summary>
             /// <param name="obj">PoolableScript를 상속받는 객체</param>
-            public void ReturnObject(PoolableScript obj)
+            public void ReturnObject(PoolableMonoBehaviour obj)
             {
                 obj.gameObject.SetActive(false);
                 obj.transform.SetParent(m_DeActivePool);

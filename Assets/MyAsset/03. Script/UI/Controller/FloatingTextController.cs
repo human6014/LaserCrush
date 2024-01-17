@@ -8,7 +8,7 @@ namespace LaserCrush.UI.Controller
 {
     public class FloatingTextController : MonoBehaviour
     {
-        [SerializeField] private PoolableScript m_FloatingText;
+        [SerializeField] private PoolableMonoBehaviour m_FloatingText;
 
         [Range(0,20)]
         [SerializeField] private int m_PoolingCount;
@@ -28,7 +28,7 @@ namespace LaserCrush.UI.Controller
             floatingText.PlayFloatingAnimation(additionalScore);
         }
 
-        private void ReturnObject(PoolableScript poolableScript)
+        private void ReturnObject(PoolableMonoBehaviour poolableScript)
         {
             m_FloatingTextPool.ReturnObject(poolableScript);
         }

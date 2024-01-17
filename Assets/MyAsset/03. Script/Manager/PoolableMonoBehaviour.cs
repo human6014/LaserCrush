@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LaserCrush.Entity
 {
-    public abstract class PoolableScript : MonoBehaviour
+    public abstract class PoolableMonoBehaviour : MonoBehaviour
     {
         public abstract void ReturnObject();
     }

@@ -5782,7 +5782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 220, y: 0}
+  m_AnchoredPosition: {x: 200, y: 0}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1017723273
@@ -7267,6 +7267,7 @@ GameObject:
   - component: {fileID: 1292888497}
   - component: {fileID: 1292888498}
   - component: {fileID: 1292888499}
+  - component: {fileID: 1292888500}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -7295,6 +7296,10 @@ MonoBehaviour:
     m_LaserObject: {fileID: 1001967704578868755, guid: c476756df753be540a7889c2c5ae9fcb, type: 3}
     m_LasersTransform: {fileID: 605760578}
   m_BlockManager:
+    m_BlockParticleController:
+      m_BlockParticle: {fileID: 2420437899241712052, guid: 449ad90b4aa993a4fb34fcfa208f9910, type: 3}
+      parent: {fileID: 1292888494}
+      m_PoolingCount: 10
     m_UIManager: {fileID: 1573006705}
     m_ItemProbabilityData: {fileID: 11400000, guid: bc23c512e901b2942bb7a565664d3a0d, type: 2}
     m_DroppedItemTransform: {fileID: 1611000099}
@@ -7376,6 +7381,19 @@ MonoBehaviour:
   m_GridLinePrefab: {fileID: 5185051364227018575, guid: a6adbf04c1c952248a4c7fac0ad4a561, type: 3}
   m_ParentGameObject: {fileID: 1305678647}
   m_ScreenDim: {fileID: 1410060687}
+--- !u!114 &1292888500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292888492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0edcba5c03054b74fa37893f13fbcfa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BlockParticle: {fileID: 5748974293219715986, guid: 449ad90b4aa993a4fb34fcfa208f9910, type: 3}
 --- !u!1 &1305678647
 GameObject:
   m_ObjectHideFlags: 0
@@ -7799,7 +7817,7 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.40000004, g: 0.9960785, b: 0.9960785, a: 0.7058824}
+      key0: {r: 0.32941177, g: 0.6392157, b: 0.9725491, a: 0.7058824}
       key1: {r: 0.40000004, g: 0.9960785, b: 0.9960785, a: 0.23529412}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -7823,8 +7841,8 @@ LineRenderer:
       atime5: 0
       atime6: 0
       atime7: 0
-      m_Mode: 0
-      m_ColorSpace: -1
+      m_Mode: 2
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 1

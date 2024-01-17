@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace LaserCrush.UI
 {
-    public class FloatingText : PoolableScript
+    public class FloatingText : PoolableMonoBehaviour
     {
         private Animator m_Animator;
         private TextMeshProUGUI m_TextMeshProUGUI;
@@ -16,7 +16,7 @@ namespace LaserCrush.UI
         private static readonly string floatingTriggerName = "Floating";
         private bool m_IsInit;
 
-        public Action<PoolableScript> ReturnAction;
+        public Action<PoolableMonoBehaviour> ReturnAction;
 
         private void Awake()
         {
@@ -24,7 +24,7 @@ namespace LaserCrush.UI
             m_TextMeshProUGUI = GetComponent<TextMeshProUGUI>();
         }
 
-        public void Init(Action<PoolableScript> returnAction)
+        public void Init(Action<PoolableMonoBehaviour> returnAction)
         {
             if (!m_IsInit)
             {

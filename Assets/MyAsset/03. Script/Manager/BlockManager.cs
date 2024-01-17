@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using LaserCrush.Entity;
 using LaserCrush.Data;
 using LaserCrush.Controller;
+using LaserCrush.Entity;
+using LaserCrush.Entity.Item;
 using Random = UnityEngine.Random;
 
 namespace LaserCrush.Manager
@@ -13,6 +14,9 @@ namespace LaserCrush.Manager
     {
         #region Variable
         #region SerializeField
+        [Header("Effect Pooling")]
+        [SerializeField] private BlockParticleController m_BlockParticleController;
+
         [Header("Monobehaviour Reference")]
         [SerializeField] private UIManager m_UIManager;
 
@@ -71,10 +75,12 @@ namespace LaserCrush.Manager
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
-            CalculateGridRowCol();
+            Vector3 blockSize = CalculateGridRowCol();
 
             m_GridLineController.SetGridLineObjects(m_CalculatedInitPos, m_CalculatedOffset, m_MaxRowCount, m_MaxColCount);
             m_GridLineController.OnOffGridLine(false);
+
+            m_BlockParticleController.Init(blockSize);
         }
 
         private Result CheckAvailablePos(Vector3 pos)
@@ -134,7 +140,7 @@ namespace LaserCrush.Manager
             return new Vector3(newPosX, newPosY, 0);
         }
 
-        private void CalculateGridRowCol()
+        private Vector3 CalculateGridRowCol()
         {
             float height = m_LeftWall.localScale.y - 6;
             float width = m_TopWall.localScale.x - 4;
@@ -145,9 +151,12 @@ namespace LaserCrush.Manager
             m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 0.5f - 2);
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
 
-            m_BlockObject.transform.localScale = new Vector3(blockWidth, blockHeight, 1);
+            Vector3 size = new Vector3(blockWidth, blockHeight, 1);
+            m_BlockObject.transform.localScale = size;
 
             m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
+
+            return size;
         }
 
         public bool GenerateBlock()
@@ -198,6 +207,7 @@ namespace LaserCrush.Manager
                 droppedItem.transform.position = block.transform.position;
                 m_ItemManager.AddDroppedItem(droppedItem);
             }
+            m_BlockParticleController.PlayParticle(block.transform.position, block.GetEEntityType());
             m_UIManager.SetScore(block.BlockScore);
             m_Blocks.Remove(block);
         }
