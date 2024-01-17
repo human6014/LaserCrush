@@ -11,47 +11,47 @@ namespace LaserCrush.Entity
     {
         #region Variable
         [SerializeField] private UIManager m_UIManager;
-        [SerializeField] private static int m_InitEnergy = 10000;
-        private static event Action m_MaxEnergyUpdate;
-        private static event Action m_CurrentEnergyUpdate;
 
-        private static int m_MaxEnergy;
-        private static int m_CurrentEnergy;
-        private static int m_HittingFloorLaserNum;
+        private static event Action s_MaxEnergyUpdate;
+        private static event Action s_CurrentEnergyUpdate;
 
-        private static int m_HittingWallLaserNum;
+        private static readonly int s_InitEnergy = 10000;
+        private static int s_MaxEnergy;
+        private static int s_CurrentEnergy;
+        private static int s_HittingFloorLaserNum;
+        private static int s_HittingWallLaserNum;
         #endregion
 
         private static int MaxEnergy
         {
-            get => m_MaxEnergy;
+            get => s_MaxEnergy;
             set
             {
-                m_MaxEnergy = value;
-                m_MaxEnergyUpdate?.Invoke();
+                s_MaxEnergy = value;
+                s_MaxEnergyUpdate?.Invoke();
             }
         }
 
         private static int CurrentEnergy
         {
-            get => m_CurrentEnergy;
+            get => s_CurrentEnergy;
             set
             {
-                m_CurrentEnergy = value;
-                m_CurrentEnergyUpdate?.Invoke();
+                s_CurrentEnergy = value;
+                s_CurrentEnergyUpdate?.Invoke();
             }
         }
 
         private void Awake()
         {
-            m_MaxEnergyUpdate = null;
-            m_CurrentEnergyUpdate = null;
+            s_MaxEnergyUpdate = null;
+            s_CurrentEnergyUpdate = null;
 
-            MaxEnergy = m_InitEnergy;
-            CurrentEnergy = m_InitEnergy;
+            MaxEnergy = s_InitEnergy;
+            CurrentEnergy = s_InitEnergy;
 
-            m_MaxEnergyUpdate += () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
-            m_CurrentEnergyUpdate += () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+            s_MaxEnergyUpdate += () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
+            s_CurrentEnergyUpdate += () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
         }
 
         /// 반환형은 총 사용한 에너지의 양이다.
@@ -63,10 +63,7 @@ namespace LaserCrush.Entity
         /// <returns></returns>
         public static int UseEnergy(int energy)
         {
-            if (energy <= CurrentEnergy)
-            {
-                CurrentEnergy -= energy;
-            }
+            if (energy <= CurrentEnergy) CurrentEnergy -= energy;
             else
             {
                 energy = CurrentEnergy;
@@ -76,28 +73,23 @@ namespace LaserCrush.Entity
         }
 
         public static bool CheckEnergy()
-        {
-            return CurrentEnergy > 0;
-        }
-
+            => CurrentEnergy > 0;
 
         public static void CollideWithFloor()
         {
-            m_HittingFloorLaserNum++;
+            s_HittingFloorLaserNum++;
             //UseEnergy(m_MaxEnergy / 5);
             //만약 바닥에 닿으면 꾸준히 대미지 주고 싶으면 윗 코드 주석하면 됨
         }
 
         public static void DeCollideWithFloor()
-        {
-            m_HittingFloorLaserNum--;
-        }
-
+            => s_HittingFloorLaserNum--;
+        
         public static int ChargeEnergy()
         {
-            CurrentEnergy = m_MaxEnergy;
-            m_HittingFloorLaserNum = 0;
-            m_HittingWallLaserNum = 0;
+            CurrentEnergy = s_MaxEnergy;
+            s_HittingFloorLaserNum = 0;
+            s_HittingWallLaserNum = 0;
             return CurrentEnergy;
         }
 
@@ -121,37 +113,30 @@ namespace LaserCrush.Entity
 
             /*Case 최초 N회까지 충돌은 무료 이후 충돌에 에너지 소모 적용
              */
-            m_HittingWallLaserNum++;
-            if (m_HittingWallLaserNum > 15) { UseEnergy(MaxEnergy / 10); }
+            s_HittingWallLaserNum++;
+            if (s_HittingWallLaserNum > 15) { UseEnergy(MaxEnergy / 10); }
             GameManager.s_ValidHit++;
         }
 
-
         public static void EnergyUpgrade(int additionalEnergy)
-        {
-            MaxEnergy += additionalEnergy;
-        }
+            => MaxEnergy += additionalEnergy;
 
         public static int GetEnergy()
-        {
-            return m_CurrentEnergy;
-        }
-
+            => s_CurrentEnergy;
+        
         public static int GetHittingFloorLaserNum()
-        {
-            return m_HittingFloorLaserNum;
-        }
+            => s_HittingFloorLaserNum;
+        
         private void OnDestroy()
         {
-            m_MaxEnergyUpdate = null;
-            m_CurrentEnergyUpdate = null;
+            s_MaxEnergyUpdate = null;
+            s_CurrentEnergyUpdate = null;
         }
 
         public static void ResetGame()
         {
-            m_MaxEnergy = m_InitEnergy;
-            m_CurrentEnergy = m_InitEnergy;
+            s_MaxEnergy = s_InitEnergy;
+            s_CurrentEnergy = s_InitEnergy;
         }
-
     }
 }

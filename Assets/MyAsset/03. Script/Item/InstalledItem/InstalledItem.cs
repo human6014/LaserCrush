@@ -40,7 +40,9 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     private bool m_IsActivate;
     private bool m_IsAdjustMode;
 
-    
+    private const string m_FixedNoticeAnimationKey = "FixedNotice";
+    private const string m_DestroyAnimationKey = "Destroy";
+
     #endregion
 
     #region Property
@@ -79,9 +81,7 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         RowNumber = rowNumber;
         ColNumber = colNumber;
         foreach (Transform tr in m_EjectionPortsTransform)
-        {
             m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
-        }
 
         m_CircleCollider2D.enabled = true;
         m_UsingCount = m_MaxUsingCount;
@@ -106,28 +106,19 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         m_OnMouseItemAction?.Invoke(false);
     }
 
-    public void PlayFixNoticeAnimation()
-    {
-        m_Animator.SetTrigger("FixedNotice");
-    }
-
     public bool Waiting()
     {
         m_ChargingWait += Time.deltaTime;
         if (m_ChargingWait >= m_ChargingTime)
-        {
             m_IsActivate = true;
-            return true;
-        }
-        return false;
+
+        return m_IsActivate;
     }
 
     public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
     {
-        if (m_IsActivate)
-        {
-            return new List<LaserInfo>();
-        }
+        if (m_IsActivate) return new List<LaserInfo>();
+
         GameManager.s_ValidHit++;
         laser.ChangeLaserState(ELaserStateType.Wait);
         m_IsActivate = true;
@@ -144,14 +135,16 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
     }
 
     public bool IsGetDamageable()
-    {
-        return false;
-    }
+        => false;
+    
 
     public bool GetDamage(int damage)
-    {
-        return false;
-    }
+        => false;
+    
+
+    public EEntityType GetEEntityType()
+        => EEntityType.Prisim;
+    
 
     private void PaintNormalLine()
     {
@@ -185,13 +178,23 @@ public sealed class InstalledItem : MonoBehaviour, ICollisionable
         PaintAdjustLine();
     }
 
-    public EEntityType GetEEntityType()
+    public void PlayFixNoticeAnimation()
+        => m_Animator.SetTrigger(m_FixedNoticeAnimationKey);
+    
+    public void PlayDestroyAnimation()
     {
-        return EEntityType.Prisim;
+        m_CircleCollider2D.enabled = false;
+        m_DeActiveCanvas.SetActive(false);
+
+        for (int i = 0; i < m_EjectionPortsTransform.Length; i++) 
+            m_EjectionPortsTransform[i].gameObject.SetActive(false);
+
+        m_Animator.SetTrigger(m_DestroyAnimationKey);
     }
 
+    public void DestroySelf()
+        => Destroy(gameObject);
+    
     private void OnDestroy()
-    {
-        m_OnMouseItemAction = null;
-    }
+        => m_OnMouseItemAction = null;
 }

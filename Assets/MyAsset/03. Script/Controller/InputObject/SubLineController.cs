@@ -18,6 +18,8 @@ namespace LaserCrush.Controller.InputObject
         [SerializeField] private ClickableObject m_ClickableObject;
         #endregion
 
+        private Vector2 m_InitPos;
+
         private GridLineController m_GridLineController;
         private InstalledItem m_AdjustingInstalledItem;
         private Transform m_DragTransfrom;
@@ -72,6 +74,8 @@ namespace LaserCrush.Controller.InputObject
 
             m_SubLineRenderer.gameObject.SetActive(true);
             m_SubLineRenderer.positionCount = 3;
+
+            m_InitPos = m_DragTransfrom.position;
         }
 
         private void Update()
@@ -112,12 +116,8 @@ namespace LaserCrush.Controller.InputObject
 
             if (Input.GetMouseButtonDown(0) && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (!RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer)) 
-                    return;
-
-                PointDownProcess(ref hit);
-
-                return;
+                if (RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer))
+                    PointDownProcess(ref hit);
             }
 
             if (!m_ClickItem && !m_InstalledItemAdjustMode)
@@ -160,11 +160,8 @@ namespace LaserCrush.Controller.InputObject
 
             if (touch.phase == TouchPhase.Began && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (!RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch)) return;
-
-                PointDownProcess(ref hit);
-
-                return;
+                if (RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch))
+                    PointDownProcess(ref hit);
             }
 
             if (!m_ClickItem && !m_InstalledItemAdjustMode)
@@ -201,15 +198,11 @@ namespace LaserCrush.Controller.InputObject
         }
 
         public void CanInteraction(bool canInteraction)
-        {
-            m_CanInteraction = canInteraction;
-        }
+            => m_CanInteraction = canInteraction;
 
         public void IsInitItemDrag(bool isInitItemDrag)
-        {
-            m_IsInitItemDrag = isInitItemDrag;
-        }
-
+            => m_IsInitItemDrag = isInitItemDrag;
+        
         private void SetInitPos(bool isDragInit)
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
@@ -255,6 +248,14 @@ namespace LaserCrush.Controller.InputObject
             Direction = tempDirection.ClampDirection(10, 170).DiscreteDirection(1);
             m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
 
+            UpdateLineRenderer();
+        }
+
+        public void ResetGame()
+        {
+            m_DragTransfrom.position = m_InitPos;
+            Direction = Vector2.up;
+            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
             UpdateLineRenderer();
         }
 

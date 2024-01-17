@@ -87,9 +87,10 @@ namespace LaserCrush
             Destroy(gameObject);
         }
 
-        public void DestoryGameOver()
+        public void DestoryReset()
         {
             m_IsDestroyed = true;
+            if (m_DroppedItem is not null) Destroy(m_DroppedItem.gameObject);
             Destroy(gameObject);
         }
 
@@ -97,8 +98,9 @@ namespace LaserCrush
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % 5 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDamage");
+            if (m_AttackCount % 7 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDamage");
             m_AttackCount++;
+
             GameManager.s_ValidHit++;
             damage *= GameManager.s_StageNum + 1 / 2;
 
@@ -123,14 +125,17 @@ namespace LaserCrush
         }
 
         public bool IsGetDamageable()
-        {
-            return true;
-        }
-
+            => true;
+        
         public bool Waiting()
-        {
-            return true;
-        }
+            => true;
+        
+        public EEntityType GetEEntityType()
+            => EEntityType.NormalBlock;
+        
+        private int GetHP() 
+            => m_HP / 100;
+        
 
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
@@ -173,15 +178,5 @@ namespace LaserCrush
 
         private void OnDestroy()
             => m_RemoveBlockAction = null;
-
-        private int GetHP()
-        {
-            return m_HP / 100;
-        }
-
-        EEntityType ICollisionable.GetEEntityType()
-        {
-            return EEntityType.NormalBlock;
-        }
     }
 }
