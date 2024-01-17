@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 
-namespace LaserCrush.Entity
+namespace LaserCrush.Entity.Item
 {
     public abstract class DroppedItem : MonoBehaviour
     {

@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Controller.InputObject;
+using LaserCrush.Entity.Item;
 using System;
-using System.Collections;
+
 
 namespace LaserCrush.Manager
 {

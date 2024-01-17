@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a364304553d4fe797810bd5c88f9d8, type: 3}
   m_Name: Samsung Android Provider Settings
   m_EditorClassIdentifier: 
-  m_Logging: 1
-  m_AutomaticPerformanceModeEnabled: 1
-  m_EnableBoostOnStartup: 1
+  m_Logging: 0
+  m_AutomaticPerformanceModeEnabled: 0
+  m_EnableBoostOnStartup: 0
   m_StatsLoggingFrequencyInFrames: 50
   m_IndexerSettings:
-    m_Active: 1
+    m_Active: 0
     m_ThermalActionDelay: 10
     m_PerformanceActionDelay: 4
   m_ScalerSettings:
@@ -315,4 +315,4 @@ MonoBehaviour:
   k_AssetVersion: 2
   m_SamsungProviderLogging: 0
   m_HighSpeedVRR: 0
-  m_AutomaticVRR: 1
+  m_AutomaticVRR: 0

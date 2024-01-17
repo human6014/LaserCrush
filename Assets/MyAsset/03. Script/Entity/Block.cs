@@ -1,11 +1,12 @@
-using LaserCrush.Entity;
+using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using LaserCrush.Data;
-using System;
-using TMPro;
 using LaserCrush.Manager;
-using System.Collections;
+using LaserCrush.Entity;
+using LaserCrush.Entity.Item;
+using TMPro;
 
 namespace LaserCrush
 {
@@ -18,19 +19,21 @@ namespace LaserCrush
         private DroppedItem m_DroppedItem;
         private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
+        private Action<Block, DroppedItem> m_RemoveBlockAction;
 
         private EEntityType m_EntityType;
 
         private int m_HP;
         private int m_AttackCount;
         private bool m_IsDestroyed;
-
-        private Action<Block, DroppedItem> m_RemoveBlockAction;
         #endregion
 
+        #region Property
+        
         public int BlockScore { get; private set; }
         public int RowNumber { get; private set; }
         public int ColNumber { get; private set; }
+        #endregion
 
         private void Awake()
         {
@@ -131,7 +134,7 @@ namespace LaserCrush
             => true;
         
         public EEntityType GetEEntityType()
-            => EEntityType.NormalBlock;
+            => m_EntityType;
         
         private int GetHP() 
             => m_HP / 100;

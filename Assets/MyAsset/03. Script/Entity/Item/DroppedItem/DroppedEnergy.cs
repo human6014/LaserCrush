@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LaserCrush.Entity
+namespace LaserCrush.Entity.Item
 {
     public sealed class DroppedEnergy : DroppedItem
     {
