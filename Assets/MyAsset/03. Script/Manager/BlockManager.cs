@@ -48,8 +48,8 @@ namespace LaserCrush.Manager
 
         //유니티스럽게 바꾸면 좋을듯 인스펙터에서 수정할 수 있게
         //앞에서부터1~6
-        private static List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
-        private static int s_MaxWightSum = 151;
+        private static readonly List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
+        private static readonly int s_MaxWightSum = 151;
         //
 
         private float m_MoveDownElapsedTime;
@@ -264,17 +264,14 @@ namespace LaserCrush.Manager
         public void FeverTime()
         {
             foreach (var block in m_Blocks)
-            {
                 block.GetDamage(int.MaxValue);
-            }
         }
 
         public void ResetGame()
         {
             foreach (var block in m_Blocks)
-            {
-                block.DestoryGameOver();
-            }
+                block.DestoryReset();
+
             m_Blocks.Clear();
         }
 
@@ -285,9 +282,8 @@ namespace LaserCrush.Manager
             for (int i = 0; i < s_Probabilitytable.Count; i++)
             {
                 if (randomSize < s_Probabilitytable[i])
-                {
                     return i + 1;
-                }
+
                 randomSize -= s_Probabilitytable[i];
             }
             return s_Probabilitytable.Count - 1;

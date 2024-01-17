@@ -83,6 +83,7 @@ namespace LaserCrush.Manager
             m_GameSettingManager.Init();
             m_AudioManager.Init();
         }
+
         public void Init()
         {
             m_IsInit = true;
@@ -251,6 +252,7 @@ namespace LaserCrush.Manager
             m_LaserManager.ResetGame();
             m_ItemManager.ResetGame();
             m_BlockManager.ResetGame();
+            m_SubLineController.ResetGame();
             Energy.ResetGame();
 
             m_IsGameOver = false;
