@@ -25,5 +25,8 @@ namespace LaserCrush.UI.Receiver
 
             m_Slider.onValueChanged.AddListener((float value) => m_SliderValueChanged?.Invoke(value, m_SoundType));
         }
+
+        private void OnDestroy()
+           => m_SliderValueChanged = null;
     }
 }

@@ -1,7 +1,8 @@
-using LaserCrush.UI.Receiver;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LaserCrush.Manager;
+using LaserCrush.UI.Receiver;
 
 namespace LaserCrush.UI.Controller
 {
@@ -26,8 +27,6 @@ namespace LaserCrush.UI.Controller
         }
 
         private void SoundChange(float value, SoundType soundType)
-        {
-
-        }
+            => AudioManager.AudioManagerInstance.SetVolume(value,soundType);
     }
 }
