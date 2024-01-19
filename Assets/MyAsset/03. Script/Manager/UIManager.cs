@@ -108,7 +108,7 @@ namespace LaserCrush.Manager
         public void SetScore(int additionalScore)
         {
             m_Score += additionalScore;
-            m_FloatingTextController.PlayFloatingText(additionalScore / 100);
+            m_FloatingTextController.PlayFloatingText(m_Score.ToString().Length, additionalScore / 100);
             m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
         }
 

@@ -1,9 +1,10 @@
-using LaserCrush.Entity;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
 using LaserCrush.Extension;
 using LaserCrush.Manager;
+using TMPro;
 
 public struct LaserInfo
 {
@@ -23,13 +24,20 @@ namespace LaserCrush.Entity.Item
         #region Variable
         [SerializeField] private Transform[] m_EjectionPortsTransform;
         [SerializeField] private LineRenderer[] m_LineRenderers;
-        [SerializeField] private GameObject m_DeActiveCanvas;
+        [SerializeField] private GameObject[] m_SubRotationImage;
+        [SerializeField] private TextMeshProUGUI m_CountText;
 
         private Animator m_Animator;
         private CircleCollider2D m_CircleCollider2D;
-
-        private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
         private Action<bool> m_OnMouseItemAction;
+        private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+
+        private Vector2 m_TextInitPos;
+        private Color m_TextInitColor;
+        private Color m_TextEndColor;
+
+        private const string m_FixedNoticeAnimationKey = "FixedNotice";
+        private const string m_DestroyAnimationKey = "Destroy";
 
         private const int m_MaxUsingCount = 3;
         private const float m_ChargingTime = 0.5f;
@@ -40,10 +48,6 @@ namespace LaserCrush.Entity.Item
 
         private bool m_IsActivate;
         private bool m_IsAdjustMode;
-
-        private const string m_FixedNoticeAnimationKey = "FixedNotice";
-        private const string m_DestroyAnimationKey = "Destroy";
-
         #endregion
 
         #region Property
@@ -53,7 +57,9 @@ namespace LaserCrush.Entity.Item
             set
             {
                 m_IsAdjustMode = value;
-                m_DeActiveCanvas.SetActive(value);
+
+                for (int i = 0; i < m_SubRotationImage.Length; i++) 
+                    m_SubRotationImage[i].SetActive(value);
 
                 if (m_IsAdjustMode) PaintAdjustLine();
                 else PaintNormalLine();
@@ -69,6 +75,11 @@ namespace LaserCrush.Entity.Item
             m_Animator = GetComponent<Animator>();
             m_CircleCollider2D = GetComponent<CircleCollider2D>();
             m_CircleCollider2D.enabled = false;
+
+            m_TextInitColor = m_CountText.color;
+            m_TextEndColor = m_CountText.color;
+            m_TextEndColor.a = 0;
+
             IsAdjustMode = true;
         }
 
@@ -84,6 +95,7 @@ namespace LaserCrush.Entity.Item
             foreach (Transform tr in m_EjectionPortsTransform)
                 m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
 
+            m_TextInitPos = (Vector2)m_CountText.rectTransform.position + new Vector2(0, 7.5f);
             m_CircleCollider2D.enabled = true;
             m_UsingCount = m_MaxUsingCount;
             IsAdjustMode = false;
@@ -185,12 +197,48 @@ namespace LaserCrush.Entity.Item
         public void PlayDestroyAnimation()
         {
             m_CircleCollider2D.enabled = false;
-            m_DeActiveCanvas.SetActive(false);
+
+            for(int i = 0; i < m_SubRotationImage.Length;i++)
+                m_SubRotationImage[i].SetActive(false);
 
             for (int i = 0; i < m_EjectionPortsTransform.Length; i++)
                 m_EjectionPortsTransform[i].gameObject.SetActive(false);
 
             m_Animator.SetTrigger(m_DestroyAnimationKey);
+        }
+
+        public void PlayUsingCountDisplay()
+        {
+            StartCoroutine(UsingCountCoroutine(2));
+        }
+
+        private IEnumerator UsingCountCoroutine(float time)
+        {
+            if (m_UsingCount == 3) m_CountText.fontSize = 2.25f;
+            if (m_UsingCount == 2) m_CountText.fontSize = 2.75f;
+            else m_CountText.fontSize = 3.25f;
+
+            m_CountText.text = m_UsingCount.ToString();
+            m_CountText.gameObject.SetActive(true);
+            m_CountText.rectTransform.SetPositionAndRotation(m_TextInitPos, Quaternion.LookRotation(Vector3.forward, Vector3.up));
+            m_CountText.color = m_TextInitColor;
+
+            Vector2 endPos = m_TextInitPos + new Vector2(0, 7.5f);
+
+            float elapsedTime = 0;
+            float t;
+            while (elapsedTime <= time)
+            {
+                elapsedTime += Time.deltaTime;
+                t = elapsedTime / time;
+
+                m_CountText.color = Color.Lerp(m_TextInitColor, m_TextEndColor, t);
+                m_CountText.rectTransform.position = Vector2.Lerp(m_TextInitPos, endPos, t);
+
+                yield return null;
+            }
+
+            m_CountText.gameObject.SetActive(false);
         }
 
         public void DestroySelf()
