@@ -92,6 +92,7 @@ namespace LaserCrush.Manager
             {
                 if (m_InstalledItem[i].IsOverloaded())
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
+                else m_InstalledItem[i].PlayUsingCountDisplay();
             }
             RemoveBufferFlush(false);
             return true;
