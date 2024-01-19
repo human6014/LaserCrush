@@ -1,16 +1,18 @@
-using LaserCrush.Data;
 using UnityEngine;
+using UnityEngine.Audio;
+using LaserCrush.Data;
+using LaserCrush.UI.Controller;
 
 namespace LaserCrush.Manager
 {
     public class AudioManager : MonoBehaviour
     {
         [SerializeField] private AudioData m_AudioData;
+        [SerializeField] private AudioMixer m_AudioMixer;
         [SerializeField] private AudioSource m_BGMAudioSource;
         [SerializeField] private AudioSource m_SEAudioSource;
 
         private bool m_IsAutoBGMMode;
-        private bool m_IsInit;
 
         private static AudioManager m_AudioManager;
 
@@ -28,6 +30,12 @@ namespace LaserCrush.Manager
                 m_AudioData.DataToDictionary();
             }
             else Destroy(gameObject);
+        }
+
+        public void SetVolume(float value, SoundType soundType)
+        {
+            float setValue = value == -40f ? -80 : value;
+            m_AudioMixer.SetFloat(soundType.ToString(), setValue);
         }
 
         #region BGM
@@ -55,7 +63,6 @@ namespace LaserCrush.Manager
             }
         }
         #endregion
-
 
         public void PlayNormalSE(string audioName)
         {

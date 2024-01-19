@@ -31,12 +31,13 @@ namespace LaserCrush.Manager
         [SerializeField] private ButtonReceiver m_PatronageButtonReceiver;
 
         [Header("GameOverCanvas")]
+        [SerializeField] private PanelDisplayer m_DefeatPanelDisplayer;
         [SerializeField] private TextDisplayer m_DefeatScoreTextDisplayer;
         [SerializeField] private ButtonReceiver m_DefeatRestartButtonReceiver;
 
         [Header("SettingCanvas")]
-        [SerializeField] private GameObject m_SettingPanel;
-        [SerializeField] private GameObject m_PatronagePanel;
+        [SerializeField] private PanelDisplayer m_SettingPanelDisplayer;
+        [SerializeField] private PanelDisplayer m_PatronagePanelDisplayer;
 
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
@@ -87,10 +88,20 @@ namespace LaserCrush.Manager
             m_ScoreTextDisplayer.Init();
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
+
+            m_DefeatPanelDisplayer.Init(GameOverCanvasOff);
+            m_SettingPanelDisplayer.Init(SettingCanvasOff);
+            m_PatronagePanelDisplayer.Init(SettingCanvasOff);
+
             m_FloatingTextController.Init();
             m_SettingPanelController.Init();
             m_PatronageController.Init();
 
+            AssignAction();
+        }
+
+        private void AssignAction()
+        {
             m_GameManager.GameOverAction += () => OnOffGameOverCanvas(true);
             m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
             m_PatronageButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(true);
@@ -134,24 +145,52 @@ namespace LaserCrush.Manager
         private void OnOffSettingCanvas(bool isOnOff)
         {
             if (m_SettingCanvas.activeSelf && isOnOff) return;
-            IsOnOffSettingCanvas = isOnOff;
-            m_SettingCanvas.SetActive(isOnOff);
-            m_SettingPanel.SetActive(isOnOff);
+
+            if (isOnOff)
+            {
+                IsOnOffSettingCanvas = true;
+                m_SettingCanvas.SetActive(true);
+                m_SettingPanelDisplayer.PlayFadeOnAnimation();
+            }
+            else m_SettingPanelDisplayer.PlayFadeOffAnimation();
         }
 
         private void OnOffPatronageCanvas(bool isOnOff)
         {
             if (m_SettingCanvas.activeSelf && isOnOff) return;
-            IsOnOffSettingCanvas = isOnOff;
-            m_SettingCanvas.SetActive(isOnOff);
-            m_PatronagePanel.SetActive(isOnOff);
+
+            if (isOnOff)
+            {
+                IsOnOffSettingCanvas = true;
+                m_SettingCanvas.SetActive(true);
+                m_PatronagePanelDisplayer.PlayFadeOnAnimation();
+            }
+            else m_PatronagePanelDisplayer.PlayFadeOffAnimation();
         }
 
         private void OnOffGameOverCanvas(bool isOnOff)
         {
             SetGameOverScore();
-            IsOnOffGameOverCanvas = isOnOff;
-            m_GameOverCanvas.SetActive(isOnOff);
+
+            if (isOnOff)
+            {
+                IsOnOffGameOverCanvas = true;
+                m_GameOverCanvas.SetActive(true);
+                m_DefeatPanelDisplayer.PlayFadeOnAnimation();
+            }
+            else m_DefeatPanelDisplayer.PlayFadeOffAnimation();
+        }
+
+        private void SettingCanvasOff()
+        {
+            IsOnOffSettingCanvas = false;
+            m_SettingCanvas.SetActive(false);
+        }
+
+        private void GameOverCanvasOff()
+        {
+            IsOnOffGameOverCanvas = false;
+            m_GameOverCanvas.SetActive(false);
         }
 
         private void ResetGame()
