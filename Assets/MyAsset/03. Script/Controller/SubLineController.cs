@@ -26,6 +26,8 @@ namespace LaserCrush.Controller.InputObject
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
 
+        private readonly float m_SecondSubLineLength = 8.5f;
+
         private bool m_IsInit;
 
         private bool m_IsInitPosDrag;
@@ -219,6 +221,9 @@ namespace LaserCrush.Controller.InputObject
             UpdateLineRenderer();
         }
 
+        /// <summary>
+        /// LineRenderer 위치 찾고 그려주기
+        /// </summary>
         public void UpdateLineRenderer()
         {
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
@@ -226,9 +231,9 @@ namespace LaserCrush.Controller.InputObject
             m_SubLineRenderer.SetPosition(1, hit.point);
 
             Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
-            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, 8.5f, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, m_SecondSubLineLength, RayManager.s_LaserHitableLayer);
 
-            Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * 8.5f : hit2.point;
+            Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * m_SecondSubLineLength : hit2.point;
             m_SubLineRenderer.SetPosition(2, reflectPos);
         }
 

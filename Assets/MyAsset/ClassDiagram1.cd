@@ -1,0 +1,601 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="LaserCrush.Controller.BlockParticleController" Collapsed="true">
+    <Position X="14" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAJAAAAAAAAgAAAAAAAACAACEAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\BlockParticleController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Controller.GridLineController" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAQAAAAAAAEACAAAAAAAAAAAAEAAAAAQACAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\GridLineController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Controller.ClickableObject" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAABAAgAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\InputObject\ClickableObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LaserCrush.Controller.InputObject.DragTransfromObject" Collapsed="true">
+    <Position X="8" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABCAAAAAAAAAAAAAAAAAAAAAAAAgQAIAAAAAACAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\InputObject\DragTransfromObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Controller.InputObject.SubLineController" Collapsed="true">
+    <Position X="6.75" Y="4.75" Width="1.5" />
+    <AssociationLine Name="m_ClickableObject" Type="LaserCrush.Controller.ClickableObject" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.438" Y="5.441" />
+        <Point X="7.438" Y="5.816" />
+        <Point X="6.75" Y="5.816" />
+        <Point X="6.75" Y="6.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_DragTransfromObject" Type="LaserCrush.Controller.InputObject.DragTransfromObject" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.438" Y="5.441" />
+        <Point X="7.438" Y="5.816" />
+        <Point X="8.75" Y="5.816" />
+        <Point X="8.75" Y="6.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>FIyRAAAABAAACCEhAKQAAAEEgCgABGAQAACCCABAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\SubLineController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_ClickableObject" />
+      <Field Name="m_DragTransfromObject" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Controller.InputObject.ToolbarController" Collapsed="true">
+    <Position X="9" Y="4.75" Width="1.5" />
+    <AssociationLine Name="m_CurrentItem" Type="LaserCrush.Entity.AcquiredItemUI" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.438" Y="4.75" />
+        <Point X="9.438" Y="3.566" />
+        <Point X="8" Y="3.566" />
+        <Point X="8" Y="3.191" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AASBBAIAAAAJACiABIQAAACEQwAABAAAAEQCAEAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Controller\ToolbarController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_GridLineController" />
+      <Field Name="m_SubLineController" />
+      <Field Name="m_CurrentItem" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Data.AudioData" Collapsed="true">
+    <Position X="2.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAQAAAIIAAAAAABAAAAIgBAQkAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Data\AudioData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Data.BlockData" Collapsed="true">
+    <Position X="14.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAABAAAAAAAAAAAIAgEAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Data\BlockData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Data.ItemProbabilityData" Collapsed="true">
+    <Position X="14" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACBAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Data\ItemProbabilityData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Data.LaserData" Collapsed="true">
+    <Position X="2" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgEAAACAAAAAAAAAAAACAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Data\LaserData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Block" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AICBAQAIACgIAhAABAAEIAQgEABAAAAAQIgiRAAAAEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Block.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_BlockData" />
+      <Field Name="m_DroppedItem" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LaserCrush.Entity.Particle.BlockParticle" Collapsed="true">
+    <Position X="17.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAgABAAAAgAAAAAAAAAgAAAAAAEI=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\BlockParticle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.Energy" Collapsed="true">
+    <Position X="17.75" Y="8.75" Width="1.5" />
+    <AssociationLine Name="m_UIManager" Type="LaserCrush.Manager.UIManager" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.75" Y="9.125" />
+        <Point X="16.81" Y="9.125" />
+        <Point X="16.81" Y="0.813" />
+        <Point X="20.75" Y="0.813" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAABgAQARAAQEAGQAQACgAAAIAAAAAEEBAAEEAwAAEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Energy.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_UIManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Entity.Laser" Collapsed="true">
+    <Position X="4.25" Y="7.5" Width="1.5" />
+    <AssociationLine Name="m_Target" Type="LaserCrush.Entity.ICollisionable" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="7.75" />
+        <Point X="8.25" Y="7.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAADAAIAAIBBXABAAIEAACAAGAQAicEBQAACQABAAEI=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Laser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_LaserData" />
+      <Field Name="m_Target" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Entity.Wall" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAgRAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Wall.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.664" />
+  </Class>
+  <Class Name="LaserCrush.Entity.PoolableMonoBehaviour" Collapsed="true">
+    <Position X="18.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\PoolableMonoBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.AcquiredItemUI" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAABQAAAAAAIAEABAAAABCAEAAAAAAAAAAAAAAABEAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\AcquiredItemUI.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Floor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAgAAAAAAAAAAAAAAAAAAAAgAAAgRAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Floor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FPSDisplayer" Collapsed="true">
+    <Position X="21.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAABAAAAAAAgAAAAAAAEABAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Displayer\FPSDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.Item.DroppedEnergy" Collapsed="true">
+    <Position X="9.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Item\DroppedItem\DroppedEnergy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.Item.DroppedItem" Collapsed="true">
+    <Position X="10.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAhAAAAAAAAABAAAAAAAAAAABABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Item\DroppedItem\DroppedItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.Item.DroppedPrism" Collapsed="true">
+    <Position X="11.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Item\DroppedItem\DroppedPrism.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Entity.Item.InstalledItem" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgRAQGKQAkYAQACAAAAANEAEKAAAAEIAACi1BQAEkA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Item\InstalledItem\InstalledItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LaserCrush.Extension.ExtensionVector2" Collapsed="true">
+    <Position X="23.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Extension\ExtensionVector2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Manager.AudioManager" Collapsed="true">
+    <Position X="2.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AiQAQAAAAAEAAAAwAAEAAAABAgAAAACAAAECAgACIAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\AudioManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_AudioData" />
+      <Field Name="m_AudioManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Manager.BlockManager" Collapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
+    <AssociationLine Name="m_BlockParticleController" Type="LaserCrush.Controller.BlockParticleController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14" Y="2.875" />
+        <Point X="14.25" Y="2.875" />
+        <Point X="14.25" Y="2.25" />
+        <Point X="14.062" Y="2.25" />
+        <Point X="14.062" Y="2.062" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_ItemProbabilityData" Type="LaserCrush.Data.ItemProbabilityData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14" Y="2.875" />
+        <Point X="14.812" Y="2.875" />
+        <Point X="14.812" Y="3.5" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.097" Y="0.043" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="m_GridLineController" Type="LaserCrush.Controller.GridLineController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="3.062" />
+        <Point X="13.5" Y="3.437" />
+        <Point X="12.5" Y="3.437" />
+        <Point X="12.5" Y="4.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_Block" Type="LaserCrush.Block" FixedToPoint="true">
+      <Path>
+        <Point X="13.625" Y="3.062" />
+        <Point X="13.625" Y="8.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ABgAQAUxAQYAECEQEIAoCgAUIIgAQFAgEgAChACgAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\BlockManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_BlockParticleController" />
+      <Field Name="m_ItemProbabilityData" />
+      <Field Name="m_ItemManager" />
+      <Field Name="m_GridLineController" />
+      <Field Name="m_Block" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Manager.GameManager" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.75" />
+    <NestedTypes>
+      <Enum Name="LaserCrush.Manager.GameManager.EGameStateType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\MyAsset\03. Script\Manager\GameManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <AssociationLine Name="m_AudioManager" Type="LaserCrush.Manager.AudioManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.25" Y="0.687" />
+        <Point X="2.728" Y="0.687" />
+        <Point X="2.728" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_GameSettingManager" Type="LaserCrush.Manager.GameSettingManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.25" Y="0.687" />
+        <Point X="1.25" Y="0.687" />
+        <Point X="1.25" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_LaserManager" Type="LaserCrush.Manager.LaserManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.25" Y="0.687" />
+        <Point X="5.062" Y="0.687" />
+        <Point X="5.062" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_BlockManager" Type="LaserCrush.Manager.BlockManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.836" Y="1.191" />
+        <Point X="10.836" Y="1.613" />
+        <Point X="13.25" Y="1.613" />
+        <Point X="13.25" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_ItemManager" Type="LaserCrush.Manager.ItemManager" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.836" Y="1.191" />
+        <Point X="10.836" Y="1.613" />
+        <Point X="9.75" Y="1.613" />
+        <Point X="9.75" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_SubLineController" Type="LaserCrush.Controller.InputObject.SubLineController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.25" Y="0.985" />
+        <Point X="6.938" Y="0.985" />
+        <Point X="6.938" Y="4.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_ToolbarController" Type="LaserCrush.Controller.InputObject.ToolbarController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.836" Y="1.191" />
+        <Point X="10.836" Y="5.096" />
+        <Point X="10.5" Y="5.096" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AEQAICAAQCABhDMAAAQAKiICEAgAAEYgAoACCgBQCEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\GameManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_AudioManager" />
+      <Field Name="m_ObjectPoolManager" />
+      <Field Name="m_GameSettingManager" />
+      <Field Name="m_LaserManager" />
+      <Field Name="m_BlockManager" />
+      <Field Name="m_ItemManager" />
+      <Field Name="m_SubLineController" />
+      <Field Name="m_ToolbarController" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Manager.GameSettingManager" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAgAAAAAAAAAAAAIACAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\GameSettingManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Manager.ItemManager" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASBAAAIRAAAACAmAAAAACAAAAAACAAAAIARCAEAQkAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\ItemManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_AcquiredItemUI" />
+      <Field Name="m_ToolbarController" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Manager.LaserManager" Collapsed="true">
+    <Position X="4.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAAAGAABAAIdCCBAAAAAQAACAAAAQAAACQAAAgCE=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\LaserManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_InitLazer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.Manager.ObjectPoolManager" Collapsed="true">
+    <Position X="14.5" Y="4.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="LaserCrush.Manager.ObjectPoolManager.PoolingObject">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\MyAsset\03. Script\Manager\ObjectPoolManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\ObjectPoolManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Manager.RayManager" Collapsed="true">
+    <Position X="23.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAARBAACAAAIAIAAABAABAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\RayManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.Manager.UIManager" Collapsed="true">
+    <Position X="20.75" Y="0.5" Width="1.75" />
+    <AssociationLine Name="m_EnergySliderDisplayer" Type="LaserCrush.UI.Controller.ImageSlideDisplayer" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.5" Y="0.688" />
+        <Point X="25.36" Y="0.688" />
+        <Point X="25.36" Y="2.469" />
+        <Point X="25.75" Y="2.469" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_DefeatPanelDisplayer" Type="LaserCrush.UI.Displayer.PanelDisplayer" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.5" Y="0.813" />
+        <Point X="25.375" Y="0.813" />
+        <Point X="25.375" Y="4.346" />
+        <Point X="25.75" Y="4.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_DefeatScoreTextDisplayer" Type="LaserCrush.UI.Displayer.TextDisplayer" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.46" Y="0.563" />
+        <Point X="25.405" Y="0.563" />
+        <Point X="25.405" Y="1.625" />
+        <Point X="25.75" Y="1.625" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_DefeatRestartButtonReceiver" Type="LaserCrush.UI.Receiver.ButtonReceiver" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="22.5" Y="0.938" />
+        <Point X="25.375" Y="0.938" />
+        <Point X="25.375" Y="5.346" />
+        <Point X="25.75" Y="5.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_TutorialPanelController" Type="LaserCrush.UI.Controller.TutorialPanelController" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="21.545" Y="1.191" />
+        <Point X="21.545" Y="2.109" />
+        <Point X="22.5" Y="2.109" />
+        <Point X="22.5" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_SettingPanelController" Type="LaserCrush.UI.Controller.SettingPanelController" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="21.545" Y="1.191" />
+        <Point X="21.545" Y="2.076" />
+        <Point X="24.25" Y="2.076" />
+        <Point X="24.25" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_PatronageController" Type="LaserCrush.UI.Controller.PatronageController" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="21.545" Y="1.191" />
+        <Point X="21.545" Y="2.125" />
+        <Point X="20.75" Y="2.125" />
+        <Point X="20.75" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_FloatingTextController" Type="LaserCrush.UI.Controller.FloatingTextController" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="21.545" Y="1.191" />
+        <Point X="21.545" Y="2.143" />
+        <Point X="19.281" Y="2.143" />
+        <Point X="19.281" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EdIMAAgQSKEABIEBgAIAACAAAQCADBgICAhEACIoAEY=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Manager\UIManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_EnergySliderDisplayer" />
+      <Field Name="m_DefeatPanelDisplayer" />
+      <Field Name="m_DefeatScoreTextDisplayer" />
+      <Field Name="m_DefeatRestartButtonReceiver" />
+      <Field Name="m_TutorialPanelController" />
+      <Field Name="m_SettingPanelController" />
+      <Field Name="m_PatronageController" />
+      <Field Name="m_FloatingTextController" />
+      <Field Name="m_GameManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.UI.Controller.FloatingTextController" Collapsed="true">
+    <Position X="18.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAEACAAAAAAAAAAAAAAAAACIAAACAACACAAAAI=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Controller\FloatingTextController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_FloatingText" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.UI.Controller.PatronageController" Collapsed="true">
+    <Position X="20" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Controller\PatronageController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.Controller.SettingPanelController" Collapsed="true">
+    <Position X="23.5" Y="3.25" Width="1.5" />
+    <AssociationLine Name="m_SettingBgmSliderReceiver" Type="LaserCrush.UI.Receiver.SliderReceiver" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="24.25" Y="3.941" />
+        <Point X="24.25" Y="6.346" />
+        <Point X="25.75" Y="6.346" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAIAAAAgAAAAAAAAAAICAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Controller\SettingPanelController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_SettingBgmSliderReceiver" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LaserCrush.UI.Controller.TutorialPanelController" Collapsed="true">
+    <Position X="21.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIABAAAAAAAAgAAAAAAAAAQAAAAQIAAAAQACACAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Controller\TutorialPanelController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.Controller.ImageSlideDisplayer" Collapsed="true">
+    <Position X="25.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAIAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Displayer\ImageSlideDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.Displayer.PanelDisplayer" Collapsed="true">
+    <Position X="25.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIBAQAAAAABAAgIAAAAAABAAAAAAAAAAAACACAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Displayer\PanelDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.Displayer.TextDisplayer" Collapsed="true">
+    <Position X="25.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAACAAAAACA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Displayer\TextDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.EditorOnly.UIChanger" Collapsed="true">
+    <Position X="21.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAAAAAAgEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\EditorOnly\UIChanger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.FloatingText" Collapsed="true">
+    <Position X="19.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAQAAAAAAACAAAAAAAAAAAAAgAgAAAAACAAAAAEI=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\FloatingText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LaserCrush.UI.Receiver.ButtonReceiver" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAgAAAAAAABCAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Receiver\ButtonReceiver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LaserCrush.UI.Receiver.SliderReceiver" Collapsed="true">
+    <Position X="25.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAQAACAEAACAAAAAAEA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\UI\Receiver\SliderReceiver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="LaserCrush.Entity.ICollisionable" Collapsed="true">
+    <Position X="8.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAgRAAAAAA=</HashCode>
+      <FileName>Assets\MyAsset\03. Script\Entity\Interface\ICollisionable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>
