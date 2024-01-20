@@ -24,7 +24,7 @@ namespace LaserCrush.Manager
         [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
         [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
-        [SerializeField] private GameObject m_BlockObject;
+        [SerializeField] private Block m_Block;
 
         [Header("Block Grid Instancing")]
         [SerializeField] private GridLineController m_GridLineController;
@@ -152,7 +152,7 @@ namespace LaserCrush.Manager
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
-            m_BlockObject.transform.localScale = size;
+            m_Block.transform.localScale = size;
 
             m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
 
@@ -171,7 +171,7 @@ namespace LaserCrush.Manager
                 HashSet<int> index = GenerateBlockOffset();
                 foreach (int i in index)
                 {
-                    obj = m_InstantiatePosFunc?.Invoke(m_BlockObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
+                    obj = m_InstantiatePosFunc?.Invoke(m_Block.gameObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
                     obj.transform.SetParent(m_BlockTransform);
 
                     block = obj.GetComponent<Block>();

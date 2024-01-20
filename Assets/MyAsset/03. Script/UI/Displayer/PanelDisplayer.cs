@@ -21,20 +21,17 @@ namespace LaserCrush.UI.Displayer
 
         public void PlayFadeOnAnimation()
         {
-            Debug.Log("PlayFadeOnAnimation");
             gameObject.SetActive(true);
             m_Animator.SetTrigger(m_FadeOnAnimationName);
         }
 
         public void PlayFadeOffAnimation()
         {
-            Debug.Log("PlayFadeOffAnimation");
             m_Animator.SetTrigger(m_FadeOffAnimationName);
         }
 
         public void FadeOffComp()
         {
-            Debug.Log("FadeOffComp");
             m_FadeOffAction?.Invoke();
             gameObject.SetActive(false);
         }

@@ -7,7 +7,6 @@ namespace LaserCrush.UI.Controller
 {
     public class PatronageController : MonoBehaviour
     {
-        [SerializeField] private ButtonReceiver m_PatronageButtonReceiver;
 
         public void Init()
         {
