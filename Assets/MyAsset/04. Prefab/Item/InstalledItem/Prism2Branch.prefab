@@ -484,6 +484,7 @@ MonoBehaviour:
   - {fileID: 2075582007536692526}
   - {fileID: 4102400797143359177}
   m_CountText: {fileID: 4883146848132792451}
+  m_ItemType: 1
 --- !u!1 &7125055214427198481
 GameObject:
   m_ObjectHideFlags: 0

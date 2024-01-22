@@ -21,8 +21,6 @@ namespace LaserCrush.UI.Receiver
         private void Awake()
         {
             m_Slider = GetComponent<Slider>();
-            if (m_Slider is null) Debug.LogError("m_Slider is null");
-
             m_Slider.onValueChanged.AddListener((float value) => m_SliderValueChanged?.Invoke(value, m_SoundType));
         }
 

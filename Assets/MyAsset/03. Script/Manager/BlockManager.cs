@@ -47,13 +47,13 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
 
-        private event Func<GameObject, GameObject> m_InstantiateFunc;
-        private event Func<GameObject, Vector3, GameObject> m_InstantiatePosFunc;
+        private event Func<GameObject, Vector3, Transform, GameObject> m_InstantiatePosParentFunc;
 
         //유니티스럽게 바꾸면 좋을듯 인스펙터에서 수정할 수 있게
         //앞에서부터1~6
-        private static readonly List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
-        private static readonly int s_MaxWightSum = 151;
+        //추후에...
+        private readonly List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
+        private readonly int s_MaxWightSum = 151;
         //
 
         private float m_MoveDownElapsedTime;
@@ -64,29 +64,29 @@ namespace LaserCrush.Manager
         private Vector2 m_MoveDownVector;
         #endregion
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc,
-                         Func<GameObject, Vector3, GameObject> instantiatePosFunc,
+        public void Init(Func<GameObject, Vector3, Transform, GameObject> instantiatePosParentFunc,
                          ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
-            m_InstantiateFunc = instantiateFunc;
-            m_InstantiatePosFunc = instantiatePosFunc;
-
+            m_InstantiatePosParentFunc = instantiatePosParentFunc;
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
-            Vector3 blockSize = CalculateGridRowCol();
+            Vector3 blockSize = CalculateGridRowColAndGetSize();
 
             m_GridLineController.SetGridLineObjects(m_CalculatedInitPos, m_CalculatedOffset, m_MaxRowCount, m_MaxColCount);
             m_GridLineController.OnOffGridLine(false);
 
             m_BlockParticleController.Init(blockSize);
+
+            LoadBlocks();
         }
 
+        #region Grid Related
         private Result CheckAvailablePos(Vector3 pos)
         {
             if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0);
-            Vector2 newPos = GetItemGridPos(pos, out int rowNumber, out int colNumber);
+            Vector2 newPos = GetItemGridNumberAndPos(pos, out int rowNumber, out int colNumber);
 
             Result result = new Result(
                     isAvailable: false,
@@ -109,13 +109,12 @@ namespace LaserCrush.Manager
 
         public bool IsGameOver()
         {
-            int MaxRow = -1;
+            int maxRow = -1;
             foreach (Block block in m_Blocks)
             {
-                if (block.RowNumber > MaxRow) MaxRow = block.RowNumber;
+                maxRow = Mathf.Max(maxRow, block.RowNumber);
+                if (maxRow >= m_MaxRowCount - 1) return true;
             }
-
-            if (MaxRow == m_MaxRowCount - 1) return true;
             return false;
         }
 
@@ -126,7 +125,7 @@ namespace LaserCrush.Manager
                 pos.y <= m_TopWall.position.y;
         }
 
-        private Vector3 GetItemGridPos(Vector3 pos, out int rowNumber, out int colNumber)
+        private Vector3 GetItemGridNumberAndPos(Vector3 pos, out int rowNumber, out int colNumber)
         {
             float differX = pos.x - m_LeftWall.position.x;
             float differY = m_TopWall.position.y - pos.y;
@@ -134,13 +133,20 @@ namespace LaserCrush.Manager
             rowNumber = (int)(differY / m_CalculatedOffset.y);
             colNumber = (int)(differX / m_CalculatedOffset.x);
 
+            Vector2 gridPos = GetGridPos(rowNumber, colNumber);
+
+            return new Vector3(gridPos.x, gridPos.y, 0);
+        }
+
+        private Vector2 GetGridPos(int rowNumber, int colNumber)
+        {
             float newPosX = m_CalculatedInitPos.x + m_CalculatedOffset.x * colNumber;
             float newPosY = m_CalculatedInitPos.y - m_CalculatedOffset.y * rowNumber;
 
-            return new Vector3(newPosX, newPosY, 0);
+            return new Vector2(newPosX, newPosY);
         }
 
-        private Vector3 CalculateGridRowCol()
+        private Vector3 CalculateGridRowColAndGetSize()
         {
             float height = m_LeftWall.localScale.y - 6;
             float width = m_TopWall.localScale.x - 4;
@@ -158,35 +164,20 @@ namespace LaserCrush.Manager
 
             return size;
         }
+        #endregion
 
+        #region Block Generate
         public bool GenerateBlock()
         {
             if (m_GenerateElapsedTime == 0)
             {
-                GameObject obj;
-                GameObject itemObject;
-                DroppedItem item;
-                Block block;
-
                 HashSet<int> index = GenerateBlockOffset();
                 foreach (int i in index)
                 {
-                    obj = m_InstantiatePosFunc?.Invoke(m_Block.gameObject, new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0));
-                    obj.transform.SetParent(m_BlockTransform);
+                    Vector3 pos = new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0);
+                    int itemIndex = m_ItemProbabilityData.GetItemIndex();
 
-                    block = obj.GetComponent<Block>();
-
-                    item = null;
-                    if (m_ItemProbabilityData.TryGetItemObject(out GameObject itemPrefab))
-                    {
-                        itemObject = m_InstantiateFunc?.Invoke(itemPrefab);
-                        itemObject.SetActive(false);
-                        itemObject.transform.SetParent(m_DroppedItemTransform);
-                        item = itemObject.GetComponent<DroppedItem>();
-                    }
-
-                    block.Init(GenerateBlockHP(), 0, i, m_GenerateTime, GenerateEntityType(), item, RemoveBlock);
-                    m_Blocks.Add(block);
+                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos);
                 }
             }
 
@@ -199,37 +190,11 @@ namespace LaserCrush.Manager
             return false;
         }
 
-        private void RemoveBlock(Block block, DroppedItem droppedItem)
+        private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos)
         {
-            if (droppedItem is not null)
-            {
-                droppedItem.gameObject.SetActive(true);
-                droppedItem.transform.position = block.transform.position;
-                m_ItemManager.AddDroppedItem(droppedItem);
-            }
-            m_BlockParticleController.PlayParticle(block.transform.position, block.GetEEntityType());
-            m_UIManager.SetScore(block.BlockScore);
-            m_Blocks.Remove(block);
-        }
-
-        public bool MoveDownAllBlocks()
-        {
-            if (m_MoveDownElapsedTime == 0)
-            {
-                for (int i = 0; i < m_Blocks.Count; i++)
-                {
-                    m_Blocks[i].MoveDown(m_MoveDownVector, m_MoveDownTime);
-                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
-                }
-            }
-
-            m_MoveDownElapsedTime += Time.deltaTime;
-            if (m_MoveDownElapsedTime >= m_MoveDownTime)
-            {
-                m_MoveDownElapsedTime = 0;
-                return true;
-            }
-            else return false;
+            Block block = m_InstantiatePosParentFunc?.Invoke(m_Block.gameObject, pos, m_BlockTransform).GetComponent<Block>();
+            block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
+            m_Blocks.Add(block);
         }
 
         /// <summary>
@@ -246,6 +211,20 @@ namespace LaserCrush.Manager
                 result.Add(Random.Range(0, m_MaxColCount));
             }
             return result;
+        }
+
+        private int GetWeightedRandomNum()
+        {
+            int randomSize = Random.Range(1, s_MaxWightSum);
+
+            for (int i = 0; i < s_Probabilitytable.Count; i++)
+            {
+                if (randomSize < s_Probabilitytable[i])
+                    return i + 1;
+
+                randomSize -= s_Probabilitytable[i];
+            }
+            return s_Probabilitytable.Count - 1;
         }
 
         /// <summary>
@@ -270,6 +249,40 @@ namespace LaserCrush.Manager
         {
             return Random.Range(0, 100) < 50 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
         }
+        #endregion
+
+        private void RemoveBlock(Block block)
+        {
+            if (m_ItemProbabilityData.TryGetItemObject((int)block.ItemType, out GameObject itemPrefab))
+            {
+                DroppedItem droppedItem = m_InstantiatePosParentFunc?.Invoke(itemPrefab, block.Position, m_DroppedItemTransform).GetComponent<DroppedItem>();
+                m_ItemManager.AddDroppedItem(droppedItem);
+            }
+
+            m_BlockParticleController.PlayParticle(block.Position, block.GetEEntityType());
+            m_UIManager.SetScore(block.Score);
+            m_Blocks.Remove(block);
+        }
+
+        public bool MoveDownAllBlocks()
+        {
+            if (m_MoveDownElapsedTime == 0)
+            {
+                for (int i = 0; i < m_Blocks.Count; i++)
+                {
+                    m_Blocks[i].MoveDown(m_MoveDownVector, m_MoveDownTime);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                }
+            }
+
+            m_MoveDownElapsedTime += Time.deltaTime;
+            if (m_MoveDownElapsedTime >= m_MoveDownTime)
+            {
+                m_MoveDownElapsedTime = 0;
+                return true;
+            }
+            return false;
+        }
 
         public void FeverTime()
         {
@@ -277,26 +290,45 @@ namespace LaserCrush.Manager
                 block.GetDamage(int.MaxValue);
         }
 
+        #region Load & Save
+        private void LoadBlocks()
+        {
+            foreach (Data.Json.BlockData blockData in DataManager.GameData.m_Blocks)
+            {
+                InstantiateBlock(blockData.m_HP,
+                                 blockData.m_RowNumber,
+                                 blockData.m_ColNumber,
+                                 blockData.m_EntityType,
+                                 blockData.m_HasItemType,
+                                 blockData.m_Position);
+            }
+        }
+
+        public void SaveAllData()
+        {
+            DataManager.GameData.m_Blocks.Clear();
+            Data.Json.BlockData blockData;
+            foreach (Block block in m_Blocks)
+            {
+                blockData = new Data.Json.BlockData(
+                    row : block.RowNumber, 
+                    col : block.ColNumber, 
+                    hp : block.CurrentHP, 
+                    pos : block.Position,
+                    entityType : block.GetEEntityType(),
+                    itemType : block.ItemType);
+
+                DataManager.GameData.m_Blocks.Add(blockData);
+            }
+        }
+        #endregion
+
         public void ResetGame()
         {
             foreach (var block in m_Blocks)
                 block.DestoryReset();
 
             m_Blocks.Clear();
-        }
-
-        private int GetWeightedRandomNum()
-        {
-            int randomSize = Random.Range(1, s_MaxWightSum);
-
-            for (int i = 0; i < s_Probabilitytable.Count; i++)
-            {
-                if (randomSize < s_Probabilitytable[i])
-                    return i + 1;
-
-                randomSize -= s_Probabilitytable[i];
-            }
-            return s_Probabilitytable.Count - 1;
         }
     }
 }

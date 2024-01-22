@@ -14,17 +14,21 @@ namespace LaserCrush.Controller.InputObject
         #region Variable
         #region SerializeField
         [SerializeField] private LineRenderer m_SubLineRenderer;
-        [SerializeField] private Transform m_LaserInitTransform;
         [SerializeField] private DragTransfromObject m_DragTransfromObject;
         [SerializeField] private ClickableObject m_ClickableObject;
-        #endregion
 
-        private Vector2 m_InitPos;
+        [SerializeField] private int m_DiscreteDegree = 1;
+        [SerializeField] private float m_ClampAngleMin = 12.5f;
+        [SerializeField] private float m_ClampAngleMax = 167.5f;
+        #endregion
 
         private GridLineController m_GridLineController;
         private InstalledItem m_AdjustingInstalledItem;
         private Transform m_DragTransfrom;
         private Action m_OnClickAction;
+
+        private readonly Vector2 m_InitPos = new Vector2(0, -57);
+        private readonly Vector2 m_InitDir = Vector2.up;
 
         private readonly float m_SecondSubLineLength = 8.5f;
 
@@ -40,10 +44,17 @@ namespace LaserCrush.Controller.InputObject
         #endregion
 
         #region Property
+        public Vector2 Position 
+        { 
+            get => (Vector2)m_DragTransfrom.position + (Vector2)m_DragTransfrom.up * 5; 
+            private set => m_DragTransfrom.position = value;
+        }
 
-        public Vector2 Position { get => (Vector2)m_DragTransfrom.position + Vector2.up * 2; }
-
-        public Vector2 Direction { get; private set; } = Vector2.up;
+        public Vector2 Direction 
+        { 
+            get => m_DragTransfrom.up; 
+            private set => m_DragTransfrom.rotation = Quaternion.LookRotation(Vector3.forward, value);
+        }
 
         public bool IsActiveSubLine
         {
@@ -69,28 +80,34 @@ namespace LaserCrush.Controller.InputObject
 
             m_GridLineController = GetComponent<GridLineController>();
 
-            m_DragTransfromObject.gameObject.SetActive(true);
             m_DragTransfrom = m_DragTransfromObject.transform;
-            m_DragTransfromObject.MouseMoveAction += SetInitPos;
+            m_DragTransfromObject.gameObject.SetActive(true);
+            m_DragTransfromObject.Init(DataManager.GameData.m_LauncherPos, DataManager.GameData.m_LauncherDir);
+            m_DragTransfromObject.MouseMoveAction += SetPosition;
 
             m_ClickableObject.MouseClickAction += () => m_OnClickAction?.Invoke();
 
             m_SubLineRenderer.gameObject.SetActive(true);
             m_SubLineRenderer.positionCount = 3;
-
-            m_InitPos = m_DragTransfrom.position;
         }
+
+        #region Raycast Input
+        public void CanInteraction(bool canInteraction)
+            => m_CanInteraction = canInteraction;
+
+        public void IsInitItemDrag(bool isInitItemDrag)
+            => m_IsInitItemDrag = isInitItemDrag;
 
         private void Update()
         {
             if (!m_IsInit || m_CanInteraction) return;
             if (m_IsInitItemDrag) return;
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             EditorOrWindow();
-#else
+            #else
             AndroidOrIOS();
-#endif
+            #endif
         }
 
         private void EditorOrWindow()
@@ -200,13 +217,10 @@ namespace LaserCrush.Controller.InputObject
             m_GridLineController.OnOffGridLine(true);
         }
 
-        public void CanInteraction(bool canInteraction)
-            => m_CanInteraction = canInteraction;
+        #endregion
 
-        public void IsInitItemDrag(bool isInitItemDrag)
-            => m_IsInitItemDrag = isInitItemDrag;
-        
-        private void SetInitPos(bool isDragInit)
+        #region Set Pos & Dir
+        private void SetPosition(bool isDragInit)
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!IsActiveSubLine) return;
@@ -216,10 +230,29 @@ namespace LaserCrush.Controller.InputObject
 
             Vector3 objectPos = RayManager.MousePointToWorldPoint();
             float xPos = Mathf.Clamp(objectPos.x, -44, 44);
-            m_DragTransfrom.position = new Vector3(xPos, -58, 0);
+            Position = new Vector3(xPos, -57, 0);
 
             UpdateLineRenderer();
         }
+
+        private void SetDirection(Vector2 clickPos)
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!IsActiveSubLine) return;
+            if (m_IsInitPosDrag || m_IsInitItemDrag) return;
+
+            Vector2 differVector = clickPos - (Vector2)m_DragTransfromObject.transform.position;
+
+            if (differVector.magnitude < 5) return;
+
+            Vector2 tempDirection = differVector.normalized;
+            if (tempDirection.y <= 0) return;
+
+            Direction = tempDirection.ClampDirection(m_ClampAngleMin, m_ClampAngleMax).DiscreteDirection(m_DiscreteDegree);
+
+            UpdateLineRenderer();
+        }
+        #endregion
 
         /// <summary>
         /// LineRenderer 위치 찾고 그려주기
@@ -237,31 +270,18 @@ namespace LaserCrush.Controller.InputObject
             m_SubLineRenderer.SetPosition(2, reflectPos);
         }
 
-        private void SetDirection(Vector2 pos)
+        #region Load & Save
+        public void SaveAllData()
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-            if (!IsActiveSubLine) return;
-            if (m_IsInitPosDrag || m_IsInitItemDrag) return;
-
-            Vector2 clickPos = pos;
-            Vector2 differVector = clickPos - Position;
-
-            if (differVector.magnitude < 5) return;
-
-            Vector2 tempDirection = differVector.normalized;
-            if (tempDirection.y <= 0) return;
-
-            Direction = tempDirection.ClampDirection(10, 170).DiscreteDirection(1);
-            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
-
-            UpdateLineRenderer();
+            DataManager.GameData.m_LauncherPos = m_DragTransfrom.position;
+            DataManager.GameData.m_LauncherDir = Direction;
         }
+        #endregion
 
         public void ResetGame()
         {
-            m_DragTransfrom.position = m_InitPos;
-            Direction = Vector2.up;
-            m_LaserInitTransform.rotation = Quaternion.LookRotation(Vector3.forward, Direction);
+            Position = m_InitPos;
+            Direction = m_InitDir;
             UpdateLineRenderer();
         }
 

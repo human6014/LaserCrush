@@ -54,14 +54,21 @@ namespace LaserCrush.Manager
             m_DroppedItems = new List<DroppedItem>();
             m_InstalledItem = new List<InstalledItem>();
             m_InstalledItemBuffer = new List<InstalledItem>();
-            m_AcquiredItemCounts = new int[m_AcquiredItemUI.Length];
+            m_AcquiredItemCounts = new int[] { 
+                DataManager.GameData.m_Prism1Count, 
+                DataManager.GameData.m_Prism2Count, 
+                DataManager.GameData.m_Prism3Count 
+            };
 
             m_DestroyAction = destroyAction;
+
+            m_AcquiredItemUI[0].Init(DataManager.GameData.m_Prism1Count);
+            m_AcquiredItemUI[1].Init(DataManager.GameData.m_Prism2Count);
+            m_AcquiredItemUI[2].Init(DataManager.GameData.m_Prism3Count);
 
             m_ToolbarController = toolbarController;
             m_ToolbarController.CheckAvailablePosFunc += CheckAvailablePos;
             m_ToolbarController.AddInstalledItemAction += AddInstalledItem;
-
             m_ToolbarController.Init(m_AcquiredItemUI);
         }
 
@@ -73,13 +80,12 @@ namespace LaserCrush.Manager
                 itemIndex = droppedItem.GetItemIndex();
 
                 Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
-                droppedItem.GetItemWithAnimation(destination);
+                droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 Destroy함
                 if (itemIndex != -1)
                 {
                     m_AcquiredItemCounts[itemIndex]++;
                     m_AcquiredItemUI[itemIndex].HasCount++;
                 }
-                //m_DestroyAction?.Invoke(droppedItem.gameObject);
             }
             m_DroppedItems.Clear();
 
@@ -131,8 +137,12 @@ namespace LaserCrush.Manager
 
         private void AddInstalledItem(InstalledItem installedItem, AcquiredItemUI acquiredItem)
         {
-            acquiredItem.HasCount--;
-            m_AcquiredItemCounts[acquiredItem.ItemIndex]--;
+            //데이터 로드로 작동하면 acquiredItem은 null임
+            if (acquiredItem is not null)
+            {
+                acquiredItem.HasCount--;
+                m_AcquiredItemCounts[acquiredItem.ItemIndex]--;
+            }
             m_InstalledItem.Add(installedItem);
         }
 
@@ -149,6 +159,31 @@ namespace LaserCrush.Manager
             }
             m_InstalledItemBuffer.Clear();
         }
+
+        #region Load & Save
+        public void SaveAllData()
+        {
+            DataManager.GameData.m_Prism1Count = m_AcquiredItemCounts[0];
+            DataManager.GameData.m_Prism2Count = m_AcquiredItemCounts[1];
+            DataManager.GameData.m_Prism3Count = m_AcquiredItemCounts[2];
+
+            DataManager.GameData.m_InstalledItems.Clear();
+            Data.Json.ItemData itemData;
+            foreach(InstalledItem item in m_InstalledItem)
+            {
+                itemData = new Data.Json.ItemData(
+                    row:     item.RowNumber,
+                    col:     item.ColNumber,
+                    count:   item.RemainUsingCount,
+                    isFixed: item.IsFixedDirection,
+                    pos:     item.Position,
+                    dir:     item.Direction,
+                    type:    item.ItemType);
+
+                DataManager.GameData.m_InstalledItems.Add(itemData);
+            }
+        }
+        #endregion
 
         public void ResetGame()
         {

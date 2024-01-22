@@ -4,35 +4,44 @@ using System.Collections;
 using UnityEngine;
 using LaserCrush.Data;
 using LaserCrush.Manager;
-using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
 using TMPro;
 
-namespace LaserCrush
+namespace LaserCrush.Entity
 {
+    public enum DroppedItemType
+    {
+        None,
+        Energy,
+        Prism1,
+        Prism2,
+        Prsim3
+    }
+
     public sealed class Block : MonoBehaviour, ICollisionable
     {
         #region Variable
         [SerializeField] private BlockData m_BlockData;
 
         private Animator m_Animator;
-        private DroppedItem m_DroppedItem;
         private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
-        private Action<Block, DroppedItem> m_RemoveBlockAction;
+        private Action<Block> m_RemoveBlockAction;
 
         private EEntityType m_EntityType;
 
-        private int m_HP;
         private int m_AttackCount;
         private bool m_IsDestroyed;
+
         #endregion
 
         #region Property
-        
-        public int BlockScore { get; private set; }
+        public int CurrentHP { get; private set; }
+        public int Score { get; private set; }
         public int RowNumber { get; private set; }
         public int ColNumber { get; private set; }
+        public Vector2 Position { get; private set; }
+        public DroppedItemType ItemType { get; private set; }
         #endregion
 
         private void Awake()
@@ -48,23 +57,24 @@ namespace LaserCrush
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public void Init(int hp, int rowNumber, int colNumber, float animationTime, EEntityType entityType, DroppedItem droppedItem, Action<Block, DroppedItem> removeBlockAction)
+        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> removeBlockAction)
         {
-            m_HP = hp;
-            BlockScore = hp;
+            CurrentHP = hp;
+            Score = hp;
             RowNumber = rowNumber;
             ColNumber = colNumber;
             m_EntityType = entityType;
-            m_DroppedItem = droppedItem;
+            ItemType = itemType;
+            Position = pos;
+            m_RemoveBlockAction = removeBlockAction;
+
             m_AttackCount = 0;
             m_Text.text = GetHP().ToString();
             m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ?
                 m_BlockData.NormalBlockColor :
                 m_BlockData.ReflectBlockColor;
 
-            m_RemoveBlockAction = removeBlockAction;
-
-            StartCoroutine(InitAnimation(animationTime));
+            StartCoroutine(InitAnimation(0.2f));
         }
 
         public IEnumerator InitAnimation(float totalTime)
@@ -82,18 +92,23 @@ namespace LaserCrush
             transform.localScale = endScale;
         }
 
+        /// <summary>
+        /// 파티클, 사운드 실행하고 삭제
+        /// </summary>
         private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
             m_IsDestroyed = true;
-            m_RemoveBlockAction?.Invoke(this, m_DroppedItem);
+            m_RemoveBlockAction?.Invoke(this);
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// 파티클, 사운드 실행 안하고 바로 삭제
+        /// </summary>
         public void DestoryReset()
         {
             m_IsDestroyed = true;
-            if (m_DroppedItem is not null) Destroy(m_DroppedItem.gameObject);
             Destroy(gameObject);
         }
 
@@ -109,17 +124,17 @@ namespace LaserCrush
 
             m_Animator.SetTrigger("Hit");
 
-            if (m_HP <= damage) // 남은 피가 데미지보다 작을 경우
+            if (CurrentHP <= damage) // 남은 피가 데미지보다 작을 경우
             {
-                Energy.UseEnergy(m_HP);
+                Energy.UseEnergy(CurrentHP);
                 Destroy();
                 return false;
             }
-            else m_HP -= Energy.UseEnergy(damage);
+            else CurrentHP -= Energy.UseEnergy(damage);
 
             if (GetHP() == 0)
             {
-                Energy.UseEnergy(m_HP);
+                Energy.UseEnergy(CurrentHP);
                 Destroy();
                 return false;
             }
@@ -137,9 +152,8 @@ namespace LaserCrush
             => m_EntityType;
         
         private int GetHP() 
-            => m_HP / 100;
+            => CurrentHP / 100;
         
-
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             List<LaserInfo> answer = new List<LaserInfo>();
@@ -176,6 +190,7 @@ namespace LaserCrush
                 transform.position = Vector2.Lerp(startPos, endPos, elapsedTime / moveDownTime);
                 yield return null;
             }
+            Position = endPos;
             transform.position = endPos;
         }
 

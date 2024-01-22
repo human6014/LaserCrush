@@ -17,7 +17,7 @@ namespace LaserCrush.Extension
             return new Vector2(Mathf.Cos(fixedAngle * Mathf.Deg2Rad), Mathf.Sin(fixedAngle * Mathf.Deg2Rad));
         }
 
-        public static Vector2 ClampDirection(this Vector2 direction, int min, int max)
+        public static Vector2 ClampDirection(this Vector2 direction, float min, float max)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 

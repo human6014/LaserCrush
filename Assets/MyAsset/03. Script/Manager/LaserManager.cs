@@ -33,10 +33,10 @@ namespace LaserCrush.Manager
         private bool m_Initialized = false;
         #endregion
 
-        private event Func<GameObject, GameObject> m_InstantiateFunc;
+        private event Func<GameObject, Vector3, Transform, GameObject> m_InstantiatePosParentFunc;
         private event Action<GameObject> m_DestroyAction;
 
-        public void Init(Func<GameObject, GameObject> instantiateFunc, Action<GameObject> destroyAction)
+        public void Init(Func<GameObject, Vector3, Transform, GameObject> instantiatePosParentFunc, Action<GameObject> destroyAction)
         {
             m_Lasers = new List<Laser>();
             m_LaserAddBuffer = new List<Laser>();
@@ -47,7 +47,7 @@ namespace LaserCrush.Manager
             m_LossParentsLaserRemoveBuffer = new List<Laser>();
 
 
-            m_InstantiateFunc = instantiateFunc;
+            m_InstantiatePosParentFunc = instantiatePosParentFunc;
             m_DestroyAction = destroyAction;
             m_InitLazer.Init(CreateLaser, LossParent);
         }
@@ -201,10 +201,11 @@ namespace LaserCrush.Manager
 
             for (int i = 0; i < dirVector.Count; i++)
             {
-                Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
-                laser.transform.SetParent(m_LasersTransform);
+                Laser laser = m_InstantiatePosParentFunc?.Invoke(m_LaserObject, dirVector[i].Position, m_LasersTransform).GetComponent<Laser>();
+                //Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
+                //laser.transform.SetParent(m_LasersTransform);
+                //laser.transform.position = dirVector[i].Position;
 
-                laser.transform.position = dirVector[i].Position;
                 laser.Init(CreateLaser, LossParent);
                 laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction);
                 m_LaserAddBuffer.Add(laser);

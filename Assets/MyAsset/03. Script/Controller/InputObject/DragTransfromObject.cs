@@ -16,6 +16,10 @@ namespace LaserCrush.Controller.InputObject
             remove => m_MouseMoveAction -= value;
         }
 
+        public void Init(Vector2 pos, Vector2 dir)
+            => transform.SetPositionAndRotation(pos, Quaternion.LookRotation(Vector3.forward, dir));
+        
+
         private void OnMouseDown()
             => m_MouseMoveAction?.Invoke(true);
         

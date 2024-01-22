@@ -14,12 +14,13 @@ namespace LaserCrush.Manager
 
         private bool m_IsAutoBGMMode;
 
+        private float m_MasterSound;
+        private float m_BGMSound;
+        private float m_SESound;
+
         private static AudioManager m_AudioManager;
 
-        public static AudioManager AudioManagerInstance
-        {
-            get => m_AudioManager;
-        }
+        public static AudioManager AudioManagerInstance { get => m_AudioManager; }
 
         public void Init()
         {
@@ -28,21 +29,39 @@ namespace LaserCrush.Manager
                 m_AudioManager = this;
                 DontDestroyOnLoad(gameObject);
                 m_AudioData.DataToDictionary();
+                
+                m_MasterSound = DataManager.SettingData.m_MasterSound;
+                m_BGMSound = DataManager.SettingData.m_BGMSound;
+                m_SESound = DataManager.SettingData.m_SESound;
             }
             else Destroy(gameObject);
+        }
+
+        private void Start()
+        {
+            SetVolume(m_MasterSound, SoundType.Master);
+            SetVolume(m_BGMSound, SoundType.BGM);
+            SetVolume(m_SESound, SoundType.SE);
         }
 
         public void SetVolume(float value, SoundType soundType)
         {
             float setValue = value == -40f ? -80 : value;
+
+            if (soundType == SoundType.Master)
+                m_MasterSound = setValue;
+            else if (soundType == SoundType.BGM)
+                m_BGMSound = setValue;
+            else 
+                m_SESound = setValue;
+            
             m_AudioMixer.SetFloat(soundType.ToString(), setValue);
         }
 
         #region BGM
         public void OnOffAutoBGMLoop(bool isOnOff)
-        {
-            m_IsAutoBGMMode = isOnOff;
-        }
+            => m_IsAutoBGMMode = isOnOff;
+        
 
         private void Update()
         {
@@ -64,6 +83,7 @@ namespace LaserCrush.Manager
         }
         #endregion
 
+        #region SE
         public void PlayNormalSE(string audioName)
         {
             if (m_SEAudioSource.isPlaying) return;
@@ -90,6 +110,16 @@ namespace LaserCrush.Manager
         {
             if (m_AudioData.GetSEUI(audioName, out AudioClip audioClip))
                 m_SEAudioSource.PlayOneShot(audioClip);
+        }
+        #endregion
+
+        public void SaveAllData()
+        {
+            DataManager.SettingData.m_MasterSound = m_MasterSound;
+            DataManager.SettingData.m_BGMSound = m_BGMSound;
+            DataManager.SettingData.m_SESound = m_SESound;
+
+            DataManager.SaveSettingData();
         }
     }
 }
