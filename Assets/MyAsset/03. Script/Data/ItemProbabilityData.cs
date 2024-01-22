@@ -17,24 +17,38 @@ namespace LaserCrush.Data
     [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/ItemProbability Data", order = int.MaxValue)]
     public class ItemProbabilityData : ScriptableObject
     {
+        /*
+         * None
+         * Energy
+         * Prism1
+         * Prism2
+         * Prism3
+         */
         [SerializeField] private ItemProbability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
 
-        public bool TryGetItemObject(out GameObject obj)
+        public int GetItemIndex()
         {
             float randomPoint = Random.value * 100;
             int length = m_DroppedItems.Length;
             for (int i = 0; i < length; i++)
             {
-                if (randomPoint < m_ItemProbability[i])
-                {
-                    obj = m_DroppedItems[i];
-                    return true;
-                }
+                if (randomPoint < m_ItemProbability[i]) return i;
                 else randomPoint -= m_ItemProbability[i];
             }
-            obj = m_DroppedItems[length - 1];
-            return false;
+
+            return length;
+        }
+
+        public bool TryGetItemObject(int index, out GameObject obj)
+        {
+            index--;
+            obj = null;
+            if (index < 0)
+                return false;
+
+            obj = m_DroppedItems[index];
+            return true;
         }
     }
 }

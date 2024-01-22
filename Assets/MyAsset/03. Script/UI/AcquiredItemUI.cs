@@ -19,6 +19,7 @@ namespace LaserCrush.Entity
         private UnityAction<AcquiredItemUI> m_PointerDownAction;
         #endregion
 
+        #region Property
         public GameObject ItemObject { get => m_ItemObject; }
         public int HasCount 
         { 
@@ -37,6 +38,10 @@ namespace LaserCrush.Entity
             add => m_PointerDownAction += value;
             remove => m_PointerDownAction -= value;
         }
+        #endregion
+
+        public void Init(int hasCount)
+            => HasCount = hasCount;
 
         public void OnPointerDown(PointerEventData eventData)
             => m_PointerDownAction?.Invoke(this);

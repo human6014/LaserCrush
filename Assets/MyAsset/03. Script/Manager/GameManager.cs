@@ -21,6 +21,7 @@ namespace LaserCrush.Manager
         #region Variable
         #region SerializeField
         [Header("Monobehaviour Reference")]
+        [SerializeField] private UIManager m_UIManager;
         [SerializeField] private AudioManager m_AudioManager;
         [SerializeField] private ObjectPoolManager m_ObjectPoolManager;
 
@@ -62,16 +63,14 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
-        public Action<bool> SubLineInteractionAction { get; set; }
-        public Action<bool> ToolbarInteractionAction { get; set; }
+
+        //밑에 2개 UI로 가려졌을 때
+        public Action<bool> UIInteractionAction { get; set; }
         #endregion
 
         #region MonoBehaviour Func
-        private GameObject InstantiateObject(GameObject obj)
-            => Instantiate(obj);
-
-        private GameObject InstantiateWithPosObject(GameObject obj, Vector3 pos)
-            => Instantiate(obj, pos, Quaternion.identity);
+        private GameObject InstantiateWithPosAndParentObject(GameObject obj, Vector3 pos, Transform parent)
+            => Instantiate(obj,pos,Quaternion.identity, parent);
 
         private void DestroyObject(GameObject obj)
             => Destroy(obj);
@@ -80,29 +79,44 @@ namespace LaserCrush.Manager
         private void Awake()
         {
             RayManager.MainCamera = Camera.main;
+            bool hasData = DataManager.InitLoadData();
+
             m_GameSettingManager.Init();
             m_AudioManager.Init();
+
+            //데이터 있으면 자기가 바로밑에 Init 호출,
+            //없으면 UIManger에서 Init호출
+            if (hasData) Init(true);
+            m_UIManager.Init(hasData);
         }
 
-        public void Init()
+        public void Init(bool hasData)
         {
             m_IsInit = true;
 
+            if (hasData) m_GameStateType = EGameStateType.Deploying;
+            else m_GameStateType = EGameStateType.BlockUpdating;
+
+            //초기화 순서 중요함 건들 ㄴㄴ
             m_SubLineController = GetComponent<SubLineController>();
             m_ToolbarController = GetComponent<ToolbarController>();
 
-            m_LaserManager.Init(InstantiateObject, DestroyObject);
+            m_LaserManager.Init(InstantiateWithPosAndParentObject, DestroyObject);
+            m_BlockManager.Init(InstantiateWithPosAndParentObject, m_ItemManager);
             m_ItemManager.Init(DestroyObject, m_ToolbarController);
-            m_BlockManager.Init(InstantiateObject, InstantiateWithPosObject, m_ItemManager);
+
+            GetComponent<Energy>().Init(DataManager.GameData.m_Energy);
 
             m_SubLineController.OnClickAction += EndDeploying;
             m_SubLineController.Init();
 
-            SubLineInteractionAction = m_SubLineController.CanInteraction;
-            ToolbarInteractionAction = m_ToolbarController.CanInteraction;
+            UIInteractionAction += m_SubLineController.CanInteraction;
+            UIInteractionAction += m_ToolbarController.CanInteraction;
+
+            if (hasData) m_SubLineController.IsActiveSubLine = true;
 
             s_ValidHit = 0;
-            s_StageNum = 1;
+            s_StageNum = DataManager.GameData.m_StageNumber;
         }
 
         private void Start()
@@ -194,6 +208,7 @@ namespace LaserCrush.Manager
             m_GameStateType = EGameStateType.Deploying;
             s_StageNum++;
             CheckValueUpdate(false);
+            //한 턴 끝나면 현재 상황 세이브
 
             //게임 종료 체크
             m_IsGameOver = m_BlockManager.IsGameOver();
@@ -203,6 +218,21 @@ namespace LaserCrush.Manager
                 m_GameOverAction?.Invoke();
                 return;
             }
+
+            SaveAllData();
+        }
+
+        private void SaveAllData()
+        {
+            DataManager.GameData.m_StageNumber = s_StageNum;
+
+            m_SubLineController.SaveAllData();
+            m_BlockManager.SaveAllData();
+            m_ItemManager.SaveAllData();
+            m_UIManager.SaveAllData();
+            Energy.SaveAllData();
+
+            DataManager.SaveGameData();
         }
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
@@ -259,6 +289,12 @@ namespace LaserCrush.Manager
             s_StageNum = 1;
 
             m_GameStateType = EGameStateType.BlockUpdating;
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveAllData();
+            AudioManager.AudioManagerInstance.SaveAllData();
         }
     }
 }

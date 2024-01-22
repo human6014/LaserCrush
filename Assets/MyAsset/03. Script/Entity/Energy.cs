@@ -15,7 +15,7 @@ namespace LaserCrush.Entity
         private static event Action s_MaxEnergyUpdate;
         private static event Action s_CurrentEnergyUpdate;
 
-        private static readonly int s_InitEnergy = 10000;
+        private static int s_InitEnergy = 10000;
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;
@@ -42,16 +42,19 @@ namespace LaserCrush.Entity
             }
         }
 
-        private void Awake()
+        public void Init(int initEnergy)
         {
+            MaxEnergy = initEnergy;
+            CurrentEnergy = initEnergy;
+
             s_MaxEnergyUpdate = null;
             s_CurrentEnergyUpdate = null;
 
-            MaxEnergy = s_InitEnergy;
-            CurrentEnergy = s_InitEnergy;
-
             s_MaxEnergyUpdate += () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
             s_CurrentEnergyUpdate += () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+
+            s_MaxEnergyUpdate?.Invoke();
+            s_CurrentEnergyUpdate?.Invoke();
         }
 
         /// 반환형은 총 사용한 에너지의 양이다.
@@ -127,16 +130,21 @@ namespace LaserCrush.Entity
         public static int GetHittingFloorLaserNum()
             => s_HittingFloorLaserNum;
         
-        private void OnDestroy()
+        public static void SaveAllData()
         {
-            s_MaxEnergyUpdate = null;
-            s_CurrentEnergyUpdate = null;
+            DataManager.GameData.m_Energy = MaxEnergy;
         }
 
         public static void ResetGame()
         {
             s_MaxEnergy = s_InitEnergy;
             s_CurrentEnergy = s_InitEnergy;
+        }
+
+        private void OnDestroy()
+        {
+            s_MaxEnergyUpdate = null;
+            s_CurrentEnergyUpdate = null;
         }
     }
 }

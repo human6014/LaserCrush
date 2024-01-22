@@ -385,6 +385,7 @@ MonoBehaviour:
   - {fileID: 1210517434872721817}
   - {fileID: 401127852029923582}
   m_CountText: {fileID: 7696730488891070818}
+  m_ItemType: 2
 --- !u!1 &7544485026873654382
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,6 @@ namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
     {
-        [Header("Editor Setting")]
         [SerializeField] private bool m_HasTutorial;
 
         [Header("Other Managers")]
@@ -52,40 +51,42 @@ namespace LaserCrush.Manager
 
         private bool m_IsOnOffSettingCanvas;
         private bool m_IsOnOffGameOverCanvas;
+        private int m_BestScore;
         private int m_Score;
 
         private bool IsOnOffSettingCanvas 
         {
-            get => m_IsOnOffSettingCanvas;
             set 
             {
                 m_IsOnOffSettingCanvas = value;
-                m_GameManager.SubLineInteractionAction?.Invoke(value);
+                m_GameManager.UIInteractionAction?.Invoke(value);
             }
         }
         private bool IsOnOffGameOverCanvas 
         {
-            get => m_IsOnOffGameOverCanvas;
             set
             {
                 m_IsOnOffGameOverCanvas = value;
-                m_GameManager.ToolbarInteractionAction?.Invoke(value);
+                m_GameManager.UIInteractionAction?.Invoke(value);
             }
         }
 
-        private void Awake()
+        public void Init(bool hasData)
         {
-            if (m_HasTutorial)
+            if (!hasData)
             {
                 m_TutorialPanelController.gameObject.SetActive(true);
                 m_InGamePanel.SetActive(false);
                 m_TutorialPanelController.Init();
                 m_TutorialPanelController.TutorialEndAction += OffTutorialPanel;
             }
-            else m_GameManager.Init();
 
-            m_Score = 0;
+            m_BestScore = DataManager.GameData.m_BestScore;
+            m_Score = DataManager.GameData.m_CurrentScore;
+
             m_ScoreTextDisplayer.Init();
+            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
+
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
 
@@ -116,6 +117,7 @@ namespace LaserCrush.Manager
             m_PatronageDonateButtonReceiver.ButtonClickAction += () => Debug.Log("Donate Button Clicked");
         }
 
+        #region Score
         public void SetScore(int additionalScore)
         {
             m_Score += additionalScore;
@@ -125,7 +127,9 @@ namespace LaserCrush.Manager
 
         private void SetGameOverScore()
             => m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
+        #endregion
 
+        #region Energy
         public void SetCurrentMaxEnergy(int current, int max)
             => m_EnergySliderDisplayer.SetMaxValue(current, max);
 
@@ -134,12 +138,13 @@ namespace LaserCrush.Manager
             m_EnergySliderDisplayer.SetCurrentValue(current, max);
             m_EnergyTextDisplayer.SetText((current / 100).ToString());
         }
+        #endregion
 
         private void OffTutorialPanel()
         {
             m_TutorialPanelController.gameObject.SetActive(false);
             m_InGamePanel.SetActive(true);
-            m_GameManager.Init();
+            m_GameManager.Init(false);
         }
 
         private void OnOffSettingCanvas(bool isOnOff)
@@ -152,7 +157,11 @@ namespace LaserCrush.Manager
                 m_SettingCanvas.SetActive(true);
                 m_SettingPanelDisplayer.PlayFadeOnAnimation();
             }
-            else m_SettingPanelDisplayer.PlayFadeOffAnimation();
+            else
+            {
+                AudioManager.AudioManagerInstance.SaveAllData();
+                m_SettingPanelDisplayer.PlayFadeOffAnimation();
+            }
         }
 
         private void OnOffPatronageCanvas(bool isOnOff)
@@ -193,12 +202,18 @@ namespace LaserCrush.Manager
             m_GameOverCanvas.SetActive(false);
         }
 
+        public void SaveAllData()
+        {
+            DataManager.GameData.m_BestScore = m_BestScore;
+            DataManager.GameData.m_CurrentScore = m_Score;
+        }
+
         private void ResetGame()
         {
             m_GameManager.ResetGame();
             OnOffGameOverCanvas(false);
             m_Score = 0;
-            m_ScoreTextDisplayer.SetText("Score : " + m_Score / 100);
+            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
         }
     }
 }
