@@ -67,7 +67,7 @@ namespace LaserCrush.Entity.Item
             {
                 m_IsAdjustMode = value;
 
-                for (int i = 0; i < m_SubRotationImage.Length; i++) 
+                for (int i = 0; i < m_SubRotationImage.Length; i++)
                     m_SubRotationImage[i].SetActive(value);
 
                 if (m_IsAdjustMode) PaintAdjustLine();
@@ -80,7 +80,7 @@ namespace LaserCrush.Entity.Item
         public bool IsFixedDirection { get; private set; }
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
-        public ItemType ItemType { get => m_ItemType;}
+        public ItemType ItemType { get => m_ItemType; }
         #endregion
 
         private void Awake()
@@ -110,7 +110,7 @@ namespace LaserCrush.Entity.Item
             Position = pos;
             Direction = dir;
 
-            transform.SetPositionAndRotation(pos, Quaternion.LookRotation(Vector3.forward,dir));
+            transform.SetPositionAndRotation(pos, Quaternion.LookRotation(Vector3.forward, dir));
 
             foreach (Transform tr in m_EjectionPortsTransform)
                 m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
@@ -216,7 +216,7 @@ namespace LaserCrush.Entity.Item
         {
             m_CircleCollider2D.enabled = false;
 
-            for(int i = 0; i < m_SubRotationImage.Length;i++)
+            for (int i = 0; i < m_SubRotationImage.Length; i++)
                 m_SubRotationImage[i].SetActive(false);
 
             for (int i = 0; i < m_EjectionPortsTransform.Length; i++)
