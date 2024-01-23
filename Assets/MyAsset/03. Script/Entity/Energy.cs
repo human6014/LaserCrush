@@ -87,7 +87,7 @@ namespace LaserCrush.Entity
 
         public static void DeCollideWithFloor()
             => s_HittingFloorLaserNum--;
-        
+
         public static int ChargeEnergy()
         {
             CurrentEnergy = s_MaxEnergy;
@@ -128,10 +128,10 @@ namespace LaserCrush.Entity
 
         public static int GetEnergy()
             => s_CurrentEnergy;
-        
+
         public static int GetHittingFloorLaserNum()
             => s_HittingFloorLaserNum;
-        
+
         public static void SaveAllData()
         {
             DataManager.GameData.m_Energy = MaxEnergy;
