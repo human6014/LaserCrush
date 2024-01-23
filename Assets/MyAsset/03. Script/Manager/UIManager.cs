@@ -7,8 +7,6 @@ namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private bool m_HasTutorial;
-
         [Header("Other Managers")]
         [SerializeField] private GameManager m_GameManager;
 
@@ -41,7 +39,6 @@ namespace LaserCrush.Manager
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
         [SerializeField] private ButtonReceiver m_PatronageResumeButtonReceiver;
-        [SerializeField] private ButtonReceiver m_PatronageDonateButtonReceiver;
 
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
@@ -114,7 +111,7 @@ namespace LaserCrush.Manager
                 OnOffSettingCanvas(false);
             };
             m_PatronageResumeButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(false);
-            m_PatronageDonateButtonReceiver.ButtonClickAction += () => Debug.Log("Donate Button Clicked");
+            
         }
 
         #region Score
