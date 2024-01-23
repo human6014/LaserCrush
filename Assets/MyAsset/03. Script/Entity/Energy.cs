@@ -87,7 +87,7 @@ namespace LaserCrush.Entity
 
         public static void DeCollideWithFloor()
             => s_HittingFloorLaserNum--;
-        
+
         public static int ChargeEnergy()
         {
             CurrentEnergy = s_MaxEnergy;
@@ -111,13 +111,15 @@ namespace LaserCrush.Entity
 
             /*Case 벽에 튕기면 가중치로 점점 데미지 증가
              */
+
             /*m_HittingWallLaserNum++;
             UseEnergy((MaxEnergy / 100) * (int)(m_HittingWallLaserNum * 1.5));*/
 
             /*Case 최초 N회까지 충돌은 무료 이후 충돌에 에너지 소모 적용
              */
+
             s_HittingWallLaserNum++;
-            if (s_HittingWallLaserNum > 15) { UseEnergy(MaxEnergy / 10); }
+            if (s_HittingWallLaserNum > 10) { UseEnergy(MaxEnergy / 10); }
             GameManager.s_ValidHit++;
         }
 
@@ -126,10 +128,10 @@ namespace LaserCrush.Entity
 
         public static int GetEnergy()
             => s_CurrentEnergy;
-        
+
         public static int GetHittingFloorLaserNum()
             => s_HittingFloorLaserNum;
-        
+
         public static void SaveAllData()
         {
             DataManager.GameData.m_Energy = MaxEnergy;
