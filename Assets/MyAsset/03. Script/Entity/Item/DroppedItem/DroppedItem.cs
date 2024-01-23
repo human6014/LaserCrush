@@ -10,7 +10,7 @@ namespace LaserCrush.Entity.Item
         [SerializeField] private AnimationCurve m_AnimationCurve;
         [SerializeField] protected int m_AcquiredItemIndex;
 
-        public const float m_AnimationTime = 0.5f;
+        public const float m_AnimationTime = 0.6f;
         #endregion
 
         public int GetItemIndex() => m_AcquiredItemIndex;

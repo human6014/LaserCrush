@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
 using System;
 using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
 using LaserCrush.Data.Json;
-using UnityEditor;
-using Debug = UnityEngine.Debug;
 
 namespace LaserCrush.Data.Json
 {
@@ -118,10 +115,9 @@ namespace LaserCrush.Manager
         private static GameData s_GameData;
         private static SettingData s_SettingData;
 
-        private static string s_Path = Application.persistentDataPath + "/";
-
-        private static readonly string s_GameDataFileName = "GameData";
-        private static readonly string s_SettingDataFileName = "SettingData";
+        public static readonly string s_DefaultPath = Application.persistentDataPath + "/";
+        public static readonly string s_GameDataFileName = "GameData";
+        public static readonly string s_SettingDataFileName = "SettingData";
         #endregion
 
         #region Property
@@ -129,52 +125,8 @@ namespace LaserCrush.Manager
         public static SettingData SettingData { get => s_SettingData; private set => s_SettingData = value; }
         #endregion
 
-        [MenuItem("Data/Reset Data")]
-        private static void ResetData()
-        {
-            InitDataSetting();
-            SaveGameData();
-            SaveSettingData();
-        }
-
-        [MenuItem("Data/Delete Data")]
-        private static void DeleteFile()
-        {
-            string gameDataPath = Path.Combine(s_Path, s_GameDataFileName);
-            string settingDataPath = Path.Combine(s_Path, s_SettingDataFileName);
-            try
-            {
-                if (File.Exists(gameDataPath))
-                {
-                    File.Delete(gameDataPath);
-                    Debug.Log(s_GameDataFileName + "昏力 己傍");
-                }
-
-                if (File.Exists(settingDataPath))
-                {
-                    File.Delete(settingDataPath);
-                    Debug.Log(s_SettingDataFileName + "昏力 己傍");
-                }
-            }
-            catch (Exception e)
-            { Debug.LogError(e.Message); }
-        }
-
-        [MenuItem("Data/Open Explorer")]
-        private static void OpenExplorer()
-        {
-            try 
-            { Process.Start(s_Path); }
-            catch (Exception e)
-            { Debug.LogError(e.Message); }
-        }
-
-
-
         public static bool InitLoadData()
         {
-            s_Path = Application.persistentDataPath + "/";
-
             bool hasGameData = LoadGameData();
             bool hasSettingData = LoadSettingData();
 
@@ -188,7 +140,7 @@ namespace LaserCrush.Manager
             }
         }
 
-        private static void InitDataSetting()
+        public static void InitDataSetting()
         {
             s_GameData = new GameData(
                 bestScore: 0,
@@ -211,35 +163,53 @@ namespace LaserCrush.Manager
         public static void SaveGameData()
         {
             string gameData = JsonUtility.ToJson(s_GameData, true);
-            File.WriteAllText(s_Path + s_GameDataFileName, gameData);
+
+            File.WriteAllText(s_DefaultPath + s_GameDataFileName, ToBase64String(gameData));
         }
 
         public static void SaveSettingData()
         {
             string settingData = JsonUtility.ToJson(s_SettingData, true);
-            File.WriteAllText(s_Path + s_SettingDataFileName, settingData);
+
+            File.WriteAllText(s_DefaultPath + s_SettingDataFileName, ToBase64String(settingData));
+        }
+
+        private static string ToBase64String(string data)
+        {
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
+            string code = Convert.ToBase64String(dataBytes);
+
+            return code;
         }
         #endregion
 
         #region Load
         private static bool LoadGameData()
         {
-            if (!File.Exists(s_Path + s_GameDataFileName)) return false;
+            if (!File.Exists(s_DefaultPath + s_GameDataFileName)) return false;
 
-            string gameData = File.ReadAllText(s_Path + s_GameDataFileName);
-            s_GameData = JsonUtility.FromJson<GameData>(gameData);
+            string gameData = File.ReadAllText(s_DefaultPath + s_GameDataFileName);
+            s_GameData = JsonUtility.FromJson<GameData>(FromBase64String(gameData));
 
             return true;
         }
 
         private static bool LoadSettingData()
         {
-            if (!File.Exists(s_Path + s_SettingDataFileName)) return false;
+            if (!File.Exists(s_DefaultPath + s_SettingDataFileName)) return false;
 
-            string settingData = File.ReadAllText(s_Path + s_SettingDataFileName);
-            s_SettingData = JsonUtility.FromJson<SettingData>(settingData);
+            string settingData = File.ReadAllText(s_DefaultPath + s_SettingDataFileName);
+            s_SettingData = JsonUtility.FromJson<SettingData>(FromBase64String(settingData));
 
             return true;
+        }
+
+        private static string FromBase64String(string code)
+        {
+            byte[] dataBytes = Convert.FromBase64String(code);
+            string data = System.Text.Encoding.UTF8.GetString(dataBytes);
+
+            return data;
         }
         #endregion
     }
