@@ -56,7 +56,7 @@ namespace LaserCrush.Manager
         {
             if (!m_Initialized)//턴 첫 시작
             {
-                m_InitLazer.Activate(pos, dir);
+                m_InitLazer.Activate(pos, dir, 0);
 
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
@@ -195,7 +195,13 @@ namespace LaserCrush.Manager
 
         }
 
-        public List<Laser> CreateLaser(List<LaserInfo> dirVector)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dirVector"></param>
+        /// <param name="hierarchy">부모가 해당 함수를 호출 시 자식의 계층을 계산 후 넘긴다.</param>
+        /// <returns></returns>
+        public List<Laser> CreateLaser(List<LaserInfo> dirVector, int hierarchy)
         {
             List<Laser> answer = new List<Laser>();
 
@@ -207,7 +213,7 @@ namespace LaserCrush.Manager
                 //laser.transform.position = dirVector[i].Position;
 
                 laser.Init(CreateLaser, LossParent);
-                laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction);
+                laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction, hierarchy);
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }
