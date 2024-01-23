@@ -78,7 +78,7 @@ namespace LaserCrush.Entity
             {
                 Energy.UseEnergy(Energy.GetEnergy() / 10);
             }
-            Debug.Log("계층: " + m_Hierarchy);
+            //Debug.Log("계층: " + m_Hierarchy);
 
             m_State = ELaserStateType.Move;
 
