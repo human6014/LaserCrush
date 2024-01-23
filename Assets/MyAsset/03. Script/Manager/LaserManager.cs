@@ -222,13 +222,39 @@ namespace LaserCrush.Manager
 
         public void ResetGame()
         {
-            m_Lasers.Clear();
-            m_LaserAddBuffer.Clear();
-            m_LaserRemoveBuffer.Clear();
-            m_RootLazer.Clear();
-            m_LossParentsLaser.Clear();
-            m_LossParentsLaserAddBuffer.Clear();
-            m_LossParentsLaserRemoveBuffer.Clear();
+            //m_Lasers.Clear();
+            //m_LaserAddBuffer.Clear();
+            //m_LaserRemoveBuffer.Clear();
+            //m_RootLazer.Clear();
+            //m_LossParentsLaser.Clear();
+            //m_LossParentsLaserAddBuffer.Clear();
+            //m_LossParentsLaserRemoveBuffer.Clear();
+
+            /*
+             * 레이저 쏘고 바로 Reset버튼 눌러서 확인 가능
+             * --------------------------------------------------------------
+             * 위 주석인 Clear로 하면 생긴 오브젝트들 그대로 남아있음
+             * 아래 코드로 하면 Launcher도 Activate함수 호출할 때 List에 넣어줘서 같이 없어져버림
+             * --------------------------------------------------------------
+             * Launcher만 따로 List에 안 넣고 관리하면 좋겠지만, 
+             * 편하게 처리할려면 laser클래스에 bool변수 하나 주면 되긴 할듯?
+             */
+
+            DestroyLasers(m_Lasers);
+            DestroyLasers(m_LaserAddBuffer);
+            DestroyLasers(m_LaserRemoveBuffer);
+            DestroyLasers(m_RootLazer);
+            DestroyLasers(m_LossParentsLaser);
+            DestroyLasers(m_LossParentsLaserAddBuffer);
+            DestroyLasers(m_LossParentsLaserRemoveBuffer);
+        }
+
+        private void DestroyLasers(List<Laser> lasers)
+        {
+            for (int i = 0; i < lasers.Count; i++)
+                m_DestroyAction(lasers[i].gameObject);
+
+            lasers.Clear();
         }
 
         /// <summary>

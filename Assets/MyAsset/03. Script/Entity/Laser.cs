@@ -135,11 +135,10 @@ namespace LaserCrush.Entity
                 MoveStartPoint(m_StartPoint, eraseVelocity, dist);
                 m_LaserParticle.OffEffectParticle();
                 m_LaserParticle.OffHitParticle();
-                m_IsErased = true;
-                if (m_Target != null)
-                {
-                    if (m_Target.GetEEntityType() == EEntityType.Floor) { Energy.DeCollideWithFloor(); }
-                }
+
+                if (m_Target != null && m_Target.GetEEntityType() == EEntityType.Floor)
+                     Energy.DeCollideWithFloor();
+
                 return true;
             }
             MoveStartPoint(m_StartPoint + eraseVelocity * m_DirectionVector, eraseVelocity, dist);
@@ -157,7 +156,7 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.1f, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
 
             float dist = Vector2.Distance(m_EndPoint, hit.point);
             float shootingVelocity = m_LaserData.ShootingVelocity * Time.deltaTime;
@@ -167,7 +166,9 @@ namespace LaserCrush.Entity
                 m_HitNormal = hit.normal;
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(hit, m_DirectionVector, this);
+
                 if (m_State == ELaserStateType.Wait) return;
+
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy + 1));
                 return;
             }
@@ -253,13 +254,6 @@ namespace LaserCrush.Entity
             }
         }
 
-        private void OnDestroy()
-        {
-            m_LaserCreateFunc = null;
-            m_LaserEraseAction = null;
-        }
-
-
         public bool IsHittingDamagable()
         {
             if (m_Target == null) return false;
@@ -271,6 +265,12 @@ namespace LaserCrush.Entity
         public ELaserStateType GetELaserStateType()
         {
             return m_State;
+        }
+
+        private void OnDestroy()
+        {
+            m_LaserCreateFunc = null;
+            m_LaserEraseAction = null;
         }
     }
 }

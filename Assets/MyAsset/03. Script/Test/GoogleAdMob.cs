@@ -6,14 +6,14 @@ public class GoogleAdMob : MonoBehaviour
 {
     // These ad units are configured to always serve test ads.
 #if UNITY_ANDROID
-    private string _adUnitId = "ca-app-pub-2303943085632745/9263589806";
+    private readonly string m_AdUnitID = "ca-app-pub-2303943085632745/9263589806";
 #elif UNITY_IPHONE
-  private string _adUnitId = "ca-app-pub-3940256099942544/2934735716";
+  private readonly string m_AdUnitID = "ca-app-pub-3940256099942544/2934735716";
 #else
-  private string _adUnitId = "unused";
+  private readonly string m_AdUnitID = "unused";
 #endif
 
-    BannerView _bannerView;
+    private BannerView m_BannerView;
 
     public void Start()
     {
@@ -31,16 +31,15 @@ public class GoogleAdMob : MonoBehaviour
         Debug.Log("Creating banner view");
 
         // If we already have a banner, destroy the old one.
-        if (_bannerView != null)
+        if (m_BannerView is not null)
         {
-            _bannerView.Destroy();
-            _bannerView = null;
+            m_BannerView.Destroy();
+            m_BannerView = null;
         }
 
+        AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
         //베너 사이즈 자동 설정 
-        _bannerView = new BannerView(_adUnitId, AdSize.SmartBanner, AdPosition.Bottom);
-
-
+        m_BannerView = new BannerView(m_AdUnitID, adaptiveSize, AdPosition.Bottom);
 
 
         //베너 사이즈 사용자가 직접 지정
@@ -61,17 +60,14 @@ public class GoogleAdMob : MonoBehaviour
     public void LoadAd()
     {
         // create an instance of a banner view first.
-        if (_bannerView == null)
-        {
-            CreateBannerView();
-        }
+        if (m_BannerView is null) CreateBannerView();
 
         // create our request used to load the ad.
-        var adRequest = new AdRequest();
+        AdRequest adRequest = new AdRequest();
 
         // send the request to load the ad.
         Debug.Log("Loading banner ad.");
-        _bannerView.LoadAd(adRequest);
+        m_BannerView.LoadAd(adRequest);
     }
 
     /// <summary>
@@ -79,11 +75,11 @@ public class GoogleAdMob : MonoBehaviour
     /// </summary>
     public void DestroyBannerView()
     {
-        if (_bannerView != null)
+        if (m_BannerView is not null)
         {
             Debug.Log("Destroying banner view.");
-            _bannerView.Destroy();
-            _bannerView = null;
+            m_BannerView.Destroy();
+            m_BannerView = null;
         }
     }
 }
