@@ -40,9 +40,12 @@ namespace LaserCrush.Manager
         public static int s_StageNum;
         public static int s_ValidHit;
 
+        //계층 임계점 변수
+        public static int s_LaserCriticalPoint;
+
         private int m_PreValidHit;
 
-        private readonly float m_ValidTime = 4;
+        private readonly float m_ValidTime = 3;
         private float m_LaserTime;
 
         private bool m_IsInit;
@@ -117,6 +120,7 @@ namespace LaserCrush.Manager
 
             s_ValidHit = 0;
             s_StageNum = DataManager.GameData.m_StageNumber;
+            s_LaserCriticalPoint = 3;
         }
 
         private void Start()
@@ -180,14 +184,12 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckDestroyItem)
             {
-                //Debug.Log("프리즘 사용가능 횟수 확인 후 파괴");
                 m_IsCheckDestroyItem = m_ItemManager.CheckDestroyPrisms();
                 if (!m_IsCheckDestroyItem) return;
             }
 
             if (!m_IsCheckMoveDownBlock)
             {
-                //Debug.Log("블럭 생성");
                 m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
                 if (!m_IsCheckMoveDownBlock) return;
             }

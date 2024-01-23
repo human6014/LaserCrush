@@ -12,11 +12,13 @@ namespace LaserCrush.Entity
     {
         public Vector2 Position;
         public Vector2 Direction;
+        //public int Hierarchy;
 
         public LaserInfo(Vector2 position, Vector2 direction)
         {
             Position = position;
             Direction = direction;
+            //Hierarchy = hierarchy;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace LaserCrush.Entity
         private List<Laser> m_ChildLazers = new List<Laser>();
         private List<LaserInfo> m_LaserInfo;
 
-        private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
+        private Func<List<LaserInfo>, int, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
         private ICollisionable m_Target = null;
@@ -43,6 +43,8 @@ namespace LaserCrush.Entity
         private bool m_IsInitated;
         private bool m_IsActivated;
         private bool m_IsErased;
+
+        private int m_Hierarchy;
         #endregion
 
         private void Awake()
@@ -55,13 +57,13 @@ namespace LaserCrush.Entity
                     );
         }
 
-        public void Init(Func<List<LaserInfo>, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
+        public void Init(Func<List<LaserInfo>, int, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
         {
             m_LaserCreateFunc = laserCreateFunc;
             m_LaserEraseAction = laserEraseAction;
         }
 
-        public void Activate(Vector2 position, Vector2 dir)
+        public void Activate(Vector2 position, Vector2 dir, int hierarchy)
         {
             m_StartPoint = position;
             m_EndPoint = position;
@@ -70,6 +72,13 @@ namespace LaserCrush.Entity
             m_IsInitated = true;
             m_IsActivated = true;
             m_IsErased = false;
+            m_Hierarchy = hierarchy;
+            //생성 시 디메리트 계산로직 입맛대로 수정 가능
+            if( m_Hierarchy >= GameManager.s_LaserCriticalPoint )
+            {
+                Energy.UseEnergy(Energy.GetEnergy() / 10);
+            }
+            Debug.Log("계층: " + m_Hierarchy );
 
             m_State = ELaserStateType.Move;
 
@@ -159,7 +168,7 @@ namespace LaserCrush.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(hit, m_DirectionVector, this);
                 if (m_State == ELaserStateType.Wait) return;
-                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy+1));
                 return;
             }
             MoveEndPoint(m_EndPoint + shootingVelocity * m_DirectionVector);
@@ -186,7 +195,7 @@ namespace LaserCrush.Entity
         {
             if (m_Target.Waiting())
             {
-                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy + 1));
                 m_State = ELaserStateType.Hitting;
             }
         }
