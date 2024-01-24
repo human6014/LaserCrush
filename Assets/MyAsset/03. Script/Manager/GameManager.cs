@@ -171,11 +171,6 @@ namespace LaserCrush.Manager
         /// </summary>
         private void BlockUpdating()
         {
-            //Debug.Log("필드 위 아이템 획득");
-            /*ToDo
-             * 블럭 생성및 화면에 존재하는 아이템 획득
-             * 1회 호출 후 바로 상태가 바뀌는데 화면에 보이는게 이상할 수 있어서 수정이 필요해 보임
-             */
             if (!m_IsCheckGetItem)
             {
                 m_IsCheckGetItem = m_ItemManager.GetDroppedItems();
@@ -200,9 +195,6 @@ namespace LaserCrush.Manager
                 if (!m_IsCheckGenerateBlock) return;
             }
             
-
-            //모든 업데이트 종료됐으니까 에너지 채워짐과 동시에 끝
-            //Debug.Log("에너지 보충");
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             s_ValidHit = 0;
