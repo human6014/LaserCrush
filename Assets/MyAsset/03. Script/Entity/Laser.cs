@@ -272,5 +272,14 @@ namespace LaserCrush.Entity
             m_LaserCreateFunc = null;
             m_LaserEraseAction = null;
         }
+
+
+        //보강 부탁드립니다.
+        public void Reset()
+        {
+            m_Target = null;
+            m_LaserParticle = null;
+
+        }
     }
 }
