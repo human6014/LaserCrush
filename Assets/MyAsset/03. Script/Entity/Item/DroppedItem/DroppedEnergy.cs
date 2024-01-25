@@ -7,7 +7,10 @@ namespace LaserCrush.Entity.Item
         public override void GetItemWithAnimation(Vector2 pos)
         {
             StartCoroutine(GetItemAnimation(pos));
-            Energy.EnergyUpgrade(1000);
+
+            double getEnergy = 5 * 3.8 * 0.95 / 2;
+            Energy.EnergyUpgrade((int)getEnergy *100);
+
             return;
         }
     }

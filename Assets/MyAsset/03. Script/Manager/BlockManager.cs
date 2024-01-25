@@ -49,12 +49,9 @@ namespace LaserCrush.Manager
 
         private event Func<GameObject, Vector3, Transform, GameObject> m_InstantiatePosParentFunc;
 
-        //유니티스럽게 바꾸면 좋을듯 인스펙터에서 수정할 수 있게
-        //앞에서부터1~6
-        //추후에...
-        private readonly List<int> s_Probabilitytable = new List<int>() { 6, 20, 50, 50, 20, 5 };
-        private readonly int s_MaxWightSum = 151;
-        //
+        private readonly List<int> s_Probabilitytable = new List<int>() { 6, 25, 45, 60, 45, 20 };
+        private readonly int s_MaxWightSum = 201;
+        //3.86개가 한 턴에 기댓값
 
         private float m_MoveDownElapsedTime;
         private float m_GenerateElapsedTime;
@@ -169,13 +166,23 @@ namespace LaserCrush.Manager
         #region Block Generate
         public bool GenerateBlock()
         {
+            bool flag = false;
             if (m_GenerateElapsedTime == 0)
             {
                 HashSet<int> index = GenerateBlockOffset();
                 foreach (int i in index)
                 {
                     Vector3 pos = new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * i, m_CalculatedInitPos.y, 0);
-                    int itemIndex = m_ItemProbabilityData.GetItemIndex();
+                    int itemIndex;
+                    if (!flag)
+                    {
+                        itemIndex = 1;
+                        flag = true;
+                    }
+                    else
+                    {
+                        itemIndex = m_ItemProbabilityData.GetItemIndex();
+                    }
 
                     InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos);
                 }
