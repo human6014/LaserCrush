@@ -137,7 +137,7 @@ namespace LaserCrush.Entity
                 m_LaserParticle.OffHitParticle();
 
                 if (m_Target != null && m_Target.GetEEntityType() == EEntityType.Floor)
-                     Energy.DeCollideWithFloor();
+                    Energy.DeCollideWithFloor();
 
                 return true;
             }
