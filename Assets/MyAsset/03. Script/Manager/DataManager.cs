@@ -55,6 +55,8 @@ namespace LaserCrush.Data.Json
     [Serializable]
     public class GameData
     {
+        public bool m_IsGameOver;
+
         public int m_BestScore;
         public int m_CurrentScore;
         public int m_StageNumber;
@@ -70,11 +72,13 @@ namespace LaserCrush.Data.Json
         public List<BlockData> m_Blocks;
         public List<ItemData> m_InstalledItems;
 
-        public GameData(int bestScore, int currentScore, int stageNumber,
+        public GameData(bool isGameOver, int bestScore, int currentScore, int stageNumber,
                         int prism1Count, int prism2Count, int prism3Count, int energy,
                         Vector2 launcherPos, Vector2 launcherDir,
                         List<BlockData> blocks, List<ItemData> items)
         {
+            m_IsGameOver = false;
+
             m_BestScore = bestScore;
             m_CurrentScore = currentScore;
             m_StageNumber = stageNumber;
@@ -143,6 +147,7 @@ namespace LaserCrush.Manager
         public static void InitDataSetting()
         {
             s_GameData = new GameData(
+                isGameOver : false,
                 bestScore: 0,
                 currentScore: 0,
                 stageNumber: 1,

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using UnityEngine;
-using LaserCrush.Entity;
-using LaserCrush.Controller.InputObject;
-using LaserCrush.Entity.Item;
 using System;
-
+using UnityEngine;
+using LaserCrush.Controller.InputObject;
+using LaserCrush.Entity;
+using LaserCrush.Entity.Item;
 
 namespace LaserCrush.Manager
 {
@@ -198,6 +197,9 @@ namespace LaserCrush.Manager
                 m_AcquiredItemCounts[i] = 0;
                 m_AcquiredItemUI[i].HasCount = 0;
             }
+
+            for(int i = 0; i < m_DroppedItems.Count; i++)
+                m_DestroyAction?.Invoke(m_DroppedItems[i].gameObject);
 
             m_DroppedItems.Clear();
         }
