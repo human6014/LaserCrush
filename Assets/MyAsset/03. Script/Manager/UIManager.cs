@@ -7,6 +7,8 @@ namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
     {
+        #region Value
+        #region SerializeField
         [Header("Other Managers")]
         [SerializeField] private GameManager m_GameManager;
 
@@ -45,18 +47,22 @@ namespace LaserCrush.Manager
         [SerializeField] private FloatingTextController m_FloatingTextController;
         [SerializeField] private SettingPanelController m_SettingPanelController;
         [SerializeField] private PatronageController m_PatronageController;
+        #endregion
 
         private bool m_IsOnOffSettingCanvas;
         private bool m_IsOnOffGameOverCanvas;
         private int m_BestScore;
         private int m_Score;
+        #endregion
 
+        #region Property
         private bool IsOnOffSettingCanvas 
         {
             set 
             {
                 m_IsOnOffSettingCanvas = value;
-                m_GameManager.UIInteractionAction?.Invoke(value);
+                m_SettingCanvas.SetActive(value);
+                m_GameManager.SetInteraction(value);
             }
         }
         private bool IsOnOffGameOverCanvas 
@@ -64,10 +70,13 @@ namespace LaserCrush.Manager
             set
             {
                 m_IsOnOffGameOverCanvas = value;
-                m_GameManager.UIInteractionAction?.Invoke(value);
+                m_GameOverCanvas.SetActive(value);
+                m_GameManager.SetInteraction(value);
             }
         }
+        #endregion
 
+        #region Init
         public void Init(bool hasData)
         {
             if (!hasData)
@@ -111,10 +120,10 @@ namespace LaserCrush.Manager
                 OnOffSettingCanvas(false);
             };
             m_PatronageResumeButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(false);
-            
         }
+        #endregion
 
-        #region Score
+        #region Score & Energy
         public void SetScore(int additionalScore)
         {
             m_Score += additionalScore;
@@ -122,11 +131,6 @@ namespace LaserCrush.Manager
             m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
         }
 
-        private void SetGameOverScore()
-            => m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
-        #endregion
-
-        #region Energy
         public void SetCurrentMaxEnergy(int current, int max)
             => m_EnergySliderDisplayer.SetMaxValue(current, max);
 
@@ -137,6 +141,7 @@ namespace LaserCrush.Manager
         }
         #endregion
 
+        #region OnOff Canvas & Panel
         private void OffTutorialPanel()
         {
             m_TutorialPanelController.gameObject.SetActive(false);
@@ -151,7 +156,6 @@ namespace LaserCrush.Manager
             if (isOnOff)
             {
                 IsOnOffSettingCanvas = true;
-                m_SettingCanvas.SetActive(true);
                 m_SettingPanelDisplayer.PlayFadeOnAnimation();
             }
             else
@@ -168,7 +172,6 @@ namespace LaserCrush.Manager
             if (isOnOff)
             {
                 IsOnOffSettingCanvas = true;
-                m_SettingCanvas.SetActive(true);
                 m_PatronagePanelDisplayer.PlayFadeOnAnimation();
             }
             else m_PatronagePanelDisplayer.PlayFadeOffAnimation();
@@ -176,28 +179,22 @@ namespace LaserCrush.Manager
 
         private void OnOffGameOverCanvas(bool isOnOff)
         {
-            SetGameOverScore();
+            m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
 
             if (isOnOff)
             {
                 IsOnOffGameOverCanvas = true;
-                m_GameOverCanvas.SetActive(true);
                 m_DefeatPanelDisplayer.PlayFadeOnAnimation();
             }
             else m_DefeatPanelDisplayer.PlayFadeOffAnimation();
         }
 
         private void SettingCanvasOff()
-        {
-            IsOnOffSettingCanvas = false;
-            m_SettingCanvas.SetActive(false);
-        }
-
+            => IsOnOffSettingCanvas = false;
+        
         private void GameOverCanvasOff()
-        {
-            IsOnOffGameOverCanvas = false;
-            m_GameOverCanvas.SetActive(false);
-        }
+            => IsOnOffGameOverCanvas = false;
+        #endregion
 
         public void SaveAllData()
         {

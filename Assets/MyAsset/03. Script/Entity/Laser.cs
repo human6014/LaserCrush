@@ -273,13 +273,12 @@ namespace LaserCrush.Entity
             m_LaserEraseAction = null;
         }
 
-
         //보강 부탁드립니다.
-        public void Reset()
+        public void ResetLaser()
         {
             m_Target = null;
-            m_LaserParticle = null;
-
+            m_LaserParticle.OffEffectParticle();
+            m_LaserParticle.OffHitParticle();
         }
     }
 }

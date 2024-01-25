@@ -34,6 +34,7 @@ namespace LaserCrush.Manager
 
         private SubLineController m_SubLineController;
         private ToolbarController m_ToolbarController;
+        private Action m_GameOverAction;
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
@@ -55,9 +56,6 @@ namespace LaserCrush.Manager
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
         private bool m_IsCheckGenerateBlock;
-
-        private Action m_GameOverAction;
-
         #endregion
 
         #region Property
@@ -66,9 +64,6 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
-
-        //밑에 2개 UI로 가려졌을 때
-        public Action<bool> UIInteractionAction { get; set; }
         #endregion
 
         #region MonoBehaviour Func
@@ -89,8 +84,8 @@ namespace LaserCrush.Manager
 
             //데이터 있으면 자기가 바로밑에 Init 호출,
             //없으면 UIManger에서 Init호출
-            if (hasData) Init(true);
             m_UIManager.Init(hasData);
+            if (hasData) Init(true);
         }
 
         public void Init(bool hasData)
@@ -113,18 +108,17 @@ namespace LaserCrush.Manager
             m_SubLineController.OnClickAction += EndDeploying;
             m_SubLineController.Init();
 
-            UIInteractionAction += m_SubLineController.CanInteraction;
-            UIInteractionAction += m_ToolbarController.CanInteraction;
-
             if (hasData) m_SubLineController.IsActiveSubLine = true;
 
             s_ValidHit = 0;
-            s_StageNum = DataManager.GameData.m_StageNumber;
             s_LaserCriticalPoint = 3;
+            s_StageNum = DataManager.GameData.m_StageNumber;
+            m_IsGameOver = DataManager.GameData.m_IsGameOver;
         }
 
         private void Start()
         {
+            if (m_IsGameOver) m_GameOverAction?.Invoke();
             m_AudioManager.OnOffAutoBGMLoop(true);
             m_GameSettingManager.SetFrame();
         }
@@ -202,15 +196,13 @@ namespace LaserCrush.Manager
             m_GameStateType = EGameStateType.Deploying;
             s_StageNum++;
             CheckValueUpdate(false);
-            //한 턴 끝나면 현재 상황 세이브
 
             //게임 종료 체크
             m_IsGameOver = m_BlockManager.IsGameOver();
             if (m_IsGameOver)
             {
-                Debug.Log("GAME OVER");
                 m_GameOverAction?.Invoke();
-                return;
+                DataManager.GameData.m_IsGameOver = true;
             }
 
             SaveAllData();
@@ -265,6 +257,12 @@ namespace LaserCrush.Manager
             }
         }
 
+        public void SetInteraction(bool value)
+        {
+            m_SubLineController.CanInteraction(value);
+            m_ToolbarController.CanInteraction(value);
+        }
+
         private void FeverTime()
         {
             //모든 블럭 파괴
@@ -280,6 +278,7 @@ namespace LaserCrush.Manager
             Energy.ResetGame();
 
             m_IsGameOver = false;
+            DataManager.GameData.m_IsGameOver = false;
             s_StageNum = 1;
 
             m_GameStateType = EGameStateType.BlockUpdating;

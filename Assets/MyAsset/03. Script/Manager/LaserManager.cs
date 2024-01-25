@@ -237,13 +237,9 @@ namespace LaserCrush.Manager
             for (int i = 0; i < lasers.Count; i++)
             {
                 if (lasers[i] != m_InitLazer)
-                {
                     m_DestroyAction(lasers[i].gameObject);
-                }
                 else
-                {
-                    lasers[i].Reset();
-                }
+                    lasers[i].ResetLaser();
             }
             lasers.Clear();
         }

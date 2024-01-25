@@ -229,7 +229,7 @@ namespace LaserCrush.Controller.InputObject
             if (!m_IsInitPosDrag) return;
 
             Vector3 objectPos = RayManager.MousePointToWorldPoint();
-            float xPos = Mathf.Clamp(objectPos.x, -44, 44);
+            float xPos = Mathf.Clamp(objectPos.x, -42, 42);
             Position = new Vector3(xPos, -57, 0);
 
             UpdateLineRenderer();
