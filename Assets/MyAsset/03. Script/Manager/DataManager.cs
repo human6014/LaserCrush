@@ -77,7 +77,7 @@ namespace LaserCrush.Data.Json
                         Vector2 launcherPos, Vector2 launcherDir,
                         List<BlockData> blocks, List<ItemData> items)
         {
-            m_IsGameOver = false;
+            m_IsGameOver = isGameOver;
 
             m_BestScore = bestScore;
             m_CurrentScore = currentScore;

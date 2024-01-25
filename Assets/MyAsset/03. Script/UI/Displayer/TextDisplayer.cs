@@ -13,10 +13,7 @@ namespace LaserCrush.UI.Displayer
         public void SetText(string text)
         {
             if(m_Text == null) m_Text = GetComponent<TextMeshProUGUI>();
-            m_Text.text = text;
+            m_Text.text = string.Format("{0:N0}", text);
         }
-        
-        public void SetTextWithThousandsSeparate(string text)
-            => m_Text.text = string.Format("{0:N0}", text);
     }
 }

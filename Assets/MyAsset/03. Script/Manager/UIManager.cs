@@ -23,6 +23,7 @@ namespace LaserCrush.Manager
         [Header("MainCanvas")]
         [SerializeField] private TextDisplayer m_ScoreTextDisplayer;
         [SerializeField] private TextDisplayer m_EnergyTextDisplayer;
+        [SerializeField] private TextDisplayer m_StageTextDisplayer;
         
         [SerializeField] private ImageSlideDisplayer m_EnergySliderDisplayer;
 
@@ -32,6 +33,7 @@ namespace LaserCrush.Manager
         [Header("GameOverCanvas")]
         [SerializeField] private PanelDisplayer m_DefeatPanelDisplayer;
         [SerializeField] private TextDisplayer m_DefeatScoreTextDisplayer;
+        [SerializeField] private TextDisplayer m_DefeatBestScoreTextDisplayer;
         [SerializeField] private ButtonReceiver m_DefeatRestartButtonReceiver;
 
         [Header("SettingCanvas")]
@@ -41,6 +43,8 @@ namespace LaserCrush.Manager
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
         [SerializeField] private ButtonReceiver m_PatronageResumeButtonReceiver;
+
+        [SerializeField] private TextDisplayer m_SettingBestScoreTextDisplayer;
 
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
@@ -93,8 +97,12 @@ namespace LaserCrush.Manager
             m_ScoreTextDisplayer.Init();
             m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
 
+            m_StageTextDisplayer.Init();
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
+            m_DefeatBestScoreTextDisplayer.Init();
+            m_SettingBestScoreTextDisplayer.Init();
+            m_SettingBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
 
             m_DefeatPanelDisplayer.Init(GameOverCanvasOff);
             m_SettingPanelDisplayer.Init(SettingCanvasOff);
@@ -123,10 +131,18 @@ namespace LaserCrush.Manager
         }
         #endregion
 
-        #region Score & Energy
+        #region Score & Energy & Stage
         public void SetScore(int additionalScore)
         {
             m_Score += additionalScore;
+
+            if(m_Score > m_BestScore)
+            {
+                //BestScore °»½Å
+                m_BestScore = m_Score;
+                m_SettingBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
+            }
+
             m_FloatingTextController.PlayFloatingText(m_Score.ToString().Length, additionalScore / 100);
             m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
         }
@@ -138,6 +154,11 @@ namespace LaserCrush.Manager
         {
             m_EnergySliderDisplayer.SetCurrentValue(current, max);
             m_EnergyTextDisplayer.SetText((current / 100).ToString());
+        }
+
+        public void SetCurrentStage(int stage)
+        {
+            m_StageTextDisplayer.SetText(stage.ToString());
         }
         #endregion
 
@@ -179,7 +200,8 @@ namespace LaserCrush.Manager
 
         private void OnOffGameOverCanvas(bool isOnOff)
         {
-            m_DefeatScoreTextDisplayer.SetTextWithThousandsSeparate((m_Score / 100).ToString());
+            m_DefeatScoreTextDisplayer.SetText((m_Score / 100).ToString());
+            m_DefeatBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
 
             if (isOnOff)
             {
