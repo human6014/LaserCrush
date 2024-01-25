@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
-using TMPro;
 using LaserCrush.Manager;
 using System;
 
@@ -15,7 +13,7 @@ namespace LaserCrush.Entity
         private static event Action s_MaxEnergyUpdate;
         private static event Action s_CurrentEnergyUpdate;
 
-        private static int s_InitEnergy = 10000;
+        private static int s_InitEnergy = 2000;
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;
