@@ -113,6 +113,7 @@ namespace LaserCrush.Manager
             s_ValidHit = 0;
             s_LaserCriticalPoint = 3;
             s_StageNum = DataManager.GameData.m_StageNumber;
+            m_UIManager.SetCurrentStage(s_StageNum - 1);
             m_IsGameOver = DataManager.GameData.m_IsGameOver;
         }
 
@@ -195,6 +196,7 @@ namespace LaserCrush.Manager
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
             s_StageNum++;
+            m_UIManager.SetCurrentStage(s_StageNum - 1);
             CheckValueUpdate(false);
 
             //게임 종료 체크
