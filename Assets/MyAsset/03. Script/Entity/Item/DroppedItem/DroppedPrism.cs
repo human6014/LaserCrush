@@ -9,5 +9,10 @@ namespace LaserCrush.Entity.Item
             StartCoroutine(GetItemAnimation(pos));
             return;
         }
+
+        public override void ReturnObject()
+        {
+            m_ReturnAction?.Invoke(this);
+        }
     }
 }

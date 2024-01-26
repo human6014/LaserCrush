@@ -484,6 +484,7 @@ MonoBehaviour:
   - {fileID: 2075582007536692526}
   - {fileID: 4102400797143359177}
   m_CountText: {fileID: 4883146848132792451}
+  m_CanvasTransform: {fileID: 2492692016178354059}
   m_ItemType: 1
 --- !u!1 &7125055214427198481
 GameObject:
@@ -614,7 +615,7 @@ Transform:
   m_GameObject: {fileID: 8044398122418421875}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
-  m_LocalPosition: {x: -1.28, y: 1.28, z: 0}
+  m_LocalPosition: {x: -1.34, y: 1.34, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -646,7 +647,7 @@ Transform:
   m_GameObject: {fileID: 8468834685676260573}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.38268343, w: 0.92387956}
-  m_LocalPosition: {x: 1.28, y: 1.28, z: 0}
+  m_LocalPosition: {x: 1.34, y: 1.34, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -661,6 +662,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9170223771318617538}
     m_Modifications:
+    - target: {fileID: 2845537280659280, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2844118557691058369, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
       propertyPath: m_Name
       value: SubLine
@@ -728,6 +733,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9019583000548725172}
     m_Modifications:
+    - target: {fileID: 2845537280659280, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2844118557691058369, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
       propertyPath: m_Name
       value: SubLine

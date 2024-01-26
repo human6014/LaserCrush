@@ -154,7 +154,7 @@ namespace LaserCrush.Manager
                 prism1Count: 0,
                 prism2Count: 0,
                 prism3Count: 0,
-                energy: 10000,
+                energy: 2000,
                 launcherPos: new Vector2(0, -57), 
                 launcherDir: Vector2.zero,
                 blocks: new List<BlockData>(),

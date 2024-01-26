@@ -30,22 +30,26 @@ namespace LaserCrush.Entity.Item
         Prism2Branch,
         Prism3Branch,
     }
-    public sealed class InstalledItem : MonoBehaviour, ICollisionable
+    public sealed class InstalledItem : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
         [SerializeField] private Transform[] m_EjectionPortsTransform;
         [SerializeField] private LineRenderer[] m_LineRenderers;
         [SerializeField] private GameObject[] m_SubRotationImage;
         [SerializeField] private TextMeshProUGUI m_CountText;
+        [SerializeField] private RectTransform m_CanvasTransform;
         [SerializeField] private ItemType m_ItemType;
 
+        private ObjectPoolManager.PoolingObject m_Pool;
         private Animator m_Animator;
         private CircleCollider2D m_CircleCollider2D;
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
         private Vector2 m_TextInitPos;
-        private Color m_TextInitColor;
-        private Color m_TextEndColor;
+        private static Color m_TextInitColor;
+        private static Color m_TextEndColor;
+
+        private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
 
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -70,8 +74,8 @@ namespace LaserCrush.Entity.Item
                 for (int i = 0; i < m_SubRotationImage.Length; i++)
                     m_SubRotationImage[i].SetActive(value);
 
-                if (m_IsAdjustMode) PaintAdjustLine();
-                else PaintNormalLine();
+                if (m_IsAdjustMode) SetAdjustLine();
+                else SetAdjustLine(m_SubLineLength);
             }
         }
         public int RowNumber { get; private set; }
@@ -93,6 +97,19 @@ namespace LaserCrush.Entity.Item
             m_TextEndColor = m_CountText.color;
             m_TextEndColor.a = 0;
 
+            foreach (Transform tr in m_EjectionPortsTransform)
+                m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
+
+            IsAdjustMode = true;
+        }
+
+        public void ReInit()
+        {
+            foreach (Transform tr in m_EjectionPortsTransform)
+                tr.gameObject.SetActive(true);
+
+            m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            m_CircleCollider2D.enabled = false;
             IsAdjustMode = true;
         }
 
@@ -101,7 +118,7 @@ namespace LaserCrush.Entity.Item
         /// 1. m_EjectionPorts 위치와 방향 초기화
         /// 2. 사용횟수 초기화
         /// </summary>
-        public void Init(int rowNumber, int colNumber, int remainCount, bool isFixDirection, Vector2 pos, Vector2 dir)
+        public void Init(int rowNumber, int colNumber, int remainCount, bool isFixDirection, Vector2 pos, Vector2 dir, ObjectPoolManager.PoolingObject pool)
         {
             RowNumber = rowNumber;
             ColNumber = colNumber;
@@ -109,13 +126,11 @@ namespace LaserCrush.Entity.Item
             IsFixedDirection = isFixDirection;
             Position = pos;
             Direction = dir;
+            m_Pool = pool;
 
             transform.SetPositionAndRotation(pos, Quaternion.LookRotation(Vector3.forward, dir));
 
-            foreach (Transform tr in m_EjectionPortsTransform)
-                m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
-
-            m_TextInitPos = (Vector2)m_CountText.rectTransform.position + new Vector2(0, 7.5f);
+            m_TextInitPos = m_CountText.rectTransform.anchoredPosition + new Vector2(0, 2.5f);
             m_CircleCollider2D.enabled = true;
             IsAdjustMode = false;
             m_IsActivate = false;
@@ -166,25 +181,16 @@ namespace LaserCrush.Entity.Item
         public bool IsGetDamageable()
             => false;
 
-
         public bool GetDamage(int damage)
             => false;
-
 
         public EEntityType GetEEntityType()
             => EEntityType.Prisim;
 
-
-        private void PaintNormalLine()
+        public void SetAdjustLine(float length = Mathf.Infinity)
         {
             for (int i = 0; i < m_LineRenderers.Length; i++)
-                PaintLine(i, m_SubLineLength);
-        }
-
-        public void PaintAdjustLine()
-        {
-            for (int i = 0; i < m_LineRenderers.Length; i++)
-                PaintLine(i, Mathf.Infinity);
+                PaintLine(i, length);
         }
 
         private void PaintLine(int i, float length)
@@ -206,7 +212,7 @@ namespace LaserCrush.Entity.Item
             Vector2 discreteDirection = direction.DiscreteDirection(5);
             Direction = discreteDirection;
             transform.rotation = Quaternion.LookRotation(transform.forward, discreteDirection);
-            PaintAdjustLine();
+            SetAdjustLine();
         }
 
         public void PlayFixNoticeAnimation()
@@ -223,6 +229,7 @@ namespace LaserCrush.Entity.Item
                 m_EjectionPortsTransform[i].gameObject.SetActive(false);
 
             m_Animator.SetTrigger(m_DestroyAnimationKey);
+            //애니메이션 끝나고 이벤트로 ReturnObject() 호출함
         }
 
         public void PlayUsingCountDisplay()
@@ -232,13 +239,13 @@ namespace LaserCrush.Entity.Item
 
         private IEnumerator UsingCountCoroutine(float time)
         {
-            if (RemainUsingCount == 3) m_CountText.fontSize = 2.25f;
-            if (RemainUsingCount == 2) m_CountText.fontSize = 2.75f;
-            else m_CountText.fontSize = 3.25f;
+            m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
+            m_CountText.fontSize = m_FontSizes[RemainUsingCount - 1];
             m_CountText.text = RemainUsingCount.ToString();
             m_CountText.gameObject.SetActive(true);
-            m_CountText.rectTransform.SetPositionAndRotation(m_TextInitPos, Quaternion.LookRotation(Vector3.forward, Vector3.up));
+            m_CountText.rectTransform.anchoredPosition = m_TextInitPos;
+            m_CountText.rectTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
             m_CountText.color = m_TextInitColor;
 
             Vector2 endPos = m_TextInitPos + new Vector2(0, 7.5f);
@@ -251,15 +258,16 @@ namespace LaserCrush.Entity.Item
                 t = elapsedTime / time;
 
                 m_CountText.color = Color.Lerp(m_TextInitColor, m_TextEndColor, t);
-                m_CountText.rectTransform.position = Vector2.Lerp(m_TextInitPos, endPos, t);
+                m_CountText.rectTransform.anchoredPosition = Vector2.Lerp(m_TextInitPos, endPos, t);
 
                 yield return null;
             }
 
             m_CountText.gameObject.SetActive(false);
+            m_CountText.rectTransform.anchoredPosition = Vector2.zero;
         }
 
-        public void DestroySelf()
-            => Destroy(gameObject);
+        public override void ReturnObject()
+            => m_Pool.ReturnObject(this);
     }
 }

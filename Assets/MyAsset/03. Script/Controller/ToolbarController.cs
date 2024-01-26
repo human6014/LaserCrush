@@ -11,6 +11,7 @@ namespace LaserCrush.Controller.InputObject
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
         [SerializeField] private int m_ItemUsingCount = 3;
+        [SerializeField] private int[] m_ItemPoolingCount;
         
         private GridLineController m_GridLineController;
         private SubLineController m_SubLineController;
@@ -18,6 +19,8 @@ namespace LaserCrush.Controller.InputObject
         private AcquiredItemUI m_CurrentItem;
         private InstalledItem m_ControllingItem;
         private Transform m_ControllingTransform;
+
+        private ObjectPoolManager.PoolingObject[] m_InstalledItemPool;
 
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
         private Action<InstalledItem, AcquiredItemUI> m_AddInstallItemAction;
@@ -54,7 +57,18 @@ namespace LaserCrush.Controller.InputObject
             foreach (AcquiredItemUI acquiredItem in acquiredItemUI)
                 acquiredItem.PointerDownAction += OnPointerDown;
 
+            AssignPoolingObject();
             LoadInstalledItem();
+        }
+
+        private void AssignPoolingObject()
+        {
+            m_InstalledItemPool = new ObjectPoolManager.PoolingObject[m_ItemPoolingCount.Length];
+            for (int i = 0; i < m_ItemPoolingCount.Length; i++)
+            {
+                m_InstalledItemPool[i] = ObjectPoolManager.Register(m_InstalledItems[i], m_BatchedItemTransform);
+                m_InstalledItemPool[i].GenerateObj(m_ItemPoolingCount[i]);
+            }
         }
 
         #region Load & Save
@@ -117,7 +131,10 @@ namespace LaserCrush.Controller.InputObject
             {
                 //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
                 if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
-                    Destroy(m_ControllingTransform.gameObject);
+                {
+                    m_InstalledItemPool[(int)m_ControllingItem.ItemType].ReturnObject(m_ControllingItem);
+                    //Destroy(m_ControllingTransform.gameObject);
+                }
 
                 BatchComp();
             }
@@ -141,7 +158,10 @@ namespace LaserCrush.Controller.InputObject
             {
                 //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
                 if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
-                    Destroy(m_ControllingTransform.gameObject);
+                {
+                    m_InstalledItemPool[(int)m_ControllingItem.ItemType].ReturnObject(m_ControllingItem);
+                    //Destroy(m_ControllingTransform.gameObject);
+                }
 
                 BatchComp();
             }
@@ -150,8 +170,12 @@ namespace LaserCrush.Controller.InputObject
         private void PointDownProcess()
         {
             m_IsDragging = true;
-            m_ControllingTransform = Instantiate(m_CurrentItem.ItemObject, Vector2.zero, Quaternion.identity, m_BatchedItemTransform).transform;
+            m_ControllingTransform = m_InstalledItemPool[m_CurrentItem.ItemIndex].GetObject(true).transform;
+            m_ControllingTransform.transform.SetPositionAndRotation(Vector2.zero, Quaternion.LookRotation(Vector3.forward, Vector3.up));
+            
+            //m_ControllingTransform = Instantiate(m_CurrentItem.ItemObject, Vector2.zero, Quaternion.identity, m_BatchedItemTransform).transform;
             m_ControllingItem = m_ControllingTransform.GetComponent<InstalledItem>();
+            m_ControllingItem.ReInit();
         }
 
         private void PointDragProcess(bool isHit, ref RaycastHit2D hit2D)
@@ -163,7 +187,7 @@ namespace LaserCrush.Controller.InputObject
                 if (!result.m_IsAvailable) m_ControllingTransform.position = Vector3.zero;
                 else m_ControllingTransform.position = result.m_ItemGridPos;
             }
-            m_ControllingItem.PaintAdjustLine();
+            m_ControllingItem.SetAdjustLine();
         }
         #endregion
 
@@ -185,7 +209,8 @@ namespace LaserCrush.Controller.InputObject
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
             InstalledItem installedItem = m_ControllingTransform.GetComponent<InstalledItem>();
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(row, col, usingCount, isFixed, pos, dir);
+            installedItem.Init(row, col, usingCount, false, pos, dir, m_InstalledItemPool[(int)installedItem.ItemType]);
+            if (isFixed) installedItem.FixDirection();
         }
 
         private void BatchComp()
