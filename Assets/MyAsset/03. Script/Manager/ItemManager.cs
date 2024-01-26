@@ -36,7 +36,6 @@ namespace LaserCrush.Manager
         private List<InstalledItem> m_InstalledItem;
         private List<InstalledItem> m_InstalledItemBuffer;
 
-        private Action<GameObject> m_DestroyAction;
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
 
         private int[] m_AcquiredItemCounts;
@@ -48,7 +47,7 @@ namespace LaserCrush.Manager
             remove => m_CheckAvailablePosFunc -= value;
         }
 
-        public void Init(Action<GameObject> destroyAction, ToolbarController toolbarController)
+        public void Init(ToolbarController toolbarController)
         {
             m_DroppedItems = new List<DroppedItem>();
             m_InstalledItem = new List<InstalledItem>();
@@ -58,8 +57,6 @@ namespace LaserCrush.Manager
                 DataManager.GameData.m_Prism2Count, 
                 DataManager.GameData.m_Prism3Count 
             };
-
-            m_DestroyAction = destroyAction;
 
             m_AcquiredItemUI[0].Init(DataManager.GameData.m_Prism1Count);
             m_AcquiredItemUI[1].Init(DataManager.GameData.m_Prism2Count);
@@ -91,13 +88,14 @@ namespace LaserCrush.Manager
             return true;
         }
 
-        public bool CheckDestroyPrisms()
+        public bool CheckDestroyItem()
         {
             for (int i = 0; i < m_InstalledItem.Count; i++)
             {
                 if (m_InstalledItem[i].IsOverloaded())
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
-                else m_InstalledItem[i].PlayUsingCountDisplay();
+                else 
+                    m_InstalledItem[i].PlayUsingCountDisplay();
             }
             RemoveBufferFlush(false);
             return true;
@@ -152,8 +150,11 @@ namespace LaserCrush.Manager
         {
             for (int i = 0; i < m_InstalledItemBuffer.Count; i++)
             {
-                if (isImmediate) m_DestroyAction?.Invoke(m_InstalledItemBuffer[i].gameObject);
-                else m_InstalledItemBuffer[i].PlayDestroyAnimation();
+                if (isImmediate) 
+                    m_InstalledItemBuffer[i].ReturnObject();
+                else
+                    m_InstalledItemBuffer[i].PlayDestroyAnimation();
+
                 m_InstalledItem.Remove(m_InstalledItemBuffer[i]);
             }
             m_InstalledItemBuffer.Clear();
@@ -192,14 +193,14 @@ namespace LaserCrush.Manager
 
             RemoveBufferFlush(true);
 
-            for(int i = 0; i < m_AcquiredItemUI.Length; i++)
+            for (int i = 0; i < m_AcquiredItemUI.Length; i++)
             {
                 m_AcquiredItemCounts[i] = 0;
                 m_AcquiredItemUI[i].HasCount = 0;
             }
 
-            for(int i = 0; i < m_DroppedItems.Count; i++)
-                m_DestroyAction?.Invoke(m_DroppedItems[i].gameObject);
+            for (int i = 0; i < m_DroppedItems.Count; i++)
+                m_DroppedItems[i].ReturnObject();
 
             m_DroppedItems.Clear();
         }

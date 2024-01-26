@@ -284,38 +284,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2884772336417782702
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1082004645300941466}
-  m_Layer: 0
-  m_Name: ImagePool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1082004645300941466
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2884772336417782702}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6652057316557615111}
-  m_Father: {fileID: 14902052112050989}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4734931236336753301
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,7 +420,7 @@ Transform:
   m_LocalScale: {x: 2.6, y: 2.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1082004645300941466}
+  - {fileID: 6652057316557615111}
   - {fileID: 1462850804802842104}
   - {fileID: 5240375228961231139}
   m_Father: {fileID: 0}
@@ -485,7 +453,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4749280532638309637}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -533,6 +501,7 @@ MonoBehaviour:
   - {fileID: 867530413833035339}
   - {fileID: 1621378673085951138}
   m_CountText: {fileID: 7490223635325297801}
+  m_CanvasTransform: {fileID: 5240375228961231139}
   m_ItemType: 0
 --- !u!1 &5610660610716939154
 GameObject:
@@ -545,7 +514,7 @@ GameObject:
   - component: {fileID: 6652057316557615111}
   - component: {fileID: 3632263859919146403}
   m_Layer: 0
-  m_Name: Image
+  m_Name: ImagePool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -559,12 +528,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5610660610716939154}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1082004645300941466}
+  m_Father: {fileID: 14902052112050989}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3632263859919146403
 SpriteRenderer:
@@ -658,6 +627,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1462850804802842104}
     m_Modifications:
+    - target: {fileID: 2845537280659280, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2844118557691058369, guid: 88460d3c1325a0c48a2c07743fd5f760, type: 3}
       propertyPath: m_Name
       value: SubLine

@@ -17,6 +17,8 @@ namespace LaserCrush.Manager
         [Header("Effect Pooling")]
         [SerializeField] private BlockParticleController m_BlockParticleController;
 
+        [SerializeField] private int[] m_DroppedItemPoolingCount;
+
         [Header("Monobehaviour Reference")]
         [SerializeField] private UIManager m_UIManager;
 
@@ -31,6 +33,8 @@ namespace LaserCrush.Manager
         [SerializeField] private Transform m_TopWall;
         [SerializeField] private Transform m_LeftWall;
 
+        [SerializeField] private int m_PoolingCount = 30;
+
         [Tooltip("블럭 최대 행 개수")]
         [Range(1, 40)]
         [SerializeField] private int m_MaxRowCount;
@@ -44,10 +48,11 @@ namespace LaserCrush.Manager
         [SerializeField] private float m_GenerateTime;
         #endregion
 
+        private ObjectPoolManager.PoolingObject m_BlockPool;
+        private ObjectPoolManager.PoolingObject[] m_DroppedItemPool;
+
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
-
-        private event Func<GameObject, Vector3, Transform, GameObject> m_InstantiatePosParentFunc;
 
         private readonly List<int> s_Probabilitytable = new List<int>() { 6, 25, 45, 60, 45, 20 };
         private readonly int s_MaxWightSum = 201;
@@ -61,11 +66,10 @@ namespace LaserCrush.Manager
         private Vector2 m_MoveDownVector;
         #endregion
 
-        public void Init(Func<GameObject, Vector3, Transform, GameObject> instantiatePosParentFunc,
-                         ItemManager itemManager)
+        public void Init(ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
-            m_InstantiatePosParentFunc = instantiatePosParentFunc;
+
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
@@ -76,7 +80,21 @@ namespace LaserCrush.Manager
 
             m_BlockParticleController.Init(blockSize);
 
+            AssignPoolingObject();
             LoadBlocks();
+        }
+
+        private void AssignPoolingObject()
+        {
+            m_BlockPool = ObjectPoolManager.Register(m_Block, m_BlockTransform);
+            m_BlockPool.GenerateObj(Mathf.Max(DataManager.GameData.m_Blocks.Count, m_PoolingCount));
+
+            m_DroppedItemPool = new ObjectPoolManager.PoolingObject[m_DroppedItemPoolingCount.Length];
+            for (int i = 0; i < m_DroppedItemPool.Length; i++)
+            {
+                m_DroppedItemPool[i] = ObjectPoolManager.Register(m_ItemProbabilityData.DroppedItems[i].GetComponent<PoolableMonoBehaviour>(), m_DroppedItemTransform);
+                m_DroppedItemPool[i].GenerateObj(m_DroppedItemPoolingCount[i]);
+            }
         }
 
         #region Grid Related
@@ -91,6 +109,8 @@ namespace LaserCrush.Manager
                     rowNumber: rowNumber,
                     colNumber: colNumber
                     );
+
+            if (rowNumber == 0) return result;
 
             foreach (Block block in m_Blocks)
             {
@@ -199,7 +219,9 @@ namespace LaserCrush.Manager
 
         private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos)
         {
-            Block block = m_InstantiatePosParentFunc?.Invoke(m_Block.gameObject, pos, m_BlockTransform).GetComponent<Block>();
+            Block block = (Block)m_BlockPool.GetObject(true);
+            block.transform.position = pos;
+            //Block block = m_InstantiatePosParentFunc?.Invoke(m_Block.gameObject, pos, m_BlockTransform).GetComponent<Block>();
             block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
             m_Blocks.Add(block);
         }
@@ -260,14 +282,18 @@ namespace LaserCrush.Manager
 
         private void RemoveBlock(Block block)
         {
-            if (m_ItemProbabilityData.TryGetItemObject((int)block.ItemType, out GameObject itemPrefab))
+            int typeIndex = (int)block.ItemType;
+            if (typeIndex != 0)
             {
-                DroppedItem droppedItem = m_InstantiatePosParentFunc?.Invoke(itemPrefab, block.Position, m_DroppedItemTransform).GetComponent<DroppedItem>();
+                DroppedItem droppedItem = (DroppedItem)m_DroppedItemPool[typeIndex - 1].GetObject(true);
+                droppedItem.transform.position = block.Position;
+                droppedItem.ReturnAction += m_DroppedItemPool[typeIndex - 1].ReturnObject;
                 m_ItemManager.AddDroppedItem(droppedItem);
             }
 
             m_BlockParticleController.PlayParticle(block.Position, block.GetEEntityType());
             m_UIManager.SetScore(block.Score);
+            m_BlockPool.ReturnObject(block);
             m_Blocks.Remove(block);
         }
 
@@ -333,7 +359,10 @@ namespace LaserCrush.Manager
         public void ResetGame()
         {
             foreach (var block in m_Blocks)
-                block.DestoryReset();
+            {
+                block.ImmediatelyReset();
+                m_BlockPool.ReturnObject(block);
+            }
 
             m_Blocks.Clear();
         }

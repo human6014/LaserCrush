@@ -27,6 +27,8 @@ namespace LaserCrush.Data
         [SerializeField] private ItemProbability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
 
+        public GameObject[] DroppedItems { get => m_DroppedItems; }
+
         public int GetItemIndex()
         {
             float randomPoint = Random.value * 100;
@@ -38,17 +40,6 @@ namespace LaserCrush.Data
             }
 
             return length;
-        }
-
-        public bool TryGetItemObject(int index, out GameObject obj)
-        {
-            index--;
-            obj = null;
-            if (index < 0)
-                return false;
-
-            obj = m_DroppedItems[index];
-            return true;
         }
     }
 }

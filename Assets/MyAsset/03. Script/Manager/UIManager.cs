@@ -95,14 +95,14 @@ namespace LaserCrush.Manager
             m_Score = DataManager.GameData.m_CurrentScore;
 
             m_ScoreTextDisplayer.Init();
-            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
+            m_ScoreTextDisplayer.SetText(m_Score / 100);
 
             m_StageTextDisplayer.Init();
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
             m_DefeatBestScoreTextDisplayer.Init();
             m_SettingBestScoreTextDisplayer.Init();
-            m_SettingBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
+            m_SettingBestScoreTextDisplayer.SetText(m_BestScore / 100);
 
             m_DefeatPanelDisplayer.Init(GameOverCanvasOff);
             m_SettingPanelDisplayer.Init(SettingCanvasOff);
@@ -140,11 +140,11 @@ namespace LaserCrush.Manager
             {
                 //BestScore °»½Å
                 m_BestScore = m_Score;
-                m_SettingBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
+                m_SettingBestScoreTextDisplayer.SetText(m_BestScore / 100);
             }
 
             m_FloatingTextController.PlayFloatingText(m_Score.ToString().Length, additionalScore / 100);
-            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
+            m_ScoreTextDisplayer.SetText(m_Score / 100);
         }
 
         public void SetCurrentMaxEnergy(int current, int max)
@@ -153,12 +153,12 @@ namespace LaserCrush.Manager
         public void SetCurrentEnergy(int current, int max)
         {
             m_EnergySliderDisplayer.SetCurrentValue(current, max);
-            m_EnergyTextDisplayer.SetText((current / 100).ToString());
+            m_EnergyTextDisplayer.SetText(current / 100);
         }
 
         public void SetCurrentStage(int stage)
         {
-            m_StageTextDisplayer.SetText(stage.ToString());
+            m_StageTextDisplayer.SetText(stage);
         }
         #endregion
 
@@ -200,8 +200,8 @@ namespace LaserCrush.Manager
 
         private void OnOffGameOverCanvas(bool isOnOff)
         {
-            m_DefeatScoreTextDisplayer.SetText((m_Score / 100).ToString());
-            m_DefeatBestScoreTextDisplayer.SetText((m_BestScore / 100).ToString());
+            m_DefeatScoreTextDisplayer.SetText(m_Score / 100);
+            m_DefeatBestScoreTextDisplayer.SetText(m_BestScore / 100);
 
             if (isOnOff)
             {
@@ -229,7 +229,7 @@ namespace LaserCrush.Manager
             m_GameManager.ResetGame();
             OnOffGameOverCanvas(false);
             m_Score = 0;
-            m_ScoreTextDisplayer.SetText((m_Score / 100).ToString());
+            m_ScoreTextDisplayer.SetText(m_Score / 100);
         }
     }
 }

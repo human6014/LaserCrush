@@ -18,15 +18,16 @@ namespace LaserCrush.Entity
         Prsim3
     }
 
-    public sealed class Block : MonoBehaviour, ICollisionable
+    public sealed class Block : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
         [SerializeField] private BlockData m_BlockData;
 
+        private BoxCollider2D m_BoxCollider2D;
         private Animator m_Animator;
         private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
-        private Action<Block> m_RemoveBlockAction;
+        private Action<Block> m_PlayParticleAction;
 
         private EEntityType m_EntityType;
 
@@ -46,6 +47,7 @@ namespace LaserCrush.Entity
 
         private void Awake()
         {
+            m_BoxCollider2D = GetComponent<BoxCollider2D>();
             m_Animator = GetComponent<Animator>();
             m_Text = GetComponentInChildren<TextMeshProUGUI>();
             m_SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -57,7 +59,7 @@ namespace LaserCrush.Entity
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> removeBlockAction)
+        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             CurrentHP = hp;
             Score = hp;
@@ -66,8 +68,10 @@ namespace LaserCrush.Entity
             m_EntityType = entityType;
             ItemType = itemType;
             Position = pos;
-            m_RemoveBlockAction = removeBlockAction;
+            m_PlayParticleAction = playParticleAction;
 
+            m_BoxCollider2D.enabled = true;
+            m_IsDestroyed = false;
             m_AttackCount = 0;
             m_Text.text = GetHP().ToString();
             m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ?
@@ -99,18 +103,14 @@ namespace LaserCrush.Entity
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
             m_IsDestroyed = true;
-            m_RemoveBlockAction?.Invoke(this);
-            Destroy(gameObject);
+            m_PlayParticleAction?.Invoke(this);
         }
 
         /// <summary>
         /// 파티클, 사운드 실행 안하고 바로 삭제
         /// </summary>
-        public void DestoryReset()
-        {
-            m_IsDestroyed = true;
-            Destroy(gameObject);
-        }
+        public void ImmediatelyReset()
+            => m_IsDestroyed = true;
 
         public bool GetDamage(int damage)
         {
@@ -195,6 +195,9 @@ namespace LaserCrush.Entity
         }
 
         private void OnDestroy()
-            => m_RemoveBlockAction = null;
+            => m_PlayParticleAction = null;
+
+        public override void ReturnObject()
+            => m_PlayParticleAction?.Invoke(this);
     }
 }
