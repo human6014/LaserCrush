@@ -100,8 +100,8 @@ namespace LaserCrush.Manager
             m_ToolbarController = GetComponent<ToolbarController>();
 
             m_LaserManager.Init(InstantiateWithPosAndParentObject, DestroyObject);
-            m_BlockManager.Init(InstantiateWithPosAndParentObject, m_ItemManager);
-            m_ItemManager.Init(DestroyObject, m_ToolbarController);
+            m_BlockManager.Init(m_ItemManager);
+            m_ItemManager.Init(m_ToolbarController);
 
             GetComponent<Energy>().Init(DataManager.GameData.m_Energy);
 
@@ -172,16 +172,16 @@ namespace LaserCrush.Manager
                 if (!m_IsCheckGetItem) return;
             }
 
-            if (!m_IsCheckDestroyItem)
-            {
-                m_IsCheckDestroyItem = m_ItemManager.CheckDestroyPrisms();
-                if (!m_IsCheckDestroyItem) return;
-            }
-
             if (!m_IsCheckMoveDownBlock)
             {
                 m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
                 if (!m_IsCheckMoveDownBlock) return;
+            }
+
+            if (!m_IsCheckDestroyItem)
+            {
+                m_IsCheckDestroyItem = m_ItemManager.CheckDestroyItem();
+                if (!m_IsCheckDestroyItem) return;
             }
 
             if (!m_IsCheckGenerateBlock)

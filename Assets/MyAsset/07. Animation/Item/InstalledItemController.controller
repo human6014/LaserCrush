@@ -38,13 +38,13 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 4960854390298674401}
-    m_Position: {x: 280, y: 30, z: 0}
+    m_Position: {x: 130, y: 40, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8125048904860643957}
     m_Position: {x: 280, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5517695660043404058}
-    m_Position: {x: 280, y: -30, z: 0}
+    m_Position: {x: 440, y: 40, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 9007637769650186084}
@@ -52,7 +52,7 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 50, y: 40, z: 0}
+  m_AnyStatePosition: {x: 300, y: -20, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 50, y: -20, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
@@ -96,13 +96,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Destroy
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -207,7 +207,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 0}
+  m_Motion: {fileID: 7400000, guid: d21ae0bbb09254c4682b1ad0bce67f04, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
