@@ -1,7 +1,7 @@
 using UnityEngine;
 using LaserCrush.Manager;
 using System;
-
+using System.Collections.Generic;
 
 namespace LaserCrush.Entity
 {
@@ -18,6 +18,8 @@ namespace LaserCrush.Entity
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;
         private static int s_HittingWallLaserNum;
+
+        private static HashSet<int> m_LaserHashSet;
         #endregion
 
         private static int MaxEnergy
@@ -28,6 +30,11 @@ namespace LaserCrush.Entity
                 s_MaxEnergy = value;
                 s_MaxEnergyUpdate?.Invoke();
             }
+        }
+
+        public static int GetMaxEnergy()
+        {
+            return s_MaxEnergy;
         }
 
         private static int CurrentEnergy
@@ -53,14 +60,15 @@ namespace LaserCrush.Entity
 
             s_MaxEnergyUpdate?.Invoke();
             s_CurrentEnergyUpdate?.Invoke();
+
+            m_LaserHashSet = new HashSet<int>();
         }
 
-        /// 반환형은 총 사용한 에너지의 양이다.
-        /// 적게남
+
+        /// <summary>
+        /// 
         /// </summary>
-        /// <param name="energy">
-        /// 사용할 에너지
-        /// </param>
+        /// <param name="energy">사용할 에너지 양</param>
         /// <returns></returns>
         public static int UseEnergy(int energy)
         {
@@ -91,7 +99,14 @@ namespace LaserCrush.Entity
             CurrentEnergy = s_MaxEnergy;
             s_HittingFloorLaserNum = 0;
             s_HittingWallLaserNum = 0;
+
+            m_LaserHashSet.Clear();
             return CurrentEnergy;
+        }
+
+        public static void ChargeEnergy(int energy)
+        {
+            CurrentEnergy += energy;
         }
 
         public static void CollideWithWall()
@@ -117,7 +132,8 @@ namespace LaserCrush.Entity
              */
 
             s_HittingWallLaserNum++;
-            if (s_HittingWallLaserNum > 10) { UseEnergy(MaxEnergy / 10); }
+            if (s_HittingWallLaserNum > 10) 
+            { UseEnergy(MaxEnergy / 12); }
             GameManager.s_ValidHit++;
         }
 

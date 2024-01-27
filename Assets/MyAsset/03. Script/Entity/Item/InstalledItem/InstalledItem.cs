@@ -5,6 +5,7 @@ using UnityEngine;
 using LaserCrush.Extension;
 using LaserCrush.Manager;
 using TMPro;
+using Unity.VisualScripting;
 
 namespace LaserCrush.Entity
 {
@@ -138,8 +139,23 @@ namespace LaserCrush.Entity.Item
         public bool Waiting()
         {
             m_ChargingWait += Time.deltaTime;
+
             if (m_ChargingWait >= m_ChargingTime)
+            {
+                switch (m_ItemType)
+                {
+                    case ItemType.Prism1Branch:
+                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.3));
+                        break;
+                    case ItemType.Prism2Branch:
+                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.4));
+                        break;
+                    case ItemType.Prism3Branch:
+                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.7));
+                        break;
+                }
                 m_IsActivate = true;
+            }
 
             return m_IsActivate;
         }
@@ -150,8 +166,9 @@ namespace LaserCrush.Entity.Item
 
             GameManager.s_ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
-            m_IsActivate = true;
+            m_IsActivate = false;
             RemainUsingCount--;
+            m_ChargingWait = 0;
             return m_EjectionPorts;
         }
 

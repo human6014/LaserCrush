@@ -120,7 +120,7 @@ namespace LaserCrush.Entity
             m_AttackCount++;
 
             GameManager.s_ValidHit++;
-            damage *= GameManager.s_StageNum + 1 / 2;
+            damage *= (int)((GameManager.s_StageNum + 1 / 2) * 0.85);
 
             m_Animator.SetTrigger("Hit");
 
