@@ -10,8 +10,8 @@ namespace LaserCrush.Entity.Item
         {
             StartCoroutine(GetItemAnimation(pos));
 
-            Energy.EnergyUpgrade(m_GettingEnergy);
-
+            double getEnergy = 5 * 3.8 * 0.6 / 2;
+            Energy.EnergyUpgrade((int)getEnergy *100);
             return;
         }
 

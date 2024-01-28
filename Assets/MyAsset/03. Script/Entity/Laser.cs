@@ -45,6 +45,7 @@ namespace LaserCrush.Entity
         private bool m_IsErased;
 
         private int m_Hierarchy;
+        private int m_LaserID;
         #endregion
 
         private void Awake()
