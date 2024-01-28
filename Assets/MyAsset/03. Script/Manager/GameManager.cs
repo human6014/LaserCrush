@@ -99,7 +99,7 @@ namespace LaserCrush.Manager
             m_SubLineController = GetComponent<SubLineController>();
             m_ToolbarController = GetComponent<ToolbarController>();
 
-            m_LaserManager.Init(InstantiateWithPosAndParentObject, DestroyObject);
+            m_LaserManager.Init();
             m_BlockManager.Init(m_ItemManager);
             m_ItemManager.Init(m_ToolbarController);
 
