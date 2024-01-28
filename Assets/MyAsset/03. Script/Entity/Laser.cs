@@ -18,7 +18,7 @@ namespace LaserCrush.Entity
     /// 충돌관련 로직은 모두 레이저에서 처리 후 각 개체에 통보하는 방식
     ///     ex) 충돌 오브젝트 탐색 후 hp, 타입등 읽어온 후 로직 처리 후 각 개체에 통보
     /// </summary>
-    public class Laser : MonoBehaviour
+    public class Laser : PoolableMonoBehaviour
     {
         #region Variable
         [SerializeField] private Data.LaserData m_LaserData;
@@ -40,7 +40,6 @@ namespace LaserCrush.Entity
         private Vector2 m_DirectionVector;
         private Vector2 m_HitNormal;
 
-        private bool m_IsInitated;
         private bool m_IsActivated;
         private bool m_IsErased;
 
@@ -50,8 +49,6 @@ namespace LaserCrush.Entity
 
         private void Awake()
         {
-            m_IsInitated = false;
-
             m_LaserParticle = new LaserParticle(
                     transform.GetChild(0).GetComponent<ParticleSystem>(),
                     transform.GetChild(1).GetComponent<ParticleSystem>()
@@ -70,9 +67,7 @@ namespace LaserCrush.Entity
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsErased = false;
-            m_IsInitated = true;
-            m_IsActivated = true;
-            m_IsErased = false;
+            m_IsActivated = true;     
             m_Hierarchy = hierarchy;
             //생성 시 디메리트 계산로직 입맛대로 수정 가능
             if (m_Hierarchy >= GameManager.s_LaserCriticalPoint)
@@ -97,7 +92,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public void Run()
         {
-            if (!m_IsInitated) { return; }
+            if (!m_IsActivated) return;
             switch (m_State)
             {
                 case ELaserStateType.Move://에너지 소모x 이동만
@@ -126,7 +121,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public bool Erase()
         {
-            if (m_IsErased) { return true; }
+            if (m_IsErased) return true; 
 
             float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
             float eraseVelocity = m_LaserData.EraseVelocity * Time.deltaTime;
@@ -134,11 +129,11 @@ namespace LaserCrush.Entity
             {
                 m_IsErased = true;
                 MoveStartPoint(m_StartPoint, eraseVelocity, dist);
-                m_LaserParticle.OffEffectParticle();
-                m_LaserParticle.OffHitParticle();
 
                 if (m_Target != null && m_Target.GetEEntityType() == EEntityType.Floor)
                     Energy.DeCollideWithFloor();
+
+                ResetLaser();
 
                 return true;
             }
@@ -274,12 +269,17 @@ namespace LaserCrush.Entity
             m_LaserEraseAction = null;
         }
 
-        //보강 부탁드립니다.
         public void ResetLaser()
         {
+            m_IsActivated = false;
             m_Target = null;
             m_LaserParticle.OffEffectParticle();
             m_LaserParticle.OffHitParticle();
+        }
+
+        public override void ReturnObject()
+        {
+            //...
         }
     }
 }

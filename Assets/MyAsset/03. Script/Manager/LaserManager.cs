@@ -14,8 +14,9 @@ namespace LaserCrush.Manager
     {
         #region Variable
         [SerializeField] private Laser m_InitLazer;
-        [SerializeField] private GameObject m_LaserObject;
+        [SerializeField] private Laser m_LaserObject;
         [SerializeField] private Transform m_LasersTransform;
+        [SerializeField] private int m_PoolCount = 20;
 
         //lazer저장하는 자료구조
         private List<Laser> m_Lasers;
@@ -30,13 +31,12 @@ namespace LaserCrush.Manager
         private List<Laser> m_LossParentsLaserAddBuffer;
         private List<Laser> m_LossParentsLaserRemoveBuffer;
 
-        private bool m_Initialized = false;
+        private bool m_Activated = false;
         #endregion
 
-        private event Func<GameObject, Vector3, Transform, GameObject> m_InstantiatePosParentFunc;
-        private event Action<GameObject> m_DestroyAction;
+        private ObjectPoolManager.PoolingObject m_LaserPool;
 
-        public void Init(Func<GameObject, Vector3, Transform, GameObject> instantiatePosParentFunc, Action<GameObject> destroyAction)
+        public void Init()
         {
             m_Lasers = new List<Laser>();
             m_LaserAddBuffer = new List<Laser>();
@@ -46,22 +46,21 @@ namespace LaserCrush.Manager
             m_LossParentsLaserAddBuffer = new List<Laser>();
             m_LossParentsLaserRemoveBuffer = new List<Laser>();
 
-
-            m_InstantiatePosParentFunc = instantiatePosParentFunc;
-            m_DestroyAction = destroyAction;
+            m_LaserPool = ObjectPoolManager.Register(m_LaserObject, m_LasersTransform);
+            m_LaserPool.GenerateObj(m_PoolCount);
             m_InitLazer.Init(CreateLaser, LossParent);
         }
 
         public void Activate(Vector3 pos, Vector3 dir)
         {
-            if (!m_Initialized)//턴 첫 시작
+            if (!m_Activated)//턴 첫 시작
             {
                 m_InitLazer.Activate(pos, dir, 0);
 
                 m_RootLazer.Add(m_InitLazer);
                 m_Lasers.Add(m_InitLazer);
 
-                m_Initialized = true;
+                m_Activated = true;
             }
             else
             {
@@ -93,11 +92,11 @@ namespace LaserCrush.Manager
         {
             if (m_Lasers.Count == 0)
             {
-                foreach (Transform tr in m_LasersTransform)
-                {
-                    m_DestroyAction?.Invoke(tr.gameObject);
-                }
-                m_Initialized = false;
+                PoolableMonoBehaviour[] childs = m_LasersTransform.GetComponentsInChildren<PoolableMonoBehaviour>();
+                for(int i = 0; i < childs.Length; i++)
+                    m_LaserPool.ReturnObject(childs[i]);
+
+                m_Activated = false;
                 //AudioManager.AudioManagerInstance.StopNormalSE("Laser");
                 return true;
             }
@@ -112,7 +111,7 @@ namespace LaserCrush.Manager
                 if (m_RootLazer[i].Erase())
                 {
                     m_LaserRemoveBuffer.Add(m_RootLazer[i]);
-                    foreach (var child in m_RootLazer[i].GetChildLazer())
+                    foreach (Laser child in m_RootLazer[i].GetChildLazer())
                     {
                         m_LaserAddBuffer.Add(child);
                     }
@@ -128,9 +127,7 @@ namespace LaserCrush.Manager
         public void RemoveLossParentsLaser()
         {
             if (m_LossParentsLaser.Count == 0)
-            {
                 return;
-            }
 
             for (int i = 0; i < m_LossParentsLaser.Count; i++)
             {
@@ -205,15 +202,14 @@ namespace LaserCrush.Manager
         {
             List<Laser> answer = new List<Laser>();
 
+            Laser laser;
             for (int i = 0; i < dirVector.Count; i++)
             {
-                Laser laser = m_InstantiatePosParentFunc?.Invoke(m_LaserObject, dirVector[i].Position, m_LasersTransform).GetComponent<Laser>();
-                //Laser laser = m_InstantiateFunc?.Invoke(m_LaserObject).GetComponent<Laser>();
-                //laser.transform.SetParent(m_LasersTransform);
-                //laser.transform.position = dirVector[i].Position;
-
+                laser = (Laser)m_LaserPool.GetObject(true);
+                laser.transform.position = dirVector[i].Position;
                 laser.Init(CreateLaser, LossParent);
                 laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction, hierarchy);
+                
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
             }
@@ -229,7 +225,7 @@ namespace LaserCrush.Manager
             DestroyLasers(m_LossParentsLaser);
             DestroyLasers(m_LossParentsLaserAddBuffer);
             DestroyLasers(m_LossParentsLaserRemoveBuffer);
-            m_Initialized = false;
+            m_Activated = false;
         }
 
         private void DestroyLasers(List<Laser> lasers)
@@ -237,7 +233,7 @@ namespace LaserCrush.Manager
             for (int i = 0; i < lasers.Count; i++)
             {
                 if (lasers[i] != m_InitLazer)
-                    m_DestroyAction(lasers[i].gameObject);
+                    m_LaserPool.ReturnObject(lasers[i]);
                 else
                     lasers[i].ResetLaser();
             }
