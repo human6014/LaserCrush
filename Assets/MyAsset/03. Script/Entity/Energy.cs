@@ -10,8 +10,9 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private UIManager m_UIManager;
 
-        private static event Action s_MaxEnergyUpdate;
-        private static event Action s_CurrentEnergyUpdate;
+        private static event Action s_MaxEnergyUpdateAction;
+        private static event Action s_CurrentEnergyUpdateAction;
+        private static event Action s_MaxEnergyHighlightTextAction;
 
         private static int s_InitEnergy = 2000;
         private static int s_MaxEnergy;
@@ -19,22 +20,19 @@ namespace LaserCrush.Entity
         private static int s_HittingFloorLaserNum;
         private static int s_HittingWallLaserNum;
 
-        private static HashSet<int> m_LaserHashSet;
+        private static HashSet<int> s_LaserHashSet;
         #endregion
 
-        private static int MaxEnergy
+        public static int MaxEnergy
         {
             get => s_MaxEnergy;
-            set
+            private set
             {
-                s_MaxEnergy = value;
-                s_MaxEnergyUpdate?.Invoke();
-            }
-        }
+                if (s_MaxEnergy < value) s_MaxEnergyHighlightTextAction?.Invoke();
 
-        public static int GetMaxEnergy()
-        {
-            return s_MaxEnergy;
+                s_MaxEnergy = value;
+                s_MaxEnergyUpdateAction?.Invoke();
+            }
         }
 
         private static int CurrentEnergy
@@ -43,7 +41,7 @@ namespace LaserCrush.Entity
             set
             {
                 s_CurrentEnergy = value;
-                s_CurrentEnergyUpdate?.Invoke();
+                s_CurrentEnergyUpdateAction?.Invoke();
             }
         }
 
@@ -52,16 +50,14 @@ namespace LaserCrush.Entity
             MaxEnergy = initEnergy;
             CurrentEnergy = initEnergy;
 
-            s_MaxEnergyUpdate = null;
-            s_CurrentEnergyUpdate = null;
+            s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
+            s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+            s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
 
-            s_MaxEnergyUpdate += () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
-            s_CurrentEnergyUpdate += () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+            s_MaxEnergyUpdateAction?.Invoke();
+            s_CurrentEnergyUpdateAction?.Invoke();
 
-            s_MaxEnergyUpdate?.Invoke();
-            s_CurrentEnergyUpdate?.Invoke();
-
-            m_LaserHashSet = new HashSet<int>();
+            s_LaserHashSet = new HashSet<int>();
         }
 
 
@@ -100,14 +96,13 @@ namespace LaserCrush.Entity
             s_HittingFloorLaserNum = 0;
             s_HittingWallLaserNum = 0;
 
-            m_LaserHashSet.Clear();
+            s_LaserHashSet.Clear();
             return CurrentEnergy;
         }
 
         public static void ChargeEnergy(int energy)
-        {
-            CurrentEnergy += energy;
-        }
+            => CurrentEnergy += energy;
+        
 
         public static void CollideWithWall()
         {
@@ -133,13 +128,14 @@ namespace LaserCrush.Entity
 
             s_HittingWallLaserNum++;
             if (s_HittingWallLaserNum > 10) 
-            { UseEnergy(MaxEnergy / 12); }
-            GameManager.s_ValidHit++;
+                UseEnergy(MaxEnergy / 12); 
+
+            GameManager.ValidHit++;
         }
 
         public static void EnergyUpgrade(int additionalEnergy)
             => MaxEnergy += additionalEnergy;
-
+        
         public static int GetEnergy()
             => s_CurrentEnergy;
 
@@ -147,10 +143,8 @@ namespace LaserCrush.Entity
             => s_HittingFloorLaserNum;
 
         public static void SaveAllData()
-        {
-            DataManager.GameData.m_Energy = MaxEnergy;
-        }
-
+            => DataManager.GameData.m_Energy = MaxEnergy;
+        
         public static void ResetGame()
         {
             s_MaxEnergy = s_InitEnergy;
@@ -159,8 +153,9 @@ namespace LaserCrush.Entity
 
         private void OnDestroy()
         {
-            s_MaxEnergyUpdate = null;
-            s_CurrentEnergyUpdate = null;
+            s_MaxEnergyUpdateAction = null;
+            s_CurrentEnergyUpdateAction = null;
+            s_MaxEnergyHighlightTextAction = null;
         }
     }
 }

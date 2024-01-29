@@ -51,6 +51,9 @@ namespace LaserCrush.Entity.Item
         private static Color m_TextEndColor;
 
         private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
+        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f};
+
+        private const string m_ItemDragAudiKey = "ItemDrag";
 
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -75,8 +78,8 @@ namespace LaserCrush.Entity.Item
                 for (int i = 0; i < m_SubRotationImage.Length; i++)
                     m_SubRotationImage[i].SetActive(value);
 
-                if (m_IsAdjustMode) SetAdjustLine();
-                else SetAdjustLine(m_SubLineLength);
+                if (m_IsAdjustMode) SetAdjustLine(Mathf.Infinity);
+                else SetAdjustLine();
             }
         }
         public int RowNumber { get; private set; }
@@ -157,18 +160,8 @@ namespace LaserCrush.Entity.Item
 
             if (m_ChargingWait >= m_ChargingTime)
             {
-                switch (m_ItemType)
-                {
-                    case ItemType.Prism1Branch:
-                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.3));
-                        break;
-                    case ItemType.Prism2Branch:
-                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.4));
-                        break;
-                    case ItemType.Prism3Branch:
-                        Energy.ChargeEnergy((int)(Energy.GetMaxEnergy() * 0.7));
-                        break;
-                }
+                float chargingEnergy = m_ChargingEnergy[(int)ItemType.Prism1Branch];
+                Energy.ChargeEnergy((int)(Energy.MaxEnergy * chargingEnergy));
                 m_IsActivate = true;
             }
 
@@ -179,7 +172,7 @@ namespace LaserCrush.Entity.Item
         {
             if (m_IsActivate) return new List<LaserInfo>();
 
-            GameManager.s_ValidHit++;
+            GameManager.ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
             m_IsActivate = false;
             RemainUsingCount--;
@@ -204,7 +197,7 @@ namespace LaserCrush.Entity.Item
         public EEntityType GetEEntityType()
             => EEntityType.Prisim;
 
-        public void SetAdjustLine(float length = Mathf.Infinity)
+        public void SetAdjustLine(float length = m_SubLineLength)
         {
             for (int i = 0; i < m_LineRenderers.Length; i++)
                 PaintLine(i, length);
@@ -227,9 +220,14 @@ namespace LaserCrush.Entity.Item
         {
             Vector2 direction = (pos - (Vector2)transform.position).normalized;
             Vector2 discreteDirection = direction.DiscreteDirection(5);
-            Direction = discreteDirection;
-            transform.rotation = Quaternion.LookRotation(transform.forward, discreteDirection);
-            SetAdjustLine();
+
+            if (Direction != discreteDirection)
+            {
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudiKey);
+                Direction = discreteDirection;
+                transform.rotation = Quaternion.LookRotation(transform.forward, discreteDirection);
+                SetAdjustLine(Mathf.Infinity);
+            }
         }
 
         public void PlayFixNoticeAnimation()

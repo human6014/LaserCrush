@@ -38,11 +38,7 @@ namespace LaserCrush.Manager
 
         private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
 
-        public static int s_StageNum;
-        public static int s_ValidHit;
-
-        //계층 임계점 변수
-        public static int s_LaserCriticalPoint;
+        private const string m_StageChangeAudioKey = "StageChange";
 
         private int m_PreValidHit;
 
@@ -64,14 +60,13 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
-        #endregion
 
-        #region MonoBehaviour Func
-        private GameObject InstantiateWithPosAndParentObject(GameObject obj, Vector3 pos, Transform parent)
-            => Instantiate(obj,pos,Quaternion.identity, parent);
+        //계층 임계점 변수
+        public static int LaserCriticalPoint { get; set; }
 
-        private void DestroyObject(GameObject obj)
-            => Destroy(obj);
+        public static int ValidHit { get; set; }
+
+        public static int StageNum { get; private set; }
         #endregion
 
         private void Awake()
@@ -110,10 +105,10 @@ namespace LaserCrush.Manager
 
             if (hasData) m_SubLineController.IsActiveSubLine = true;
 
-            s_ValidHit = 0;
-            s_LaserCriticalPoint = 3;
-            s_StageNum = DataManager.GameData.m_StageNumber;
-            m_UIManager.SetCurrentStage(s_StageNum - 1);
+            ValidHit = 0;
+            LaserCriticalPoint = 3;
+            StageNum = DataManager.GameData.m_StageNumber;
+            m_UIManager.SetCurrentStage(StageNum - 1);
             m_IsGameOver = DataManager.GameData.m_IsGameOver;
         }
 
@@ -161,8 +156,13 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// 로그에 찍힌 순서대로 진행된다 한 업데이트에 일어날 수 도 있고 Time함수 같은 걸 써서
-        /// 딜레이를 줘도 되고
+        /// 1. 떨어진 아이템 수집
+        /// 2. 살아있는 블럭들 1칸씩 내림 + 설치된 아이템 중 곂치는거 파괴
+        /// 3. 설치된 아이템 중 사용횟수 다 된거 파괴
+        /// 4. 젤 위에서 블럭 생성
+        /// 5. 변수들 초기화 + 다음 스테이지로~
+        /// 6. 게임 오버 확인
+        /// 7. 데이터 저장
         /// </summary>
         private void BlockUpdating()
         {
@@ -189,14 +189,16 @@ namespace LaserCrush.Manager
                 m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
                 if (!m_IsCheckGenerateBlock) return;
             }
+
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_StageChangeAudioKey);
             
             Energy.ChargeEnergy();
             m_LaserTime = 0;
-            s_ValidHit = 0;
+            ValidHit = 0;
             m_SubLineController.IsActiveSubLine = true;
             m_GameStateType = EGameStateType.Deploying;
-            s_StageNum++;
-            m_UIManager.SetCurrentStage(s_StageNum - 1);
+            StageNum++;
+            m_UIManager.SetCurrentStage(StageNum - 1);
             CheckValueUpdate(false);
 
             //게임 종료 체크
@@ -212,7 +214,7 @@ namespace LaserCrush.Manager
 
         private void SaveAllData()
         {
-            DataManager.GameData.m_StageNumber = s_StageNum;
+            DataManager.GameData.m_StageNumber = StageNum;
 
             m_SubLineController.SaveAllData();
             m_BlockManager.SaveAllData();
@@ -237,15 +239,15 @@ namespace LaserCrush.Manager
             if (Energy.CheckEnergy())
             {
                 m_LaserTime += Time.deltaTime;
-                if (m_LaserTime > m_ValidTime && m_PreValidHit == s_ValidHit)
+                if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
                 {
                     Energy.UseEnergy(int.MaxValue);
                     return;
                 }
 
-                if (m_PreValidHit != s_ValidHit)
+                if (m_PreValidHit != ValidHit)
                 {
-                    m_PreValidHit = s_ValidHit;
+                    m_PreValidHit = ValidHit;
                     m_LaserTime = 0;
                 }
                 m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
@@ -281,7 +283,7 @@ namespace LaserCrush.Manager
 
             m_IsGameOver = false;
             DataManager.GameData.m_IsGameOver = false;
-            s_StageNum = 1;
+            StageNum = 1;
 
             m_GameStateType = EGameStateType.BlockUpdating;
         }

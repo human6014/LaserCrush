@@ -22,16 +22,28 @@ MonoBehaviour:
   - m_AudioName: MainBGM4
     m_AudioClip: {fileID: 8300000, guid: 674d05da11f68c349baff5bb8b29e901, type: 3}
   m_SENormalAudioGroups:
-  - m_AudioName: Laser
-    m_AudioClip: {fileID: 8300000, guid: 64c2aa29c42c7a447b817c42ebad13dd, type: 3}
   - m_AudioName: BlockDestroy
     m_AudioClip: {fileID: 8300000, guid: af91eddd4f8360d47bdbae934ee406b5, type: 3}
-  - m_AudioName: PrismCharging
-    m_AudioClip: {fileID: 8300000, guid: 2875e24b64ae4cf41b40bfe7127531df, type: 3}
-  - m_AudioName: PrismBatch
-    m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}
   - m_AudioName: BlockDamage
     m_AudioClip: {fileID: 8300000, guid: 6e806885cb1cb244baf9dfd0b94de0ea, type: 3}
+  - m_AudioName: StageChange
+    m_AudioClip: {fileID: 8300000, guid: 6f9e64f326b61144190f2167f69aec45, type: 3}
   m_SEUIAudioGroups:
-  - m_AudioName: InventoryItemSelect
-    m_AudioClip: {fileID: 8300000, guid: 42acc02a3539187438a4649dd63e7750, type: 3}
+  - m_AudioName: ButtonClick
+    m_AudioClip: {fileID: 8300000, guid: 59579549fdd01e848ba0acfc89d817a7, type: 3}
+  - m_AudioName: ItemDown
+    m_AudioClip: {fileID: 8300000, guid: 99803cdd59327da40acc36631212cb64, type: 3}
+  - m_AudioName: ItemBatchSuccess
+    m_AudioClip: {fileID: 8300000, guid: 38a15c6db0493c74187cbb6923dce103, type: 3}
+  - m_AudioName: ItemBatchFail
+    m_AudioClip: {fileID: 8300000, guid: f6c21171afe741143a97401b0ab1bb51, type: 3}
+  - m_AudioName: ItemDropped
+    m_AudioClip: {fileID: 8300000, guid: f7680eff5927c0c47a78cc574eda3276, type: 3}
+  - m_AudioName: ItemAcquired
+    m_AudioClip: {fileID: 8300000, guid: 83dbdebbf743ae24f961f2a1a6fa4a4c, type: 3}
+  - m_AudioName: ItemClick
+    m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}
+  - m_AudioName: ItemDrag
+    m_AudioClip: {fileID: 8300000, guid: 47aaf503becf7384da57cd2d8b5fdc03, type: 3}
+  - m_AudioName: ItemUp
+    m_AudioClip: {fileID: 8300000, guid: daba77d059151fd47ad3a30ab5ff713d, type: 3}

@@ -41,6 +41,9 @@ namespace LaserCrush.Controller.InputObject
         private bool m_ClickItem;
         private bool m_InstalledItemAdjustMode;
         private bool m_CanInteraction;
+
+        private const string m_ItemClickAudioKey = "ItemClick";
+        private const string m_ItemUpAudioKey = "ItemUp";
         #endregion
 
         #region Property
@@ -123,11 +126,8 @@ namespace LaserCrush.Controller.InputObject
                 }
 
                 if (!m_BeforeClicked && Input.GetMouseButtonUp(0))
-                {
-                    m_InstalledItemAdjustMode = false;
-                    m_AdjustingInstalledItem.IsAdjustMode = false;
-                    m_GridLineController.OnOffGridLine(false);
-                }
+                    PointEndProcess();
+
                 return;
             }
 
@@ -167,11 +167,8 @@ namespace LaserCrush.Controller.InputObject
                 }
 
                 if (!m_BeforeClicked && touch.phase == TouchPhase.Ended)
-                {
-                    m_InstalledItemAdjustMode = false;
-                    m_AdjustingInstalledItem.IsAdjustMode = false;
-                    m_GridLineController.OnOffGridLine(false);
-                }
+                    PointEndProcess();
+
                 return;
             }
 
@@ -195,6 +192,11 @@ namespace LaserCrush.Controller.InputObject
             }
         }
 
+        /// <summary>
+        /// 아이템 클릭이랑 관련 있음
+        /// 아이템 눌렀다가 때면 조정 모드로 들어가는데
+        /// 그 중 누르는 부분의 처리임
+        /// </summary>
         private void PointDownProcess(ref RaycastHit2D hit)
         {
             if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
@@ -207,14 +209,32 @@ namespace LaserCrush.Controller.InputObject
             }
 
             m_ClickItem = true;
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
+            AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemClickAudioKey);
         }
 
+        /// <summary>
+        /// 아이템 클릭이랑 관련 있음
+        /// 아이템 눌렀다가 때면 조정 모드로 들어가는데
+        /// 그 중 누른 다음에 때는 부분의 처리임
+        /// </summary>
         private void PointUpProcess()
         {
             m_InstalledItemAdjustMode = true;
             m_AdjustingInstalledItem.IsAdjustMode = true;
             m_GridLineController.OnOffGridLine(true);
+        }
+
+        /// <summary>
+        /// 아이템 클릭이랑 관련 있음
+        /// 아이템 눌렀다가 때면 조정 모드로 들어가고, 드래그 후 때면 조정모드 끝남
+        /// 그 중 조정모드에서 마우스(터치)를 땠을 경우 부분의 처리임
+        /// </summary>
+        private void PointEndProcess()
+        {
+            m_InstalledItemAdjustMode = false;
+            m_AdjustingInstalledItem.IsAdjustMode = false;
+            m_GridLineController.OnOffGridLine(false);
+            AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemUpAudioKey);
         }
 
         #endregion
