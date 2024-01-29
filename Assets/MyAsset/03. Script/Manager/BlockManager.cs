@@ -58,6 +58,8 @@ namespace LaserCrush.Manager
         private readonly int s_MaxWightSum = 201;
         //3.86개가 한 턴에 기댓값
 
+        private const string m_ItemDroppedAudioKey = "ItemDropped";
+
         private float m_MoveDownElapsedTime;
         private float m_GenerateElapsedTime;
 
@@ -199,10 +201,7 @@ namespace LaserCrush.Manager
                         itemIndex = 1;
                         flag = true;
                     }
-                    else
-                    {
-                        itemIndex = m_ItemProbabilityData.GetItemIndex();
-                    }
+                    else itemIndex = m_ItemProbabilityData.GetItemIndex();
 
                     InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos);
                 }
@@ -221,7 +220,6 @@ namespace LaserCrush.Manager
         {
             Block block = (Block)m_BlockPool.GetObject(true);
             block.transform.position = pos;
-            //Block block = m_InstantiatePosParentFunc?.Invoke(m_Block.gameObject, pos, m_BlockTransform).GetComponent<Block>();
             block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
             m_Blocks.Add(block);
         }
@@ -263,7 +261,7 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.s_StageNum + 1) / 2) * 5;
+            int end = ((GameManager.StageNum + 1) / 2) * 5;
             int start = end - (end / 10);
             return Random.Range(start, end + 1) * 100;
         }
@@ -285,6 +283,8 @@ namespace LaserCrush.Manager
             int typeIndex = (int)block.ItemType;
             if (typeIndex != 0)
             {
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDroppedAudioKey);
+
                 DroppedItem droppedItem = (DroppedItem)m_DroppedItemPool[typeIndex - 1].GetObject(true);
                 droppedItem.transform.position = block.Position;
                 droppedItem.ReturnAction += m_DroppedItemPool[typeIndex - 1].ReturnObject;

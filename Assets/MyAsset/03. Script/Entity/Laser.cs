@@ -70,7 +70,7 @@ namespace LaserCrush.Entity
             m_IsActivated = true;     
             m_Hierarchy = hierarchy;
             //생성 시 디메리트 계산로직 입맛대로 수정 가능
-            if (m_Hierarchy >= GameManager.s_LaserCriticalPoint)
+            if (m_Hierarchy >= GameManager.LaserCriticalPoint)
             {
                 Energy.UseEnergy(Energy.GetEnergy() / 10);
             }

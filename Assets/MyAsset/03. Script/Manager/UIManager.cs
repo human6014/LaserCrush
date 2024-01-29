@@ -13,7 +13,6 @@ namespace LaserCrush.Manager
         [SerializeField] private GameManager m_GameManager;
 
         [Header("Controlling Canvas | Panel")]
-        [SerializeField] private GameObject m_MainCanvas;
         [SerializeField] private GameObject m_GameOverCanvas;
         [SerializeField] private GameObject m_SettingCanvas;
 
@@ -156,10 +155,11 @@ namespace LaserCrush.Manager
             m_EnergyTextDisplayer.SetText(current / 100);
         }
 
+        public void PlayEnergyHighlight()
+            => m_EnergySliderDisplayer.PlayHighlightText();
+
         public void SetCurrentStage(int stage)
-        {
-            m_StageTextDisplayer.SetText(stage);
-        }
+            => m_StageTextDisplayer.SetText(stage);
         #endregion
 
         #region OnOff Canvas & Panel

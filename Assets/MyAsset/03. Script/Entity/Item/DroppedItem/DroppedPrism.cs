@@ -1,18 +1,24 @@
 using UnityEngine;
+using System;
 
 namespace LaserCrush.Entity.Item
 {
     public sealed class DroppedPrism : DroppedItem
     {
-        public override void GetItemWithAnimation(Vector2 pos)
+        private Action<int> m_ItemUpdateAction;
+        public event Action<int> ItemUpdateAction 
         {
-            StartCoroutine(GetItemAnimation(pos));
-            return;
+            add => m_ItemUpdateAction = value;
+            remove => m_ItemUpdateAction = null; 
         }
 
-        public override void ReturnObject()
+        protected override void BeforeReturnCall()
         {
-            m_ReturnAction?.Invoke(this);
+            base.BeforeReturnCall();
+            m_ItemUpdateAction?.Invoke(m_AcquiredItemIndex);
         }
+
+        private void OnDestroy()
+            => m_ItemUpdateAction = null;
     }
 }

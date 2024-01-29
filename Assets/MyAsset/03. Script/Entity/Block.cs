@@ -34,6 +34,8 @@ namespace LaserCrush.Entity
         private int m_AttackCount;
         private bool m_IsDestroyed;
 
+        private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
+        private static readonly string s_BlockDamageAudioKey = "BlockDamage";
         #endregion
 
         #region Property
@@ -101,7 +103,7 @@ namespace LaserCrush.Entity
         /// </summary>
         private void Destroy()
         {
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDestroy");
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
             m_IsDestroyed = true;
             m_PlayParticleAction?.Invoke(this);
         }
@@ -116,11 +118,11 @@ namespace LaserCrush.Entity
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % 7 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE("BlockDamage");
+            if (m_AttackCount % 7 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
             m_AttackCount++;
 
-            GameManager.s_ValidHit++;
-            damage *= (int)((GameManager.s_StageNum + 1 / 2) * 0.85);
+            GameManager.ValidHit++;
+            damage *= (int)((GameManager.StageNum + 1 / 2) * 0.85);
 
             m_Animator.SetTrigger("Hit");
 
@@ -169,7 +171,7 @@ namespace LaserCrush.Entity
                 return new List<LaserInfo>() { info };
             }
             m_Text.text = GetHP().ToString();
-            GameManager.s_ValidHit++;
+            GameManager.ValidHit++;
             return answer;
         }
 

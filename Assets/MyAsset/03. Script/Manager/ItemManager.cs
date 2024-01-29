@@ -38,6 +38,7 @@ namespace LaserCrush.Manager
 
         private Func<Vector3, Result> m_CheckAvailablePosFunc;
 
+        //AcquiredItemUI에도 자기 아이템 개수 저장하긴 하는데 편하게 쓰기 위해 중복선언함
         private int[] m_AcquiredItemCounts;
         #endregion
 
@@ -76,16 +77,20 @@ namespace LaserCrush.Manager
                 itemIndex = droppedItem.GetItemIndex();
 
                 Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
-                droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 Destroy함
+                droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 반환함
+
                 if (itemIndex != -1)
-                {
-                    m_AcquiredItemCounts[itemIndex]++;
-                    m_AcquiredItemUI[itemIndex].HasCount++;
-                }
+                    ((DroppedPrism)droppedItem).ItemUpdateAction += UpdateItemCount;
             }
             m_DroppedItems.Clear();
 
             return true;
+        }
+
+        private void UpdateItemCount(int itemIndex)
+        {
+            m_AcquiredItemCounts[itemIndex]++;
+            m_AcquiredItemUI[itemIndex].HasCount++;
         }
 
         public bool CheckDestroyItem()
@@ -94,8 +99,11 @@ namespace LaserCrush.Manager
             {
                 if (m_InstalledItem[i].IsOverloaded())
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
-                else 
+                else
+                {
+                    m_InstalledItem[i].SetAdjustLine();
                     m_InstalledItem[i].PlayUsingCountDisplay();
+                }
             }
             RemoveBufferFlush(false);
             return true;

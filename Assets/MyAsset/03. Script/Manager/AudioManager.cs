@@ -104,12 +104,14 @@ namespace LaserCrush.Manager
         {
             if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
                 m_SEAudioSource.PlayOneShot(audioClip);
+            else Debug.LogWarning("No value for [" + audioName+ "] name");
         }
 
         public void PlayOneShotUISE(string audioName)
         {
             if (m_AudioData.GetSEUI(audioName, out AudioClip audioClip))
                 m_SEAudioSource.PlayOneShot(audioClip);
+            else Debug.LogWarning("No value for [" + audioName + "] name");
         }
         #endregion
 

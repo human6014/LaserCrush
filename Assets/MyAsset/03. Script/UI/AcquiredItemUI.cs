@@ -12,9 +12,11 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private GameObject m_ItemObject;
         [SerializeField] private TextMeshProUGUI m_HasCountText;
+        [SerializeField] private Animator m_Animator;
         [SerializeField] private int m_ItemIndex;
 
         private int m_HasCount;
+        private static string s_HighlightAnimationKey = "Highlight";
 
         private UnityAction<AcquiredItemUI> m_PointerDownAction;
         #endregion
@@ -26,6 +28,9 @@ namespace LaserCrush.Entity
             get => m_HasCount; 
             set
             {
+                if (m_HasCount < value)
+                    m_Animator.SetTrigger(s_HighlightAnimationKey);
+
                 m_HasCount = value;
                 m_HasCountText.text = m_HasCount.ToString();
             }

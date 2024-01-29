@@ -27,13 +27,16 @@ namespace LaserCrush.Controller.InputObject
 
         private Vector2 m_ItemInitDirection = Vector2.up;
 
+        private const string m_ItemDownAudioKey = "ItemDown";
+        private const string m_ItemBatchFailAudioKey = "ItemBatchFail";
+        private const string m_ItemBatchSuccessAudioKey = "ItemBatchSuccess";
+
         private bool m_IsInit;
         private bool m_IsInstallMode;
         private bool m_IsDragging;
         private bool m_CanInteraction;
 
         #region Property
-
         public event Func<Vector3, Result> CheckAvailablePosFunc
         {
             add => m_CheckAvailablePosFunc += value;
@@ -93,6 +96,7 @@ namespace LaserCrush.Controller.InputObject
         {
             if (clickedItem.HasCount <= 0) return;
 
+            AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDownAudioKey);
             m_CurrentItem = clickedItem;
             m_GridLineController.OnOffGridLine(true);
             m_SubLineController.IsInitItemDrag(true);
@@ -132,8 +136,8 @@ namespace LaserCrush.Controller.InputObject
                 //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
                 if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
                 {
+                    AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchFailAudioKey);
                     m_InstalledItemPool[(int)m_ControllingItem.ItemType].ReturnObject(m_ControllingItem);
-                    //Destroy(m_ControllingTransform.gameObject);
                 }
 
                 BatchComp();
@@ -159,8 +163,8 @@ namespace LaserCrush.Controller.InputObject
                 //board바깥 || 레이저 실행중 || 아이템, 블럭 위치 곂침
                 if (!isHit || !m_SubLineController.IsActiveSubLine || !BatchAcquireItem(hit2D.point))
                 {
+                    AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchFailAudioKey);
                     m_InstalledItemPool[(int)m_ControllingItem.ItemType].ReturnObject(m_ControllingItem);
-                    //Destroy(m_ControllingTransform.gameObject);
                 }
 
                 BatchComp();
@@ -187,7 +191,7 @@ namespace LaserCrush.Controller.InputObject
                 if (!result.m_IsAvailable) m_ControllingTransform.position = Vector3.zero;
                 else m_ControllingTransform.position = result.m_ItemGridPos;
             }
-            m_ControllingItem.SetAdjustLine();
+            m_ControllingItem.SetAdjustLine(Mathf.Infinity);
         }
         #endregion
 
@@ -199,7 +203,7 @@ namespace LaserCrush.Controller.InputObject
 
             InitItemObject(result.m_RowNumber, result.m_ColNumber, m_ItemUsingCount, false, result.m_ItemGridPos, m_ItemInitDirection);
 
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE("PrismBatch");
+            AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchSuccessAudioKey);
 
             return true;
         }
