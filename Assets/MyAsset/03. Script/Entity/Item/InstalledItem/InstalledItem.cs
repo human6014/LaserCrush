@@ -53,7 +53,7 @@ namespace LaserCrush.Entity.Item
         private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
         private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f};
 
-        private const string m_ItemDragAudiKey = "ItemDrag";
+        private const string m_ItemDragAudioKey = "ItemDrag";
 
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -209,11 +209,24 @@ namespace LaserCrush.Entity.Item
             Vector2 lineDir = m_LineRenderers[i].transform.up;
 
             RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.s_LaserHitableLayer);
-            Vector2 secondPos = hit.collider is null ? linePos + lineDir * length : hit.point;
+            Vector2 secondPos = hit.collider is null ? linePos + lineDir * m_SubLineLength : hit.point;
 
             m_LineRenderers[i].positionCount = 2;
             m_LineRenderers[i].SetPosition(0, linePos);
             m_LineRenderers[i].SetPosition(1, secondPos);
+        }
+
+        public void SetPosition(Vector2 pos, int rowNumber, int colNumber)
+        {
+            if (RowNumber != rowNumber || ColNumber != colNumber)
+            {
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudioKey);
+                Position = pos;
+                RowNumber = rowNumber;
+                ColNumber = colNumber;
+                transform.position = pos;
+                SetAdjustLine(Mathf.Infinity);
+            }
         }
 
         public void SetDirection(Vector2 pos)
@@ -223,7 +236,7 @@ namespace LaserCrush.Entity.Item
 
             if (Direction != discreteDirection)
             {
-                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudiKey);
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudioKey);
                 Direction = discreteDirection;
                 transform.rotation = Quaternion.LookRotation(transform.forward, discreteDirection);
                 SetAdjustLine(Mathf.Infinity);

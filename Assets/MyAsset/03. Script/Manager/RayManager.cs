@@ -20,23 +20,26 @@ namespace LaserCrush.Manager
 
         public static Camera MainCamera { get; set; }
 
-
+        #region PC
         public static bool RaycastToClickable(out RaycastHit2D hit, int layer)
         {
-            hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, layer);
+            hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(Input.mousePosition), Vector3.forward, Mathf.Infinity, layer);
             return hit.collider != null;
         }
 
         public static Vector3 MousePointToWorldPoint()
             => MainCamera.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 10);
+        #endregion
 
+        #region Mobile
         public static bool RaycastToTouchable(out RaycastHit2D hit, int layer, Touch touch)
         {
-            hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(touch.position), Vector2.zero, layer);
+            hit = Physics2D.Raycast(MainCamera.ScreenToWorldPoint(touch.position), Vector3.forward, Mathf.Infinity, layer);
             return hit.collider != null;
         }
 
         public static Vector3 TouchPointToWorldPoint(Touch touch)
             => MainCamera.ScreenToWorldPoint(touch.position) + new Vector3(0, 0, 10);
+        #endregion
     }
 }

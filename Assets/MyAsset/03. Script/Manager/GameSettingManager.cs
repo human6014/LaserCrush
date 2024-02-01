@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LaserCrush.Manager
 {
@@ -6,6 +7,7 @@ namespace LaserCrush.Manager
     public class GameSettingManager
     {
         [SerializeField] private int m_TargetFrameRate = 60;
+        [SerializeField] private CanvasScaler[] m_CanvasScalers;
 
         public void Init()
         {
@@ -29,7 +31,11 @@ namespace LaserCrush.Manager
             int deviceWidth = Screen.width; // 현재 기기 너비
             int deviceHeight = Screen.height; // 현재 기기 높이
 
-            Screen.SetResolution(setWidth, (int)((float)deviceHeight / deviceWidth * setWidth), true);
+            for(int i =0;i< m_CanvasScalers.Length; i++)
+            {
+                m_CanvasScalers[i].referenceResolution *= new Vector2(m_CanvasScalers[i].referenceResolution.x / Screen.width, Screen.height / m_CanvasScalers[i].referenceResolution.y);
+            }
+            //Screen.SetResolution(setWidth, (int)((float)deviceHeight / deviceWidth * setWidth), true);
 
             Rect rect;
             if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // 기기의 해상도 비가 더 큰 경우

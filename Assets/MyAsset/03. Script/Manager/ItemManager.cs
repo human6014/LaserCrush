@@ -30,8 +30,6 @@ namespace LaserCrush.Manager
         [SerializeField] private AcquiredItemUI[] m_AcquiredItemUI;
         [SerializeField] private Transform[] m_GetAnimationDestination;
 
-        private ToolbarController m_ToolbarController;
-
         private List<DroppedItem> m_DroppedItems;
         private List<InstalledItem> m_InstalledItem;
         private List<InstalledItem> m_InstalledItemBuffer;
@@ -40,6 +38,9 @@ namespace LaserCrush.Manager
 
         //AcquiredItemUI에도 자기 아이템 개수 저장하긴 하는데 편하게 쓰기 위해 중복선언함
         private int[] m_AcquiredItemCounts;
+
+        private readonly float m_GetItemTime = 0.5f;
+        private float m_GetItemElapsedTime;
         #endregion
 
         public event Func<Vector3, Result> CheckAvailablePosFunc
@@ -48,7 +49,7 @@ namespace LaserCrush.Manager
             remove => m_CheckAvailablePosFunc -= value;
         }
 
-        public void Init(ToolbarController toolbarController)
+        public void Init(ToolbarController toolbarController, SubLineController subLineController)
         {
             m_DroppedItems = new List<DroppedItem>();
             m_InstalledItem = new List<InstalledItem>();
@@ -63,28 +64,39 @@ namespace LaserCrush.Manager
             m_AcquiredItemUI[1].Init(DataManager.GameData.m_Prism2Count);
             m_AcquiredItemUI[2].Init(DataManager.GameData.m_Prism3Count);
 
-            m_ToolbarController = toolbarController;
-            m_ToolbarController.CheckAvailablePosFunc += CheckAvailablePos;
-            m_ToolbarController.AddInstalledItemAction += AddInstalledItem;
-            m_ToolbarController.Init(m_AcquiredItemUI);
+            subLineController.CheckAvailablePosFunc += CheckAvailablePosWithExcept;
+
+            toolbarController.CheckAvailablePosFunc += CheckAvailablePos;
+            toolbarController.AddInstalledItemAction += AddInstalledItem;
+            toolbarController.Init(m_AcquiredItemUI);
         }
 
         public bool GetDroppedItems()
         {
-            int itemIndex;
-            foreach (DroppedItem droppedItem in m_DroppedItems)
+            if (m_GetItemElapsedTime == 0)
             {
-                itemIndex = droppedItem.GetItemIndex();
+                int itemIndex;
+                foreach (DroppedItem droppedItem in m_DroppedItems)
+                {
+                    itemIndex = droppedItem.GetItemIndex();
 
-                Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
-                droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 반환함
+                    Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
+                    droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 반환함
 
-                if (itemIndex != -1)
-                    ((DroppedPrism)droppedItem).ItemUpdateAction += UpdateItemCount;
+                    if (itemIndex != -1)
+                        ((DroppedPrism)droppedItem).ItemUpdateAction += UpdateItemCount;
+                }
             }
-            m_DroppedItems.Clear();
 
-            return true;
+            m_GetItemElapsedTime += Time.deltaTime;
+            if(m_GetItemElapsedTime >= m_GetItemTime)
+            {
+                m_GetItemElapsedTime = 0;
+                m_DroppedItems.Clear();
+                return true;
+            }
+
+            return false;
         }
 
         private void UpdateItemCount(int itemIndex)
@@ -123,6 +135,22 @@ namespace LaserCrush.Manager
         {
             foreach (InstalledItem installedItem in m_InstalledItem)
                 installedItem.FixDirection();
+        }
+
+        private Result CheckAvailablePosWithExcept(Vector3 pos, InstalledItem exceptItem)
+        {
+            Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(pos));
+            if (!result.m_IsAvailable) return result;
+
+            foreach (InstalledItem installedItem in m_InstalledItem)
+            {
+                if (installedItem == exceptItem) continue;
+                if (result.m_RowNumber == installedItem.RowNumber &&
+                    result.m_ColNumber == installedItem.ColNumber)
+                    return new Result(false, Vector3.zero, result.m_RowNumber, result.m_ColNumber);
+            }
+
+            return result;
         }
 
         private Result CheckAvailablePos(Vector3 pos)
@@ -195,6 +223,7 @@ namespace LaserCrush.Manager
 
         public void ResetGame()
         {
+            m_GetItemElapsedTime = 0;
             //설치된 아이템 모두 제거
             for (int i = 0; i < m_InstalledItem.Count; i++)
                 m_InstalledItemBuffer.Add(m_InstalledItem[i]);
@@ -208,7 +237,10 @@ namespace LaserCrush.Manager
             }
 
             for (int i = 0; i < m_DroppedItems.Count; i++)
+            {
+                Debug.Log("DroppedItem");
                 m_DroppedItems[i].ReturnObject();
+            }
 
             m_DroppedItems.Clear();
         }

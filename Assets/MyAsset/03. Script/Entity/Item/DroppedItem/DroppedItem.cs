@@ -12,19 +12,24 @@ namespace LaserCrush.Entity.Item
 
         protected Action<PoolableMonoBehaviour> m_ReturnAction;
 
-        public const float m_AnimationTime = 0.6f;
-
         protected readonly static string m_AcquireAudioKey = "ItemAcquired";
+
+        public const float m_AnimationTime = 0.5f;
 
         private readonly static int s_MaxDuplicateCount = 2;
         private static int s_CurrentDuplicateCount;
-        
         #endregion
 
         public event Action<PoolableMonoBehaviour> ReturnAction 
         {
             add => m_ReturnAction = value;
             remove => m_ReturnAction = null;
+        }
+
+        public void Init(Action<PoolableMonoBehaviour> returnAction)
+        {
+            s_CurrentDuplicateCount = 0;
+            m_ReturnAction = returnAction;
         }
 
         public int GetItemIndex() => m_AcquiredItemIndex;
@@ -35,7 +40,6 @@ namespace LaserCrush.Entity.Item
         protected IEnumerator GetItemAnimation(Vector2 destinationPos)
         {
             Vector2 startPos = transform.position;
-            bool hasSendCall = false;
             float elapsedTime = 0;
             float t;
             while (elapsedTime <= m_AnimationTime)
@@ -46,16 +50,15 @@ namespace LaserCrush.Entity.Item
                 transform.position = Vector2.Lerp(startPos, destinationPos, t);
                 elapsedTime += Time.deltaTime;
 
-                if (!hasSendCall && Vector2.SqrMagnitude((Vector2)transform.position - destinationPos) <= 20)
-                {
-                    hasSendCall = true;
-                    BeforeReturnCall();
-                }
-
                 yield return null;
             }
 
-            s_CurrentDuplicateCount--;
+            if (Vector2.SqrMagnitude((Vector2)transform.position - destinationPos) <= 20)
+            {
+                Debug.Log("BeforeReturnCall");
+                BeforeReturnCall();
+            }
+
             transform.position = destinationPos;
 
             ReturnObject();
@@ -68,7 +71,10 @@ namespace LaserCrush.Entity.Item
         }
 
         public override void ReturnObject()
-            => m_ReturnAction?.Invoke(this);
+        {
+            StopAllCoroutines();
+            m_ReturnAction?.Invoke(this);
+        }
 
         private void OnDestroy()
             => m_ReturnAction = null;

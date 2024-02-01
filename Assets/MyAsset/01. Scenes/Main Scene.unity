@@ -10660,6 +10660,7 @@ MonoBehaviour:
   m_ObjectPoolManager: {fileID: 261021296}
   m_GameSettingManager:
     m_TargetFrameRate: 60
+    m_CanvasScalers: []
   m_LaserManager:
     m_InitLazer: {fileID: 1915042229}
     m_LaserObject: {fileID: 6777635235316780505, guid: c476756df753be540a7889c2c5ae9fcb, type: 3}
