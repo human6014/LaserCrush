@@ -91,6 +91,7 @@ namespace LaserCrush.Entity.Item
         public ItemType ItemType { get => m_ItemType; }
         #endregion
 
+        #region Init related
         private void Awake()
         {
             m_Animator = GetComponent<Animator>();
@@ -139,6 +140,7 @@ namespace LaserCrush.Entity.Item
             IsAdjustMode = false;
             m_IsActivate = false;
         }
+        #endregion
 
         public void FixDirection()
         {
@@ -154,6 +156,15 @@ namespace LaserCrush.Entity.Item
             }
         }
 
+        public bool IsOverloaded()
+        {
+            m_IsActivate = false;
+            m_ChargingWait = 0;
+
+            return RemainUsingCount == 0;
+        }
+
+        #region ICollisionable
         public bool Waiting()
         {
             m_ChargingWait += Time.deltaTime;
@@ -180,14 +191,6 @@ namespace LaserCrush.Entity.Item
             return m_EjectionPorts;
         }
 
-        public bool IsOverloaded()
-        {
-            m_IsActivate = false;
-            m_ChargingWait = 0;
-
-            return RemainUsingCount == 0;
-        }
-
         public bool IsGetDamageable()
             => false;
 
@@ -196,7 +199,9 @@ namespace LaserCrush.Entity.Item
 
         public EEntityType GetEEntityType()
             => EEntityType.Prisim;
+        #endregion
 
+        #region Paint Line Renderer
         public void SetAdjustLine(float length = m_SubLineLength)
         {
             for (int i = 0; i < m_LineRenderers.Length; i++)
@@ -215,7 +220,9 @@ namespace LaserCrush.Entity.Item
             m_LineRenderers[i].SetPosition(0, linePos);
             m_LineRenderers[i].SetPosition(1, secondPos);
         }
+        #endregion
 
+        #region Set Pos & Dir
         public void SetPosition(Vector2 pos, int rowNumber, int colNumber)
         {
             if (RowNumber != rowNumber || ColNumber != colNumber)
@@ -225,8 +232,8 @@ namespace LaserCrush.Entity.Item
                 RowNumber = rowNumber;
                 ColNumber = colNumber;
                 transform.position = pos;
-                SetAdjustLine(Mathf.Infinity);
             }
+            SetAdjustLine(Mathf.Infinity);
         }
 
         public void SetDirection(Vector2 pos)
@@ -242,7 +249,9 @@ namespace LaserCrush.Entity.Item
                 SetAdjustLine(Mathf.Infinity);
             }
         }
+        #endregion
 
+        #region Play Animation
         public void PlayFixNoticeAnimation()
             => m_Animator.SetTrigger(m_FixedNoticeAnimationKey);
 
@@ -259,12 +268,12 @@ namespace LaserCrush.Entity.Item
             m_Animator.SetTrigger(m_DestroyAnimationKey);
             //애니메이션 끝나고 이벤트로 ReturnObject() 호출함
         }
+        #endregion
 
+        #region Play floating text
         public void PlayUsingCountDisplay()
-        {
-            StartCoroutine(UsingCountCoroutine(2));
-        }
-
+            => StartCoroutine(UsingCountCoroutine(2));
+        
         private IEnumerator UsingCountCoroutine(float time)
         {
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
@@ -294,6 +303,7 @@ namespace LaserCrush.Entity.Item
             m_CountText.gameObject.SetActive(false);
             m_CountText.rectTransform.anchoredPosition = Vector2.zero;
         }
+        #endregion
 
         public override void ReturnObject()
             => m_Pool.ReturnObject(this);

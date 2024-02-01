@@ -82,8 +82,14 @@ namespace LaserCrush.Controller.InputObject
             remove => m_CheckAvailablePosFunc -= value;
         }
 
+        /// <summary>
+        /// UI로 입력 막을 때 True 아니면 false
+        /// </summary>
         public bool CanInteraction { get; set; }
 
+        /// <summary>
+        /// 아이템 드래그해서 설치할 때 True 아니면 False
+        /// </summary>
         public bool IsInitItemDrag { get; set; }
         #endregion
 
@@ -129,22 +135,7 @@ namespace LaserCrush.Controller.InputObject
                     m_BeforeClicked = true;
 
                     if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer)))
-                    {
-                        m_IsItemPosMode = true;
-                       
-                        Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(RayManager.MousePointToWorldPoint(), m_AdjustingInstalledItem));
-
-                        int beforeRow = m_AdjustingInstalledItem.RowNumber;
-                        int beforeCol = m_AdjustingInstalledItem.ColNumber;
-
-                        if (!result.m_IsAvailable) 
-                            m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
-                        else 
-                            m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
-
-                        if (beforeRow != m_AdjustingInstalledItem.RowNumber || beforeCol != m_AdjustingInstalledItem.ColNumber) 
-                            UpdateLineRenderer();
-                    }
+                        ItemAdjustPos(RayManager.MousePointToWorldPoint());
                     else if(!m_IsItemPosMode)
                     {
                         m_IsItemDirMode = true;
@@ -192,18 +183,7 @@ namespace LaserCrush.Controller.InputObject
                     m_BeforeClicked = true;
 
                     if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer, touch)))
-                    {
-                        m_IsItemPosMode = true;
-
-                        Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(RayManager.TouchPointToWorldPoint(touch), m_AdjustingInstalledItem));
-                        if (m_AdjustingInstalledItem.RowNumber != result.m_RowNumber || m_AdjustingInstalledItem.ColNumber != result.m_ColNumber)
-                            UpdateLineRenderer();
-
-                        if (!result.m_IsAvailable)
-                            m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
-                        else
-                            m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
-                    }
+                        ItemAdjustPos(RayManager.TouchPointToWorldPoint(touch));
                     else if (!m_IsItemPosMode)
                     {
                         m_IsItemDirMode = true;
@@ -286,6 +266,28 @@ namespace LaserCrush.Controller.InputObject
             m_AdjustingInstalledItem.IsAdjustMode = false;
             m_GridLineController.OnOffGridLine(false);
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemUpAudioKey);
+        }
+
+        /// <summary>
+        /// 아이템 조정모드에서 아이템을 드래그해서 움직이는 경우
+        /// </summary>
+        /// <param name="pos">클릭 or 터치한 위치</param>
+        private void ItemAdjustPos(Vector3 pos)
+        {
+            m_IsItemPosMode = true;
+
+            Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(pos, m_AdjustingInstalledItem));
+
+            int beforeRow = m_AdjustingInstalledItem.RowNumber;
+            int beforeCol = m_AdjustingInstalledItem.ColNumber;
+
+            if (!result.m_IsAvailable)
+                m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
+            else
+                m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
+
+            //if (beforeRow != m_AdjustingInstalledItem.RowNumber || beforeCol != m_AdjustingInstalledItem.ColNumber)
+            UpdateLineRenderer();
         }
 
         #endregion
