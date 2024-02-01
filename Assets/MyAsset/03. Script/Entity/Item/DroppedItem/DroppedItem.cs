@@ -52,13 +52,7 @@ namespace LaserCrush.Entity.Item
 
                 yield return null;
             }
-
-            if (Vector2.SqrMagnitude((Vector2)transform.position - destinationPos) <= 20)
-            {
-                Debug.Log("BeforeReturnCall");
-                BeforeReturnCall();
-            }
-
+            BeforeReturnCall();
             transform.position = destinationPos;
 
             ReturnObject();

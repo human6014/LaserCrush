@@ -263,7 +263,7 @@ namespace LaserCrush.Manager
         public void SetInteraction(bool value)
         {
             m_SubLineController.CanInteraction = value;
-            m_ToolbarController.CanInteraction(value);
+            m_ToolbarController.CanInteraction = value;
         }
 
         private void FeverTime()

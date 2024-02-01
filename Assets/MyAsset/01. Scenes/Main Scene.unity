@@ -7130,11 +7130,11 @@ RectTransform:
   - {fileID: 2133031110}
   m_Father: {fileID: 1327292613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -1790}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 260}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &899836940
 GameObject:
   m_ObjectHideFlags: 0
@@ -10660,7 +10660,6 @@ MonoBehaviour:
   m_ObjectPoolManager: {fileID: 261021296}
   m_GameSettingManager:
     m_TargetFrameRate: 60
-    m_CanvasScalers: []
   m_LaserManager:
     m_InitLazer: {fileID: 1915042229}
     m_LaserObject: {fileID: 6777635235316780505, guid: c476756df753be540a7889c2c5ae9fcb, type: 3}
@@ -10726,8 +10725,8 @@ MonoBehaviour:
   m_DragTransfromObject: {fileID: 2017001684}
   m_ClickableObject: {fileID: 2661706540201721804}
   m_DiscreteDegree: 1
-  m_ClampAngleMin: 12.5
-  m_ClampAngleMax: 167.5
+  m_ClampAngleMin: 10
+  m_ClampAngleMax: 170
 --- !u!114 &1292888498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12053,9 +12052,9 @@ RectTransform:
   - {fileID: 368426130}
   m_Father: {fileID: 1327292613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -955}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 1410}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1524264141
@@ -14083,9 +14082,9 @@ RectTransform:
   - {fileID: 913279867}
   m_Father: {fileID: 1327292613}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1734967785

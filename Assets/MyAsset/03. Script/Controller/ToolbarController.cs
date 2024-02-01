@@ -8,6 +8,7 @@ namespace LaserCrush.Controller.InputObject
 {
     public class ToolbarController : MonoBehaviour
     {
+        #region Value
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
         [SerializeField] private int m_ItemUsingCount = 3;
@@ -36,6 +37,7 @@ namespace LaserCrush.Controller.InputObject
         private bool m_IsInstallMode;
         private bool m_IsDragging;
         private bool m_CanInteraction;
+        #endregion
 
         #region Property
         public event Func<Vector3, Result> CheckAvailablePosFunc
@@ -48,6 +50,15 @@ namespace LaserCrush.Controller.InputObject
         {
             add => m_AddInstallItemAction += value;
             remove => m_AddInstallItemAction -= value;
+        }
+
+        /// <summary>
+        /// UI로 입력 막을 때 True 아니면 false
+        /// </summary>
+        public bool CanInteraction 
+        { 
+            get => m_CanInteraction; 
+            set => m_CanInteraction = value; 
         }
         #endregion
 
@@ -103,9 +114,6 @@ namespace LaserCrush.Controller.InputObject
             m_SubLineController.IsInitItemDrag = true;
             m_IsInstallMode = true;
         }
-
-        public void CanInteraction(bool canInteraction)
-            => m_CanInteraction = canInteraction;
 
         private void Update()
         {
