@@ -68,6 +68,7 @@ namespace LaserCrush.Manager
         private Vector2 m_MoveDownVector;
         #endregion
 
+        #region Init
         public void Init(ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
@@ -98,6 +99,7 @@ namespace LaserCrush.Manager
                 m_DroppedItemPool[i].GenerateObj(m_DroppedItemPoolingCount[i]);
             }
         }
+        #endregion
 
         #region Grid Related
         private Result CheckAvailablePos(Vector3 pos)
@@ -287,7 +289,7 @@ namespace LaserCrush.Manager
 
                 DroppedItem droppedItem = (DroppedItem)m_DroppedItemPool[typeIndex - 1].GetObject(true);
                 droppedItem.transform.position = block.Position;
-                droppedItem.ReturnAction += m_DroppedItemPool[typeIndex - 1].ReturnObject;
+                droppedItem.Init(m_DroppedItemPool[typeIndex - 1].ReturnObject);
                 m_ItemManager.AddDroppedItem(droppedItem);
             }
 
@@ -358,6 +360,9 @@ namespace LaserCrush.Manager
 
         public void ResetGame()
         {
+            m_MoveDownElapsedTime = 0;
+            m_GenerateElapsedTime = 0;
+
             foreach (var block in m_Blocks)
             {
                 block.ImmediatelyReset();

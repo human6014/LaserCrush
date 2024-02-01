@@ -25,22 +25,28 @@ namespace LaserCrush.Controller.InputObject
         private GridLineController m_GridLineController;
         private InstalledItem m_AdjustingInstalledItem;
         private Transform m_DragTransfrom;
-        private Action m_OnClickAction;
+
+        private Func<Vector3, InstalledItem, Result> m_CheckAvailablePosFunc;
 
         private readonly Vector2 m_InitPos = new Vector2(0, -57);
         private readonly Vector2 m_InitDir = Vector2.up;
+
+        private Vector2 m_ItemOriginalPos;
+        private int m_ItemOriginalRow;
+        private int m_ItemOriginalCol;
 
         private readonly float m_SecondSubLineLength = 8.5f;
 
         private bool m_IsInit;
 
         private bool m_IsInitPosDrag;
-        private bool m_IsInitItemDrag;
         private bool m_IsActiveSubLine;
+
+        private bool m_IsItemPosMode;
+        private bool m_IsItemDirMode;
 
         private bool m_ClickItem;
         private bool m_InstalledItemAdjustMode;
-        private bool m_CanInteraction;
 
         private const string m_ItemClickAudioKey = "ItemClick";
         private const string m_ItemUpAudioKey = "ItemUp";
@@ -70,14 +76,18 @@ namespace LaserCrush.Controller.InputObject
             }
         }
 
-        public event Action OnClickAction
+        public event Func<Vector3, InstalledItem, Result> CheckAvailablePosFunc
         {
-            add => m_OnClickAction += value;
-            remove => m_OnClickAction -= value;
+            add => m_CheckAvailablePosFunc += value;
+            remove => m_CheckAvailablePosFunc -= value;
         }
+
+        public bool CanInteraction { get; set; }
+
+        public bool IsInitItemDrag { get; set; }
         #endregion
 
-        public void Init()
+        public void Init(Action onClickAction)
         {
             m_IsInit = true;
 
@@ -88,23 +98,18 @@ namespace LaserCrush.Controller.InputObject
             m_DragTransfromObject.Init(DataManager.GameData.m_LauncherPos, DataManager.GameData.m_LauncherDir);
             m_DragTransfromObject.MouseMoveAction += SetPosition;
 
-            m_ClickableObject.MouseClickAction += () => m_OnClickAction?.Invoke();
+            m_ClickableObject.MouseClickAction += onClickAction;
 
             m_SubLineRenderer.gameObject.SetActive(true);
             m_SubLineRenderer.positionCount = 3;
         }
 
         #region Raycast Input
-        public void CanInteraction(bool canInteraction)
-            => m_CanInteraction = canInteraction;
-
-        public void IsInitItemDrag(bool isInitItemDrag)
-            => m_IsInitItemDrag = isInitItemDrag;
 
         private void Update()
         {
-            if (!m_IsInit || m_CanInteraction) return;
-            if (m_IsInitItemDrag) return;
+            if (!m_IsInit || CanInteraction) return;
+            if (IsInitItemDrag) return;
 
             #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             EditorOrWindow();
@@ -122,7 +127,29 @@ namespace LaserCrush.Controller.InputObject
                 if (Input.GetMouseButton(0))
                 {
                     m_BeforeClicked = true;
-                    m_AdjustingInstalledItem.SetDirection(RayManager.MousePointToWorldPoint());
+
+                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer)))
+                    {
+                        m_IsItemPosMode = true;
+                       
+                        Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(RayManager.MousePointToWorldPoint(), m_AdjustingInstalledItem));
+
+                        int beforeRow = m_AdjustingInstalledItem.RowNumber;
+                        int beforeCol = m_AdjustingInstalledItem.ColNumber;
+
+                        if (!result.m_IsAvailable) 
+                            m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
+                        else 
+                            m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
+
+                        if (beforeRow != m_AdjustingInstalledItem.RowNumber || beforeCol != m_AdjustingInstalledItem.ColNumber) 
+                            UpdateLineRenderer();
+                    }
+                    else if(!m_IsItemPosMode)
+                    {
+                        m_IsItemDirMode = true;
+                        m_AdjustingInstalledItem.SetDirection(RayManager.MousePointToWorldPoint());
+                    }
                 }
 
                 if (!m_BeforeClicked && Input.GetMouseButtonUp(0))
@@ -163,7 +190,25 @@ namespace LaserCrush.Controller.InputObject
                 if (touch.phase == TouchPhase.Moved)
                 {
                     m_BeforeClicked = true;
-                    m_AdjustingInstalledItem.SetDirection(RayManager.TouchPointToWorldPoint(touch));
+
+                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer, touch)))
+                    {
+                        m_IsItemPosMode = true;
+
+                        Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(RayManager.TouchPointToWorldPoint(touch), m_AdjustingInstalledItem));
+                        if (m_AdjustingInstalledItem.RowNumber != result.m_RowNumber || m_AdjustingInstalledItem.ColNumber != result.m_ColNumber)
+                            UpdateLineRenderer();
+
+                        if (!result.m_IsAvailable)
+                            m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
+                        else
+                            m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
+                    }
+                    else if (!m_IsItemPosMode)
+                    {
+                        m_IsItemDirMode = true;
+                        m_AdjustingInstalledItem.SetDirection(RayManager.TouchPointToWorldPoint(touch));
+                    }
                 }
 
                 if (!m_BeforeClicked && touch.phase == TouchPhase.Ended)
@@ -208,6 +253,10 @@ namespace LaserCrush.Controller.InputObject
                 return;
             }
 
+            m_ItemOriginalPos = m_AdjustingInstalledItem.Position;
+            m_ItemOriginalRow = m_AdjustingInstalledItem.RowNumber;
+            m_ItemOriginalCol = m_AdjustingInstalledItem.ColNumber;
+
             m_ClickItem = true;
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemClickAudioKey);
         }
@@ -231,6 +280,8 @@ namespace LaserCrush.Controller.InputObject
         /// </summary>
         private void PointEndProcess()
         {
+            m_IsItemPosMode = false;
+            m_IsItemDirMode = false;
             m_InstalledItemAdjustMode = false;
             m_AdjustingInstalledItem.IsAdjustMode = false;
             m_GridLineController.OnOffGridLine(false);
@@ -259,7 +310,7 @@ namespace LaserCrush.Controller.InputObject
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!IsActiveSubLine) return;
-            if (m_IsInitPosDrag || m_IsInitItemDrag) return;
+            if (m_IsInitPosDrag || IsInitItemDrag) return;
 
             Vector2 differVector = clickPos - (Vector2)m_DragTransfromObject.transform.position;
 
@@ -282,6 +333,12 @@ namespace LaserCrush.Controller.InputObject
             RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
+
+            if(1 << hit.collider.gameObject.layer == RayManager.s_InstalledItemLayer)
+            {
+                m_SubLineRenderer.SetPosition(2, hit.point);
+                return;
+            }
 
             Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
             RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, m_SecondSubLineLength, RayManager.s_LaserHitableLayer);
@@ -306,6 +363,6 @@ namespace LaserCrush.Controller.InputObject
         }
 
         private void OnDestroy()
-            => m_OnClickAction = null;
+            => m_CheckAvailablePosFunc = null;
     }
 }

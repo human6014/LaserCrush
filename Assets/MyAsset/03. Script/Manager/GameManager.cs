@@ -96,12 +96,11 @@ namespace LaserCrush.Manager
 
             m_LaserManager.Init();
             m_BlockManager.Init(m_ItemManager);
-            m_ItemManager.Init(m_ToolbarController);
+            m_ItemManager.Init(m_ToolbarController, m_SubLineController);
 
             GetComponent<Energy>().Init(DataManager.GameData.m_Energy);
 
-            m_SubLineController.OnClickAction += EndDeploying;
-            m_SubLineController.Init();
+            m_SubLineController.Init(EndDeploying);
 
             if (hasData) m_SubLineController.IsActiveSubLine = true;
 
@@ -263,7 +262,7 @@ namespace LaserCrush.Manager
 
         public void SetInteraction(bool value)
         {
-            m_SubLineController.CanInteraction(value);
+            m_SubLineController.CanInteraction = value;
             m_ToolbarController.CanInteraction(value);
         }
 

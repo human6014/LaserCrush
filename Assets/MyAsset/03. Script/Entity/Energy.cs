@@ -14,7 +14,7 @@ namespace LaserCrush.Entity
         private static event Action s_CurrentEnergyUpdateAction;
         private static event Action s_MaxEnergyHighlightTextAction;
 
-        private static int s_InitEnergy = 2000;
+        private static readonly int s_InitEnergy = 2000;
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;

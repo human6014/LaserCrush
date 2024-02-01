@@ -28,6 +28,7 @@ namespace LaserCrush.Controller.InputObject
         private Vector2 m_ItemInitDirection = Vector2.up;
 
         private const string m_ItemDownAudioKey = "ItemDown";
+        private const string m_ItemDragAudioKey = "ItemDrag";
         private const string m_ItemBatchFailAudioKey = "ItemBatchFail";
         private const string m_ItemBatchSuccessAudioKey = "ItemBatchSuccess";
 
@@ -99,7 +100,7 @@ namespace LaserCrush.Controller.InputObject
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDownAudioKey);
             m_CurrentItem = clickedItem;
             m_GridLineController.OnOffGridLine(true);
-            m_SubLineController.IsInitItemDrag(true);
+            m_SubLineController.IsInitItemDrag = true;
             m_IsInstallMode = true;
         }
 
@@ -177,7 +178,6 @@ namespace LaserCrush.Controller.InputObject
             m_ControllingTransform = m_InstalledItemPool[m_CurrentItem.ItemIndex].GetObject(true).transform;
             m_ControllingTransform.transform.SetPositionAndRotation(Vector2.zero, Quaternion.LookRotation(Vector3.forward, Vector3.up));
             
-            //m_ControllingTransform = Instantiate(m_CurrentItem.ItemObject, Vector2.zero, Quaternion.identity, m_BatchedItemTransform).transform;
             m_ControllingItem = m_ControllingTransform.GetComponent<InstalledItem>();
             m_ControllingItem.ReInit();
         }
@@ -188,6 +188,10 @@ namespace LaserCrush.Controller.InputObject
             else
             {
                 Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(hit2D.point));
+
+                if((Vector2)m_ControllingTransform.position != result.m_ItemGridPos)
+                    AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudioKey);
+
                 if (!result.m_IsAvailable) m_ControllingTransform.position = Vector3.zero;
                 else m_ControllingTransform.position = result.m_ItemGridPos;
             }
@@ -222,12 +226,15 @@ namespace LaserCrush.Controller.InputObject
             m_IsDragging = false;
             m_IsInstallMode = false;
             m_GridLineController.OnOffGridLine(false);
-            m_SubLineController.IsInitItemDrag(false);
+            m_SubLineController.IsInitItemDrag = false ;
             m_SubLineController.UpdateLineRenderer();
         }
         #endregion
 
         private void OnDestroy()
-            => m_AddInstallItemAction = null;
+        {
+            m_CheckAvailablePosFunc = null;
+            m_AddInstallItemAction = null;
+        }
     }
 }
