@@ -64,6 +64,7 @@ namespace LaserCrush.Data.Json
         public int m_Prism1Count;
         public int m_Prism2Count;
         public int m_Prism3Count;
+        public int m_Prism4Count;
         public int m_Energy;
 
         public Vector2 m_LauncherPos;
@@ -73,7 +74,7 @@ namespace LaserCrush.Data.Json
         public List<ItemData> m_InstalledItems;
 
         public GameData(bool isGameOver, int bestScore, int currentScore, int stageNumber,
-                        int prism1Count, int prism2Count, int prism3Count, int energy,
+                        int prism1Count, int prism2Count, int prism3Count, int prism4Count, int energy,
                         Vector2 launcherPos, Vector2 launcherDir,
                         List<BlockData> blocks, List<ItemData> items)
         {
@@ -86,6 +87,7 @@ namespace LaserCrush.Data.Json
             m_Prism1Count = prism1Count;
             m_Prism2Count = prism2Count;
             m_Prism3Count = prism3Count;
+            m_Prism4Count = prism4Count;
             m_Energy = energy;
 
             m_LauncherPos = launcherPos;
@@ -154,6 +156,7 @@ namespace LaserCrush.Manager
                 prism1Count: 0,
                 prism2Count: 0,
                 prism3Count: 0,
+                prism4Count: 0,
                 energy: 2000,
                 launcherPos: new Vector2(0, -57), 
                 launcherDir: Vector2.zero,

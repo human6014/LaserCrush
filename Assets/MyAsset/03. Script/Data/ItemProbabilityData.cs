@@ -18,11 +18,13 @@ namespace LaserCrush.Data
     public class ItemProbabilityData : ScriptableObject
     {
         /*
-         * None
-         * Energy
-         * Prism1
-         * Prism2
-         * Prism3
+         * Original
+         * --------------
+         * None     75
+         * Energy   0
+         * Prism1   10
+         * Prism2   10
+         * Prism3   5
          */
         [SerializeField] private ItemProbability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;

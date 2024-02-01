@@ -30,6 +30,7 @@ namespace LaserCrush.Entity.Item
         Prism1Branch,
         Prism2Branch,
         Prism3Branch,
+        Prism4Branch
     }
     public sealed class InstalledItem : PoolableMonoBehaviour, ICollisionable
     {
@@ -51,7 +52,7 @@ namespace LaserCrush.Entity.Item
         private static Color m_TextEndColor;
 
         private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
-        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f};
+        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f, 1.2f };
 
         private const string m_ItemDragAudioKey = "ItemDrag";
 
@@ -171,7 +172,7 @@ namespace LaserCrush.Entity.Item
 
             if (m_ChargingWait >= m_ChargingTime)
             {
-                float chargingEnergy = m_ChargingEnergy[(int)ItemType.Prism1Branch];
+                float chargingEnergy = m_ChargingEnergy[(int)m_ItemType];
                 Energy.ChargeEnergy((int)(Energy.MaxEnergy * chargingEnergy));
                 m_IsActivate = true;
             }

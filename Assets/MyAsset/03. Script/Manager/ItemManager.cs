@@ -28,7 +28,8 @@ namespace LaserCrush.Manager
     {
         #region Variable
         [SerializeField] private AcquiredItemUI[] m_AcquiredItemUI;
-        [SerializeField] private Transform[] m_GetAnimationDestination;
+        [SerializeField] private Transform m_EnergyGetAnimationDestination;
+        [SerializeField] private Transform m_ItemGetAnimationDestination;
 
         private List<DroppedItem> m_DroppedItems;
         private List<InstalledItem> m_InstalledItem;
@@ -57,12 +58,14 @@ namespace LaserCrush.Manager
             m_AcquiredItemCounts = new int[] { 
                 DataManager.GameData.m_Prism1Count, 
                 DataManager.GameData.m_Prism2Count, 
-                DataManager.GameData.m_Prism3Count 
+                DataManager.GameData.m_Prism3Count,
+                DataManager.GameData.m_Prism4Count
             };
 
             m_AcquiredItemUI[0].Init(DataManager.GameData.m_Prism1Count);
             m_AcquiredItemUI[1].Init(DataManager.GameData.m_Prism2Count);
             m_AcquiredItemUI[2].Init(DataManager.GameData.m_Prism3Count);
+            m_AcquiredItemUI[3].Init(DataManager.GameData.m_Prism4Count);
 
             subLineController.CheckAvailablePosFunc += CheckAvailablePosWithExcept;
 
@@ -80,7 +83,10 @@ namespace LaserCrush.Manager
                 {
                     itemIndex = droppedItem.GetItemIndex();
 
-                    Vector2 destination = m_GetAnimationDestination[itemIndex + 1].position;
+                    Vector2 destination;
+                    if (itemIndex == -1) destination = m_EnergyGetAnimationDestination.position;
+                    else destination = m_ItemGetAnimationDestination.position;
+
                     droppedItem.GetItemWithAnimation(destination);  //여기서 애니메이션 실행하고 알아서 반환함
 
                     if (itemIndex != -1)
@@ -202,6 +208,7 @@ namespace LaserCrush.Manager
             DataManager.GameData.m_Prism1Count = m_AcquiredItemCounts[0];
             DataManager.GameData.m_Prism2Count = m_AcquiredItemCounts[1];
             DataManager.GameData.m_Prism3Count = m_AcquiredItemCounts[2];
+            DataManager.GameData.m_Prism4Count = m_AcquiredItemCounts[3];
 
             DataManager.GameData.m_InstalledItems.Clear();
             Data.Json.ItemData itemData;
@@ -237,10 +244,7 @@ namespace LaserCrush.Manager
             }
 
             for (int i = 0; i < m_DroppedItems.Count; i++)
-            {
-                Debug.Log("DroppedItem");
                 m_DroppedItems[i].ReturnObject();
-            }
 
             m_DroppedItems.Clear();
         }
