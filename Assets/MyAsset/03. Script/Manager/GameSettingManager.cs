@@ -3,8 +3,7 @@ using UnityEngine.UI;
 
 namespace LaserCrush.Manager
 {
-    [System.Serializable]
-    public class GameSettingManager
+    public class GameSettingManager : MonoBehaviour
     {
         [SerializeField] private int m_TargetFrameRate = 60;
 
@@ -46,6 +45,9 @@ namespace LaserCrush.Manager
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
             }
             Camera.main.rect = rect;
+            
         }
+
+        private void OnPreCull() => GL.Clear(true, true, Color.black);
     }
 }

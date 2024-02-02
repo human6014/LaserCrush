@@ -23,10 +23,10 @@ namespace LaserCrush.Manager
         [Header("Monobehaviour Reference")]
         [SerializeField] private UIManager m_UIManager;
         [SerializeField] private AudioManager m_AudioManager;
+        [SerializeField] private GameSettingManager m_GameSettingManager;
         [SerializeField] private ObjectPoolManager m_ObjectPoolManager;
 
         [Header("Serialized Instance Reference")]
-        [SerializeField] private GameSettingManager m_GameSettingManager;
         [SerializeField] private LaserManager m_LaserManager;
         [SerializeField] private BlockManager m_BlockManager;
         [SerializeField] private ItemManager m_ItemManager;
