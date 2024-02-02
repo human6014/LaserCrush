@@ -79,7 +79,7 @@ namespace LaserCrush.Manager
 
                 if (CheckCollideWithFloor())
                 {
-                    Energy.UseEnergy(int.MaxValue);
+                    Energy.UseAllEnergy();
                 }
             }
         }

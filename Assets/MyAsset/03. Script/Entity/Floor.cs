@@ -26,7 +26,7 @@ public sealed class Floor : MonoBehaviour, ICollisionable
     //딜 계속 박히게 하고 싶으면 주석 풀고 true반환
     public bool GetDamage(int damage)
     {
-        Energy.UseEnergy((int)(damage * weight));
+        Energy.UseEnergy();
         return true;
     }
 
