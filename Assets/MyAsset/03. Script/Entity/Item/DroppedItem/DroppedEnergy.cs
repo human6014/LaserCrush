@@ -9,7 +9,9 @@ namespace LaserCrush.Entity.Item
         protected override void BeforeReturnCall()
         {
             base.BeforeReturnCall();
-            Energy.EnergyUpgrade(s_GettingEnergy);
+            //일단 임시
+            //Energy.EnergyUpgrade(s_GettingEnergy);
+            Energy.EnergyUpgrade();
         }
     }
 }
