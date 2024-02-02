@@ -128,15 +128,15 @@ namespace LaserCrush.Entity
 
             if (CurrentHP <= damage) // 남은 피가 데미지보다 작을 경우
             {
-                Energy.UseEnergy();
+                Energy.UseEnergy(CurrentHP);
                 Destroy();
                 return false;
             }
-            else CurrentHP -= Energy.UseEnergy();
+            else CurrentHP -= Energy.UseEnergy(damage);
 
             if (GetHP() == 0)
             {
-                Energy.UseEnergy();
+                Energy.UseEnergy(CurrentHP);
                 Destroy();
                 return false;
             }
