@@ -15,7 +15,8 @@ namespace LaserCrush.Manager
         {
             Deploying,
             BlockUpdating,
-            LaserActivating
+            LaserActivating,
+            ChargingEvent
         }
 
         #region Variable
@@ -36,13 +37,16 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        private EGameStateType m_GameStateType = EGameStateType.BlockUpdating;
+        private static EGameStateType s_GameStateType = EGameStateType.BlockUpdating;
 
         private const string m_StageChangeAudioKey = "StageChange";
 
         private int m_PreValidHit;
 
         private readonly float m_ValidTime = 2.5f;
+        private readonly float m_ChargingMaxTime = 1.0f;
+        private static float m_ChargingWeight;
+        private float m_ChargingTime;
         private float m_LaserTime;
 
         private bool m_IsInit;
@@ -87,8 +91,8 @@ namespace LaserCrush.Manager
         {
             m_IsInit = true;
 
-            if (hasData) m_GameStateType = EGameStateType.Deploying;
-            else m_GameStateType = EGameStateType.BlockUpdating;
+            if (hasData) s_GameStateType = EGameStateType.Deploying;
+            else s_GameStateType = EGameStateType.BlockUpdating;
 
             //초기화 순서 중요함 건들 ㄴㄴ
             m_SubLineController = GetComponent<SubLineController>();
@@ -130,7 +134,7 @@ namespace LaserCrush.Manager
             if (!m_IsInit) return;
             if (m_IsGameOver) return;
 
-            switch (m_GameStateType)
+            switch (s_GameStateType)
             {
                 case EGameStateType.Deploying:
                     break;
@@ -140,6 +144,10 @@ namespace LaserCrush.Manager
                 case EGameStateType.LaserActivating:
                     LaserActivating();
                     break;
+                case EGameStateType.ChargingEvent:
+                    ChargingEvent();
+                    break;
+
                 default:
                     Debug.Log("올바르지 않은 게임 상태입니다.");
                     break;
@@ -152,6 +160,33 @@ namespace LaserCrush.Manager
             m_IsCheckDestroyItem = value;
             m_IsCheckMoveDownBlock = value;
             m_IsCheckGenerateBlock = value;
+        }
+
+        /// <summary>
+        /// BlockUpdating 함수에서 사용한 if문이랑 코루틴 에니메이션 완료 체크 사용한거 여기도 적용하면 될듯 일단은
+        /// 저렴한(?)방식으로 짜놨어
+        /// 에너지 충진 시 숫자가 한번에 오르는게 아니라 일정 시간동안 에너지 소모때 처럼 증가
+        /// </summary>
+        private void ChargingEvent()
+        {
+            m_ChargingTime += Time.deltaTime;
+            /*if (!m_IsCheckChargingEvent)
+            {
+                m_IsCheckChargingEvent = ??.ChargingEvent();
+                if (!m_IsCheckChargingEvent) return;
+            }*/
+            if (m_ChargingTime > m_ChargingMaxTime)
+            {
+                s_GameStateType = EGameStateType.LaserActivating;
+                m_ChargingTime = 0;
+            }
+        }
+
+        public static void InvokeChargingEvent(float ChargingWeight)
+        {
+            s_GameStateType = EGameStateType.ChargingEvent;
+            m_ChargingWeight = ChargingWeight;
+            Energy.ChargeEnergy((int)(Energy.MaxEnergy * m_ChargingWeight));
         }
 
         /// <summary>
@@ -194,8 +229,9 @@ namespace LaserCrush.Manager
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
+            m_ChargingTime = 0;
             m_SubLineController.IsActiveSubLine = true;
-            m_GameStateType = EGameStateType.Deploying;
+            s_GameStateType = EGameStateType.Deploying;
             StageNum++;
             m_UIManager.SetCurrentStage(StageNum - 1);
             CheckValueUpdate(false);
@@ -226,10 +262,10 @@ namespace LaserCrush.Manager
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
         {
-            if (m_GameStateType == EGameStateType.LaserActivating) return;
+            if (s_GameStateType == EGameStateType.LaserActivating) return;
 
             m_ItemManager.FixInstalledItemDirection();
-            m_GameStateType = EGameStateType.LaserActivating;
+            s_GameStateType = EGameStateType.LaserActivating;
             m_SubLineController.IsActiveSubLine = false;
         }
 
@@ -255,7 +291,7 @@ namespace LaserCrush.Manager
             {
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
-                    m_GameStateType = EGameStateType.BlockUpdating;
+                    s_GameStateType = EGameStateType.BlockUpdating;
                 }
             }
         }
@@ -284,7 +320,7 @@ namespace LaserCrush.Manager
             DataManager.GameData.m_IsGameOver = false;
             StageNum = 1;
 
-            m_GameStateType = EGameStateType.BlockUpdating;
+            s_GameStateType = EGameStateType.BlockUpdating;
         }
 
         private void OnApplicationQuit()
