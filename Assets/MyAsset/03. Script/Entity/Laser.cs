@@ -72,7 +72,7 @@ namespace LaserCrush.Entity
             //생성 시 디메리트 계산로직 입맛대로 수정 가능
             if (m_Hierarchy >= GameManager.LaserCriticalPoint)
             {
-                Energy.UseEnergy(Energy.GetEnergy() / 10);
+                Energy.UseEnergy();
             }
             //Debug.Log("계층: " + m_Hierarchy);
 
