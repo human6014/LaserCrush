@@ -2,9 +2,6 @@ using UnityEngine;
 using LaserCrush.Manager;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Collections;
-using static UnityEditor.Progress;
 
 namespace LaserCrush.Entity
 {
@@ -17,12 +14,12 @@ namespace LaserCrush.Entity
         private static event Action s_CurrentEnergyUpdateAction;
         private static event Action s_MaxEnergyHighlightTextAction;
 
-        private static readonly int s_InitEnergy = 500;
+        private static readonly int s_InitEnergy = 2000;
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;
         private static int s_HittingWallLaserNum;
-        private static int m_Damage;
+
         private static HashSet<int> s_LaserHashSet;
         #endregion
 
@@ -59,18 +56,25 @@ namespace LaserCrush.Entity
 
             s_MaxEnergyUpdateAction?.Invoke();
             s_CurrentEnergyUpdateAction?.Invoke();
+
             s_LaserHashSet = new HashSet<int>();
-            m_Damage = 6;
-            StartCoroutine(Tic());
         }
 
-        public static void UseAllEnergy()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="energy">사용할 에너지 양</param>
+        /// <returns></returns>
+        public static int UseEnergy(int energy)
         {
-            CurrentEnergy = 0;
-        }
-        public static int UseEnergy()
-        {
-            return m_Damage;
+            if (energy <= CurrentEnergy) CurrentEnergy -= energy;
+            else
+            {
+                energy = CurrentEnergy;
+                CurrentEnergy = 0;
+            }
+            return energy;
         }
 
         public static bool CheckEnergy()
@@ -99,34 +103,39 @@ namespace LaserCrush.Entity
         public static void ChargeEnergy(int energy)
             => CurrentEnergy += energy;
         
+
         public static void CollideWithWall()
         {
+            /*Case 벽에 튕기면 전체 10%감소 
+             * 패널티가 너무 강력하고 튕기는 맛이 너무 적다 피드백 받음
+             */
+            //UseEnergy(MaxEnergy / 10);
+
+            /*Case 벽에 튕기면 눈 속임으로 1 데미지 주면서 계속 진행
+             * 바닥에 모든 레이저 가닥이 도착하는 경우가 아니면 계속 진행 가능
+             * 단점 1. 가끔 어 왜 에너지가 닳지 하는 상황발생 -> 시작할때1 감소, 후로는 잘 안보임
+             */
+            //UseEnergy(1);
+
+            /*Case 벽에 튕기면 가중치로 점점 데미지 증가
+             */
+
+            /*m_HittingWallLaserNum++;
+            UseEnergy((MaxEnergy / 100) * (int)(m_HittingWallLaserNum * 1.5));*/
+
+            /*Case 최초 N회까지 충돌은 무료 이후 충돌에 에너지 소모 적용
+             */
+
             s_HittingWallLaserNum++;
             if (s_HittingWallLaserNum > 10) 
-                UseEnergy(); 
+                UseEnergy(MaxEnergy / 12); 
 
             GameManager.ValidHit++;
         }
 
-        IEnumerator Tic()
-        {
-            while(true)
-            {
-                if (CurrentEnergy > 0 && GameManager.GetEGameStateType() == GameManager.EGameStateType.LaserActivating)
-                    CurrentEnergy -= 100;
-                yield return new WaitForSecondsRealtime(1.0f);
-            }
-        }
-
         public static void EnergyUpgrade(int additionalEnergy)
             => MaxEnergy += additionalEnergy;
-
-        public static void EnergyUpgrade()
-        {
-
-        }
-
-
+        
         public static int GetEnergy()
             => s_CurrentEnergy;
 

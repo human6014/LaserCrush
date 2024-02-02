@@ -144,6 +144,9 @@ namespace LaserCrush.Manager
                 case EGameStateType.LaserActivating:
                     LaserActivating();
                     break;
+                case EGameStateType.ChargingEvent:
+                    ChargingEvent();
+                    break;
 
                 default:
                     Debug.Log("올바르지 않은 게임 상태입니다.");
@@ -157,6 +160,33 @@ namespace LaserCrush.Manager
             m_IsCheckDestroyItem = value;
             m_IsCheckMoveDownBlock = value;
             m_IsCheckGenerateBlock = value;
+        }
+
+        /// <summary>
+        /// BlockUpdating 함수에서 사용한 if문이랑 코루틴 에니메이션 완료 체크 사용한거 여기도 적용하면 될듯 일단은
+        /// 저렴한(?)방식으로 짜놨어
+        /// 에너지 충진 시 숫자가 한번에 오르는게 아니라 일정 시간동안 에너지 소모때 처럼 증가
+        /// </summary>
+        private void ChargingEvent()
+        {
+            m_ChargingTime += Time.deltaTime;
+            /*if (!m_IsCheckChargingEvent)
+            {
+                m_IsCheckChargingEvent = ??.ChargingEvent();
+                if (!m_IsCheckChargingEvent) return;
+            }*/
+            if (m_ChargingTime > m_ChargingMaxTime)
+            {
+                s_GameStateType = EGameStateType.LaserActivating;
+                m_ChargingTime = 0;
+            }
+        }
+
+        public static void InvokeChargingEvent(float ChargingWeight)
+        {
+            s_GameStateType = EGameStateType.ChargingEvent;
+            m_ChargingWeight = ChargingWeight;
+            Energy.ChargeEnergy((int)(Energy.MaxEnergy * m_ChargingWeight));
         }
 
         /// <summary>
@@ -246,7 +276,7 @@ namespace LaserCrush.Manager
                 m_LaserTime += Time.deltaTime;
                 if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
                 {
-                    Energy.UseAllEnergy();
+                    Energy.UseEnergy(int.MaxValue);
                     return;
                 }
 
@@ -264,11 +294,6 @@ namespace LaserCrush.Manager
                     s_GameStateType = EGameStateType.BlockUpdating;
                 }
             }
-        }
-
-        public static EGameStateType GetEGameStateType()
-        {
-            return s_GameStateType;
         }
 
         public void SetInteraction(bool value)
