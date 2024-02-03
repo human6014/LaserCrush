@@ -27,7 +27,7 @@ MonoBehaviour:
   - m_AudioName: BlockDamage
     m_AudioClip: {fileID: 8300000, guid: 6e806885cb1cb244baf9dfd0b94de0ea, type: 3}
   - m_AudioName: StageChange
-    m_AudioClip: {fileID: 8300000, guid: 6f9e64f326b61144190f2167f69aec45, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 839608e5eeefee04da1bd8d6d1bae8be, type: 3}
   m_SEUIAudioGroups:
   - m_AudioName: ButtonClick
     m_AudioClip: {fileID: 8300000, guid: 59579549fdd01e848ba0acfc89d817a7, type: 3}
@@ -39,7 +39,7 @@ MonoBehaviour:
     m_AudioClip: {fileID: 8300000, guid: f6c21171afe741143a97401b0ab1bb51, type: 3}
   - m_AudioName: ItemDropped
     m_AudioClip: {fileID: 8300000, guid: f7680eff5927c0c47a78cc574eda3276, type: 3}
-  - m_AudioName: ItemAcquired
+  - m_AudioName: ItemAcquireda
     m_AudioClip: {fileID: 8300000, guid: 83dbdebbf743ae24f961f2a1a6fa4a4c, type: 3}
   - m_AudioName: ItemClick
     m_AudioClip: {fileID: 8300000, guid: 10fb13c2572f31a4ba5fad9dbcdcaaab, type: 3}

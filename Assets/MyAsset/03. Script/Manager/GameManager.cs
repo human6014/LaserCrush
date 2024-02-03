@@ -2,6 +2,7 @@ using LaserCrush.Controller.InputObject;
 using LaserCrush.Entity;
 using UnityEngine;
 using System;
+using System.Collections;
 
 namespace LaserCrush.Manager
 {
@@ -44,9 +45,8 @@ namespace LaserCrush.Manager
         private int m_PreValidHit;
 
         private readonly float m_ValidTime = 2.5f;
-        private readonly float m_ChargingMaxTime = 1.0f;
-        private static float m_ChargingWeight;
-        private float m_ChargingTime;
+        private readonly float m_ChargingDownTime = 0.1f;
+        private readonly float m_ChargingMaxTime = 0.9f;
         private float m_LaserTime;
 
         private bool m_IsInit;
@@ -64,6 +64,8 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
+
+        private static Action<int> ChargeWaitAction { get; set; }
 
         //계층 임계점 변수
         public static int LaserCriticalPoint { get; set; }
@@ -113,6 +115,7 @@ namespace LaserCrush.Manager
             StageNum = DataManager.GameData.m_StageNumber;
             m_UIManager.SetCurrentStage(StageNum - 1);
             m_IsGameOver = DataManager.GameData.m_IsGameOver;
+            ChargeWaitAction = (int value) => StartCoroutine(EnergyCharge(value));
         }
 
         private void Start()
@@ -169,26 +172,48 @@ namespace LaserCrush.Manager
         /// </summary>
         private void ChargingEvent()
         {
-            m_ChargingTime += Time.deltaTime;
-            /*if (!m_IsCheckChargingEvent)
-            {
-                m_IsCheckChargingEvent = ??.ChargingEvent();
-                if (!m_IsCheckChargingEvent) return;
-            }*/
-            if (m_ChargingTime > m_ChargingMaxTime)
-            {
-                s_GameStateType = EGameStateType.LaserActivating;
-                m_ChargingTime = 0;
-            }
+            //
         }
 
-        public static void InvokeChargingEvent(float ChargingWeight)
+        public static void InvokeChargingEvent(float chargingWeight)
+        {
+            ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
+        }
+
+        private IEnumerator EnergyCharge(int additionalEnergy)
         {
             s_GameStateType = EGameStateType.ChargingEvent;
-            m_ChargingWeight = ChargingWeight;
-            Energy.ChargeEnergy((int)(Energy.MaxEnergy * m_ChargingWeight));
-        }
 
+            int startEnergy = Energy.CurrentEnergy;
+            int endEnergy = startEnergy + additionalEnergy;
+
+            float elapsedTime = 0;
+            float t;
+            while (elapsedTime < m_ChargingDownTime)
+            {
+                elapsedTime += Time.deltaTime;
+                t = elapsedTime / m_ChargingDownTime;
+
+                Energy.CurrentChargedEnergy = (int)Mathf.Lerp(startEnergy, endEnergy, t);
+
+                yield return null;
+            }
+            Energy.CurrentChargedEnergy = endEnergy;
+
+            elapsedTime = 0;
+            while (elapsedTime < m_ChargingMaxTime)
+            {
+                elapsedTime += Time.deltaTime;
+                t = elapsedTime / m_ChargingMaxTime;
+
+                Energy.SetChargeEnergy((int)Mathf.Lerp(startEnergy, Energy.CurrentChargedEnergy, t));
+
+                yield return null;
+            }
+            Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
+
+            s_GameStateType = EGameStateType.LaserActivating;
+        }
         /// <summary>
         /// 1. 떨어진 아이템 수집
         /// 2. 살아있는 블럭들 1칸씩 내림 + 설치된 아이템 중 곂치는거 파괴
@@ -229,7 +254,6 @@ namespace LaserCrush.Manager
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
-            m_ChargingTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
             StageNum++;
@@ -245,19 +269,6 @@ namespace LaserCrush.Manager
             }
 
             SaveAllData();
-        }
-
-        private void SaveAllData()
-        {
-            DataManager.GameData.m_StageNumber = StageNum;
-
-            m_SubLineController.SaveAllData();
-            m_BlockManager.SaveAllData();
-            m_ItemManager.SaveAllData();
-            m_UIManager.SaveAllData();
-            Energy.SaveAllData();
-
-            DataManager.SaveGameData();
         }
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
@@ -306,6 +317,19 @@ namespace LaserCrush.Manager
         {
             //모든 블럭 파괴
             m_BlockManager.FeverTime();
+        }
+
+        private void SaveAllData()
+        {
+            DataManager.GameData.m_StageNumber = StageNum;
+
+            m_SubLineController.SaveAllData();
+            m_BlockManager.SaveAllData();
+            m_ItemManager.SaveAllData();
+            m_UIManager.SaveAllData();
+            Energy.SaveAllData();
+
+            DataManager.SaveGameData();
         }
 
         public void ResetGame()

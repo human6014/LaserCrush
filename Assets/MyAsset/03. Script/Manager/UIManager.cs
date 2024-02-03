@@ -147,7 +147,7 @@ namespace LaserCrush.Manager
         }
 
         public void SetCurrentMaxEnergy(int current, int max)
-            => m_EnergySliderDisplayer.SetMaxValue(current, max);
+            => m_EnergySliderDisplayer.SetCurrentValue(current, max);
 
         public void SetCurrentEnergy(int current, int max)
         {
