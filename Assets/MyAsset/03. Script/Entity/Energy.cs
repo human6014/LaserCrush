@@ -12,11 +12,15 @@ namespace LaserCrush.Entity
 
         private static event Action s_MaxEnergyUpdateAction;
         private static event Action s_CurrentEnergyUpdateAction;
+        private static event Action s_CurrentChargedEnergyUpdateAction;
         private static event Action s_MaxEnergyHighlightTextAction;
 
         private static readonly int s_InitEnergy = 2000;
+
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
+        private static int s_CurrentChargedEnergy;
+
         private static int s_HittingFloorLaserNum;
         private static int s_HittingWallLaserNum;
 
@@ -35,13 +39,23 @@ namespace LaserCrush.Entity
             }
         }
 
-        private static int CurrentEnergy
+        public static int CurrentEnergy
         {
             get => s_CurrentEnergy;
-            set
+            private set
             {
                 s_CurrentEnergy = value;
                 s_CurrentEnergyUpdateAction?.Invoke();
+            }
+        }
+
+        public static int CurrentChargedEnergy
+        {
+            get => s_CurrentChargedEnergy;
+            set
+            {
+                s_CurrentChargedEnergy = value;
+                s_CurrentChargedEnergyUpdateAction?.Invoke();
             }
         }
 
@@ -52,6 +66,7 @@ namespace LaserCrush.Entity
 
             s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
             s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+            s_CurrentChargedEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, CurrentChargedEnergy);
             s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
 
             s_MaxEnergyUpdateAction?.Invoke();
@@ -131,6 +146,12 @@ namespace LaserCrush.Entity
                 UseEnergy(MaxEnergy / 12); 
 
             GameManager.ValidHit++;
+        }
+
+        public static void SetChargeEnergy(int current)
+        {
+            CurrentEnergy = current;
+            s_CurrentChargedEnergyUpdateAction?.Invoke();
         }
 
         public static void EnergyUpgrade(int additionalEnergy)

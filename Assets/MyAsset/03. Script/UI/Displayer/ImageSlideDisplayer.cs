@@ -11,10 +11,7 @@ namespace LaserCrush.UI.Controller
         [SerializeField] private Animator m_Animator;
 
         private const string m_HighlightAnimationKey = "Highlight";
-
-        public void SetMaxValue(int current, int max)
-            => m_SliderImage.fillAmount = (float)current / max;
-        
+       
         public void SetCurrentValue(int current, int max)
             => m_SliderImage.fillAmount = (float)current / max;
 
