@@ -3,7 +3,7 @@ using System;
 using GoogleMobileAds.Api;
 using System.Collections.Generic;
 
-public class AdaptiveBannerSample : MonoBehaviour
+public class AdaptiveBanner : MonoBehaviour
 {
     private BannerView m_BannerView;
 
@@ -16,7 +16,9 @@ public class AdaptiveBannerSample : MonoBehaviour
   private readonly string m_AdUnitID = "unused";
 #endif
 
-    private void Start()
+    public float BannerHeight { get => m_BannerView.GetHeightInPixels(); }
+
+    public void Init()
     {
         // Initialize the Google Mobile Ads SDK.
         MobileAds.Initialize((InitializationStatus status) =>
@@ -31,9 +33,9 @@ public class AdaptiveBannerSample : MonoBehaviour
         if (m_BannerView != null)
             m_BannerView.Destroy();
 
-        AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
+        AdSize adSize = AdSize.GetPortraitAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
 
-        m_BannerView = new BannerView(m_TestAdUnitID, adaptiveSize, AdPosition.Top);
+        m_BannerView = new BannerView(m_TestAdUnitID, adSize, AdPosition.Bottom);
 
         // Register for ad events.
         m_BannerView.OnBannerAdLoaded += OnBannerAdLoaded;
@@ -47,7 +49,6 @@ public class AdaptiveBannerSample : MonoBehaviour
 
     private void OnBannerAdLoaded()
     {
-        Debug.Log("Banner view loaded an ad with response : " + m_BannerView.GetResponseInfo());
         Debug.Log($"Ad Height: {m_BannerView.GetHeightInPixels()}, width: {m_BannerView.GetWidthInPixels()}");
     }
 
