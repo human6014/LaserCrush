@@ -44,7 +44,8 @@ namespace LaserCrush.Entity
         private bool m_IsErased;
 
         private int m_Hierarchy;
-        private int m_LaserID;
+
+        private static readonly string s_BlockDamageAudioKey = "BlockDamage";
         #endregion
 
         private void Awake()
@@ -115,6 +116,7 @@ namespace LaserCrush.Entity
             return m_ChildLazers;
         }
 
+        #region Move Point
         /// <summary>
         /// 일정 속도만큼 startPoint를 endPoint방향으로 이동
         /// 레이저가 지워지면 true 반환
@@ -163,6 +165,9 @@ namespace LaserCrush.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(hit, m_DirectionVector, this);
 
+                if(m_Target.GetEEntityType() == EEntityType.Wall)
+                    AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
+
                 if (m_State == ELaserStateType.Wait) return;
 
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy + 1));
@@ -182,6 +187,7 @@ namespace LaserCrush.Entity
             m_EndPoint = pos;
             m_LaserParticle.SetLaserEffectMove(Vector2.Distance(m_StartPoint, m_EndPoint), m_StartPoint, m_DirectionVector);
         }
+        #endregion
 
         public void ChangeLaserState(ELaserStateType type)
         {

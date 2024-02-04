@@ -34,6 +34,7 @@ namespace LaserCrush.Entity
         private int m_AttackCount;
         private bool m_IsDestroyed;
 
+        private static readonly int s_AudioCount = 7;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
         #endregion
@@ -47,6 +48,7 @@ namespace LaserCrush.Entity
         public DroppedItemType ItemType { get; private set; }
         #endregion
 
+        #region Init
         private void Awake()
         {
             m_BoxCollider2D = GetComponent<BoxCollider2D>();
@@ -97,28 +99,14 @@ namespace LaserCrush.Entity
 
             transform.localScale = endScale;
         }
+        #endregion
 
-        /// <summary>
-        /// 파티클, 사운드 실행하고 삭제
-        /// </summary>
-        private void Destroy()
-        {
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
-            m_IsDestroyed = true;
-            m_PlayParticleAction?.Invoke(this);
-        }
-
-        /// <summary>
-        /// 파티클, 사운드 실행 안하고 바로 삭제
-        /// </summary>
-        public void ImmediatelyReset()
-            => m_IsDestroyed = true;
-
+        #region ICollisionable
         public bool GetDamage(int damage)
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % 7 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
+            if (m_AttackCount % s_AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
             m_AttackCount++;
 
             GameManager.ValidHit++;
@@ -153,9 +141,6 @@ namespace LaserCrush.Entity
         public EEntityType GetEEntityType()
             => m_EntityType;
         
-        private int GetHP() 
-            => CurrentHP / 100;
-        
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             List<LaserInfo> answer = new List<LaserInfo>();
@@ -174,7 +159,9 @@ namespace LaserCrush.Entity
             GameManager.ValidHit++;
             return answer;
         }
+        #endregion
 
+        #region MoveDown
         public void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
@@ -195,6 +182,26 @@ namespace LaserCrush.Entity
             Position = endPos;
             transform.position = endPos;
         }
+        #endregion
+
+        private int GetHP()
+            => CurrentHP / 100;
+
+        /// <summary>
+        /// 파티클, 사운드 실행하고 삭제
+        /// </summary>
+        private void Destroy()
+        {
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
+            m_IsDestroyed = true;
+            m_PlayParticleAction?.Invoke(this);
+        }
+
+        /// <summary>
+        /// 파티클, 사운드 실행 안하고 바로 삭제
+        /// </summary>
+        public void ImmediatelyReset()
+            => m_IsDestroyed = true;
 
         private void OnDestroy()
             => m_PlayParticleAction = null;
