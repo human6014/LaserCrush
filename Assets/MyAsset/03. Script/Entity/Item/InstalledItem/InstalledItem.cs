@@ -280,7 +280,7 @@ namespace LaserCrush.Entity.Item
         {
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-            m_CountText.fontSize = m_FontSizes[RemainUsingCount - 1];
+            m_CountText.fontSize = m_FontSizes[Mathf.Max(0, RemainUsingCount - 1)];
             m_CountText.text = RemainUsingCount.ToString();
             m_CountText.gameObject.SetActive(true);
             m_CountText.rectTransform.anchoredPosition = m_TextInitPos;

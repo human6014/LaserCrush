@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BGMAudioGroups:
   - m_AudioName: MainBGM1
-    m_AudioClip: {fileID: 8300000, guid: 044824519b05abe4cbb6d3b3c9930a86, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 56bf6e59dd6f79c4da4e18b0d9cc4655, type: 3}
   - m_AudioName: MainBGM2
-    m_AudioClip: {fileID: 8300000, guid: 9d0e228d7e62bce4495b35d7ec16b29f, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 20f73659f5cfea24e9e748b340d2d8cc, type: 3}
   - m_AudioName: MainBGM3
-    m_AudioClip: {fileID: 8300000, guid: 5d3b2a8b1781ff04ba790f28a05b7f9a, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: aa93df6d24f6d4741a3999f40309df5a, type: 3}
   - m_AudioName: MainBGM4
-    m_AudioClip: {fileID: 8300000, guid: 674d05da11f68c349baff5bb8b29e901, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 4e553000b15597c4c8dc55c00f1e472f, type: 3}
   m_SENormalAudioGroups:
   - m_AudioName: BlockDestroy
-    m_AudioClip: {fileID: 8300000, guid: af91eddd4f8360d47bdbae934ee406b5, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 011c69a8393e98645b69b7ff7c6823cc, type: 3}
   - m_AudioName: BlockDamage
-    m_AudioClip: {fileID: 8300000, guid: 6e806885cb1cb244baf9dfd0b94de0ea, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 2a0191c32c7598f418d060de02ff0c9e, type: 3}
   - m_AudioName: StageChange
-    m_AudioClip: {fileID: 8300000, guid: 839608e5eeefee04da1bd8d6d1bae8be, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 89c92ff8737cdcc4bb89250562a9d370, type: 3}
   m_SEUIAudioGroups:
   - m_AudioName: ButtonClick
     m_AudioClip: {fileID: 8300000, guid: 59579549fdd01e848ba0acfc89d817a7, type: 3}
