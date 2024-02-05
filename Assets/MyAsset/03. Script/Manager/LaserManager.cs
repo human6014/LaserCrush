@@ -31,10 +31,17 @@ namespace LaserCrush.Manager
         private List<Laser> m_LossParentsLaserAddBuffer;
         private List<Laser> m_LossParentsLaserRemoveBuffer;
 
+        private ObjectPoolManager.PoolingObject m_LaserPool;
+
+        private const string m_LaunchAudioKey = "Launch";
+        private const float m_LaunchDelayTime = 0.25f;
+
+        private float m_CurrentLaunchTime;
+
+        private bool m_IsPlayLaunchAudio;
         private bool m_Activated = false;
         #endregion
 
-        private ObjectPoolManager.PoolingObject m_LaserPool;
 
         public void Init()
         {
@@ -55,16 +62,30 @@ namespace LaserCrush.Manager
         {
             if (!m_Activated)//턴 첫 시작
             {
-                m_InitLazer.Activate(pos, dir, 0);
+                m_CurrentLaunchTime += Time.deltaTime;
+                if (m_CurrentLaunchTime <= m_LaunchDelayTime)
+                {
+                    if (!m_IsPlayLaunchAudio)
+                    {
+                        AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_LaunchAudioKey);
+                        m_IsPlayLaunchAudio = true;
+                    }
+                    else return;
+                }
+                else
+                {
+                    m_InitLazer.Activate(pos, dir, 0);
 
-                m_RootLazer.Add(m_InitLazer);
-                m_Lasers.Add(m_InitLazer);
+                    m_RootLazer.Add(m_InitLazer);
+                    m_Lasers.Add(m_InitLazer);
 
-                m_Activated = true;
+                    m_CurrentLaunchTime = 0;
+                    m_IsPlayLaunchAudio = false;
+                    m_Activated = true;
+                }
             }
             else
             {
-                //AudioManager.AudioManagerInstance.PlayNormalSE("Laser");
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
                     if (Energy.CheckEnergy())
@@ -189,7 +210,6 @@ namespace LaserCrush.Manager
             }
             m_LossParentsLaserAddBuffer.Clear();
             m_LossParentsLaserRemoveBuffer.Clear();
-
         }
 
         /// <summary>
@@ -226,6 +246,8 @@ namespace LaserCrush.Manager
             DestroyLasers(m_LossParentsLaserAddBuffer);
             DestroyLasers(m_LossParentsLaserRemoveBuffer);
             m_Activated = false;
+            m_CurrentLaunchTime = 0;
+            m_IsPlayLaunchAudio = false;
         }
 
         private void DestroyLasers(List<Laser> lasers)

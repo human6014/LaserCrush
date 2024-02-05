@@ -42,21 +42,24 @@ namespace LaserCrush.Manager
         private static float s_ChargingWeight;
 
         private const string m_StageChangeAudioKey = "StageChange";
-
-        private int m_PreValidHit;
+        private const string m_ItemChargeAudioKey = "ItemCharge";
 
         private readonly float m_ValidTime = 2.5f;
         private readonly float m_ChargingDownTime = 0.1f;
         private readonly float m_ChargingMaxTime = 0.9f;
         private float m_LaserTime;
 
+        private int m_PreValidHit;
+
         private bool m_IsInit;
         private bool m_IsGameOver;
-
+        
         private bool m_IsCheckGetItem;
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
         private bool m_IsCheckGenerateBlock;
+
+        private bool m_IsRunChargeEvent;
         #endregion
 
         #region Property
@@ -66,8 +69,6 @@ namespace LaserCrush.Manager
             remove => m_GameOverAction -= value;
         }
 
-        private static Action<int> ChargeWaitAction { get; set; }
-
         //계층 임계점 변수
         public static int LaserCriticalPoint { get; set; }
 
@@ -76,6 +77,7 @@ namespace LaserCrush.Manager
         public static int StageNum { get; private set; }
         #endregion
 
+        #region Init
         private void Awake()
         {
             RayManager.MainCamera = Camera.main;
@@ -116,15 +118,14 @@ namespace LaserCrush.Manager
             StageNum = DataManager.GameData.m_StageNumber;
             m_UIManager.SetCurrentStage(StageNum - 1);
             m_IsGameOver = DataManager.GameData.m_IsGameOver;
-            ChargeWaitAction = (int value) => StartCoroutine(EnergyCharge(value));
         }
 
         private void Start()
         {
             if (m_IsGameOver) m_GameOverAction?.Invoke();
             m_AudioManager.OnOffAutoBGMLoop(true);
-            m_GameSettingManager.SetFrame();
         }
+        #endregion
 
         /// <summary>
         /// 게임 진행 순서
@@ -164,58 +165,6 @@ namespace LaserCrush.Manager
             m_IsCheckDestroyItem = value;
             m_IsCheckMoveDownBlock = value;
             m_IsCheckGenerateBlock = value;
-        }
-
-        /// <summary>
-        /// BlockUpdating 함수에서 사용한 if문이랑 코루틴 에니메이션 완료 체크 사용한거 여기도 적용하면 될듯 일단은
-        /// 저렴한(?)방식으로 짜놨어
-        /// 에너지 충진 시 숫자가 한번에 오르는게 아니라 일정 시간동안 에너지 소모때 처럼 증가
-        /// </summary>
-        private void ChargingEvent()
-        {
-            //
-            //ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * s_ChargingWeight));
-        }
-
-        public static void InvokeChargingEvent(float chargingWeight)
-        {
-            //ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
-            s_ChargingWeight += chargingWeight;
-        }
-
-        private IEnumerator EnergyCharge(int additionalEnergy)
-        {
-            s_GameStateType = EGameStateType.ChargingEvent;
-
-            int startEnergy = Energy.CurrentEnergy;
-            int endEnergy = startEnergy + additionalEnergy;
-
-            float elapsedTime = 0;
-            float t;
-            while (elapsedTime < m_ChargingDownTime)
-            {
-                elapsedTime += Time.deltaTime;
-                t = elapsedTime / m_ChargingDownTime;
-
-                Energy.CurrentChargedEnergy = (int)Mathf.Lerp(startEnergy, endEnergy, t);
-
-                yield return null;
-            }
-            Energy.CurrentChargedEnergy = endEnergy;
-
-            elapsedTime = 0;
-            while (elapsedTime < m_ChargingMaxTime)
-            {
-                elapsedTime += Time.deltaTime;
-                t = elapsedTime / m_ChargingMaxTime;
-
-                Energy.SetChargeEnergy((int)Mathf.Lerp(startEnergy, Energy.CurrentChargedEnergy, t));
-
-                yield return null;
-            }
-            Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
-            s_ChargingWeight = 0;
-            s_GameStateType = EGameStateType.LaserActivating;
         }
 
         /// <summary>
@@ -301,6 +250,7 @@ namespace LaserCrush.Manager
                     m_PreValidHit = ValidHit;
                     m_LaserTime = 0;
                 }
+                
                 m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
             }
             else
@@ -318,11 +268,66 @@ namespace LaserCrush.Manager
             m_ToolbarController.CanInteraction = value;
         }
 
-        private void FeverTime()
+        #region Energy Charging
+        /// <summary>
+        /// 에너지 량 진짜로 더해주는 곳
+        /// 메인 Update에서 에너지 Charging확인되면 코루틴 1번만 호출
+        /// 아래 InvokeChargingEvent호출 후 다음 프레임에서 실행됨
+        /// </summary>
+        private void ChargingEvent()
         {
-            //모든 블럭 파괴
-            m_BlockManager.FeverTime();
+            if (m_IsRunChargeEvent) return;
+            m_IsRunChargeEvent = true;
+            StartCoroutine(EnergyCharge((int)(Energy.MaxEnergy * s_ChargingWeight)));
         }
+
+        /// <summary>
+        /// 현재 프레임에서 프리즘에 의한 에너지 충전량 더해주기
+        /// 호출 후 다음 프레임은 상태 바꿔서 ChargingEvent로 가게 함
+        /// </summary>
+        /// <param name="chargingWeight">추가할 에너지량</param>
+        public static void InvokeChargingEvent(float chargingWeight)
+        {
+            s_GameStateType = EGameStateType.ChargingEvent;
+            s_ChargingWeight += chargingWeight;
+        }
+
+        private IEnumerator EnergyCharge(int additionalEnergy)
+        {
+            int startEnergy = Energy.CurrentEnergy;
+            int endEnergy = startEnergy + additionalEnergy;
+            Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
+
+            float elapsedTime = 0;
+            float t;
+            while (elapsedTime < m_ChargingDownTime)
+            {
+                elapsedTime += Time.deltaTime;
+                t = elapsedTime / m_ChargingDownTime;
+
+                Energy.CurrentChargedEnergy = (int)Mathf.Lerp(startEnergy, endEnergy, t);
+
+                yield return null;
+            }
+            Energy.CurrentChargedEnergy = endEnergy;
+
+            elapsedTime = 0;
+            while (elapsedTime < m_ChargingMaxTime)
+            {
+                elapsedTime += Time.deltaTime;
+                t = elapsedTime / m_ChargingMaxTime;
+
+                Energy.SetChargeEnergy((int)Mathf.Lerp(startEnergy, Energy.CurrentChargedEnergy, t));
+
+                yield return null;
+            }
+            Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
+            s_ChargingWeight = 0;
+            m_IsRunChargeEvent = false;
+            s_GameStateType = EGameStateType.LaserActivating;
+        }
+        #endregion
 
         private void SaveAllData()
         {
@@ -345,10 +350,12 @@ namespace LaserCrush.Manager
             m_SubLineController.ResetGame();
             Energy.ResetGame();
 
+            CheckValueUpdate(false);
             m_IsGameOver = false;
             DataManager.GameData.m_IsGameOver = false;
             StageNum = 1;
 
+            //세이브 딴곳에서 해줌
             s_GameStateType = EGameStateType.BlockUpdating;
         }
 

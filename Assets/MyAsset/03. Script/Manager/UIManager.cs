@@ -47,9 +47,10 @@ namespace LaserCrush.Manager
 
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
-        [SerializeField] private FloatingTextController m_FloatingTextController;
         [SerializeField] private SettingPanelController m_SettingPanelController;
-        [SerializeField] private PatronageController m_PatronageController;
+        [SerializeField] private IAPController m_PatronageController;
+
+        [SerializeField] private FloatingTextController m_FloatingTextController;
         #endregion
 
         private bool m_IsOnOffSettingCanvas;

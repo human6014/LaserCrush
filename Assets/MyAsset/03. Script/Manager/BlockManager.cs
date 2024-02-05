@@ -77,6 +77,7 @@ namespace LaserCrush.Manager
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
             Vector3 blockSize = CalculateGridRowColAndGetSize();
+            m_Block.transform.localScale = blockSize;
 
             m_GridLineController.SetGridLineObjects(m_CalculatedInitPos, m_CalculatedOffset, m_MaxRowCount, m_MaxColCount);
             m_GridLineController.OnOffGridLine(false);
@@ -154,17 +155,10 @@ namespace LaserCrush.Manager
             rowNumber = (int)(differY / m_CalculatedOffset.y);
             colNumber = (int)(differX / m_CalculatedOffset.x);
 
-            Vector2 gridPos = GetGridPos(rowNumber, colNumber);
-
-            return new Vector3(gridPos.x, gridPos.y, 0);
-        }
-
-        private Vector2 GetGridPos(int rowNumber, int colNumber)
-        {
             float newPosX = m_CalculatedInitPos.x + m_CalculatedOffset.x * colNumber;
             float newPosY = m_CalculatedInitPos.y - m_CalculatedOffset.y * rowNumber;
 
-            return new Vector2(newPosX, newPosY);
+            return new Vector3(newPosX, newPosY, 0);
         }
 
         private Vector3 CalculateGridRowColAndGetSize()
@@ -179,7 +173,6 @@ namespace LaserCrush.Manager
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
-            m_Block.transform.localScale = size;
 
             m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
 
@@ -317,12 +310,6 @@ namespace LaserCrush.Manager
                 return true;
             }
             return false;
-        }
-
-        public void FeverTime()
-        {
-            foreach (var block in m_Blocks)
-                block.GetDamage(int.MaxValue);
         }
 
         #region Load & Save

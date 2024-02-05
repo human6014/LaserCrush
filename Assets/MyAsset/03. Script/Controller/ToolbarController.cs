@@ -234,7 +234,7 @@ namespace LaserCrush.Controller.InputObject
             m_IsDragging = false;
             m_IsInstallMode = false;
             m_GridLineController.OnOffGridLine(false);
-            m_SubLineController.IsInitItemDrag = false ;
+            m_SubLineController.IsInitItemDrag = false;
             m_SubLineController.UpdateLineRenderer();
         }
         #endregion
