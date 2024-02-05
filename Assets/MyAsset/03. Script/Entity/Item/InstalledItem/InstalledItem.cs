@@ -66,6 +66,7 @@ namespace LaserCrush.Entity.Item
 
         private bool m_IsActivate;
         private bool m_IsAdjustMode;
+        private bool m_IsSyn;
         #endregion
 
         #region Property
@@ -140,6 +141,7 @@ namespace LaserCrush.Entity.Item
             m_CircleCollider2D.enabled = true;
             IsAdjustMode = false;
             m_IsActivate = false;
+            m_IsSyn = false;
         }
         #endregion
 
@@ -160,6 +162,7 @@ namespace LaserCrush.Entity.Item
         public bool IsOverloaded()
         {
             m_IsActivate = false;
+            m_IsSyn = false;
             m_ChargingWait = 0;
 
             return RemainUsingCount == 0;
@@ -187,8 +190,13 @@ namespace LaserCrush.Entity.Item
 
             GameManager.ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
-            m_IsActivate = false;
-            RemainUsingCount--;
+            
+            if (!m_IsSyn) 
+            { 
+                RemainUsingCount--;
+                m_IsSyn = true;
+            }
+
             m_ChargingWait = 0;
             return m_EjectionPorts;
         }
