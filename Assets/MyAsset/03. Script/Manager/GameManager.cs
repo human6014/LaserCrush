@@ -39,6 +39,7 @@ namespace LaserCrush.Manager
         private Action m_GameOverAction;
 
         private static EGameStateType s_GameStateType = EGameStateType.BlockUpdating;
+        private static float s_ChargingWeight;
 
         private const string m_StageChangeAudioKey = "StageChange";
 
@@ -173,11 +174,13 @@ namespace LaserCrush.Manager
         private void ChargingEvent()
         {
             //
+            //ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * s_ChargingWeight));
         }
 
         public static void InvokeChargingEvent(float chargingWeight)
         {
-            ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
+            //ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
+            s_ChargingWeight += chargingWeight;
         }
 
         private IEnumerator EnergyCharge(int additionalEnergy)
@@ -211,9 +214,10 @@ namespace LaserCrush.Manager
                 yield return null;
             }
             Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
-
+            s_ChargingWeight = 0;
             s_GameStateType = EGameStateType.LaserActivating;
         }
+
         /// <summary>
         /// 1. 떨어진 아이템 수집
         /// 2. 살아있는 블럭들 1칸씩 내림 + 설치된 아이템 중 곂치는거 파괴
@@ -254,6 +258,7 @@ namespace LaserCrush.Manager
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
+            s_ChargingWeight = 0;
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
             StageNum++;
