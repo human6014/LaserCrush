@@ -51,3 +51,5 @@ MonoBehaviour:
     m_AudioClip: {fileID: 8300000, guid: 47aaf503becf7384da57cd2d8b5fdc03, type: 3}
   - m_AudioName: ItemUp
     m_AudioClip: {fileID: 8300000, guid: daba77d059151fd47ad3a30ab5ff713d, type: 3}
+  - m_AudioName: Defeat
+    m_AudioClip: {fileID: 0}

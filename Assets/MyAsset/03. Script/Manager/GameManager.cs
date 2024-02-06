@@ -295,7 +295,7 @@ namespace LaserCrush.Manager
         {
             int startEnergy = Energy.CurrentEnergy;
             int endEnergy = startEnergy + additionalEnergy;
-            Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
+            //Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
 
             float elapsedTime = 0;
             float t;
