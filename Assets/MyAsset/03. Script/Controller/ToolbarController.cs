@@ -3,15 +3,16 @@ using UnityEngine;
 using LaserCrush.Manager;
 using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
+using LaserCrush.Data;
 
 namespace LaserCrush.Controller.InputObject
 {
     public class ToolbarController : MonoBehaviour
     {
         #region Value
+        [SerializeField] private InstalledItemData m_InstalledItemData;
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
-        [SerializeField] private int m_ItemUsingCount = 3;
         [SerializeField] private int[] m_ItemPoolingCount;
         
         private GridLineController m_GridLineController;
@@ -62,6 +63,7 @@ namespace LaserCrush.Controller.InputObject
         }
         #endregion
 
+        #region Init
         public void Init(AcquiredItemUI[] acquiredItemUI)
         {
             m_IsInit = true;
@@ -85,6 +87,7 @@ namespace LaserCrush.Controller.InputObject
                 m_InstalledItemPool[i].GenerateObj(m_ItemPoolingCount[i]);
             }
         }
+        #endregion
 
         #region Load & Save
         private void LoadInstalledItem()
@@ -98,7 +101,8 @@ namespace LaserCrush.Controller.InputObject
                                itemData.m_RemainUsingCount,
                                itemData.m_IsFixedDirection,
                                itemData.m_Position,
-                               itemData.m_Direction);
+                               itemData.m_Direction,
+                               true);
             }
         }
         #endregion
@@ -213,19 +217,22 @@ namespace LaserCrush.Controller.InputObject
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
             if (!result.m_IsAvailable) return false;
 
-            InitItemObject(result.m_RowNumber, result.m_ColNumber, m_ItemUsingCount, false, result.m_ItemGridPos, m_ItemInitDirection);
+            InitItemObject(result.m_RowNumber, result.m_ColNumber, 3, false, result.m_ItemGridPos, m_ItemInitDirection, false);
 
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchSuccessAudioKey);
 
             return true;
         }
 
-        private void InitItemObject(int row, int col,int usingCount, bool isFixed, Vector2 pos, Vector2 dir)
+        private void InitItemObject(int row, int col,int usingCount, bool isFixed, Vector2 pos, Vector2 dir, bool isLoadData)
         {
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
             InstalledItem installedItem = m_ControllingTransform.GetComponent<InstalledItem>();
+            int currentUsingCount = isLoadData ? usingCount : m_InstalledItemData.MaxUsingNum[(int)installedItem.ItemType];
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(row, col, usingCount, false, pos, dir, m_InstalledItemPool[(int)installedItem.ItemType]);
+            installedItem.Init(row, col, currentUsingCount, false, pos, dir, m_InstalledItemPool[(int)installedItem.ItemType]);
+
+            //FixDirection에 m_EjectionPorts설정해줘서 isFixed여부 상관없이 1번은 호출해줘야 함
             if (isFixed) installedItem.FixDirection();
         }
 
