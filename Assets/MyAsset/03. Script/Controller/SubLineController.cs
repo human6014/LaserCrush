@@ -361,6 +361,14 @@ namespace LaserCrush.Controller.InputObject
         {
             Position = m_InitPos;
             Direction = m_InitDir;
+
+            m_IsInitPosDrag = false;
+            m_IsActiveSubLine = false;
+            m_IsItemPosMode = false;
+            m_IsItemDirMode = false;
+            m_InstalledItemAdjustMode = false;
+            m_ClickItem = false;
+
             UpdateLineRenderer();
         }
 

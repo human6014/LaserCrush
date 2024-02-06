@@ -19,7 +19,7 @@ namespace LaserCrush.Manager
             SetResolution();
         }
 
-        public void SetFrame()
+        private void SetFrame()
         {
             Application.targetFrameRate = m_TargetFrameRate;
         }

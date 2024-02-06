@@ -13,13 +13,11 @@ namespace LaserCrush.Entity
     {
         public Vector2 Position;
         public Vector2 Direction;
-        //public int Hierarchy;
 
         public LaserInfo(Vector2 position, Vector2 direction)
         {
             Position = position;
             Direction = direction;
-            //Hierarchy = hierarchy;
         }
     }
 }
@@ -174,7 +172,11 @@ namespace LaserCrush.Entity.Item
         {
             m_ChargingWait += Time.deltaTime;
 
-            if (m_ChargingWait >= m_ChargingTime)
+            //Waiting 함수 한 프레임 내에서 동시에 호출하면 if문 안쪽 여러번 호출 가능함
+            //에너지 충전도 하나의 프리즘에서 여러번 호출댐
+            //m_IsActivate조건으로 한번만 되게 만들긴 했는데 이래도 되나?
+            //여기 안에 다른거랑 엮여있을 수도 있을 것 같아서 확인 부탁
+            if (m_ChargingWait >= m_ChargingTime && !m_IsActivate)
             {
                 float chargingWeight = m_ChargingEnergy[(int)m_ItemType];
                 //Energy.ChargeEnergy((int)(Energy.MaxEnergy * chargingEnergy));
@@ -193,7 +195,7 @@ namespace LaserCrush.Entity.Item
             laser.ChangeLaserState(ELaserStateType.Wait);
             
             if (!m_IsSyn) 
-            { 
+            {
                 RemainUsingCount--;
                 m_IsSyn = true;
             }
@@ -289,7 +291,8 @@ namespace LaserCrush.Entity.Item
         {
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-            m_CountText.fontSize = m_FontSizes[Mathf.Max(0, RemainUsingCount - 1)];
+            if (RemainUsingCount - 1 < 0) Debug.LogError("[RemainUsingCount - 1] < 0 Error");
+            m_CountText.fontSize = m_FontSizes[RemainUsingCount - 1];
             m_CountText.text = RemainUsingCount.ToString();
             m_CountText.gameObject.SetActive(true);
             m_CountText.rectTransform.anchoredPosition = m_TextInitPos;
