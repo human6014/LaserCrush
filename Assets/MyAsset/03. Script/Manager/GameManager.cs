@@ -45,9 +45,9 @@ namespace LaserCrush.Manager
 
         private int m_PreValidHit;
 
-        private readonly float m_ValidTime = 2.5f;
+        private readonly float m_ValidTime = 2f;
         private readonly float m_ChargingDownTime = 0.1f;
-        private readonly float m_ChargingMaxTime = 0.9f;
+        private readonly float m_ChargingMaxTime = 0.6f;
         private float m_LaserTime;
 
         private bool m_IsInit;
@@ -179,8 +179,8 @@ namespace LaserCrush.Manager
 
         public static void InvokeChargingEvent(float chargingWeight)
         {
-            //ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
-            s_ChargingWeight += chargingWeight;
+            ChargeWaitAction?.Invoke((int)(Energy.MaxEnergy * chargingWeight));
+            //s_ChargingWeight += chargingWeight;
         }
 
         private IEnumerator EnergyCharge(int additionalEnergy)
