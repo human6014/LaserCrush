@@ -15,3 +15,9 @@ MonoBehaviour:
   m_NormalBlockColor: {r: 0.8666667, g: 0.68235296, b: 0.68235296, a: 1}
   m_ReflectBlockColor: {r: 0.69411767, g: 0.7058824, b: 1, a: 1}
   m_InitScale: {x: 3, y: 2}
+  m_NormalLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_ReflectLayer:
+    serializedVersion: 2
+    m_Bits: 512
