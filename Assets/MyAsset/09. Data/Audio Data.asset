@@ -29,7 +29,7 @@ MonoBehaviour:
   - m_AudioName: StageChange
     m_AudioClip: {fileID: 8300000, guid: 89c92ff8737cdcc4bb89250562a9d370, type: 3}
   - m_AudioName: Launch
-    m_AudioClip: {fileID: 8300000, guid: c0586dbbe99fef343a99f370cfd45399, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 34e0e20a66826804b9eeef4d85fadac7, type: 3}
   - m_AudioName: ItemCharge
     m_AudioClip: {fileID: 8300000, guid: e46c1de21a3e7144ca0c1c3f03c8ab93, type: 3}
   m_SEUIAudioGroups:
@@ -51,5 +51,3 @@ MonoBehaviour:
     m_AudioClip: {fileID: 8300000, guid: 47aaf503becf7384da57cd2d8b5fdc03, type: 3}
   - m_AudioName: ItemUp
     m_AudioClip: {fileID: 8300000, guid: daba77d059151fd47ad3a30ab5ff713d, type: 3}
-  - m_AudioName: Defeat
-    m_AudioClip: {fileID: 0}

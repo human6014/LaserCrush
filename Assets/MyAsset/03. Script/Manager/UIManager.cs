@@ -124,7 +124,7 @@ namespace LaserCrush.Manager
             m_SettingResumeButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(false);
             m_SettingRestartButtonReceiver.ButtonClickAction += () =>
             {
-                ResetGame(); //확인창 한번 필요함
+                ResetGame();
                 OnOffSettingCanvas(false);
             };
             m_PatronageResumeButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(false);

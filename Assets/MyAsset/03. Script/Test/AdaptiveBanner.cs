@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 public class AdaptiveBanner : MonoBehaviour
 {
+    private Action<float> m_BannerOnAction;
+    public event Action<float> BannerOnAction 
+    { 
+        add => m_BannerOnAction += value; 
+        remove => m_BannerOnAction -= value; 
+    }
+
     private BannerView m_BannerView;
 
     private readonly string m_TestAdUnitID = "ca-app-pub-3940256099942544/9214589741";
@@ -15,8 +22,6 @@ public class AdaptiveBanner : MonoBehaviour
 #else
   private readonly string m_AdUnitID = "unused";
 #endif
-
-    public float BannerHeight { get => m_BannerView.GetHeightInPixels(); }
 
     public void Init()
     {
@@ -36,6 +41,7 @@ public class AdaptiveBanner : MonoBehaviour
         AdSize adSize = AdSize.GetPortraitAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
 
         m_BannerView = new BannerView(m_TestAdUnitID, adSize, AdPosition.Bottom);
+        
 
         // Register for ad events.
         m_BannerView.OnBannerAdLoaded += OnBannerAdLoaded;
@@ -43,6 +49,8 @@ public class AdaptiveBanner : MonoBehaviour
 
         // Load a banner ad.
         m_BannerView.LoadAd(new AdRequest());
+
+        m_BannerOnAction?.Invoke(m_BannerView.GetHeightInPixels());
     }
 
     #region Banner callback handlers
@@ -58,4 +66,7 @@ public class AdaptiveBanner : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDestroy()
+        => m_BannerOnAction = null;
 }

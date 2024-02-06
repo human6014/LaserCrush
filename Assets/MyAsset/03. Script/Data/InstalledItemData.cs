@@ -15,12 +15,15 @@ namespace LaserCrush.Data
         [SerializeField] private Color m_TextEndColor;
 
         public float[] FontSize { get => m_FontSizes; }
+
         public float[] ChargingEnergy { get => m_ChargingEnergy; }
+
         public int[] MaxUsingNum { get => m_MaxUsingNum; }
 
         public float ChargingTime { get => m_ChargingTime; }
 
         public ref Color TextStartColor => ref m_TextStartColor;
+
         public ref Color TextEndColor => ref m_TextEndColor;
     }
 }
