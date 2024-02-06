@@ -50,14 +50,14 @@ namespace LaserCrush.Entity.Item
         private static Color m_TextEndColor;
 
         private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
-        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f, 1.2f };
-
+        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f, 1.0f };
+        private static readonly int[] m_MaxUsingNum = { 3, 3, 3, 2 };
         private const string m_ItemDragAudioKey = "ItemDrag";
 
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
 
-        private const float m_ChargingTime = 0.5f;
+        private const float m_ChargingTime = 0.0f;
         private const float m_SubLineLength = 5;
 
         private float m_ChargingWait;
@@ -127,7 +127,8 @@ namespace LaserCrush.Entity.Item
         {
             RowNumber = rowNumber;
             ColNumber = colNumber;
-            RemainUsingCount = remainCount;
+            RemainUsingCount = m_MaxUsingNum[(int)m_ItemType];
+            //RemainUsingCount = remainCount;
             IsFixedDirection = isFixDirection;
             Position = pos;
             Direction = dir;

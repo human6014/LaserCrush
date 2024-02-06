@@ -44,9 +44,9 @@ namespace LaserCrush.Manager
         private const string m_StageChangeAudioKey = "StageChange";
         private const string m_ItemChargeAudioKey = "ItemCharge";
 
-        private readonly float m_ValidTime = 2.5f;
+        private readonly float m_ValidTime = 2f;
         private readonly float m_ChargingDownTime = 0.1f;
-        private readonly float m_ChargingMaxTime = 0.9f;
+        private readonly float m_ChargingMaxTime = 0.6f;
         private float m_LaserTime;
 
         private int m_PreValidHit;
@@ -167,7 +167,6 @@ namespace LaserCrush.Manager
             m_IsCheckGenerateBlock = value;
         }
 
-        /// <summary>
         /// 1. 떨어진 아이템 수집
         /// 2. 살아있는 블럭들 1칸씩 내림 + 설치된 아이템 중 곂치는거 파괴
         /// 3. 설치된 아이템 중 사용횟수 다 된거 파괴

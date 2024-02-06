@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ItemProbability:
     probability:
-    - 72
+    - 75
     - 0
-    - 10
-    - 10
+    - 8.5
+    - 8
     - 5
-    - 3
+    - 3.5
   m_DroppedItems:
   - {fileID: 3753868951191216476, guid: 1fee0b842c09613499c8535e8a655615, type: 3}
   - {fileID: 3753868951191216476, guid: ba6d9215467d74e46b151597278f08fa, type: 3}
