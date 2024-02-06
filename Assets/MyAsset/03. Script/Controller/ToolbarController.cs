@@ -139,7 +139,7 @@ namespace LaserCrush.Controller.InputObject
                 PointDownProcess();
             
 
-            bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer);
+            bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer);
             if (m_IsDragging) 
                 PointDragProcess(isHit, ref hit2D);
 
@@ -166,7 +166,7 @@ namespace LaserCrush.Controller.InputObject
                 PointDownProcess();
             
 
-            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.s_TouchableAreaLayer, touch);
+            bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer, touch);
             if (m_IsDragging) 
                 PointDragProcess(isHit, ref hit2D);
 

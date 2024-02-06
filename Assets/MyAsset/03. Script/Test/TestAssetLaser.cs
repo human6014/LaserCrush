@@ -32,7 +32,7 @@ public class TestAssetLaser : MonoBehaviour
 
     private void Fire()
     {
-        RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+        RaycastHit2D hit = Physics2D.Raycast(m_StartPoint, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
         m_EndPoint = hit.point;
 
         int pointCount = (int)(hit.distance / m_DistDivisionValue);

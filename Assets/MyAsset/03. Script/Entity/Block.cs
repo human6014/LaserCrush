@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using LaserCrush.Data;
 using LaserCrush.Manager;
-using LaserCrush.Entity.Item;
+using LaserCrush.Extension;
 using TMPro;
 
 namespace LaserCrush.Entity
@@ -78,9 +78,18 @@ namespace LaserCrush.Entity
             m_IsDestroyed = false;
             m_AttackCount = 0;
             m_Text.text = GetHP().ToString();
-            m_SpriteRenderer.color = (m_EntityType == EEntityType.NormalBlock) ?
-                m_BlockData.NormalBlockColor :
-                m_BlockData.ReflectBlockColor;
+
+            if (m_EntityType == EEntityType.NormalBlock)
+            {
+                m_SpriteRenderer.color = m_BlockData.NormalBlockColor;
+                gameObject.layer = m_BlockData.NormalLayer.GetLayerNumber();
+            }
+            else if (m_EntityType == EEntityType.ReflectBlock)
+            {
+                m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
+                gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
+            }
+            else Debug.LogError("Block has incorrect type");
 
             StartCoroutine(InitAnimation(0.2f));
         }

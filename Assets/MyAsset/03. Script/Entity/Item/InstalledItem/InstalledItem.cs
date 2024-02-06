@@ -210,7 +210,7 @@ namespace LaserCrush.Entity.Item
             Vector2 linePos = m_LineRenderers[i].transform.position;
             Vector2 lineDir = m_LineRenderers[i].transform.up;
 
-            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.LaserHitableLayer);
             Vector2 secondPos = hit.collider is null ? linePos + lineDir * m_SubLineLength : hit.point;
 
             m_LineRenderers[i].positionCount = 2;

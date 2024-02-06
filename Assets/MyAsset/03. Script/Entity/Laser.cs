@@ -154,7 +154,7 @@ namespace LaserCrush.Entity
             if (!Energy.CheckEnergy()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.1f, m_DirectionVector, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.1f, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
 
             float dist = Vector2.Distance(m_EndPoint, hit.point);
             float shootingVelocity = m_LaserData.ShootingVelocity * Time.deltaTime;
@@ -269,12 +269,6 @@ namespace LaserCrush.Entity
             return m_State;
         }
 
-        private void OnDestroy()
-        {
-            m_LaserCreateFunc = null;
-            m_LaserEraseAction = null;
-        }
-
         public void ResetLaser()
         {
             m_IsActivated = false;
@@ -286,6 +280,12 @@ namespace LaserCrush.Entity
         public override void ReturnObject()
         {
             //...
+        }
+
+        private void OnDestroy()
+        {
+            m_LaserCreateFunc = null;
+            m_LaserEraseAction = null;
         }
     }
 }
