@@ -295,7 +295,11 @@ namespace LaserCrush.Manager
         {
             int startEnergy = Energy.CurrentEnergy;
             int endEnergy = startEnergy + additionalEnergy;
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
+           
+
             //Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
+
 
             float elapsedTime = 0;
             float t;
@@ -321,7 +325,7 @@ namespace LaserCrush.Manager
                 yield return null;
             }
             Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
+            //AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
             s_ChargingWeight = 0;
             m_IsRunChargeEvent = false;
             s_GameStateType = EGameStateType.LaserActivating;
