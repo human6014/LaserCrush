@@ -127,8 +127,8 @@ namespace LaserCrush.Entity.Item
         {
             RowNumber = rowNumber;
             ColNumber = colNumber;
-            RemainUsingCount = m_MaxUsingNum[(int)m_ItemType];
-            //RemainUsingCount = remainCount;
+            //RemainUsingCount = m_MaxUsingNum[(int)m_ItemType];
+            RemainUsingCount = remainCount;
             IsFixedDirection = isFixDirection;
             Position = pos;
             Direction = dir;
