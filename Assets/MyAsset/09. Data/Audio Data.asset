@@ -29,7 +29,7 @@ MonoBehaviour:
   - m_AudioName: StageChange
     m_AudioClip: {fileID: 8300000, guid: 89c92ff8737cdcc4bb89250562a9d370, type: 3}
   - m_AudioName: Launch
-    m_AudioClip: {fileID: 8300000, guid: b5adb5f3e3a5ff4478ef56e46f7864cd, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 1c5cea5ffc0ccb5428b7a21ed1ddce3c, type: 3}
   - m_AudioName: ItemCharge
     m_AudioClip: {fileID: 8300000, guid: d5377715e19bfce4f8227d5bd0e80031, type: 3}
   m_SEUIAudioGroups:
