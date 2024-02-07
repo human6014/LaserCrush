@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 
-namespace LaserCrush.Controller
+namespace LaserCrush.Controller.InputObject
 {
     public class ClickableObject : MonoBehaviour, IPointerClickHandler
     {

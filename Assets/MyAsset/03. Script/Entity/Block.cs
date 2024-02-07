@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using TMPro;
 using LaserCrush.Data;
 using LaserCrush.Manager;
 using LaserCrush.Extension;
-using TMPro;
+using LaserCrush.Entity.Interface;
 
 namespace LaserCrush.Entity
 {

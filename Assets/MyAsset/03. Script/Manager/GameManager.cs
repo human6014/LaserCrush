@@ -1,8 +1,8 @@
-using LaserCrush.Controller.InputObject;
-using LaserCrush.Entity;
 using UnityEngine;
 using System;
 using System.Collections;
+using LaserCrush.Controller;
+using LaserCrush.Entity;
 
 namespace LaserCrush.Manager
 {

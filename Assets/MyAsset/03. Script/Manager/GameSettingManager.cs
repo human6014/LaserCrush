@@ -1,4 +1,5 @@
 using UnityEngine;
+using LaserCrush.ThirdParty;
 
 namespace LaserCrush.Manager
 {
@@ -23,8 +24,12 @@ namespace LaserCrush.Manager
 
         private void SetBanner()
         {
+#if UNITY_STANDALONE
+            SetResolution(0);
+#else
             m_AdaptiveBanner.BannerOnAction += SetResolution;
             m_AdaptiveBanner.Init();
+#endif
         }
 
         /// <summary>
@@ -32,7 +37,6 @@ namespace LaserCrush.Manager
         /// </summary>
         private void SetResolution(float bannerHeight)
         {
-            Debug.Log("Height : " + bannerHeight);
             float ratio = (bannerHeight + 50) / Screen.height;
 
             int deviceWidth = Screen.width; // 현재 기기 너비

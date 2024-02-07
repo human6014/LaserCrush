@@ -1,7 +1,7 @@
 using UnityEngine;
-using LaserCrush.Manager;
 using System;
 using System.Collections.Generic;
+using LaserCrush.Manager;
 
 namespace LaserCrush.Entity
 {

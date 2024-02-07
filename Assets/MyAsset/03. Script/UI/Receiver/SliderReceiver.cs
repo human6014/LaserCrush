@@ -1,7 +1,7 @@
-using LaserCrush.UI.Controller;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using LaserCrush.UI.Controller;
 
 namespace LaserCrush.UI.Receiver
 {
