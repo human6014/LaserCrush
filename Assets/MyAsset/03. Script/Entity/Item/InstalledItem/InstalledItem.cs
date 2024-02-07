@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using LaserCrush.Extension;
 using LaserCrush.Manager;
+using LaserCrush.Data;
 using TMPro;
-using Unity.VisualScripting;
 
 namespace LaserCrush.Entity
 {
@@ -33,6 +32,7 @@ namespace LaserCrush.Entity.Item
     public sealed class InstalledItem : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
+        [SerializeField] private InstalledItemData m_InstalledItemData;
         [SerializeField] private Transform[] m_EjectionPortsTransform;
         [SerializeField] private LineRenderer[] m_LineRenderers;
         [SerializeField] private GameObject[] m_SubRotationImage;
@@ -46,18 +46,11 @@ namespace LaserCrush.Entity.Item
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
         private Vector2 m_TextInitPos;
-        private static Color m_TextInitColor;
-        private static Color m_TextEndColor;
 
-        private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
-        private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f, 1.0f };
-        private static readonly int[] m_MaxUsingNum = { 3, 3, 3, 2 };
         private const string m_ItemDragAudioKey = "ItemDrag";
-
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
 
-        private const float m_ChargingTime = 0.0f;
         private const float m_SubLineLength = 5;
 
         private float m_ChargingWait;
@@ -98,10 +91,6 @@ namespace LaserCrush.Entity.Item
             m_CircleCollider2D = GetComponent<CircleCollider2D>();
             m_CircleCollider2D.enabled = false;
 
-            m_TextInitColor = m_CountText.color;
-            m_TextEndColor = m_CountText.color;
-            m_TextEndColor.a = 0;
-
             foreach (Transform tr in m_EjectionPortsTransform)
                 m_EjectionPorts.Add(new LaserInfo(position: tr.position, direction: tr.up));
 
@@ -127,7 +116,6 @@ namespace LaserCrush.Entity.Item
         {
             RowNumber = rowNumber;
             ColNumber = colNumber;
-            //RemainUsingCount = m_MaxUsingNum[(int)m_ItemType];
             RemainUsingCount = remainCount;
             IsFixedDirection = isFixDirection;
             Position = pos;
@@ -172,13 +160,9 @@ namespace LaserCrush.Entity.Item
         {
             m_ChargingWait += Time.deltaTime;
 
-            //Waiting 함수 한 프레임 내에서 동시에 호출하면 if문 안쪽 여러번 호출 가능함
-            //에너지 충전도 하나의 프리즘에서 여러번 호출댐
-            //m_IsActivate조건으로 한번만 되게 만들긴 했는데 이래도 되나?
-            //여기 안에 다른거랑 엮여있을 수도 있을 것 같아서 확인 부탁
-            if (m_ChargingWait >= m_ChargingTime && !m_IsActivate)
+            if (m_ChargingWait >= m_InstalledItemData.ChargingTime && !m_IsActivate)
             {
-                float chargingWeight = m_ChargingEnergy[(int)m_ItemType];
+                float chargingWeight = m_InstalledItemData.ChargingEnergy[(int)m_ItemType];
                 //Energy.ChargeEnergy((int)(Energy.MaxEnergy * chargingEnergy));
                 m_IsActivate = true;
                 GameManager.InvokeChargingEvent(chargingWeight);
@@ -226,7 +210,7 @@ namespace LaserCrush.Entity.Item
             Vector2 linePos = m_LineRenderers[i].transform.position;
             Vector2 lineDir = m_LineRenderers[i].transform.up;
 
-            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(linePos, lineDir, length, RayManager.LaserHitableLayer);
             Vector2 secondPos = hit.collider is null ? linePos + lineDir * m_SubLineLength : hit.point;
 
             m_LineRenderers[i].positionCount = 2;
@@ -292,12 +276,12 @@ namespace LaserCrush.Entity.Item
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
             if (RemainUsingCount - 1 < 0) Debug.LogError("[RemainUsingCount - 1] < 0 Error");
-            m_CountText.fontSize = m_FontSizes[RemainUsingCount - 1];
+            m_CountText.fontSize = m_InstalledItemData.FontSize[RemainUsingCount - 1];
             m_CountText.text = RemainUsingCount.ToString();
             m_CountText.gameObject.SetActive(true);
             m_CountText.rectTransform.anchoredPosition = m_TextInitPos;
             m_CountText.rectTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            m_CountText.color = m_TextInitColor;
+            m_CountText.color = m_InstalledItemData.TextStartColor;
 
             Vector2 endPos = m_TextInitPos + new Vector2(0, 7.5f);
 
@@ -308,7 +292,7 @@ namespace LaserCrush.Entity.Item
                 elapsedTime += Time.deltaTime;
                 t = elapsedTime / time;
 
-                m_CountText.color = Color.Lerp(m_TextInitColor, m_TextEndColor, t);
+                m_CountText.color = Color.Lerp(m_InstalledItemData.TextStartColor, m_InstalledItemData.TextEndColor, t);
                 m_CountText.rectTransform.anchoredPosition = Vector2.Lerp(m_TextInitPos, endPos, t);
 
                 yield return null;

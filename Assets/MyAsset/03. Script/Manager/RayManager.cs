@@ -4,19 +4,26 @@ namespace LaserCrush.Manager
 {
     public static class RayManager
     {
-        public static readonly int s_AllObjectLayer =
+        public static int AllInteractableObjectLayer { get; } =
             1 << LayerMask.NameToLayer("Reflectable") |
             1 << LayerMask.NameToLayer("Absorbable") |
             1 << LayerMask.NameToLayer("Continuable") |
             1 << LayerMask.NameToLayer("TouchableArea");
 
-        public static readonly int s_LaserHitableLayer =
+        public static int LaserHitableLayer { get; } =
             1 << LayerMask.NameToLayer("Reflectable") |
             1 << LayerMask.NameToLayer("Absorbable") |
             1 << LayerMask.NameToLayer("Continuable");
 
-        public static readonly int s_TouchableAreaLayer = 1 << LayerMask.NameToLayer("TouchableArea");
-        public static readonly int s_InstalledItemLayer = 1 << LayerMask.NameToLayer("Continuable");
+        public static int TouchableAreaLayer { get; } 
+            = 1 << LayerMask.NameToLayer("TouchableArea");
+
+        public static int InstalledItemLayer { get; } 
+            = 1 << LayerMask.NameToLayer("Continuable");
+
+        public static int NonSecondLineObjectLayer { get; } 
+            = 1 << LayerMask.NameToLayer("Continuable") |
+              1 << LayerMask.NameToLayer("Absorbable");
 
         public static Camera MainCamera { get; set; }
 

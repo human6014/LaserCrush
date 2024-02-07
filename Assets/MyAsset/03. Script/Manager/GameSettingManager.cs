@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace LaserCrush.Manager
 {
@@ -11,12 +10,10 @@ namespace LaserCrush.Manager
         private readonly int m_SetWidth = 1080; // 사용자 설정 너비
         private readonly int m_SetHeight = 1920; // 사용자 설정 높이
 
-        private float m_Ratio;
         public void Init()
         {
             SetFrame();
             SetBanner();
-            SetResolution();
         }
 
         private void SetFrame()
@@ -26,15 +23,18 @@ namespace LaserCrush.Manager
 
         private void SetBanner()
         {
+            m_AdaptiveBanner.BannerOnAction += SetResolution;
             m_AdaptiveBanner.Init();
-            m_Ratio = (m_AdaptiveBanner.BannerHeight + 50) / Screen.height;
         }
 
         /// <summary>
         /// 게임 최초 시작 시 해상도를 설정해줌
         /// </summary>
-        private void SetResolution()
+        private void SetResolution(float bannerHeight)
         {
+            Debug.Log("Height : " + bannerHeight);
+            float ratio = (bannerHeight + 50) / Screen.height;
+
             int deviceWidth = Screen.width; // 현재 기기 너비
             int deviceHeight = Screen.height; // 현재 기기 높이
 
@@ -55,10 +55,10 @@ namespace LaserCrush.Manager
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
             }
 
-            if (rect.y < m_Ratio)
+            if (rect.y < ratio)
             {
                 Debug.Log("광고가 UI를 침범해버렸음");
-                rect.y = m_Ratio;
+                rect.y = ratio;
             }
 
             Camera.main.rect = rect;

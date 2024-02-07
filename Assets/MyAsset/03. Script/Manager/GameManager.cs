@@ -296,7 +296,10 @@ namespace LaserCrush.Manager
             int startEnergy = Energy.CurrentEnergy;
             int endEnergy = startEnergy + additionalEnergy;
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
-            Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
+           
+
+            //Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
+
 
             float elapsedTime = 0;
             float t;

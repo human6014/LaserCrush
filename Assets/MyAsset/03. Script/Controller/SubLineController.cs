@@ -134,7 +134,7 @@ namespace LaserCrush.Controller.InputObject
                 {
                     m_BeforeClicked = true;
 
-                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer)))
+                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.InstalledItemLayer)))
                         ItemAdjustPos(RayManager.MousePointToWorldPoint());
                     else if(!m_IsItemPosMode)
                     {
@@ -154,14 +154,14 @@ namespace LaserCrush.Controller.InputObject
 
             if (Input.GetMouseButtonDown(0) && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer))
+                if (RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.AllInteractableObjectLayer))
                     PointDownProcess(ref hit);
             }
 
             if (!m_ClickItem && !m_InstalledItemAdjustMode)
             {
                 if (!Input.GetMouseButton(0)) return;
-                if (!RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.s_AllObjectLayer))
+                if (!RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.AllInteractableObjectLayer))
                     return;
 
                 SetDirection(hit.point);
@@ -182,7 +182,7 @@ namespace LaserCrush.Controller.InputObject
                 {
                     m_BeforeClicked = true;
 
-                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_InstalledItemLayer, touch)))
+                    if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.InstalledItemLayer, touch)))
                         ItemAdjustPos(RayManager.TouchPointToWorldPoint(touch));
                     else if (!m_IsItemPosMode)
                     {
@@ -202,7 +202,7 @@ namespace LaserCrush.Controller.InputObject
 
             if (touch.phase == TouchPhase.Began && !m_ClickItem && !m_InstalledItemAdjustMode)
             {
-                if (RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch))
+                if (RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.AllInteractableObjectLayer, touch))
                     PointDownProcess(ref hit);
             }
 
@@ -210,7 +210,7 @@ namespace LaserCrush.Controller.InputObject
             {
                 if (touch.phase != TouchPhase.Moved) return;
 
-                if (!RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.s_AllObjectLayer, touch))
+                if (!RayManager.RaycastToTouchable(out RaycastHit2D hit, RayManager.AllInteractableObjectLayer, touch))
                     return;
 
                 SetDirection(hit.point);
@@ -224,7 +224,7 @@ namespace LaserCrush.Controller.InputObject
         /// </summary>
         private void PointDownProcess(ref RaycastHit2D hit)
         {
-            if (1 << hit.transform.gameObject.layer != RayManager.s_InstalledItemLayer) return;
+            if (1 << hit.transform.gameObject.layer != RayManager.InstalledItemLayer) return;
 
             m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
             if (m_AdjustingInstalledItem.IsFixedDirection)
@@ -332,18 +332,18 @@ namespace LaserCrush.Controller.InputObject
         /// </summary>
         public void UpdateLineRenderer()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
 
-            if(1 << hit.collider.gameObject.layer == RayManager.s_InstalledItemLayer)
+            if(((1 << hit.collider.gameObject.layer) & RayManager.NonSecondLineObjectLayer) != 0)
             {
                 m_SubLineRenderer.SetPosition(2, hit.point);
                 return;
             }
 
             Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
-            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, m_SecondSubLineLength, RayManager.s_LaserHitableLayer);
+            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, m_SecondSubLineLength, RayManager.LaserHitableLayer);
 
             Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * m_SecondSubLineLength : hit2.point;
             m_SubLineRenderer.SetPosition(2, reflectPos);

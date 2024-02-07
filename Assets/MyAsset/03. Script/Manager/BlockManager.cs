@@ -16,7 +16,6 @@ namespace LaserCrush.Manager
         #region SerializeField
         [Header("Effect Pooling")]
         [SerializeField] private BlockParticleController m_BlockParticleController;
-
         [SerializeField] private int[] m_DroppedItemPoolingCount;
 
         [Header("Monobehaviour Reference")]
@@ -105,7 +104,6 @@ namespace LaserCrush.Manager
         #region Grid Related
         private Result CheckAvailablePos(Vector3 pos)
         {
-            if (!InBoardArea(pos)) return new Result(false, Vector3.zero, 0, 0);
             Vector2 newPos = GetItemGridNumberAndPos(pos, out int rowNumber, out int colNumber);
 
             Result result = new Result(
@@ -140,20 +138,13 @@ namespace LaserCrush.Manager
             return false;
         }
 
-        private bool InBoardArea(Vector2 pos)
-        {
-            return Mathf.Abs(pos.x) <= Mathf.Abs(m_LeftWall.position.x) - 4 &&
-                pos.y >= -m_TopWall.position.y + 7 &&
-                pos.y <= m_TopWall.position.y;
-        }
-
         private Vector3 GetItemGridNumberAndPos(Vector3 pos, out int rowNumber, out int colNumber)
         {
             float differX = pos.x - m_LeftWall.position.x;
             float differY = m_TopWall.position.y - pos.y;
 
-            rowNumber = (int)(differY / m_CalculatedOffset.y);
-            colNumber = (int)(differX / m_CalculatedOffset.x);
+            rowNumber = Mathf.Clamp((int)(differY / m_CalculatedOffset.y), 0, m_MaxRowCount - 1);
+            colNumber = Mathf.Clamp((int)(differX / m_CalculatedOffset.x), 0, m_MaxColCount - 1);
 
             float newPosX = m_CalculatedInitPos.x + m_CalculatedOffset.x * colNumber;
             float newPosY = m_CalculatedInitPos.y - m_CalculatedOffset.y * rowNumber;

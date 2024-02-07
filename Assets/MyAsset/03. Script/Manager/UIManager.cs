@@ -48,7 +48,7 @@ namespace LaserCrush.Manager
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
         [SerializeField] private SettingPanelController m_SettingPanelController;
-        [SerializeField] private IAPController m_PatronageController;
+        [SerializeField] private DonateController m_PatronageController;
 
         [SerializeField] private FloatingTextController m_FloatingTextController;
         #endregion
@@ -124,7 +124,7 @@ namespace LaserCrush.Manager
             m_SettingResumeButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(false);
             m_SettingRestartButtonReceiver.ButtonClickAction += () =>
             {
-                ResetGame(); //확인창 한번 필요함
+                ResetGame();
                 OnOffSettingCanvas(false);
             };
             m_PatronageResumeButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(false);

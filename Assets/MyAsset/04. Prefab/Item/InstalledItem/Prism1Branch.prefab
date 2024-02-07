@@ -493,6 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b187db775c14c943921380996d03a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_InstalledItemData: {fileID: 11400000, guid: 5921b11b900ce6c4f81c87984d56ba46, type: 2}
   m_EjectionPortsTransform:
   - {fileID: 1462850804802842104}
   m_LineRenderers:
