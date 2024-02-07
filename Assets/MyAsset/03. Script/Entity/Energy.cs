@@ -23,6 +23,7 @@ namespace LaserCrush.Entity
         private static int s_HittingFloorLaserNum;
         private static int s_HittingWallLaserNum;
         private static int m_Damage;
+        private static int s_DamageStack;
         private static HashSet<int> s_LaserHashSet;
         #endregion
 
@@ -50,8 +51,9 @@ namespace LaserCrush.Entity
 
         public void Init(int initEnergy)
         {
-            MaxEnergy = initEnergy;
-            CurrentEnergy = initEnergy;
+            MaxEnergy = 500;
+            CurrentEnergy = 500;
+            s_DamageStack = 0;
 
             s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
             s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
@@ -119,11 +121,12 @@ namespace LaserCrush.Entity
         }
 
         public static void EnergyUpgrade(int additionalEnergy)
-            => MaxEnergy += additionalEnergy;
+            => m_Damage += additionalEnergy;
 
         public static void EnergyUpgrade()
         {
-
+            s_DamageStack++;
+            m_Damage += (s_DamageStack / 3);
         }
 
 
