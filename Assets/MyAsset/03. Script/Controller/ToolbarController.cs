@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 using LaserCrush.Manager;
-using LaserCrush.Entity;
+using LaserCrush.UI;
 using LaserCrush.Entity.Item;
 using LaserCrush.Data;
 
-namespace LaserCrush.Controller.InputObject
+namespace LaserCrush.Controller
 {
     public class ToolbarController : MonoBehaviour
     {

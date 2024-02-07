@@ -3,6 +3,7 @@ using LaserCrush.UI.Controller;
 using LaserCrush.UI.Receiver;
 using LaserCrush.UI.Displayer;
 
+
 namespace LaserCrush.Manager
 {
     public class UIManager : MonoBehaviour
@@ -39,6 +40,7 @@ namespace LaserCrush.Manager
         [SerializeField] private PanelDisplayer m_SettingPanelDisplayer;
         [SerializeField] private PanelDisplayer m_PatronagePanelDisplayer;
 
+        [SerializeField] private ButtonReceiver m_SettingTutorialButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingResumeButtonReceiver;
         [SerializeField] private ButtonReceiver m_SettingRestartButtonReceiver;
         [SerializeField] private ButtonReceiver m_PatronageResumeButtonReceiver;
@@ -48,8 +50,7 @@ namespace LaserCrush.Manager
         [Header("Controller")]
         [SerializeField] private TutorialPanelController m_TutorialPanelController;
         [SerializeField] private SettingPanelController m_SettingPanelController;
-        [SerializeField] private DonateController m_PatronageController;
-
+        [SerializeField] private DonateController m_DonateController;
         [SerializeField] private FloatingTextController m_FloatingTextController;
         #endregion
 
@@ -83,12 +84,13 @@ namespace LaserCrush.Manager
         #region Init
         public void Init(bool hasData)
         {
+            m_TutorialPanelController.Init();
             if (!hasData)
             {
                 m_TutorialPanelController.gameObject.SetActive(true);
                 m_InGamePanel.SetActive(false);
-                m_TutorialPanelController.Init();
                 m_TutorialPanelController.TutorialEndAction += OffTutorialPanel;
+                m_TutorialPanelController.LoadTutorialPanel();
             }
 
             m_BestScore = DataManager.GameData.m_BestScore;
@@ -110,7 +112,7 @@ namespace LaserCrush.Manager
 
             m_FloatingTextController.Init();
             m_SettingPanelController.Init();
-            m_PatronageController.Init();
+            m_DonateController.Init();
 
             AssignAction();
         }
@@ -121,6 +123,7 @@ namespace LaserCrush.Manager
             m_SettingButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(true);
             m_PatronageButtonReceiver.ButtonClickAction += () => OnOffPatronageCanvas(true);
             m_DefeatRestartButtonReceiver.ButtonClickAction += ResetGame;
+            m_SettingTutorialButtonReceiver.ButtonClickAction += OnOffTutorial;
             m_SettingResumeButtonReceiver.ButtonClickAction += () => OnOffSettingCanvas(false);
             m_SettingRestartButtonReceiver.ButtonClickAction += () =>
             {
@@ -164,6 +167,13 @@ namespace LaserCrush.Manager
         #endregion
 
         #region OnOff Canvas & Panel
+        private void OnTutorialPanel()
+        {
+            m_TutorialPanelController.gameObject.SetActive(true);
+            m_InGamePanel.SetActive(false);
+            m_TutorialPanelController.LoadTutorialPanel();
+        }
+
         private void OffTutorialPanel()
         {
             m_TutorialPanelController.gameObject.SetActive(false);
@@ -217,6 +227,11 @@ namespace LaserCrush.Manager
         
         private void GameOverCanvasOff()
             => IsOnOffGameOverCanvas = false;
+
+        private void OnOffTutorial()
+        {
+
+        }
         #endregion
 
         public void SaveAllData()

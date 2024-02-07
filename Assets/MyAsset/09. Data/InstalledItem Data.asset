@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: InstalledItem Data
   m_EditorClassIdentifier: 
   m_FontSizes:
-  - 3.25
+  - 3
   - 2.75
-  - 2.25
+  - 2.5
   m_ChargingEnergy:
   - 0.3
   - 0.4

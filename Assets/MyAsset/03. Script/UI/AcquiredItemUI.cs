@@ -1,28 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using TMPro;
 
-namespace LaserCrush.Entity
+namespace LaserCrush.UI
 {
     public class AcquiredItemUI : MonoBehaviour, IPointerDownHandler
     {
         #region Variable
-        [SerializeField] private GameObject m_ItemObject;
         [SerializeField] private TextMeshProUGUI m_HasCountText;
         [SerializeField] private Animator m_Animator;
         [SerializeField] private int m_ItemIndex;
 
         private int m_HasCount;
-        private static string s_HighlightAnimationKey = "Highlight";
+        private static readonly string s_HighlightAnimationKey = "Highlight";
 
         private UnityAction<AcquiredItemUI> m_PointerDownAction;
         #endregion
 
         #region Property
-        public GameObject ItemObject { get => m_ItemObject; }
+        public event UnityAction<AcquiredItemUI> PointerDownAction
+        {
+            add => m_PointerDownAction += value;
+            remove => m_PointerDownAction -= value;
+        }
+
         public int HasCount 
         { 
             get => m_HasCount; 
@@ -38,11 +40,7 @@ namespace LaserCrush.Entity
 
         public int ItemIndex { get => m_ItemIndex; }
 
-        public event UnityAction<AcquiredItemUI> PointerDownAction
-        {
-            add => m_PointerDownAction += value;
-            remove => m_PointerDownAction -= value;
-        }
+
         #endregion
 
         public void Init(int hasCount)

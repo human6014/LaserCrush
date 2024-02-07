@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using System;
 using System.Collections;
 
 namespace LaserCrush.Entity.Item

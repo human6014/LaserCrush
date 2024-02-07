@@ -1,8 +1,6 @@
-using LaserCrush.UI.Receiver;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
+using LaserCrush.UI.Receiver;
 
 namespace LaserCrush.UI.Controller
 {
@@ -26,8 +24,15 @@ namespace LaserCrush.UI.Controller
         {
             m_PrevButtonReceiver.ButtonClickAction += OnClickedPrevButton;
             m_NextButtonReceiver.ButtonClickAction += OnClickedNextButton;
-            m_StartButtonReceiver.ButtonClickAction += () => m_TutorialEndAction?.Invoke();
+            m_StartButtonReceiver.ButtonClickAction += () =>
+            {
+                m_CurrentIndex = 0;
+                m_TutorialEndAction?.Invoke();
+            };
+        }
 
+        public void LoadTutorialPanel()
+        {
             m_PrevButtonReceiver.gameObject.SetActive(false);
             m_StartButtonReceiver.gameObject.SetActive(false);
             m_TutorialImage[m_CurrentIndex].SetActive(true);
@@ -62,8 +67,7 @@ namespace LaserCrush.UI.Controller
         }
 
         private void OnDestroy()
-        {
-            m_TutorialEndAction = null;
-        }
+            => m_TutorialEndAction = null;
+        
     }
 }

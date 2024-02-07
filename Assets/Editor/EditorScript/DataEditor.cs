@@ -2,13 +2,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using UnityEditor;
-using UnityEngine;
 using LaserCrush.Manager;
 using Debug = UnityEngine.Debug;
 
 namespace LaserCrush.Editor
 {
-    public class DataEditor : MonoBehaviour
+    public static class DataEditor
     {
         [MenuItem("Data/Reset Data")]
         private static void ResetData()

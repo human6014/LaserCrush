@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e82df3ec0df5c4a6fa36148aa837cab1
+guid: 73ea88e80975f4202b3676a7b5c934c9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -63,7 +63,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
   cookieLightType: 1
   platformSettings:
@@ -95,7 +95,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 64
+    maxTextureSize: 32
     resizeAlgorithm: 0
     textureFormat: 47
     textureCompression: 1

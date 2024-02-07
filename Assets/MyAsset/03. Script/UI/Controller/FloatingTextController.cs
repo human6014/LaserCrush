@@ -1,8 +1,7 @@
+using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Manager;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using LaserCrush.UI.Displayer;
 
 namespace LaserCrush.UI.Controller
 {
@@ -31,7 +30,7 @@ namespace LaserCrush.UI.Controller
         public void PlayFloatingText(int length, int additionalScore)
         {
             m_RectTransform.anchoredPosition = m_InitPos + new Vector2(m_Offset * (length - 1), 0);
-            FloatingText floatingText = (FloatingText)m_FloatingTextPool.GetObject(true);
+            FloatingTextDisplayer floatingText = (FloatingTextDisplayer)m_FloatingTextPool.GetObject(true);
             floatingText.Init(ReturnObject);
             floatingText.PlayFloatingAnimation(additionalScore);
         }
