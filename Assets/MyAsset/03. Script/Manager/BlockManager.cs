@@ -247,9 +247,19 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.StageNum + 1) / 2) * 5;
-            int start = end - (end / 10);
-            return Random.Range(start, end + 1) * 100;
+            if(GameManager.StageNum % 15 == 0)
+            {
+                int end = ((GameManager.StageNum + 1) / 2) * 5;
+                int start = end - (end / 10);
+                return Random.Range(start * 2, (end * 2) + 1) * 100;
+            }
+            else
+            {
+                int end = ((GameManager.StageNum + 1) / 2) * 5;
+                int start = end - (end / 10);
+                return Random.Range(start, end + 1) * 100;
+            }
+            
         }
 
         /// <summary>
