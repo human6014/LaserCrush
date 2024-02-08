@@ -43,10 +43,7 @@ namespace LaserCrush.Manager
 
         private int m_PreValidHit;
 
-        private readonly float m_ValidTime = 2.5f;
-        private readonly float m_ChargingMaxTime = 1.0f;
-        private static float m_ChargingWeight;
-        private float m_ChargingTime;
+        private readonly float m_ValidTime = 2.0f;
         private float m_LaserTime;
 
         private bool m_IsInit;
@@ -199,7 +196,6 @@ namespace LaserCrush.Manager
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
-            m_ChargingTime = 0;
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
             StageNum++;

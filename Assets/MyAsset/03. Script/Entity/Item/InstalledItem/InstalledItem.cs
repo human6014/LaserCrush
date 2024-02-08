@@ -59,7 +59,7 @@ namespace LaserCrush.Entity.Item
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
 
-        private const float m_ChargingTime = 0.5f;
+        private const float m_ChargingTime = 0.0f;
         private const float m_SubLineLength = 5;
 
         private float m_ChargingWait;

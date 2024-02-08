@@ -17,7 +17,7 @@ namespace LaserCrush.Entity
         private static event Action s_CurrentEnergyUpdateAction;
         private static event Action s_MaxEnergyHighlightTextAction;
 
-        private static readonly int s_InitEnergy = 500;
+        private static readonly int s_InitEnergy = 450;
         private static int s_MaxEnergy;
         private static int s_CurrentEnergy;
         private static int s_HittingFloorLaserNum;
@@ -115,8 +115,8 @@ namespace LaserCrush.Entity
             while(true)
             {
                 if (CurrentEnergy > 0 && GameManager.GetEGameStateType() == GameManager.EGameStateType.LaserActivating)
-                    CurrentEnergy -= 100;
-                yield return new WaitForSecondsRealtime(1.0f);
+                    CurrentEnergy -= 50;
+                yield return new WaitForSecondsRealtime(0.5f);
             }
         }
 
@@ -126,7 +126,7 @@ namespace LaserCrush.Entity
         public static void EnergyUpgrade()
         {
             s_DamageStack++;
-            m_Damage += (s_DamageStack / 3);
+            m_Damage += (s_DamageStack / 2);
         }
 
 

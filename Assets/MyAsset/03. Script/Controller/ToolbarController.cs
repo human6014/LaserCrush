@@ -11,7 +11,8 @@ namespace LaserCrush.Controller.InputObject
         #region Value
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
-        [SerializeField] private int m_ItemUsingCount = 3;
+        [SerializeField] private int m_ItemUsingCount = 2
+            ;
         [SerializeField] private int[] m_ItemPoolingCount;
         
         private GridLineController m_GridLineController;

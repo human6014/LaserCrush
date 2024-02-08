@@ -25,7 +25,7 @@ MonoBehaviour:
   - m_AudioName: BlockDestroy
     m_AudioClip: {fileID: 8300000, guid: af91eddd4f8360d47bdbae934ee406b5, type: 3}
   - m_AudioName: BlockDamage
-    m_AudioClip: {fileID: 8300000, guid: 6e806885cb1cb244baf9dfd0b94de0ea, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 2a0191c32c7598f418d060de02ff0c9e, type: 3}
   - m_AudioName: StageChange
     m_AudioClip: {fileID: 8300000, guid: 6f9e64f326b61144190f2167f69aec45, type: 3}
   m_SEUIAudioGroups:
