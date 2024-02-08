@@ -143,7 +143,7 @@ namespace LaserCrush.Entity
 
             s_HittingWallLaserNum++;
             if (s_HittingWallLaserNum > 10) 
-                UseEnergy(MaxEnergy / 12); 
+                //UseEnergy(MaxEnergy / 12); 
 
             GameManager.ValidHit++;
         }
