@@ -22,9 +22,10 @@ namespace LaserCrush.Data
          * --------------
          * None     75
          * Energy   0
-         * Prism1   10
-         * Prism2   10
+         * Prism1   8.5
+         * Prism2   8
          * Prism3   5
+         * Prism4   3.5
          */
         [SerializeField] private ItemProbability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
