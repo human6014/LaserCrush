@@ -144,13 +144,13 @@ namespace LaserCrush.Entity
 
         public bool IsGetDamageable()
             => true;
-        
+
         public bool Waiting()
             => true;
-        
+
         public EEntityType GetEEntityType()
             => m_EntityType;
-        
+
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             List<LaserInfo> answer = new List<LaserInfo>();

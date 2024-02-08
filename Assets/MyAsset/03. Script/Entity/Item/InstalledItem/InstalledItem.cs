@@ -178,8 +178,8 @@ namespace LaserCrush.Entity.Item
 
             GameManager.ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
-            
-            if (!m_IsSyn) 
+
+            if (!m_IsSyn)
             {
                 RemainUsingCount--;
                 m_IsSyn = true;
@@ -271,7 +271,7 @@ namespace LaserCrush.Entity.Item
         #region Play floating text
         public void PlayUsingCountDisplay()
             => StartCoroutine(UsingCountCoroutine(2));
-        
+
         private IEnumerator UsingCountCoroutine(float time)
         {
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);

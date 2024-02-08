@@ -48,7 +48,7 @@ namespace LaserCrush.Manager
             /// 오브젝트 생성
             /// </summary>
             /// <returns></returns>
-            private PoolableMonoBehaviour CreateNewObject() 
+            private PoolableMonoBehaviour CreateNewObject()
             {
                 var newObj = Instantiate(script);
                 newObj.gameObject.SetActive(false);
@@ -65,7 +65,7 @@ namespace LaserCrush.Manager
             {
                 PoolableMonoBehaviour obj;
                 if (poolableQueue.Count > 0) obj = poolableQueue.Dequeue();
-                else                         obj = CreateNewObject();
+                else obj = CreateNewObject();
 
                 obj.transform.SetParent(parent);
                 obj.gameObject.SetActive(preActive);

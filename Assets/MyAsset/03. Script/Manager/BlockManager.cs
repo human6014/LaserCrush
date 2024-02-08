@@ -194,7 +194,7 @@ namespace LaserCrush.Manager
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
-            if(m_GenerateElapsedTime >= m_GenerateTime)
+            if (m_GenerateElapsedTime >= m_GenerateTime)
             {
                 m_GenerateElapsedTime = 0;
                 return true;
@@ -217,6 +217,8 @@ namespace LaserCrush.Manager
         private HashSet<int> GenerateBlockOffset()
         {
             int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
+            if (GameManager.StageNum % 15 == 0)
+                randomSize = 1;
             HashSet<int> result = new HashSet<int>();
 
             while (result.Count < randomSize)
@@ -247,11 +249,11 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            if(GameManager.StageNum % 15 == 0)
+            if (GameManager.StageNum % 15 == 0)
             {
                 int end = ((GameManager.StageNum + 1) / 2) * 5;
                 int start = end - (end / 10);
-                return Random.Range(start * 2, (end * 2) + 1) * 100;
+                return Random.Range(start * 4, (end * 4) + 1) * 100;
             }
             else
             {
@@ -259,7 +261,7 @@ namespace LaserCrush.Manager
                 int start = end - (end / 10);
                 return Random.Range(start, end + 1) * 100;
             }
-            
+
         }
 
         /// <summary>
@@ -334,12 +336,12 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 blockData = new Data.Json.BlockData(
-                    row : block.RowNumber, 
-                    col : block.ColNumber, 
-                    hp : block.CurrentHP, 
-                    pos : block.Position,
-                    entityType : block.GetEEntityType(),
-                    itemType : block.ItemType);
+                    row: block.RowNumber,
+                    col: block.ColNumber,
+                    hp: block.CurrentHP,
+                    pos: block.Position,
+                    entityType: block.GetEEntityType(),
+                    itemType: block.ItemType);
 
                 DataManager.GameData.m_Blocks.Add(blockData);
             }

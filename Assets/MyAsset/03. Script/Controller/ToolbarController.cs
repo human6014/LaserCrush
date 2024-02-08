@@ -14,7 +14,7 @@ namespace LaserCrush.Controller
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
         [SerializeField] private int[] m_ItemPoolingCount;
-        
+
         private GridLineController m_GridLineController;
         private SubLineController m_SubLineController;
 
@@ -56,10 +56,10 @@ namespace LaserCrush.Controller
         /// <summary>
         /// UI로 입력 막을 때 True 아니면 false
         /// </summary>
-        public bool CanInteraction 
-        { 
-            get => m_CanInteraction; 
-            set => m_CanInteraction = value; 
+        public bool CanInteraction
+        {
+            get => m_CanInteraction;
+            set => m_CanInteraction = value;
         }
         #endregion
 
@@ -124,11 +124,11 @@ namespace LaserCrush.Controller
             if (!m_IsInit || m_CanInteraction) return;
             if (!m_IsInstallMode) return;
 
-            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
             EditorOrWindow();
-            #else
+#else
             AndroidOrIOS();
-            #endif
+#endif
         }
 
         private void EditorOrWindow()
@@ -137,10 +137,10 @@ namespace LaserCrush.Controller
 
             if (Input.GetMouseButtonDown(0) && !m_IsDragging)
                 PointDownProcess();
-            
+
 
             bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer);
-            if (m_IsDragging) 
+            if (m_IsDragging)
                 PointDragProcess(isHit, ref hit2D);
 
 
@@ -164,10 +164,10 @@ namespace LaserCrush.Controller
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began && !m_IsDragging)
                 PointDownProcess();
-            
+
 
             bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer, touch);
-            if (m_IsDragging) 
+            if (m_IsDragging)
                 PointDragProcess(isHit, ref hit2D);
 
 
@@ -189,7 +189,7 @@ namespace LaserCrush.Controller
             m_IsDragging = true;
             m_ControllingTransform = m_InstalledItemPool[m_CurrentItem.ItemIndex].GetObject(true).transform;
             m_ControllingTransform.transform.SetPositionAndRotation(Vector2.zero, Quaternion.LookRotation(Vector3.forward, Vector3.up));
-            
+
             m_ControllingItem = m_ControllingTransform.GetComponent<InstalledItem>();
             m_ControllingItem.ReInit();
         }
@@ -201,7 +201,7 @@ namespace LaserCrush.Controller
             {
                 Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(hit2D.point));
 
-                if((Vector2)m_ControllingTransform.position != result.m_ItemGridPos)
+                if ((Vector2)m_ControllingTransform.position != result.m_ItemGridPos)
                     AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemDragAudioKey);
 
                 if (!result.m_IsAvailable) m_ControllingTransform.position = Vector3.zero;
@@ -224,7 +224,7 @@ namespace LaserCrush.Controller
             return true;
         }
 
-        private void InitItemObject(int row, int col,int usingCount, bool isFixed, Vector2 pos, Vector2 dir, bool isLoadData)
+        private void InitItemObject(int row, int col, int usingCount, bool isFixed, Vector2 pos, Vector2 dir, bool isLoadData)
         {
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
             InstalledItem installedItem = m_ControllingTransform.GetComponent<InstalledItem>();
