@@ -24,16 +24,15 @@ namespace LaserCrush.UI.Controller
         {
             m_PrevButtonReceiver.ButtonClickAction += OnClickedPrevButton;
             m_NextButtonReceiver.ButtonClickAction += OnClickedNextButton;
-            m_StartButtonReceiver.ButtonClickAction += () =>
-            {
-                m_CurrentIndex = 0;
-                m_TutorialEndAction?.Invoke();
-            };
+            m_StartButtonReceiver.ButtonClickAction += () => m_TutorialEndAction?.Invoke();
         }
 
         public void LoadTutorialPanel()
         {
+            m_TutorialImage[m_CurrentIndex].SetActive(false);
+            m_CurrentIndex = 0;
             m_PrevButtonReceiver.gameObject.SetActive(false);
+            m_NextButtonReceiver.gameObject.SetActive(true);
             m_StartButtonReceiver.gameObject.SetActive(false);
             m_TutorialImage[m_CurrentIndex].SetActive(true);
         }
