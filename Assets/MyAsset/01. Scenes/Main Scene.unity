@@ -10766,6 +10766,7 @@ MonoBehaviour:
   m_AudioManager: {fileID: 1651790768}
   m_GameSettingManager: {fileID: 1292888501}
   m_ObjectPoolManager: {fileID: 261021296}
+  m_Probability: {fileID: 11400000, guid: bc23c512e901b2942bb7a565664d3a0d, type: 2}
   m_LaserManager:
     m_InitLazer: {fileID: 1915042229}
     m_LaserObject: {fileID: 6777635235316780505, guid: c476756df753be540a7889c2c5ae9fcb, type: 3}
@@ -10849,7 +10850,7 @@ MonoBehaviour:
   - {fileID: 7216474177624233117, guid: 2145ab4bf626a65499b8b9653ba8aa0d, type: 3}
   - {fileID: 3916177902834689685, guid: 9ffa4268ea575134aab3fc3a229cc3f4, type: 3}
   - {fileID: 3916177902834689685, guid: a9210b239e2217744bcfb9c8c6b7ecb7, type: 3}
-  m_ItemUsingCount: 3
+  m_ItemUsingCount: 1
   m_ItemPoolingCount: 03000000020000000200000001000000
 --- !u!114 &1292888499
 MonoBehaviour:

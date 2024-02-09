@@ -54,8 +54,8 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
 
-        private readonly List<int> s_Probabilitytable = new List<int>() { 6, 25, 45, 60, 45, 20 };
-        private readonly int s_MaxWightSum = 201;
+        private readonly List<int> s_Probabilitytable = new List<int>() { 0, 20, 50, 60, 50, 15 };
+        private readonly int s_MaxWightSum = 195;
         //3.86개가 한 턴에 기댓값
 
         private const string m_ItemDroppedAudioKey = "ItemDropped";
@@ -205,7 +205,7 @@ namespace LaserCrush.Manager
                     }
                     else itemIndex = m_ItemProbabilityData.GetItemIndex();
 
-                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos);
+                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false);
                 }
             }
 
@@ -218,10 +218,17 @@ namespace LaserCrush.Manager
             return false;
         }
 
-        private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos)
+        private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos, bool isLoadData)
         {
             Block block = (Block)m_BlockPool.GetObject(true);
             block.transform.position = pos;
+
+            if (isLoadData)
+            {
+                if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.5f);
+                else hp += (int)(hp * 0.5f);
+            }
+
             block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
             m_Blocks.Add(block);
         }
@@ -335,7 +342,8 @@ namespace LaserCrush.Manager
                                  blockData.m_ColNumber,
                                  blockData.m_EntityType,
                                  blockData.m_HasItemType,
-                                 blockData.m_Position);
+                                 blockData.m_Position,
+                                 true);
             }
         }
 

@@ -192,7 +192,8 @@ namespace LaserCrush.Manager
             }
 
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_StageChangeAudioKey);
-            
+
+            Energy.UpgradeUpdate();
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
@@ -201,7 +202,7 @@ namespace LaserCrush.Manager
             StageNum++;
             m_UIManager.SetCurrentStage(StageNum - 1);
             CheckValueUpdate(false);
-
+            
             //게임 종료 체크
             m_IsGameOver = m_BlockManager.IsGameOver();
             if (m_IsGameOver)
