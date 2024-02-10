@@ -63,7 +63,7 @@ namespace LaserCrush.Entity
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
         public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
-            CurrentHP = hp;
+            CurrentHP = hp;            
             Score = hp;
             RowNumber = rowNumber;
             ColNumber = colNumber;

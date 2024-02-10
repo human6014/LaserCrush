@@ -23,6 +23,7 @@ namespace LaserCrush.Entity
         private static int s_HittingWallLaserNum;
         private static int m_Damage;
         private static int s_DamageStack;
+        private static int m_AdditionalStack;
         private static HashSet<int> s_LaserHashSet;
         #endregion
 
@@ -50,9 +51,10 @@ namespace LaserCrush.Entity
 
         public void Init(int initEnergy)
         {
-            MaxEnergy = 400;
-            CurrentEnergy = 400;
+            MaxEnergy = 350;
+            CurrentEnergy = 350;
             s_DamageStack = 0;
+            m_AdditionalStack = 0;
 
             s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
             s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
@@ -61,7 +63,7 @@ namespace LaserCrush.Entity
             s_MaxEnergyUpdateAction?.Invoke();
             s_CurrentEnergyUpdateAction?.Invoke();
             s_LaserHashSet = new HashSet<int>();
-            m_Damage = 6;
+            m_Damage = 5;
             StartCoroutine(Tic());
         }
 
@@ -69,6 +71,7 @@ namespace LaserCrush.Entity
         {
             CurrentEnergy = 0;
         }
+
         public static int UseEnergy()
         {
             return m_Damage;
@@ -122,17 +125,23 @@ namespace LaserCrush.Entity
         public static void EnergyUpgrade(int additionalEnergy)
             => m_Damage += additionalEnergy;
 
+        
         public static void EnergyUpgrade()
         {
-            s_DamageStack++;
-            m_Damage += 1;
-            if(s_DamageStack == 24)
-            {
-                m_Damage += 1;
-                s_DamageStack = 0;
-            }
+            s_DamageStack += 1;
+            m_AdditionalStack += 4;
+
         }
 
+        public static void UpgradeUpdate()
+        {
+            m_Damage += s_DamageStack;
+            m_Damage += m_AdditionalStack / 5;
+            s_DamageStack = 0;
+            m_AdditionalStack %= 5;
+            //m_AdditionalStack은 소수점 자리수 int로 저장하기 위함
+            //위 코드에선 EnergyUpgrade한번당 1.8증가
+        }
 
         public static int GetEnergy()
             => s_CurrentEnergy;
