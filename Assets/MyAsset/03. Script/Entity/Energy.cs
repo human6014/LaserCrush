@@ -125,7 +125,12 @@ namespace LaserCrush.Entity
         public static void EnergyUpgrade()
         {
             s_DamageStack++;
-            m_Damage += (s_DamageStack / 2);
+            m_Damage += 1;
+            if(s_DamageStack == 24)
+            {
+                m_Damage += 1;
+                s_DamageStack = 0;
+            }
         }
 
 
