@@ -223,7 +223,7 @@ namespace LaserCrush.Manager
             Block block = (Block)m_BlockPool.GetObject(true);
             block.transform.position = pos;
 
-            if (isLoadData)
+            if (!isLoadData)
             {
                 if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.5f);
                 else hp += (int)(hp * 0.5f);
