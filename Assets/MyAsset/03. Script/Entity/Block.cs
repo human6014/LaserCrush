@@ -19,34 +19,34 @@ namespace LaserCrush.Entity
         Prsim3
     }
 
-    public sealed class Block : PoolableMonoBehaviour, ICollisionable
+    public class Block : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
         [SerializeField] private BlockData m_BlockData;
 
-        private BoxCollider2D m_BoxCollider2D;
-        private Animator m_Animator;
-        private SpriteRenderer m_SpriteRenderer;
-        private TextMeshProUGUI m_Text;
-        private Action<Block> m_PlayParticleAction;
+        protected BoxCollider2D m_BoxCollider2D;
+        protected Animator m_Animator;
+        protected SpriteRenderer m_SpriteRenderer;
+        protected TextMeshProUGUI m_Text;
+        protected Action<Block> m_PlayParticleAction;
 
-        private EEntityType m_EntityType;
+        protected EEntityType m_EntityType;
 
-        private int m_AttackCount;
-        private bool m_IsDestroyed;
+        protected int m_AttackCount;
+        protected bool m_IsDestroyed;
 
-        private static readonly int s_AudioCount = 7;
-        private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
-        private static readonly string s_BlockDamageAudioKey = "BlockDamage";
+        protected static readonly int s_AudioCount = 7;
+        protected static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
+        protected static readonly string s_BlockDamageAudioKey = "BlockDamage";
         #endregion
 
         #region Property
-        public int CurrentHP { get; private set; }
-        public int Score { get; private set; }
-        public int RowNumber { get; private set; }
-        public int ColNumber { get; private set; }
-        public Vector2 Position { get; private set; }
-        public DroppedItemType ItemType { get; private set; }
+        public int CurrentHP { get; protected set; }
+        public int Score { get; protected set; }
+        public int RowNumber { get; protected set; }
+        public int ColNumber { get; protected set; }
+        public Vector2 Position { get; protected set; }
+        public DroppedItemType ItemType { get; protected set; }
         #endregion
 
         #region Init
@@ -64,7 +64,7 @@ namespace LaserCrush.Entity
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
+        public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             CurrentHP = hp;
             Score = hp;
@@ -172,13 +172,13 @@ namespace LaserCrush.Entity
         #endregion
 
         #region MoveDown
-        public void MoveDown(Vector2 moveDownVector, float moveDownTime)
+        public virtual void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
             RowNumber++;
         }
 
-        private IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
+        protected virtual IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
         {
             Vector2 startPos = transform.position;
             Vector2 endPos = startPos + moveDownVector;
@@ -194,13 +194,13 @@ namespace LaserCrush.Entity
         }
         #endregion
 
-        private int GetHP()
+        protected int GetHP()
             => CurrentHP / 100;
 
         /// <summary>
         /// 파티클, 사운드 실행하고 삭제
         /// </summary>
-        private void Destroy()
+        protected void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
             m_IsDestroyed = true;
@@ -213,7 +213,7 @@ namespace LaserCrush.Entity
         public void ImmediatelyReset()
             => m_IsDestroyed = true;
 
-        private void OnDestroy()
+        protected void OnDestroy()
             => m_PlayParticleAction = null;
 
         public override void ReturnObject()
