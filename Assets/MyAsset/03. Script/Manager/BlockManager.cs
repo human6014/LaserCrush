@@ -63,7 +63,7 @@ namespace LaserCrush.Manager
         private float m_GenerateElapsedTime;
 
         private Vector2 m_CalculatedInitPos;
-        private Vector2 m_CalculatedInitBossPos;
+        private float m_CalculatedInitBossPosY;
         private Vector2 m_CalculatedOffset;
         private Vector2 m_MoveDownVector;
         private Vector2 m_MoveDownTwoSpaceVector;
@@ -164,7 +164,7 @@ namespace LaserCrush.Manager
 
             m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 0.5f - 2);
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
-            m_CalculatedInitBossPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 2 * 0.5f - 2);
+            m_CalculatedInitBossPosY = m_TopWall.position.y - blockHeight * 2 * 0.5f - 2;
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
 
@@ -218,7 +218,7 @@ namespace LaserCrush.Manager
                 int rightBottomIndex = 3;
 
                 float x = (m_CalculatedInitPos.x + m_CalculatedOffset.x * leftTopIndex + m_CalculatedInitPos.x + m_CalculatedOffset.x * rightBottomIndex) / 2;
-                float y = m_CalculatedInitBossPos.y;
+                float y = m_CalculatedInitBossPosY;
                 Vector3 pos = new Vector3(x, y, 0);
 
                 int itemIndex = 1;
@@ -345,7 +345,8 @@ namespace LaserCrush.Manager
                 for (int i = 0; i < m_Blocks.Count; i++)
                 {
                     m_Blocks[i].MoveDown(m_MoveDownVector, m_MoveDownTime);
-                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    //m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].GetMatrixPos());
                 }
             }
 
@@ -364,8 +365,9 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Blocks.Count; i++)
                 {
-                    m_Blocks[i].MoveDown(m_MoveDownTwoSpaceVector, m_MoveDownTime);
-                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    m_Blocks[i].MoveDownTwoSpaces(m_MoveDownTwoSpaceVector, m_MoveDownTime);
+                    //m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].GetMatrixPos());
                 }
             }
 
