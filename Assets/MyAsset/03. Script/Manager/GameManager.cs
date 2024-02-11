@@ -185,7 +185,14 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckMoveDownBlock)
             {
-                m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                if (StageNum % 3 == 0)
+                {
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownTwoSpacesAllBlocks();
+                }
+                else
+                {
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                }
                 if (!m_IsCheckMoveDownBlock) return;
             }
 
@@ -197,7 +204,14 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckGenerateBlock)
             {
-                m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                if (StageNum % 3 == 0)
+                {
+                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBossBlock();
+                }
+                else
+                {
+                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                }
                 if (!m_IsCheckGenerateBlock) return;
             }
 
