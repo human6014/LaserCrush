@@ -19,6 +19,18 @@ namespace LaserCrush.Entity
         Prsim3
     }
 
+    public struct MatrixPos
+    {
+        public int RowNumber;
+        public int ColNumber;
+
+        public MatrixPos(int rowNumber, int colNumber)
+        {
+            RowNumber = rowNumber;
+            ColNumber = colNumber;
+        }
+    }
+
     public class Block : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
@@ -38,6 +50,8 @@ namespace LaserCrush.Entity
         protected static readonly int s_AudioCount = 7;
         protected static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         protected static readonly string s_BlockDamageAudioKey = "BlockDamage";
+
+        protected List<MatrixPos> m_matrixPos = new List<MatrixPos>();
         #endregion
 
         #region Property
@@ -66,8 +80,17 @@ namespace LaserCrush.Entity
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
         public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
+            m_matrixPos.Clear();
             CurrentHP = hp;
             Score = hp;
+            //
+            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber));
+            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
+            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber - 1));
+            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber - 1));
+            //
+            //m_matrixPos.Add(new MatrixPos(rowNumber,colNumber));
+
             RowNumber = rowNumber;
             ColNumber = colNumber;
             m_EntityType = entityType;
@@ -172,10 +195,27 @@ namespace LaserCrush.Entity
         #endregion
 
         #region MoveDown
-        public virtual void MoveDown(Vector2 moveDownVector, float moveDownTime)
+        public void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
             RowNumber++;
+            for(int i = 0; i < m_matrixPos.Count; i++) 
+            {
+                MatrixPos pos = m_matrixPos[i];
+                pos.RowNumber++;
+                m_matrixPos[i] = pos;
+            }
+        }
+        public void MoveDownTwoSpaces(Vector2 moveDownVector, float moveDownTime)
+        {
+            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
+            RowNumber += 2;
+            for (int i = 0; i < m_matrixPos.Count; i++)
+            {
+                MatrixPos pos = m_matrixPos[i];
+                pos.RowNumber += 2;
+                m_matrixPos[i] = pos;
+            }
         }
 
         protected virtual IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
@@ -191,6 +231,11 @@ namespace LaserCrush.Entity
             }
             Position = endPos;
             transform.position = endPos;
+        }
+
+        public List<MatrixPos> GetMatrixPos()
+        {
+            return m_matrixPos;
         }
         #endregion
 
