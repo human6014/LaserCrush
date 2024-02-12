@@ -331,7 +331,7 @@ namespace LaserCrush.Controller
         /// </summary>
         public void UpdateLineRenderer()
         {
-            RaycastHit2D hit = Physics2D.Raycast(Position, Direction, Mathf.Infinity, RayManager.LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.CircleCast(Position, 0.01f, Direction, Mathf.Infinity, RayManager.LaserHitableLayer);
             m_SubLineRenderer.SetPosition(0, Position);
             m_SubLineRenderer.SetPosition(1, hit.point);
 
@@ -342,7 +342,7 @@ namespace LaserCrush.Controller
             }
 
             Vector2 reflectDirection = Vector2.Reflect(Direction, hit.normal);
-            RaycastHit2D hit2 = Physics2D.Raycast(hit.point + reflectDirection, reflectDirection, m_SecondSubLineLength, RayManager.LaserHitableLayer);
+            RaycastHit2D hit2 = Physics2D.CircleCast(hit.point + reflectDirection, 0.01f, reflectDirection, m_SecondSubLineLength, RayManager.LaserHitableLayer);
 
             Vector2 reflectPos = hit2.collider is null ? hit.point + reflectDirection * m_SecondSubLineLength : hit2.point;
             m_SubLineRenderer.SetPosition(2, reflectPos);

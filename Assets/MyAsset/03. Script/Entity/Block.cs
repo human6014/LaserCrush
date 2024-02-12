@@ -48,18 +48,19 @@ namespace LaserCrush.Entity
         protected int m_AttackCount;
         protected bool m_IsDestroyed;
 
-        protected static readonly int s_AudioCount = 7;
-        protected static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
-        protected static readonly string s_BlockDamageAudioKey = "BlockDamage";
+        private static readonly int s_AudioCount = 7;
+        private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
+        private static readonly string s_BlockDamageAudioKey = "BlockDamage";
 
-        protected List<MatrixPos> m_matrixPos = new List<MatrixPos>();
+        protected List<MatrixPos> m_MatrixPos = new List<MatrixPos>();
         #endregion
 
         #region Property
         public int CurrentHP { get; protected set; }
         public int Score { get; protected set; }
-        public int RowNumber { get; protected set; }
-        public int ColNumber { get; protected set; }
+        public virtual int RowNumber { get => m_MatrixPos[0].RowNumber; }
+        public virtual int ColNumber { get => m_MatrixPos[0].ColNumber; }
+        public virtual bool IsBossBlock { get => false; }
         public Vector2 Position { get; protected set; }
         public DroppedItemType ItemType { get; protected set; }
         #endregion
@@ -81,14 +82,12 @@ namespace LaserCrush.Entity
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
         public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
-            m_matrixPos.Clear();
             CurrentHP = hp;
             Score = hp;
-            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber));
-            //삭제
-            RowNumber = rowNumber;
-            ColNumber = colNumber;
-            //
+
+            m_MatrixPos.Clear();
+            m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
+
             m_EntityType = entityType;
             ItemType = itemType;
             Position = pos;
@@ -194,29 +193,30 @@ namespace LaserCrush.Entity
         public void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            for(int i = 0; i < m_matrixPos.Count; i++) 
+            for(int i = 0; i < m_MatrixPos.Count; i++) 
             {
-                MatrixPos pos = m_matrixPos[i];
+                MatrixPos pos = m_MatrixPos[i];
                 pos.RowNumber++;
-                m_matrixPos[i] = pos;
+                m_MatrixPos[i] = pos;
             }
-            for (int i = 0; i < m_matrixPos.Count; i++)
+            for (int i = 0; i < m_MatrixPos.Count; i++)
             {
-                Debug.Log(m_matrixPos[i].RowNumber + " ,  " + m_matrixPos[i].ColNumber);
-            }
-        }
-        public void MoveDownTwoSpaces(Vector2 moveDownVector, float moveDownTime)
-        {
-            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            for (int i = 0; i < m_matrixPos.Count; i++)
-            {
-                MatrixPos pos = m_matrixPos[i];
-                pos.RowNumber += 2;
-                m_matrixPos[i] = pos;
+                Debug.Log(m_MatrixPos[i].RowNumber + " ,  " + m_MatrixPos[i].ColNumber);
             }
         }
 
-        protected virtual IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
+        public void MoveDownTwoSpaces(Vector2 moveDownVector, float moveDownTime)
+        {
+            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
+            for (int i = 0; i < m_MatrixPos.Count; i++)
+            {
+                MatrixPos pos = m_MatrixPos[i];
+                pos.RowNumber += 2;
+                m_MatrixPos[i] = pos;
+            }
+        }
+
+        private IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
         {
             Vector2 startPos = transform.position;
             Vector2 endPos = startPos + moveDownVector;
@@ -233,7 +233,7 @@ namespace LaserCrush.Entity
 
         public List<MatrixPos> GetMatrixPos()
         {
-            return m_matrixPos;
+            return m_MatrixPos;
 
         }
         #endregion
