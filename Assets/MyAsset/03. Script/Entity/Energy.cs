@@ -129,17 +129,17 @@ namespace LaserCrush.Entity
         public static void EnergyUpgrade()
         {
             s_DamageStack += 1;
-            m_AdditionalStack += 4;
+            m_AdditionalStack += 5;
         }
 
         public static void UpgradeUpdate()
         {
             m_Damage += s_DamageStack;
-            m_Damage += m_AdditionalStack / 5;
+            m_Damage += m_AdditionalStack / 10;
             s_DamageStack = 0;
             m_AdditionalStack %= 5;
             //m_AdditionalStack은 소수점 자리수 int로 저장하기 위함
-            //위 코드에선 EnergyUpgrade한번당 1.8증가
+            //위 코드에선 EnergyUpgrade한번당 1.5증가
         }
 
         public static int GetEnergy()

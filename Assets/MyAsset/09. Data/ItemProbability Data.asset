@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ItemProbability:
     probability:
-    - 82
+    - 84
     - 0
-    - 5
-    - 7
+    - 4
+    - 6
     - 5
     - 1
   m_DroppedItems:
