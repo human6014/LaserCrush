@@ -119,9 +119,13 @@ namespace LaserCrush.Manager
 
             foreach (Block block in m_Blocks)
             {
-                if (rowNumber == block.RowNumber &&
-                    colNumber == block.ColNumber)
-                    return result;
+                List<MatrixPos> matPos = m_Block.GetMatrixPos();
+                for(int i = 0; i < matPos.Count; i++)
+                {
+                    if (rowNumber == matPos[i].RowNumber &&
+                        colNumber == matPos[i].ColNumber)
+                        return result;
+                }
             }
 
             result.m_IsAvailable = true;
@@ -132,10 +136,17 @@ namespace LaserCrush.Manager
         public bool IsGameOver()
         {
             int maxRow = -1;
+
             foreach (Block block in m_Blocks)
             {
-                maxRow = Mathf.Max(maxRow, block.RowNumber);
-                if (maxRow >= m_MaxRowCount - 1) return true;
+                List<MatrixPos> pos = block.GetMatrixPos();
+                for (int i = 0; i < pos.Count; i++)
+                {
+                    maxRow = Mathf.Max(maxRow, pos[i].RowNumber);
+                    if (maxRow >= m_MaxRowCount - 1) return true;
+                }
+                /*maxRow = Mathf.Max(maxRow, block.RowNumber);
+                if (maxRow >= m_MaxRowCount - 1) return true;*/
             }
             return false;
         }
@@ -213,7 +224,6 @@ namespace LaserCrush.Manager
         {
             if (m_GenerateElapsedTime == 0)
             {
-                HashSet<int> index = GenerateBlockOffset();
                 int leftTopIndex = 2;
                 int rightBottomIndex = 3;
 
@@ -260,10 +270,8 @@ namespace LaserCrush.Manager
         private HashSet<int> GenerateBlockOffset()
         {
             int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
-            if (GameManager.StageNum % 15 == 0)
-                randomSize = 1;
             HashSet<int> result = new HashSet<int>();
-
+            //randomSize = 1;
             while (result.Count < randomSize)
             {
                 result.Add(Random.Range(0, m_MaxColCount));

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ItemProbability:
     probability:
-    - 75
     - 0
-    - 10
+    - 0
+    - 90
     - 10
     - 5
     - 5

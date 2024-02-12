@@ -26,8 +26,6 @@ namespace LaserCrush.Entity
         {
             CurrentHP = hp;
             Score = hp;
-            RowNumber = rowNumber;
-            ColNumber = colNumber;
             //
             m_matrixPos.Add(new MatrixPos(rowNumber, colNumber));
             m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
