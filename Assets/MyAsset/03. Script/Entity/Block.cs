@@ -7,6 +7,7 @@ using LaserCrush.Data;
 using LaserCrush.Manager;
 using LaserCrush.Extension;
 using LaserCrush.Entity.Interface;
+using UnityEngine.Assertions;
 
 namespace LaserCrush.Entity
 {
@@ -83,16 +84,11 @@ namespace LaserCrush.Entity
             m_matrixPos.Clear();
             CurrentHP = hp;
             Score = hp;
-            //
             m_matrixPos.Add(new MatrixPos(rowNumber, colNumber));
-            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
-            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber - 1));
-            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber - 1));
-            //
-            //m_matrixPos.Add(new MatrixPos(rowNumber,colNumber));
-
+            //ªË¡¶
             RowNumber = rowNumber;
             ColNumber = colNumber;
+            //
             m_EntityType = entityType;
             ItemType = itemType;
             Position = pos;
@@ -198,18 +194,20 @@ namespace LaserCrush.Entity
         public void MoveDown(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            RowNumber++;
             for(int i = 0; i < m_matrixPos.Count; i++) 
             {
                 MatrixPos pos = m_matrixPos[i];
                 pos.RowNumber++;
                 m_matrixPos[i] = pos;
             }
+            for (int i = 0; i < m_matrixPos.Count; i++)
+            {
+                Debug.Log(m_matrixPos[i].RowNumber + " ,  " + m_matrixPos[i].ColNumber);
+            }
         }
         public void MoveDownTwoSpaces(Vector2 moveDownVector, float moveDownTime)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            RowNumber += 2;
             for (int i = 0; i < m_matrixPos.Count; i++)
             {
                 MatrixPos pos = m_matrixPos[i];
@@ -236,6 +234,7 @@ namespace LaserCrush.Entity
         public List<MatrixPos> GetMatrixPos()
         {
             return m_matrixPos;
+
         }
         #endregion
 
