@@ -4,14 +4,16 @@ using UnityEngine;
 using LaserCrush.Data;
 using LaserCrush.Manager;
 using LaserCrush.Extension;
-using LaserCrush.Entity.Interface;
 using System;
-using static UnityEditor.PlayerSettings;
 
 namespace LaserCrush.Entity
 {
     public class BossBlock : Block
     {
+        public override int RowNumber { get => m_MatrixPos[0].RowNumber; }
+        public override int ColNumber { get => m_MatrixPos[0].ColNumber; }
+        public override bool IsBossBlock { get => true; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -27,10 +29,10 @@ namespace LaserCrush.Entity
             CurrentHP = hp;
             Score = hp;
             //
-            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber));
-            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
-            m_matrixPos.Add(new MatrixPos(rowNumber, colNumber - 1));
-            m_matrixPos.Add(new MatrixPos(rowNumber - 1, colNumber - 1));
+            m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
+            m_MatrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
+            m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber - 1));
+            m_MatrixPos.Add(new MatrixPos(rowNumber - 1, colNumber - 1));
             //
             m_EntityType = entityType;
             ItemType = itemType;

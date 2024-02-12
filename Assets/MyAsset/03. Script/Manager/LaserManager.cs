@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using LaserCrush.Entity;
-using System;
-using LaserCrush.Controller.InputObject;
 
 namespace LaserCrush.Manager
 {
@@ -215,20 +214,20 @@ namespace LaserCrush.Manager
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dirVector"></param>
+        /// <param name="infoList"></param>
         /// <param name="hierarchy">부모가 해당 함수를 호출 시 자식의 계층을 계산 후 넘긴다.</param>
         /// <returns></returns>
-        public List<Laser> CreateLaser(List<LaserInfo> dirVector, int hierarchy)
+        public List<Laser> CreateLaser(List<LaserInfo> infoList, int hierarchy)
         {
             List<Laser> answer = new List<Laser>();
 
             Laser laser;
-            for (int i = 0; i < dirVector.Count; i++)
+            for (int i = 0; i < infoList.Count; i++)
             {
                 laser = (Laser)m_LaserPool.GetObject(true);
-                laser.transform.position = dirVector[i].Position;
+                laser.transform.position = infoList[i].Position;
                 laser.Init(CreateLaser, LossParent);
-                laser.Activate(dirVector[i].Position + dirVector[i].Direction, dirVector[i].Direction, hierarchy);
+                laser.Activate(infoList[i].Position, infoList[i].Direction, hierarchy);
                 
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);

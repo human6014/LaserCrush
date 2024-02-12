@@ -11905,10 +11905,12 @@ MonoBehaviour:
     m_DroppedItemTransform: {fileID: 1611000099}
     m_BlockTransform: {fileID: 405668382}
     m_Block: {fileID: 9211609264070865934, guid: d74fd69233ee8404aa07def9e616b137, type: 3}
+    m_BossBlock: {fileID: 1919721867437153191, guid: 69a4939352903cf458c63c861d409eb6, type: 3}
     m_GridLineController: {fileID: 1292888499}
     m_TopWall: {fileID: 872262233}
     m_LeftWall: {fileID: 910940327}
-    m_PoolingCount: 30
+    m_BlockPoolingCount: 30
+    m_BossBlockPoolingCount: 1
     m_MaxRowCount: 11
     m_MaxColCount: 6
     m_MoveDownTime: 0.2

@@ -14,15 +14,17 @@ namespace LaserCrush.Data.Json
         public int m_RowNumber;
         public int m_ColNumber;
         public int m_HP;
+        public bool m_IsBossBlock;
         public Vector2 m_Position;
         public EEntityType m_EntityType;
         public DroppedItemType m_HasItemType;
 
-        public BlockData(int row, int col, int hp, Vector2 pos, EEntityType entityType, DroppedItemType itemType)
+        public BlockData(int row, int col, int hp, bool isBoss, Vector2 pos, EEntityType entityType, DroppedItemType itemType)
         {
             m_RowNumber = row;
             m_ColNumber = col;
             m_HP = hp;
+            m_IsBossBlock = isBoss;
             m_Position = pos;
             m_EntityType = entityType;
             m_HasItemType = itemType;
