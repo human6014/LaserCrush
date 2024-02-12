@@ -119,7 +119,7 @@ namespace LaserCrush.Manager
 
             foreach (Block block in m_Blocks)
             {
-                List<MatrixPos> matPos = m_Block.GetMatrixPos();
+                List<MatrixPos> matPos = block.GetMatrixPos();
                 for(int i = 0; i < matPos.Count; i++)
                 {
                     if (rowNumber == matPos[i].RowNumber &&
