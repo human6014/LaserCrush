@@ -53,7 +53,7 @@ namespace LaserCrush.Manager
 
         private bool m_IsInit;
         private bool m_IsGameOver;
-        
+
         private bool m_IsCheckGetItem;
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
@@ -185,7 +185,14 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckMoveDownBlock)
             {
-                m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                if (StageNum % 3 == 0)
+                {
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownTwoSpacesAllBlocks();
+                }
+                else
+                {
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                }
                 if (!m_IsCheckMoveDownBlock) return;
             }
 
@@ -197,12 +204,19 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckGenerateBlock)
             {
-                m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                if (StageNum % 3 == 0)
+                {
+                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBossBlock();
+                }
+                else
+                {
+                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                }
                 if (!m_IsCheckGenerateBlock) return;
             }
 
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_StageChangeAudioKey);
-            
+
             Energy.ChargeEnergy();
             m_LaserTime = 0;
             ValidHit = 0;
@@ -249,7 +263,7 @@ namespace LaserCrush.Manager
                     m_PreValidHit = ValidHit;
                     m_LaserTime = 0;
                 }
-                
+
                 m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
             }
             else
@@ -296,7 +310,7 @@ namespace LaserCrush.Manager
             int startEnergy = Energy.CurrentEnergy;
             int endEnergy = startEnergy + additionalEnergy;
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
-           
+
 
             //Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
 

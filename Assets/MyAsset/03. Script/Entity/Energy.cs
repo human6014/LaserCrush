@@ -117,7 +117,7 @@ namespace LaserCrush.Entity
 
         public static void ChargeEnergy(int energy)
             => CurrentEnergy += energy;
-        
+
 
         public static void CollideWithWall()
         {
@@ -142,10 +142,10 @@ namespace LaserCrush.Entity
              */
 
             s_HittingWallLaserNum++;
-            if (s_HittingWallLaserNum > 10) 
-                UseEnergy(MaxEnergy / 12); 
+            if (s_HittingWallLaserNum > 10)
+                //UseEnergy(MaxEnergy / 12); 
 
-            GameManager.ValidHit++;
+                GameManager.ValidHit++;
         }
 
         public static void SetChargeEnergy(int current)
@@ -156,7 +156,7 @@ namespace LaserCrush.Entity
 
         public static void EnergyUpgrade(int additionalEnergy)
             => MaxEnergy += additionalEnergy;
-        
+
         public static int GetEnergy()
             => s_CurrentEnergy;
 
@@ -165,7 +165,7 @@ namespace LaserCrush.Entity
 
         public static void SaveAllData()
             => DataManager.GameData.m_Energy = MaxEnergy;
-        
+
         public static void ResetGame()
         {
             s_MaxEnergy = s_InitEnergy;

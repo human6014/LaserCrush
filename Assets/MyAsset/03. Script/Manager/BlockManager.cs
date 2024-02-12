@@ -63,8 +63,10 @@ namespace LaserCrush.Manager
         private float m_GenerateElapsedTime;
 
         private Vector2 m_CalculatedInitPos;
+        private float m_CalculatedInitBossPosY;
         private Vector2 m_CalculatedOffset;
         private Vector2 m_MoveDownVector;
+        private Vector2 m_MoveDownTwoSpaceVector;
         #endregion
 
         #region Init
@@ -117,9 +119,13 @@ namespace LaserCrush.Manager
 
             foreach (Block block in m_Blocks)
             {
-                if (rowNumber == block.RowNumber &&
-                    colNumber == block.ColNumber)
-                    return result;
+                List<MatrixPos> matPos = block.GetMatrixPos();
+                for(int i = 0; i < matPos.Count; i++)
+                {
+                    if (rowNumber == matPos[i].RowNumber &&
+                        colNumber == matPos[i].ColNumber)
+                        return result;
+                }
             }
 
             result.m_IsAvailable = true;
@@ -130,10 +136,17 @@ namespace LaserCrush.Manager
         public bool IsGameOver()
         {
             int maxRow = -1;
+
             foreach (Block block in m_Blocks)
             {
-                maxRow = Mathf.Max(maxRow, block.RowNumber);
-                if (maxRow >= m_MaxRowCount - 1) return true;
+                List<MatrixPos> pos = block.GetMatrixPos();
+                for (int i = 0; i < pos.Count; i++)
+                {
+                    maxRow = Mathf.Max(maxRow, pos[i].RowNumber);
+                    if (maxRow >= m_MaxRowCount - 1) return true;
+                }
+                /*maxRow = Mathf.Max(maxRow, block.RowNumber);
+                if (maxRow >= m_MaxRowCount - 1) return true;*/
             }
             return false;
         }
@@ -162,11 +175,12 @@ namespace LaserCrush.Manager
 
             m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 0.5f - 2);
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
+            m_CalculatedInitBossPosY = m_TopWall.position.y - blockHeight * 2 * 0.5f - 2;
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
 
             m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
-
+            m_MoveDownTwoSpaceVector = new Vector2(0, -m_CalculatedOffset.y * 2);
             return size;
         }
         #endregion
@@ -194,7 +208,36 @@ namespace LaserCrush.Manager
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
-            if(m_GenerateElapsedTime >= m_GenerateTime)
+            if (m_GenerateElapsedTime >= m_GenerateTime)
+            {
+                m_GenerateElapsedTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 지금은 무조건 에너지 아이템 드롭하게 만들어둠
+        /// </summary>
+        /// <returns></returns>
+        public bool GenerateBossBlock()
+        {
+            if (m_GenerateElapsedTime == 0)
+            {
+                int leftTopIndex = 2;
+                int rightBottomIndex = 3;
+
+                float x = (m_CalculatedInitPos.x + m_CalculatedOffset.x * leftTopIndex + m_CalculatedInitPos.x + m_CalculatedOffset.x * rightBottomIndex) / 2;
+                float y = m_CalculatedInitBossPosY;
+                Vector3 pos = new Vector3(x, y, 0);
+
+                int itemIndex = 1;
+
+                InstantiateBossBlock(GenerateBlockHP(), 1, 3, GenerateEntityType(), (DroppedItemType)itemIndex, pos);
+            }
+
+            m_GenerateElapsedTime += Time.deltaTime;
+            if (m_GenerateElapsedTime >= m_GenerateTime)
             {
                 m_GenerateElapsedTime = 0;
                 return true;
@@ -210,6 +253,16 @@ namespace LaserCrush.Manager
             m_Blocks.Add(block);
         }
 
+        //여기 고쳐줘용~~
+        private void InstantiateBossBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos)
+        {
+            //오브젝트 풀링 확인
+            Block block = (Block)m_BlockPool.GetObject(true);
+            block.transform.position = pos;
+            block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
+            m_Blocks.Add(block);
+        }
+
         /// <summary>
         /// 지금은 단순히 무작위 확률로 블럭 위치와 갯수를 생성
         /// </summary>
@@ -218,7 +271,7 @@ namespace LaserCrush.Manager
         {
             int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
             HashSet<int> result = new HashSet<int>();
-
+            //randomSize = 1;
             while (result.Count < randomSize)
             {
                 result.Add(Random.Range(0, m_MaxColCount));
@@ -247,9 +300,19 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.StageNum + 1) / 2) * 5;
-            int start = end - (end / 10);
-            return Random.Range(start, end + 1) * 100;
+            if (GameManager.StageNum % 15 == 0)
+            {
+                int end = ((GameManager.StageNum + 1) / 2) * 5;
+                int start = end - (end / 10);
+                return Random.Range(start * 4, (end * 4) + 1) * 100;
+            }
+            else
+            {
+                int end = ((GameManager.StageNum + 1) / 2) * 5;
+                int start = end - (end / 10);
+                return Random.Range(start, end + 1) * 100;
+            }
+
         }
 
         /// <summary>
@@ -290,7 +353,29 @@ namespace LaserCrush.Manager
                 for (int i = 0; i < m_Blocks.Count; i++)
                 {
                     m_Blocks[i].MoveDown(m_MoveDownVector, m_MoveDownTime);
-                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    //m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].GetMatrixPos());
+                }
+            }
+
+            m_MoveDownElapsedTime += Time.deltaTime;
+            if (m_MoveDownElapsedTime >= m_MoveDownTime)
+            {
+                m_MoveDownElapsedTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        public bool MoveDownTwoSpacesAllBlocks()
+        {
+            if (m_MoveDownElapsedTime == 0)
+            {
+                for (int i = 0; i < m_Blocks.Count; i++)
+                {
+                    m_Blocks[i].MoveDownTwoSpaces(m_MoveDownTwoSpaceVector, m_MoveDownTime);
+                    //m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].RowNumber, m_Blocks[i].ColNumber);
+                    m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].GetMatrixPos());
                 }
             }
 
@@ -324,12 +409,12 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 blockData = new Data.Json.BlockData(
-                    row : block.RowNumber, 
-                    col : block.ColNumber, 
-                    hp : block.CurrentHP, 
-                    pos : block.Position,
-                    entityType : block.GetEEntityType(),
-                    itemType : block.ItemType);
+                    row: block.RowNumber,
+                    col: block.ColNumber,
+                    hp: block.CurrentHP,
+                    pos: block.Position,
+                    entityType: block.GetEEntityType(),
+                    itemType: block.ItemType);
 
                 DataManager.GameData.m_Blocks.Add(blockData);
             }

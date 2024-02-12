@@ -69,7 +69,7 @@ namespace LaserCrush.Entity
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsErased = false;
-            m_IsActivated = true;     
+            m_IsActivated = true;
             m_Hierarchy = hierarchy;
             //생성 시 디메리트 계산로직 입맛대로 수정 가능
             if (m_Hierarchy >= GameManager.LaserCriticalPoint)
@@ -124,7 +124,7 @@ namespace LaserCrush.Entity
         /// </summary>
         public bool Erase()
         {
-            if (m_IsErased) return true; 
+            if (m_IsErased) return true;
 
             float dist = Vector2.Distance(m_StartPoint, m_EndPoint);
             float eraseVelocity = m_LaserData.EraseVelocity * Time.deltaTime;
@@ -166,7 +166,7 @@ namespace LaserCrush.Entity
                 m_Target = hit.transform.GetComponent<ICollisionable>();
                 m_LaserInfo = m_Target.Hitted(hit, m_DirectionVector, this);
 
-                if(m_Target.GetEEntityType() == EEntityType.Wall)
+                if (m_Target.GetEEntityType() == EEntityType.Wall)
                     AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
 
                 if (m_State == ELaserStateType.Wait) return;

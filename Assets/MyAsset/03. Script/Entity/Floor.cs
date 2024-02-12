@@ -30,7 +30,7 @@ namespace LaserCrush.Entity
 
         public bool Waiting()
             => true;
-        
+
         public EEntityType GetEEntityType()
             => EEntityType.Floor;
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 using LaserCrush.Controller;
 using LaserCrush.Entity.Item;
 using LaserCrush.UI;
+using LaserCrush.Entity;
+using UnityEngine.AI;
 
 namespace LaserCrush.Manager
 {
@@ -135,6 +137,22 @@ namespace LaserCrush.Manager
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
             }
             RemoveBufferFlush(false);
+        }
+
+        public void CheckDuplicatePosWithBlock(List<MatrixPos> pos)
+        {
+            int rowNum;
+            int colNum;
+            for (int i = 0; i < pos.Count; i++)
+            {
+                rowNum = pos[i].RowNumber;
+                colNum = pos[i].ColNumber;
+                for (int j = 0; j < m_InstalledItem.Count; j++)
+                {
+                    if (rowNum == m_InstalledItem[j].RowNumber && colNum == m_InstalledItem[j].ColNumber)
+                        m_InstalledItemBuffer.Add(m_InstalledItem[j]);
+                }
+            }
         }
 
         public void FixInstalledItemDirection()
