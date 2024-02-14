@@ -206,11 +206,12 @@ namespace LaserCrush.Entity
             laser.ChangeLaserState(ELaserStateType.Hitting);
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
-                //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
+                Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
+                Vector2 pos = hit.point + dir;
                 LaserInfo info = new LaserInfo
                 {
-                    Direction = Vector2.Reflect(parentDirVector, hit.normal),
-                    Position = hit.point
+                    Direction = dir,
+                    Position = pos
                 };
                 return new List<LaserInfo>() { info };
             }
