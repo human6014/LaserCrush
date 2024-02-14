@@ -113,7 +113,6 @@ namespace LaserCrush.Entity
                 m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
                 gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
             }
-            //여기에 추가로 보스블럭인 경우 만들어 줄 계획
             else Debug.LogError("Block has incorrect type");
 
             StartCoroutine(InitAnimation(0.2f));
@@ -181,7 +180,6 @@ namespace LaserCrush.Entity
             laser.ChangeLaserState(ELaserStateType.Hitting);
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
-                //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
                 Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
                 Vector2 pos = hit.point + dir;
                 LaserInfo info = new LaserInfo(pos, dir);

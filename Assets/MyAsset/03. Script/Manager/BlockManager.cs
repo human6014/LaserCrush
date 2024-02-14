@@ -137,18 +137,8 @@ namespace LaserCrush.Manager
 
         public bool IsGameOver()
         {
-            //int maxRow = -1;
-
             foreach (Block block in m_Blocks)
             {
-                /*List<MatrixPos> pos = block.GetMatrixPos();
-                for (int i = 0; i < pos.Count; i++)
-                {
-                    maxRow = Mathf.Max(maxRow, pos[i].RowNumber);
-                    if (maxRow >= m_MaxRowCount - 1) return true;
-                }*/
-                /*maxRow = Mathf.Max(maxRow, block.RowNumber);
-                if (maxRow >= m_MaxRowCount - 1) return true;*/
                 if (block.IsGameOver(m_MaxRowCount - 1)) return true;
 
             }
@@ -306,7 +296,7 @@ namespace LaserCrush.Manager
         {
             if (GameManager.IsBossStage())
             {
-                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3 * 1.5f);
+                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3.7f * 1.6f);
                 int start = end - (end / 10);
                 return Random.Range(start, end+ 1) * 100;
             }
@@ -360,7 +350,6 @@ namespace LaserCrush.Manager
                 {
                     m_Blocks[i].MoveDown(m_MoveDownVector * step , m_MoveDownTime, step);
                     m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i]);
-                    //m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i].GetMatrixPos());
                 }
             }
 
