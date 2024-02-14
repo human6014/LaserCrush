@@ -152,7 +152,7 @@ namespace LaserCrush.Manager
         public void SetCurrentEnergy(int current, int max)
         {
             m_EnergySliderDisplayer.SetCurrentValue(current, max);
-            m_EnergyTextDisplayer.SetText(current / 100);
+            m_EnergyTextDisplayer.SetText(current);
         }
 
         public void PlayEnergyHighlight()

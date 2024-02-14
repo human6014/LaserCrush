@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 using System;
 using LaserCrush.Data;
 using LaserCrush.Controller;
@@ -56,7 +56,7 @@ namespace LaserCrush.Manager
 
         private readonly List<int> s_Probabilitytable = new List<int>() { 0, 20, 50, 60, 50, 15 };
         private readonly int s_MaxWightSum = 195;
-        //3.86개가 한 턴에 기댓값
+        //3.94개가 한 턴에 기댓값
 
         private const string m_ItemDroppedAudioKey = "ItemDropped";
 

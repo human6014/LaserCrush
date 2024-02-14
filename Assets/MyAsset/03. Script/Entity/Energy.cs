@@ -2,7 +2,6 @@ using UnityEngine;
 using LaserCrush.Manager;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Collections;
 
 namespace LaserCrush.Entity
@@ -25,6 +24,10 @@ namespace LaserCrush.Entity
         private static int s_DamageStack;
         private static int m_AdditionalStack;
         private static HashSet<int> s_LaserHashSet;
+
+        private static float m_CurrentTime;
+        private static float m_StageMaxTime;
+        private static readonly float m_MaxTime = 3;
         #endregion
 
         public static int MaxEnergy
@@ -51,19 +54,22 @@ namespace LaserCrush.Entity
 
         public void Init(int initEnergy)
         {
-            MaxEnergy = 350;
-            CurrentEnergy = 350;
+            m_CurrentTime = 0;
+            m_StageMaxTime = m_MaxTime;
+
+            MaxEnergy = 4;
+            CurrentEnergy = 4;
             s_DamageStack = 0;
             m_AdditionalStack = 0;
 
-            s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy(CurrentEnergy, MaxEnergy);
-            s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy(CurrentEnergy, MaxEnergy);
+            s_MaxEnergyUpdateAction = () => m_UIManager.SetCurrentMaxEnergy((int)(m_StageMaxTime - m_CurrentTime + 0.5f), (int)m_StageMaxTime);
+            s_CurrentEnergyUpdateAction = () => m_UIManager.SetCurrentEnergy((int)(m_StageMaxTime - m_CurrentTime + 0.5f), (int)m_StageMaxTime);
             s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
 
             s_MaxEnergyUpdateAction?.Invoke();
             s_CurrentEnergyUpdateAction?.Invoke();
             s_LaserHashSet = new HashSet<int>();
-            m_Damage = 5;
+            m_Damage = 4;
             StartCoroutine(Tic());
         }
 
@@ -78,7 +84,9 @@ namespace LaserCrush.Entity
         }
 
         public static bool CheckEnergy()
-            => CurrentEnergy > 0;
+        {
+           return m_CurrentTime < m_StageMaxTime;
+        }
 
         public static void CollideWithFloor()
         {
@@ -92,6 +100,9 @@ namespace LaserCrush.Entity
 
         public static int ChargeEnergy()
         {
+            m_CurrentTime = 0;
+            m_StageMaxTime = m_MaxTime;
+
             CurrentEnergy = s_MaxEnergy;
             s_HittingFloorLaserNum = 0;
             s_HittingWallLaserNum = 0;
@@ -101,7 +112,10 @@ namespace LaserCrush.Entity
         }
 
         public static void ChargeEnergy(int energy)
-            => CurrentEnergy += energy;
+        {
+            CurrentEnergy += energy;
+            m_StageMaxTime += energy * 0.01f;
+        }
         
         public static void CollideWithWall()
         {
@@ -114,30 +128,46 @@ namespace LaserCrush.Entity
 
         IEnumerator Tic()
         {
+            float totalTime = 0;
             while(true)
             {
-                if (CurrentEnergy > 0 && GameManager.GetEGameStateType() == GameManager.EGameStateType.LaserActivating)
-                    CurrentEnergy -= 10;
-                yield return new WaitForSecondsRealtime(0.1f);
+                if (m_CurrentTime < m_StageMaxTime && GameManager.GetEGameStateType() == GameManager.EGameStateType.LaserActivating)
+                {
+                    m_CurrentTime += Time.deltaTime;
+                    s_CurrentEnergyUpdateAction?.Invoke();
+                    totalTime += Time.deltaTime;
+                }
+                else if(m_CurrentTime == 0)
+                {
+                    Debug.Log(totalTime);
+                    totalTime = 0;
+                }
+
+                yield return null;
             }
         }
 
         public static void EnergyUpgrade(int additionalEnergy)
             => m_Damage += additionalEnergy;
 
+        public static void ChargeCurrentMaxTime(float time)
+        {
+            m_StageMaxTime += time;
+            s_CurrentEnergyUpdateAction?.Invoke();
+        }
         
         public static void EnergyUpgrade()
         {
             s_DamageStack += 1;
-            m_AdditionalStack += 5;
+            m_AdditionalStack += 1;
         }
 
         public static void UpgradeUpdate()
         {
             m_Damage += s_DamageStack;
-            m_Damage += m_AdditionalStack / 10;
+            m_Damage += m_AdditionalStack / 2;
             s_DamageStack = 0;
-            m_AdditionalStack %= 5;
+            m_AdditionalStack %= 2;
             //m_AdditionalStack은 소수점 자리수 int로 저장하기 위함
             //위 코드에선 EnergyUpgrade한번당 1.5증가
         }
@@ -153,6 +183,9 @@ namespace LaserCrush.Entity
         
         public static void ResetGame()
         {
+            m_CurrentTime = 0;
+            m_StageMaxTime = m_MaxTime;
+
             s_MaxEnergy = s_InitEnergy;
             s_CurrentEnergy = s_InitEnergy;
         }
