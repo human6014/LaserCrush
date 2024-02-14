@@ -70,6 +70,7 @@ namespace LaserCrush.Manager
 
         private Vector2 m_MoveDownVector;
         private Vector2 m_MoveDownTwoSpaceVector;
+
         #endregion
 
         #region Init
@@ -308,11 +309,11 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            if (GameManager.StageNum % 15 == 0)
+            if (GameManager.IsBossStage())
             {
-                int end = ((GameManager.StageNum + 1) / 2) * 5;
+                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3  * 100 * 3.7f);
                 int start = end - (end / 10);
-                return Random.Range(start * 55, (end * 55) + 1) * 100;
+                return Random.Range(start, end+ 1);
             }
             else
             {
