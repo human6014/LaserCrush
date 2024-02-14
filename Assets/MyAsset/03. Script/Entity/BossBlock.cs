@@ -15,7 +15,6 @@ namespace LaserCrush.Entity
         public override bool IsBossBlock { get => true; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="hp"></param>
         /// <param name="rowNumber">rightBottom</param>
@@ -27,14 +26,14 @@ namespace LaserCrush.Entity
         public override void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             base.Init(hp, entityType, itemType, pos, playParticleAction);
+
             //
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber + 1));
             m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber));
-            m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1));
+            m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1)); 
             //
-            
-        }
+        }   
     }
-}
+}  
