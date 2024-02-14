@@ -82,38 +82,13 @@ namespace LaserCrush.Entity
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
         public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
-            CurrentHP = hp;
-            Score = hp;
-
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
 
-            m_EntityType = entityType;
-            ItemType = itemType;
-            Position = pos;
-            m_PlayParticleAction = playParticleAction;
-
-            m_BoxCollider2D.enabled = true;
-            m_IsDestroyed = false;
-            m_AttackCount = 0;
-            m_Text.text = GetHP().ToString();
-
-            if (m_EntityType == EEntityType.NormalBlock)
-            {
-                m_SpriteRenderer.color = m_BlockData.NormalBlockColor;
-                gameObject.layer = m_BlockData.NormalLayer.GetLayerNumber();
-            }
-            else if (m_EntityType == EEntityType.ReflectBlock)
-            {
-                m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
-                gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
-            }
-            else Debug.LogError("Block has incorrect type");
-
-            StartCoroutine(InitAnimation(0.2f));
+            InitSetting(hp, entityType, itemType, pos, playParticleAction);
         }
 
-        public void Init(int hp, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
+        public void InitSetting(int hp, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             CurrentHP = hp;
             Score = hp;
@@ -207,11 +182,10 @@ namespace LaserCrush.Entity
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
                 //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
-                LaserInfo info = new LaserInfo
-                {
-                    Direction = Vector2.Reflect(parentDirVector, hit.normal),
-                    Position = hit.point
-                };
+                Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
+                Vector2 pos = hit.point + dir;
+                LaserInfo info = new LaserInfo(pos, dir);
+
                 return new List<LaserInfo>() { info };
             }
             m_Text.text = GetHP().ToString();
@@ -251,7 +225,9 @@ namespace LaserCrush.Entity
         {
             for(int i = 0; i < m_MatrixPos.Count; i++)
             {
-                if(row == m_MatrixPos[i].RowNumber && col == m_MatrixPos[i].ColNumber) { return false; }
+                if (row == m_MatrixPos[i].RowNumber && 
+                    col == m_MatrixPos[i].ColNumber) 
+                    return false;
             }
             return true;
         }
@@ -261,7 +237,7 @@ namespace LaserCrush.Entity
         {
             for(int i = 0; i < m_MatrixPos.Count; i++)
             {
-                if (m_MatrixPos[i].RowNumber >= maxRow) { return true; }
+                if (m_MatrixPos[i].RowNumber >= maxRow) return true;
             }
             return false;
         }

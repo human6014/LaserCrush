@@ -26,15 +26,13 @@ namespace LaserCrush.Entity
         /// <param name="playParticleAction"></param>
         public override void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
-            base.Init(hp, entityType, itemType, pos, playParticleAction);
-            //
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber + 1));
             m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber));
             m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1));
-            //
-            
+
+            base.InitSetting(hp, entityType, itemType, pos, playParticleAction);
         }
     }
 }

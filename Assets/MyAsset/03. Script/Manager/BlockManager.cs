@@ -418,13 +418,11 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 block.ImmediatelyReset();
-                if (block.IsBossBlock) m_BlockPool.ReturnObject(block);
+                if (!block.IsBossBlock) m_BlockPool.ReturnObject(block);
                 else m_BossBlockPool.ReturnObject(block);
             }
 
             m_Blocks.Clear();
         }
-
-        
     }
 }
