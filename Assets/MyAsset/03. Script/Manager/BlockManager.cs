@@ -311,9 +311,9 @@ namespace LaserCrush.Manager
         {
             if (GameManager.IsBossStage())
             {
-                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3  * 100 * 3.7f);
+                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3 * 1.5f);
                 int start = end - (end / 10);
-                return Random.Range(start, end+ 1);
+                return Random.Range(start, end+ 1) * 100;
             }
             else
             {
