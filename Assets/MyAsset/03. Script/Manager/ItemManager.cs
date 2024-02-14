@@ -129,29 +129,12 @@ namespace LaserCrush.Manager
             return true;
         }
 
-        public void CheckDuplicatePosWithBlock(int rowNumber, int colNumber)
+        public void CheckDuplicatePosWithBlock(Block block)
         {
-            for (int i = 0; i < m_InstalledItem.Count; i++)
+            for(int i = 0; i < m_InstalledItem.Count; i++)
             {
-                if (rowNumber == m_InstalledItem[i].RowNumber && colNumber == m_InstalledItem[i].ColNumber)
+                if(!block.IsAvailablePos(m_InstalledItem[i].RowNumber, m_InstalledItem[i].ColNumber))
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
-            }
-            RemoveBufferFlush(false);
-        }
-
-        public void CheckDuplicatePosWithBlock(List<MatrixPos> pos)
-        {
-            int rowNum;
-            int colNum;
-            for (int i = 0; i < pos.Count; i++)
-            {
-                rowNum = pos[i].RowNumber;
-                colNum = pos[i].ColNumber;
-                for (int j = 0; j < m_InstalledItem.Count; j++)
-                {
-                    if (rowNum == m_InstalledItem[j].RowNumber && colNum == m_InstalledItem[j].ColNumber)
-                        m_InstalledItemBuffer.Add(m_InstalledItem[j]);
-                }
             }
         }
 
