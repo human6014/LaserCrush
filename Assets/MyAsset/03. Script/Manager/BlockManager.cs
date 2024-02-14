@@ -422,7 +422,5 @@ namespace LaserCrush.Manager
 
             m_Blocks.Clear();
         }
-
-        
     }
 }
