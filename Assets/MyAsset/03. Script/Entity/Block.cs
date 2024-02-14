@@ -37,16 +37,16 @@ namespace LaserCrush.Entity
         #region Variable
         [SerializeField] private BlockData m_BlockData;
 
-        protected BoxCollider2D m_BoxCollider2D;
-        protected Animator m_Animator;
-        protected SpriteRenderer m_SpriteRenderer;
-        protected TextMeshProUGUI m_Text;
-        protected Action<Block> m_PlayParticleAction;
+        private BoxCollider2D m_BoxCollider2D;
+        private Animator m_Animator;
+        private SpriteRenderer m_SpriteRenderer;
+        private TextMeshProUGUI m_Text;
+        private Action<Block> m_PlayParticleAction;
 
-        protected EEntityType m_EntityType;
+        private EEntityType m_EntityType;
 
-        protected int m_AttackCount;
-        protected bool m_IsDestroyed;
+        private int m_AttackCount;
+        private bool m_IsDestroyed;
 
         private static readonly int s_AudioCount = 7;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
@@ -61,7 +61,7 @@ namespace LaserCrush.Entity
         public virtual int RowNumber { get => m_MatrixPos[0].RowNumber; }
         public virtual int ColNumber { get => m_MatrixPos[0].ColNumber; }
         public virtual bool IsBossBlock { get => false; }
-        public Vector2 Position { get; protected set; }
+        public Vector2 Position { get; private set; }
         public DroppedItemType ItemType { get; protected set; }
         #endregion
 
@@ -108,6 +108,37 @@ namespace LaserCrush.Entity
                 m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
                 gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
             }
+            else Debug.LogError("Block has incorrect type");
+
+            StartCoroutine(InitAnimation(0.2f));
+        }
+
+        public void Init(int hp, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
+        {
+            CurrentHP = hp;
+            Score = hp;
+
+            ItemType = itemType;
+            Position = pos;
+            m_PlayParticleAction = playParticleAction;
+
+            m_BoxCollider2D.enabled = true;
+            m_IsDestroyed = false;
+            m_AttackCount = 0;
+            m_Text.text = GetHP().ToString();
+            m_EntityType = entityType;
+
+            if (m_EntityType == EEntityType.NormalBlock)
+            {
+                m_SpriteRenderer.color = m_BlockData.NormalBlockColor;
+                gameObject.layer = m_BlockData.NormalLayer.GetLayerNumber();
+            }
+            else if (m_EntityType == EEntityType.ReflectBlock)
+            {
+                m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
+                gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
+            }
+            //여기에 추가로 보스블럭인 경우 만들어 줄 계획
             else Debug.LogError("Block has incorrect type");
 
             StartCoroutine(InitAnimation(0.2f));
@@ -190,28 +221,13 @@ namespace LaserCrush.Entity
         #endregion
 
         #region MoveDown
-        public void MoveDown(Vector2 moveDownVector, float moveDownTime)
+        public void MoveDown(Vector2 moveDownVector, float moveDownTime, int step)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
             for(int i = 0; i < m_MatrixPos.Count; i++) 
             {
                 MatrixPos pos = m_MatrixPos[i];
-                pos.RowNumber++;
-                m_MatrixPos[i] = pos;
-            }
-            for (int i = 0; i < m_MatrixPos.Count; i++)
-            {
-                Debug.Log(m_MatrixPos[i].RowNumber + " ,  " + m_MatrixPos[i].ColNumber);
-            }
-        }
-
-        public void MoveDownTwoSpaces(Vector2 moveDownVector, float moveDownTime)
-        {
-            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            for (int i = 0; i < m_MatrixPos.Count; i++)
-            {
-                MatrixPos pos = m_MatrixPos[i];
-                pos.RowNumber += 2;
+                pos.RowNumber += step;
                 m_MatrixPos[i] = pos;
             }
         }
@@ -231,20 +247,32 @@ namespace LaserCrush.Entity
             transform.position = endPos;
         }
 
-        public List<MatrixPos> GetMatrixPos()
+        public bool IsAvailablePos(int row, int col)
         {
-            return m_MatrixPos;
-
+            for(int i = 0; i < m_MatrixPos.Count; i++)
+            {
+                if(row == m_MatrixPos[i].RowNumber && col == m_MatrixPos[i].ColNumber) { return false; }
+            }
+            return true;
         }
         #endregion
 
-        protected int GetHP()
+        public bool IsGameOver(int maxRow)
+        {
+            for(int i = 0; i < m_MatrixPos.Count; i++)
+            {
+                if (m_MatrixPos[i].RowNumber >= maxRow) { return true; }
+            }
+            return false;
+        }
+
+        private int GetHP()
             => CurrentHP / 100;
 
         /// <summary>
         /// 파티클, 사운드 실행하고 삭제
         /// </summary>
-        protected void Destroy()
+        private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
             m_IsDestroyed = true;
@@ -257,7 +285,7 @@ namespace LaserCrush.Entity
         public void ImmediatelyReset()
             => m_IsDestroyed = true;
 
-        protected void OnDestroy()
+        private void OnDestroy()
             => m_PlayParticleAction = null;
 
         public override void ReturnObject()

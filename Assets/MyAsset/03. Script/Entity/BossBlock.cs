@@ -26,23 +26,15 @@ namespace LaserCrush.Entity
         /// <param name="playParticleAction"></param>
         public override void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
-            CurrentHP = hp;
-            Score = hp;
+            base.Init(hp, entityType, itemType, pos, playParticleAction);
             //
+            m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
-            m_MatrixPos.Add(new MatrixPos(rowNumber - 1, colNumber));
-            m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber - 1));
-            m_MatrixPos.Add(new MatrixPos(rowNumber - 1, colNumber - 1));
+            m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber + 1));
+            m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber));
+            m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1));
             //
-            m_EntityType = entityType;
-            ItemType = itemType;
-            Position = pos;
-            m_PlayParticleAction = playParticleAction;
-
-            m_BoxCollider2D.enabled = true;
-            m_IsDestroyed = false;
-            m_AttackCount = 0;
-            m_Text.text = GetHP().ToString();
+            
         }
     }
 }
