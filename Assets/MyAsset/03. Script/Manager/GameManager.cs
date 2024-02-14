@@ -40,7 +40,7 @@ namespace LaserCrush.Manager
 
         private static EGameStateType s_GameStateType = EGameStateType.BlockUpdating;
         private static float s_ChargingWeight;
-        public static int s_BossStage = 3;
+        public readonly static int s_BossStage = 5;
 
         private const string m_StageChangeAudioKey = "StageChange";
         private const string m_ItemChargeAudioKey = "ItemCharge";
@@ -188,11 +188,11 @@ namespace LaserCrush.Manager
             {
                 if (IsBossStage())
                 {
-                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownTwoSpacesAllBlocks();
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(2);
                 }
                 else
                 {
-                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks();
+                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(1);
                 }
                 if (!m_IsCheckMoveDownBlock) return;
             }

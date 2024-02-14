@@ -5,7 +5,7 @@ namespace LaserCrush.Entity
         //Attable//
         NormalBlock,
         ReflectBlock,
-
+        BossBlock,
         ///////
         Prisim,
         Floor,
