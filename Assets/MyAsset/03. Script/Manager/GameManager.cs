@@ -40,7 +40,7 @@ namespace LaserCrush.Manager
 
         private static EGameStateType s_GameStateType = EGameStateType.BlockUpdating;
         private static float s_ChargingWeight;
-        public readonly static int s_BossStage = 5;
+        public readonly static int s_BossStage = 20;
 
         private const string m_StageChangeAudioKey = "StageChange";
         private const string m_ItemChargeAudioKey = "ItemCharge";
