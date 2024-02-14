@@ -15,7 +15,6 @@ namespace LaserCrush.Entity
         public override bool IsBossBlock { get => true; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="hp"></param>
         /// <param name="rowNumber">rightBottom</param>
@@ -35,4 +34,4 @@ namespace LaserCrush.Entity
             base.InitSetting(hp, entityType, itemType, pos, playParticleAction);
         }
     }
-}
+}  

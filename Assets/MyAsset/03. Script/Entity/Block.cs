@@ -75,11 +75,11 @@ namespace LaserCrush.Entity
         }
 
         /// <summary>
-        /// È­¸é¿¡ ¶ç¿ì±â Àü ¹İµå½Ã ÃÊ±âÈ­ÇÔ¼ö È£ÃâÇÒ °Í
+        /// í™”ë©´ì— ë„ìš°ê¸° ì „ ë°˜ë“œì‹œ ì´ˆê¸°í™”í•¨ìˆ˜ í˜¸ì¶œí•  ê²ƒ
         /// </summary>
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
-        /// <param name="droppedItem">µå¶ø ¾ÆÀÌÅÛÀÌ ¾øÀ» °æ¿ì ³Î°ªÀ» ´ëÀÔ</param>
+        /// <param name="droppedItem">ë“œë ì•„ì´í…œì´ ì—†ì„ ê²½ìš° ë„ê°’ì„ ëŒ€ì…</param>
         public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             m_MatrixPos.Clear();
@@ -113,7 +113,7 @@ namespace LaserCrush.Entity
                 m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
                 gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
             }
-            //¿©±â¿¡ Ãß°¡·Î º¸½ººí·°ÀÎ °æ¿ì ¸¸µé¾î ÁÙ °èÈ¹
+            //ì—¬ê¸°ì— ì¶”ê°€ë¡œ ë³´ìŠ¤ë¸”ëŸ­ì¸ ê²½ìš° ë§Œë“¤ì–´ ì¤„ ê³„íš
             else Debug.LogError("Block has incorrect type");
 
             StartCoroutine(InitAnimation(0.2f));
@@ -148,7 +148,7 @@ namespace LaserCrush.Entity
 
             m_Animator.SetTrigger("Hit");
 
-            if (CurrentHP <= damage) // ³²Àº ÇÇ°¡ µ¥¹ÌÁöº¸´Ù ÀÛÀ» °æ¿ì
+            if (CurrentHP <= damage) // ë‚¨ì€ í”¼ê°€ ë°ë¯¸ì§€ë³´ë‹¤ ì‘ì„ ê²½ìš°
             {
                 Energy.UseEnergy(CurrentHP);
                 Destroy();
@@ -179,13 +179,12 @@ namespace LaserCrush.Entity
         {
             List<LaserInfo> answer = new List<LaserInfo>();
             laser.ChangeLaserState(ELaserStateType.Hitting);
-            if (m_EntityType == EEntityType.ReflectBlock)//¹İ»ç ºí·°ÀÏ °æ¿ì¸¸ ÀÚ½Ä »ı¼º
+            if (m_EntityType == EEntityType.ReflectBlock)//ë°˜ì‚¬ ë¸”ëŸ­ì¼ ê²½ìš°ë§Œ ìì‹ ìƒì„±
             {
                 //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
                 Vector2 dir = Vector2.Reflect(parentDirVector, hit.normal);
                 Vector2 pos = hit.point + dir;
                 LaserInfo info = new LaserInfo(pos, dir);
-
                 return new List<LaserInfo>() { info };
             }
             m_Text.text = GetHP().ToString();
@@ -246,7 +245,7 @@ namespace LaserCrush.Entity
             => CurrentHP / 100;
 
         /// <summary>
-        /// ÆÄÆ¼Å¬, »ç¿îµå ½ÇÇàÇÏ°í »èÁ¦
+        /// íŒŒí‹°í´, ì‚¬ìš´ë“œ ì‹¤í–‰í•˜ê³  ì‚­ì œ
         /// </summary>
         private void Destroy()
         {
@@ -256,7 +255,7 @@ namespace LaserCrush.Entity
         }
 
         /// <summary>
-        /// ÆÄÆ¼Å¬, »ç¿îµå ½ÇÇà ¾ÈÇÏ°í ¹Ù·Î »èÁ¦
+        /// íŒŒí‹°í´, ì‚¬ìš´ë“œ ì‹¤í–‰ ì•ˆí•˜ê³  ë°”ë¡œ ì‚­ì œ
         /// </summary>
         public void ImmediatelyReset()
             => m_IsDestroyed = true;

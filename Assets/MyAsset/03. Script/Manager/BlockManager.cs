@@ -69,7 +69,6 @@ namespace LaserCrush.Manager
         private Vector2 m_CalculatedOffset;
 
         private Vector2 m_MoveDownVector;
-        private Vector2 m_MoveDownTwoSpaceVector;
 
         #endregion
 
@@ -185,7 +184,6 @@ namespace LaserCrush.Manager
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
 
             m_MoveDownVector = new Vector2(0, -m_CalculatedOffset.y);
-            m_MoveDownTwoSpaceVector = new Vector2(0, -m_CalculatedOffset.y * 2);
             return size;
         }
         #endregion
