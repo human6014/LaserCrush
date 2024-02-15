@@ -163,10 +163,7 @@ namespace LaserCrush.Entity.Item
 
             if (m_ChargingWait >= m_InstalledItemData.ChargingTime && !m_IsActivate)
             {
-                float chargingWeight = m_InstalledItemData.ChargingEnergy[(int)m_ItemType];
-                //Energy.ChargeEnergy((int)(Energy.MaxEnergy * chargingEnergy));
                 m_IsActivate = true;
-                GameManager.InvokeChargingEvent(chargingWeight);
             }
 
             return m_IsActivate;

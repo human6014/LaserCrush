@@ -21,7 +21,7 @@ MonoBehaviour:
   - 0.4
   - 0.7
   - 1
-  m_MaxUsingNum: 02000000020000000200000001000000
+  m_MaxUsingNum: 01000000010000000100000001000000
   m_ChargingTime: 0
   m_TextStartColor: {r: 0.8352941, g: 0.7137255, b: 0.4862745, a: 1}
   m_TextEndColor: {r: 0.8352941, g: 0.7137255, b: 0.4862745, a: 0}

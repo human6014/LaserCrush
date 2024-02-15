@@ -152,7 +152,7 @@ namespace LaserCrush.Entity
         /// </summary> 
         public void Move()
         {
-            if (!Energy.CheckEnergy()) { return; }
+            if (!Energy.IsValidTime()) { return; }
             if (!m_IsActivated) { return; }
 
             RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.01f, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
@@ -219,7 +219,7 @@ namespace LaserCrush.Entity
             if (!m_Target.IsGetDamageable()) { return; }
             if (!m_IsActivated) { return; }
 
-            if (Energy.CheckEnergy())//발사전 에너지 사용가능여부 확인
+            if (Energy.IsValidTime())//발사전 에너지 사용가능여부 확인
             {
                 if (!m_Target.GetDamage(m_LaserData.Damage))
                 {

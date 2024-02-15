@@ -17,7 +17,6 @@ namespace LaserCrush.Manager
             Deploying,
             BlockUpdating,
             LaserActivating,
-            ChargingEvent
         }
 
         #region Variable
@@ -38,16 +37,11 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        private static EGameStateType s_GameStateType = EGameStateType.BlockUpdating;
-        private static float s_ChargingWeight;
         public readonly static int s_BossStage = 20;
 
         private const string m_StageChangeAudioKey = "StageChange";
-        private const string m_ItemChargeAudioKey = "ItemCharge";
 
         private readonly float m_ValidTime = 2f;
-        private readonly float m_ChargingDownTime = 0.1f;
-        private readonly float m_ChargingMaxTime = 0.6f;
         private float m_LaserTime;
 
         private int m_PreValidHit;
@@ -59,8 +53,6 @@ namespace LaserCrush.Manager
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
         private bool m_IsCheckGenerateBlock;
-
-        private bool m_IsRunChargeEvent;
         #endregion
 
         #region Property
@@ -76,6 +68,8 @@ namespace LaserCrush.Manager
         public static int ValidHit { get; set; }
 
         public static int StageNum { get; private set; }
+
+        public static EGameStateType s_GameStateType { get; private set; } = EGameStateType.BlockUpdating;
         #endregion
 
         #region Init
@@ -108,7 +102,7 @@ namespace LaserCrush.Manager
             m_BlockManager.Init(m_ItemManager);
             m_ItemManager.Init(m_ToolbarController, m_SubLineController);
 
-            GetComponent<Energy>().Init(DataManager.GameData.m_Energy);
+            GetComponent<Energy>().Init(DataManager.GameData.m_Damage);
 
             m_SubLineController.Init(EndDeploying);
 
@@ -149,9 +143,6 @@ namespace LaserCrush.Manager
                     break;
                 case EGameStateType.LaserActivating:
                     LaserActivating();
-                    break;
-                case EGameStateType.ChargingEvent:
-                    ChargingEvent();
                     break;
 
                 default:
@@ -219,9 +210,10 @@ namespace LaserCrush.Manager
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_StageChangeAudioKey);
 
             Energy.ChargeEnergy();
+
             m_LaserTime = 0;
             ValidHit = 0;
-            s_ChargingWeight = 0;
+
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
             StageNum++;
@@ -250,12 +242,12 @@ namespace LaserCrush.Manager
 
         private void LaserActivating()
         {
-            if (Energy.CheckEnergy())
+            if (Energy.IsValidTime())
             {
                 m_LaserTime += Time.deltaTime;
                 if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
                 {
-                    Energy.UseEnergy(int.MaxValue);
+                    Energy.SetTurnEnd();
                     return;
                 }
 
@@ -281,71 +273,6 @@ namespace LaserCrush.Manager
             m_SubLineController.CanInteraction = value;
             m_ToolbarController.CanInteraction = value;
         }
-
-        #region Energy Charging
-        /// <summary>
-        /// 에너지 량 진짜로 더해주는 곳
-        /// 메인 Update에서 에너지 Charging확인되면 코루틴 1번만 호출
-        /// 아래 InvokeChargingEvent호출 후 다음 프레임에서 실행됨
-        /// </summary>
-        private void ChargingEvent()
-        {
-            if (m_IsRunChargeEvent) return;
-            m_IsRunChargeEvent = true;
-            StartCoroutine(EnergyCharge((int)(Energy.MaxEnergy * s_ChargingWeight)));
-        }
-
-        /// <summary>
-        /// 현재 프레임에서 프리즘에 의한 에너지 충전량 더해주기
-        /// 호출 후 다음 프레임은 상태 바꿔서 ChargingEvent로 가게 함
-        /// </summary>
-        /// <param name="chargingWeight">추가할 에너지량</param>
-        public static void InvokeChargingEvent(float chargingWeight)
-        {
-            s_GameStateType = EGameStateType.ChargingEvent;
-            s_ChargingWeight += chargingWeight;
-        }
-
-        private IEnumerator EnergyCharge(int additionalEnergy)
-        {
-            int startEnergy = Energy.CurrentEnergy;
-            int endEnergy = startEnergy + additionalEnergy;
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
-
-
-            //Debug.Log("StartEnergy = " + startEnergy / 100 + "\tEndEnergy = " + endEnergy / 100 + "\tWeight = " + (float)additionalEnergy / Energy.MaxEnergy);
-
-
-            float elapsedTime = 0;
-            float t;
-            while (elapsedTime < m_ChargingDownTime)
-            {
-                elapsedTime += Time.deltaTime;
-                t = elapsedTime / m_ChargingDownTime;
-
-                Energy.CurrentChargedEnergy = (int)Mathf.Lerp(startEnergy, endEnergy, t);
-
-                yield return null;
-            }
-            Energy.CurrentChargedEnergy = endEnergy;
-
-            elapsedTime = 0;
-            while (elapsedTime < m_ChargingMaxTime)
-            {
-                elapsedTime += Time.deltaTime;
-                t = elapsedTime / m_ChargingMaxTime;
-
-                Energy.SetChargeEnergy((int)Mathf.Lerp(startEnergy, Energy.CurrentChargedEnergy, t));
-
-                yield return null;
-            }
-            Energy.SetChargeEnergy(Energy.CurrentChargedEnergy);
-            //AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_ItemChargeAudioKey);
-            s_ChargingWeight = 0;
-            m_IsRunChargeEvent = false;
-            s_GameStateType = EGameStateType.LaserActivating;
-        }
-        #endregion
 
         private void SaveAllData()
         {

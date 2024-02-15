@@ -67,7 +67,7 @@ namespace LaserCrush.Data.Json
         public int m_Prism2Count;
         public int m_Prism3Count;
         public int m_Prism4Count;
-        public int m_Energy;
+        public int m_Damage;
 
         public Vector2 m_LauncherPos;
         public Vector2 m_LauncherDir;
@@ -76,7 +76,7 @@ namespace LaserCrush.Data.Json
         public List<ItemData> m_InstalledItems;
 
         public GameData(bool isGameOver, int bestScore, int currentScore, int stageNumber,
-                        int prism1Count, int prism2Count, int prism3Count, int prism4Count, int energy,
+                        int prism1Count, int prism2Count, int prism3Count, int prism4Count, int damage,
                         Vector2 launcherPos, Vector2 launcherDir,
                         List<BlockData> blocks, List<ItemData> items)
         {
@@ -90,7 +90,7 @@ namespace LaserCrush.Data.Json
             m_Prism2Count = prism2Count;
             m_Prism3Count = prism3Count;
             m_Prism4Count = prism4Count;
-            m_Energy = energy;
+            m_Damage = damage;
 
             m_LauncherPos = launcherPos;
             m_LauncherDir = launcherDir;
@@ -133,6 +133,7 @@ namespace LaserCrush.Manager
         public static SettingData SettingData { get => s_SettingData; private set => s_SettingData = value; }
         #endregion
 
+        #region Init
         public static bool InitLoadData()
         {
             bool hasGameData = LoadGameData();
@@ -155,11 +156,11 @@ namespace LaserCrush.Manager
                 bestScore: 0,
                 currentScore: 0,
                 stageNumber: 1,
-                prism1Count: 0,
-                prism2Count: 0,
-                prism3Count: 0,
+                prism1Count: 1,
+                prism2Count: 1,
+                prism3Count: 1,
                 prism4Count: 0,
-                energy: 2000,
+                damage: 5,
                 launcherPos: new Vector2(0, -57), 
                 launcherDir: Vector2.zero,
                 blocks: new List<BlockData>(),
@@ -168,6 +169,7 @@ namespace LaserCrush.Manager
 
             s_SettingData = new SettingData(0, 0, 0);
         }
+        #endregion
 
         #region Save
         public static void SaveGameData()
