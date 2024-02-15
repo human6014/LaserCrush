@@ -104,6 +104,7 @@ namespace LaserCrush.Entity
         private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
+            Energy.ChargeCurrentMaxTime(0.2f);
             m_IsDestroyed = true;
             m_PlayParticleAction?.Invoke(this);
         }
@@ -126,7 +127,17 @@ namespace LaserCrush.Entity
 
             m_Animator.SetTrigger("Hit");
 
-            if (CurrentHP <= damage) // 남은 피가 데미지보다 작을 경우
+            CurrentHP -= Energy.UseEnergy();
+            if(GetHP() <= 0)
+            {
+                Destroy();
+                return false;
+            }
+            m_Text.text = GetHP().ToString();
+            return true;
+
+            /*
+            if (CurrentHP <= Energy.UseEnergy()) // 남은 피가 데미지보다 작을 경우
             {
                 Energy.UseEnergy();
                 Destroy();
@@ -142,6 +153,7 @@ namespace LaserCrush.Entity
             }
             m_Text.text = GetHP().ToString();
             return true;
+            */
         }
 
         public bool IsGetDamageable()

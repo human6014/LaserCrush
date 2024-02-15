@@ -51,8 +51,9 @@ namespace LaserCrush.Entity.Item
         private static Color m_TextInitColor;
         private static Color m_TextEndColor;
 
-        private static readonly float [] m_FontSizes = { 3.25f, 2.75f, 2.25f};
+        private static readonly float[] m_FontSizes = { 3.25f, 2.75f, 2.25f};
         private static readonly float[] m_ChargingEnergy = { 0.3f, 0.4f, 0.7f, 1.2f };
+        private static readonly int[] m_AdditionalTime = { 50, 75, 100, 125};
 
         private const string m_ItemDragAudioKey = "ItemDrag";
 
@@ -183,6 +184,7 @@ namespace LaserCrush.Entity.Item
         {
             if (m_IsActivate) return new List<LaserInfo>();
 
+            //Energy.ChargeEnergy(m_AdditionalTime[(int)m_ItemType]);
             GameManager.ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
             m_IsActivate = false;
