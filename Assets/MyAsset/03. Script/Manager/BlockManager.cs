@@ -277,13 +277,13 @@ namespace LaserCrush.Manager
 
         /// <summary>
         /// 확률 표
-        /// 일반 블럭 = 50
-        /// 반사 블럭 = 50
+        /// 일반 블럭 = 40
+        /// 반사 블럭 = 60
         /// </summary>
         /// <returns></returns>
         private EEntityType GenerateEntityType()
         {
-            return Random.Range(0, 100) < 50 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
+            return Random.Range(0, 100) < 40 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
         }
         #endregion
 
