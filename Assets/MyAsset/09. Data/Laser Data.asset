@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Laser Data
   m_EditorClassIdentifier: 
   m_Damage: 5
-  m_EraseVelocity: 500
-  m_ShootingVelocity: 250
+  m_EraseVelocity: 440
+  m_ShootingVelocity: 220

@@ -104,7 +104,7 @@ namespace LaserCrush.Entity
         private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
-            Energy.ChargeCurrentMaxTime(0.25f);
+            Energy.ChargeCurrentMaxTime(0.2f);
             m_IsDestroyed = true;
             m_PlayParticleAction?.Invoke(this);
         }

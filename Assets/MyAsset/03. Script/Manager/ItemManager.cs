@@ -239,8 +239,16 @@ namespace LaserCrush.Manager
 
             for (int i = 0; i < m_AcquiredItemUI.Length; i++)
             {
-                m_AcquiredItemCounts[i] = 0;
-                m_AcquiredItemUI[i].HasCount = 0;
+                if(i == m_AcquiredItemUI.Length - 1)
+                {
+                    m_AcquiredItemCounts[i] = 0;
+                    m_AcquiredItemUI[i].HasCount = 0;
+                }
+                else
+                {
+                    m_AcquiredItemCounts[i] = 1;
+                    m_AcquiredItemUI[i].HasCount = 1;
+                }
             }
 
             for (int i = 0; i < m_DroppedItems.Count; i++)
