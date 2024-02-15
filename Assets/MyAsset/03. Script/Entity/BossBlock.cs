@@ -14,6 +14,8 @@ namespace LaserCrush.Entity
         public override int ColNumber { get => m_MatrixPos[0].ColNumber; }
         public override bool IsBossBlock { get => true; }
 
+        private static readonly string s_BossBlockSpawnAudioKey = "BossBlockSpawn";
+
         /// <summary>
         /// </summary>
         /// <param name="hp"></param>
@@ -32,6 +34,7 @@ namespace LaserCrush.Entity
             m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1));
 
             base.InitSetting(hp, entityType, itemType, pos, playParticleAction);
+            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BossBlockSpawnAudioKey);
         }
     }
 }  
