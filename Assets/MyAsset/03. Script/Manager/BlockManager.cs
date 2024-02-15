@@ -55,9 +55,9 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
 
-        private readonly List<int> s_Probabilitytable = new List<int>() { 6, 25, 45, 60, 45, 20 };
-        private readonly int s_MaxWightSum = 201;
-        //3.86개가 한 턴에 기댓값
+        private readonly List<int> s_Probabilitytable = new List<int>() { 0, 20, 50, 60, 50, 15 };
+        private readonly int s_MaxWightSum = 195;
+        //3.94개가 한 턴에 기댓값
 
         private const string m_ItemDroppedAudioKey = "ItemDropped";
 
@@ -203,7 +203,7 @@ namespace LaserCrush.Manager
                     }
                     else itemIndex = m_ItemProbabilityData.GetItemIndex();
 
-                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false);
+                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false, false);
                 }
             }
 
@@ -233,7 +233,7 @@ namespace LaserCrush.Manager
 
                 int itemIndex = 1;
 
-                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true);
+                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true, false);
                 //후에 init쪽에서 블럭타입에서 어떻게 만들지 결정 후 코드 수정하고 주석된 코드 사용하면됨
                 //InstantiateBlock(GenerateBlockHP(), 1, 3, EEntityType.BossBlock, (DroppedItemType)itemIndex, pos, true);
             }
@@ -247,11 +247,17 @@ namespace LaserCrush.Manager
             return false;
         }
 
-        private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos, bool isBossBlock)
+        private void InstantiateBlock(int hp, int row, int col, EEntityType entityType, DroppedItemType droppedItemType, Vector2 pos, bool isBossBlock, bool isLoadData)
         {
             Block block;
             if (!isBossBlock) block = (Block)m_BlockPool.GetObject(true);
             else block = (BossBlock)m_BossBlockPool.GetObject(true);
+
+            if (!isLoadData)
+            {
+                if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.5f);
+                else hp += (int)(hp * 0.5f);
+            }
 
             block.transform.position = pos;
             block.Init(hp, row, col, entityType, droppedItemType, pos, RemoveBlock);
@@ -373,7 +379,8 @@ namespace LaserCrush.Manager
                                  blockData.m_EntityType,
                                  blockData.m_HasItemType,
                                  blockData.m_Position,
-                                 blockData.m_IsBossBlock);
+                                 blockData.m_IsBossBlock,
+                                 true);
             }
         }
 

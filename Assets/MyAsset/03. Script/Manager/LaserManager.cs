@@ -87,7 +87,7 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Lasers.Count; i++)
                 {
-                    if (Energy.CheckEnergy())
+                    if (Energy.IsValidTime())
                     {
                         m_Lasers[i].Run();
                     }
@@ -99,7 +99,7 @@ namespace LaserCrush.Manager
 
                 if (CheckCollideWithFloor())
                 {
-                    Energy.UseEnergy(int.MaxValue);
+                    Energy.SetTurnEnd();
                 }
             }
         }
