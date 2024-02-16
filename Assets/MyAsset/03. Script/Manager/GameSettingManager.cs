@@ -48,20 +48,20 @@ namespace LaserCrush.Manager
             Rect rect;
             if (targetAspect < deviceAspect)
             {
-                Debug.Log("기기 해상도가 더 큼");
+                //Debug.Log("기기 해상도가 더 큼");
                 float newWidth = targetAspect / deviceAspect; // 새로운 너비
                 rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
             }
             else
             {
-                Debug.Log("게임 해상도가 더 큼");
+                //Debug.Log("게임 해상도가 더 큼");
                 float newHeight = deviceAspect / targetAspect; // 새로운 높이
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
             }
 
             if (rect.y < ratio)
             {
-                Debug.Log("광고가 UI를 침범해버렸음");
+                //Debug.Log("광고가 UI를 침범해버렸음");
                 rect.y = ratio;
             }
 

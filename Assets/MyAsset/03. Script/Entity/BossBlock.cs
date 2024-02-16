@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using LaserCrush.Data;
 using LaserCrush.Manager;
-using LaserCrush.Extension;
+using UnityEngine.UI;
+using UnityEngine;
 using System;
 
 namespace LaserCrush.Entity
 {
     public class BossBlock : Block
     {
+        [SerializeField] private Image[] m_NumberImages;
+
+        private static readonly string s_BossBlockSpawnAudioKey = "BossBlockSpawn";
+
         public override int RowNumber { get => m_MatrixPos[0].RowNumber; }
         public override int ColNumber { get => m_MatrixPos[0].ColNumber; }
         public override bool IsBossBlock { get => true; }
-
-        private static readonly string s_BossBlockSpawnAudioKey = "BossBlockSpawn";
 
         /// <summary>
         /// </summary>
@@ -35,6 +34,11 @@ namespace LaserCrush.Entity
 
             base.InitSetting(hp, entityType, itemType, pos, playParticleAction);
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BossBlockSpawnAudioKey);
+        }
+
+        protected override void SetHPText(int hp)
+        {
+            base.SetHPText(hp);
         }
     }
 }  
