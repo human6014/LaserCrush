@@ -85,7 +85,7 @@ namespace LaserCrush.Entity
 
         public static void CollideWithWall()
             => GameManager.ValidHit++;
-
+            
         private void Update()
         {
             if (IsValidTime() && GameManager.s_GameStateType == GameManager.EGameStateType.LaserActivating)
