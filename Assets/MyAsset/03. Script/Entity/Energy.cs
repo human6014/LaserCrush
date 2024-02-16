@@ -1,8 +1,6 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 using LaserCrush.Manager;
-using System.Collections;
 
 namespace LaserCrush.Entity
 {
@@ -13,6 +11,7 @@ namespace LaserCrush.Entity
 
         private static event Action s_CurrentTimeUpdateAction;
         private static event Action s_MaxEnergyHighlightTextAction;
+        private static event Action s_CurrentDamageUpdateAction;
 
         private static int s_HittingFloorLaserNum;
 
@@ -39,7 +38,11 @@ namespace LaserCrush.Entity
         public static int CurrentDamage
         {
             get => s_CurrentDamage;
-            private set => s_CurrentDamage = value;
+            private set
+            {
+                s_CurrentDamage = value;
+                s_CurrentDamageUpdateAction?.Invoke();
+            }
         }
         #endregion
 
@@ -54,10 +57,10 @@ namespace LaserCrush.Entity
 
             s_CurrentTimeUpdateAction = () => m_UIManager.SetCurrentTime((int)((s_CurrentMaxTime - s_CurrentTime) * 100), (int)(s_CurrentMaxTime * 100));
             s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
+            s_CurrentDamageUpdateAction = () => m_UIManager.PlayDamageHighlight(s_CurrentDamage);
 
             s_CurrentTimeUpdateAction?.Invoke();
-            
-            StartCoroutine(Tic());
+            s_CurrentDamageUpdateAction?.Invoke();
         }
         #endregion
 
@@ -82,25 +85,13 @@ namespace LaserCrush.Entity
 
         public static void CollideWithWall()
             => GameManager.ValidHit++;
-        
-        private IEnumerator Tic()
+            
+        private void Update()
         {
-            float totalTime = 0;
-            while (true)
+            if (IsValidTime() && GameManager.s_GameStateType == GameManager.EGameStateType.LaserActivating)
             {
-                if (IsValidTime() && GameManager.s_GameStateType == GameManager.EGameStateType.LaserActivating)
-                {
-                    s_CurrentTime += Time.deltaTime;
-                    s_CurrentTimeUpdateAction?.Invoke();
-                    totalTime += Time.deltaTime;
-                }
-                else if (s_CurrentTime == 0)
-                {
-                    Debug.Log(totalTime);
-                    totalTime = 0;
-                }
-
-                yield return null;
+                s_CurrentTime += Time.deltaTime;
+                s_CurrentTimeUpdateAction?.Invoke();
             }
         }
 

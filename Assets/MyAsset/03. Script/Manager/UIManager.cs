@@ -1,4 +1,5 @@
 using UnityEngine;
+using LaserCrush.UI;
 using LaserCrush.UI.Controller;
 using LaserCrush.UI.Receiver;
 using LaserCrush.UI.Displayer;
@@ -25,6 +26,8 @@ namespace LaserCrush.Manager
         [SerializeField] private TextDisplayer m_ScoreTextDisplayer;
         [SerializeField] private TextDisplayer m_EnergyTextDisplayer;
         [SerializeField] private TextDisplayer m_StageTextDisplayer;
+        [SerializeField] private TextDisplayer m_DamageTextDisplayer;
+        [SerializeField] private UIAnimationPlayer m_DamageAnimationPlayer;
         
         [SerializeField] private ImageSlideDisplayer m_EnergySliderDisplayer;
 
@@ -103,6 +106,7 @@ namespace LaserCrush.Manager
             m_StageTextDisplayer.Init();
             m_EnergyTextDisplayer.Init();
             m_DefeatScoreTextDisplayer.Init();
+            m_DamageTextDisplayer.Init();
             m_DefeatBestScoreTextDisplayer.Init();
             m_SettingBestScoreTextDisplayer.Init();
             m_SettingBestScoreTextDisplayer.SetText(m_BestScore / 100);
@@ -135,12 +139,12 @@ namespace LaserCrush.Manager
         }
         #endregion
 
-        #region Score & Energy & Stage
+        #region Score & Stage
         public void SetScore(int additionalScore)
         {
             m_Score += additionalScore;
 
-            if(m_Score > m_BestScore)
+            if (m_Score > m_BestScore)
             {
                 //BestScore °»½Å
                 m_BestScore = m_Score;
@@ -150,7 +154,11 @@ namespace LaserCrush.Manager
             m_FloatingTextController.PlayFloatingText(m_Score.ToString().Length, additionalScore / 100);
             m_ScoreTextDisplayer.SetText(m_Score / 100);
         }
+        public void SetCurrentStage(int stage)
+            => m_StageTextDisplayer.SetText(stage);
+        #endregion
 
+        #region Energy & Damage
         public void SetCurrentTime(int current, int max)
         {
             m_EnergySliderDisplayer.SetCurrentValue(current, max);
@@ -160,8 +168,11 @@ namespace LaserCrush.Manager
         public void PlayEnergyHighlight()
             => m_EnergySliderDisplayer.PlayHighlightText();
 
-        public void SetCurrentStage(int stage)
-            => m_StageTextDisplayer.SetText(stage);
+        public void PlayDamageHighlight(int damage)
+        {
+            m_DamageTextDisplayer.SetText(damage);
+            m_DamageAnimationPlayer.PlayTriggerAnimation("Highlight");
+        }
         #endregion
 
         #region OnOff Canvas & Panel

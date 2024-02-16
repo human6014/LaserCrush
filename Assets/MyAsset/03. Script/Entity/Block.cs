@@ -153,7 +153,8 @@ namespace LaserCrush.Entity
                 Destroy();
                 return false;
             }
-            m_Text.text = GetHP().ToString();
+            SetHPText(GetHP());
+
             return true;
         }
 
@@ -177,7 +178,7 @@ namespace LaserCrush.Entity
                 LaserInfo info = new LaserInfo(pos, dir);
                 return new List<LaserInfo>() { info };
             }
-            m_Text.text = GetHP().ToString();
+
             GameManager.ValidHit++;
             return answer;
         }
@@ -233,6 +234,11 @@ namespace LaserCrush.Entity
 
         private int GetHP()
             => CurrentHP / 100;
+
+        protected virtual void SetHPText(int hp)
+        {
+            m_Text.text = hp.ToString();
+        }
 
         /// <summary>
         /// 파티클, 사운드 실행하고 삭제
