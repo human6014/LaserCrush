@@ -37,7 +37,7 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        public readonly static int s_BossStage = 20;
+        public readonly static int s_BossStage = 3;
 
         private const string m_StageChangeAudioKey = "StageChange";
 

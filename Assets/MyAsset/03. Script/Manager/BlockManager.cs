@@ -46,6 +46,7 @@ namespace LaserCrush.Manager
         [Header("Time Related")]
         [SerializeField] private float m_MoveDownTime;
         [SerializeField] private float m_GenerateTime;
+        [SerializeField] private float m_GenerateBossTime;
         #endregion
 
         private ObjectPoolManager.PoolingObject m_BossBlockPool;
@@ -239,7 +240,7 @@ namespace LaserCrush.Manager
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
-            if (m_GenerateElapsedTime >= m_GenerateTime)
+            if (m_GenerateElapsedTime >= m_GenerateBossTime)
             {
                 m_GenerateElapsedTime = 0;
                 return true;
