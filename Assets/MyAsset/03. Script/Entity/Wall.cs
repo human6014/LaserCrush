@@ -10,7 +10,6 @@ namespace LaserCrush.Entity
         {
             Energy.CollideWithWall();
             laser.ChangeLaserState(ELaserStateType.Hitting);
-            //Vector2 dir = (hit.normal + parentDirVector + hit.normal).normalized;
             LaserInfo info = new LaserInfo();
             info.Direction = Vector2.Reflect(parentDirVector, hit.normal);
             info.Position = hit.point + info.Direction;

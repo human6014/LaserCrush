@@ -33,7 +33,7 @@ MonoBehaviour:
   - m_AudioName: ItemCharge
     m_AudioClip: {fileID: 8300000, guid: d5377715e19bfce4f8227d5bd0e80031, type: 3}
   - m_AudioName: BossBlockSpawn
-    m_AudioClip: {fileID: 8300000, guid: c97bdbb987ab13240870fb9c124202bd, type: 3}
+    m_AudioClip: {fileID: 8300000, guid: 4df123858c35e184aa8c7de98560d69e, type: 3}
   m_SEUIAudioGroups:
   - m_AudioName: ButtonClick
     m_AudioClip: {fileID: 8300000, guid: 59579549fdd01e848ba0acfc89d817a7, type: 3}

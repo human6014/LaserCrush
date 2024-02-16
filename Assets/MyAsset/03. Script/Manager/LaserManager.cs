@@ -262,9 +262,8 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <returns> true : 충돌가능한 모든 레이저가 바닥과 충돌 중(?)</returns>
+        /// <returns> true : 충돌가능한 모든 레이저가 바닥과 충돌 중</returns>
         private bool CheckCollideWithFloor()
         {
             int count = 0;

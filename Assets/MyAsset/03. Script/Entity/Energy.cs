@@ -83,11 +83,6 @@ namespace LaserCrush.Entity
         public static void CollideWithWall()
             => GameManager.ValidHit++;
         
-
-        /// <summary>
-        /// 수정 예정
-        /// </summary>
-        /// <returns></returns>
         private IEnumerator Tic()
         {
             float totalTime = 0;
