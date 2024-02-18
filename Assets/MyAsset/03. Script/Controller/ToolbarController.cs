@@ -208,6 +208,7 @@ namespace LaserCrush.Controller
                 else m_ControllingTransform.position = result.m_ItemGridPos;
             }
             m_ControllingItem.SetAdjustLine(Mathf.Infinity);
+            m_SubLineController.UpdateLineRenderer();
         }
         #endregion
 

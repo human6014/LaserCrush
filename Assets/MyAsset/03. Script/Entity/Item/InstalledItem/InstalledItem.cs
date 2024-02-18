@@ -103,6 +103,7 @@ namespace LaserCrush.Entity.Item
             foreach (Transform tr in m_EjectionPortsTransform)
                 tr.gameObject.SetActive(true);
 
+            m_TextInitPos = m_CountText.rectTransform.anchoredPosition + new Vector2(0, 2.5f);
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
             m_CircleCollider2D.enabled = false;
             IsAdjustMode = true;

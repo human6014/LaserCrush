@@ -139,7 +139,7 @@ namespace LaserCrush.Entity
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % 7 == 0) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
+            if (m_AttackCount % 6 == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
             m_AttackCount++;
 
             GameManager.ValidHit++;
@@ -261,6 +261,9 @@ namespace LaserCrush.Entity
             => m_PlayParticleAction = null;
 
         public override void ReturnObject()
-            => m_PlayParticleAction?.Invoke(this);
+        {
+            StopAllCoroutines();
+            m_PlayParticleAction?.Invoke(this);
+        }
     }
 }
