@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections;
 using LaserCrush.Data;
 using LaserCrush.UI.Controller;
 
@@ -17,6 +18,9 @@ namespace LaserCrush.Manager
         private float m_MasterSound;
         private float m_BGMSound;
         private float m_SESound;
+
+        private readonly int m_MaxConcurrentAudioCount = 5;
+        private int m_ConcurrentAudioCount = 0;
 
         private static AudioManager m_AudioManager;
 
@@ -97,7 +101,8 @@ namespace LaserCrush.Manager
         public void StopNormalSE(string audioName)
         {
             if (!m_SEAudioSource.isPlaying) return;
-            if (m_SEAudioSource.clip is not null && m_SEAudioSource.clip.name == audioName) m_SEAudioSource.Stop();
+            if (m_SEAudioSource.clip is not null && m_SEAudioSource.clip.name == audioName) 
+                m_SEAudioSource.Stop();
         }
 
         public void PlayOneShotNormalSE(string audioName)
@@ -112,6 +117,26 @@ namespace LaserCrush.Manager
             if (m_AudioData.GetSEUI(audioName, out AudioClip audioClip))
                 m_SEAudioSource.PlayOneShot(audioClip);
             else Debug.LogWarning("No value for [" + audioName + "] name");
+        }
+
+        public void PlayOneShotConcurrent(string audioName)
+        {
+            if(m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
+            {
+                if (m_ConcurrentAudioCount >= m_MaxConcurrentAudioCount)
+                    return;
+
+                m_ConcurrentAudioCount++;
+                m_SEAudioSource.PlayOneShot(audioClip);
+                StartCoroutine(CheckAudioEnd(audioClip));
+            }
+            else Debug.LogWarning("No value for [" + audioName + "] name");
+        }
+
+        private IEnumerator CheckAudioEnd(AudioClip audioClip)
+        {
+            yield return new WaitForSeconds(audioClip.length);
+            m_ConcurrentAudioCount--;
         }
         #endregion
 

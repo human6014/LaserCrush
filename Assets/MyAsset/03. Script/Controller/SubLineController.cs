@@ -277,15 +277,11 @@ namespace LaserCrush.Controller
 
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(pos, m_AdjustingInstalledItem));
 
-            int beforeRow = m_AdjustingInstalledItem.RowNumber;
-            int beforeCol = m_AdjustingInstalledItem.ColNumber;
-
             if (!result.m_IsAvailable)
                 m_AdjustingInstalledItem.SetPosition(m_ItemOriginalPos, m_ItemOriginalRow, m_ItemOriginalCol);
             else
                 m_AdjustingInstalledItem.SetPosition(result.m_ItemGridPos, result.m_RowNumber, result.m_ColNumber);
 
-            //if (beforeRow != m_AdjustingInstalledItem.RowNumber || beforeCol != m_AdjustingInstalledItem.ColNumber)
             UpdateLineRenderer();
         }
 
