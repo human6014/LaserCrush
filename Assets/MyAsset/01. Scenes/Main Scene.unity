@@ -12083,6 +12083,7 @@ MonoBehaviour:
       m_PoolingCount: 10
     m_DroppedItemPoolingCount: 0500000002000000020000000200000002000000
     m_UIManager: {fileID: 1573006705}
+    m_BlockProbabilityData: {fileID: 11400000, guid: d0018593932ab5648bc4f92290d6a0af, type: 2}
     m_ItemProbabilityData: {fileID: 11400000, guid: bc23c512e901b2942bb7a565664d3a0d, type: 2}
     m_DroppedItemTransform: {fileID: 1611000099}
     m_BlockTransform: {fileID: 405668382}
@@ -15361,7 +15362,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 5}
+  m_Offset: {x: 0, y: 3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -15372,7 +15373,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 94, y: 118}
+  m_Size: {x: 94, y: 124}
   m_EdgeRadius: 0
 --- !u!1 &1717513760
 GameObject:

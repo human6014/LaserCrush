@@ -48,7 +48,7 @@ namespace LaserCrush.Entity
         private int m_AttackCount;
         private bool m_IsDestroyed;
 
-        private static readonly int s_AudioCount = 7;
+        private static readonly int s_AudioCount = 6;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
 
@@ -139,7 +139,7 @@ namespace LaserCrush.Entity
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % 6 == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
+            if (m_AttackCount % s_AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
             m_AttackCount++;
 
             GameManager.ValidHit++;
