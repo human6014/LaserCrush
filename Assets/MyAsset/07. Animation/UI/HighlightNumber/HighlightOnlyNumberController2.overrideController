@@ -6,8 +6,8 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HighlightOnlyNumberController
+  m_Name: HighlightOnlyNumberController2
   m_Controller: {fileID: 9100000, guid: be574cb276e23834098aeaf1927c22d5, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 747cd1baf9ddd014cb90cd451f975cad, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: 5d9c24eb6c361c54dbfa8f8e047c5371, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f7e18189bd2acb643815582a1b9ba1a2, type: 2}
