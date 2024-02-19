@@ -58,6 +58,8 @@ namespace LaserCrush.Manager
         [SerializeField] private FloatingTextController m_FloatingTextController;
         #endregion
 
+        private readonly string m_GameOverAudioKey = "GameOver";
+
         private bool m_IsOnOffSettingCanvas;
         private bool m_IsOnOffGameOverCanvas;
         private bool m_IsInitTutorial;
@@ -235,6 +237,7 @@ namespace LaserCrush.Manager
             if (isOnOff)
             {
                 IsOnOffGameOverCanvas = true;
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_GameOverAudioKey);
                 m_DefeatPanelDisplayer.PlayFadeOnAnimation();
             }
             else m_DefeatPanelDisplayer.PlayFadeOffAnimation();
