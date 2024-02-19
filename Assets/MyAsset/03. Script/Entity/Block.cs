@@ -49,6 +49,7 @@ namespace LaserCrush.Entity
         private bool m_IsDestroyed;
 
         private static readonly int s_AudioCount = 6;
+        private static readonly float s_AdditionalTime = 0.25f;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
 
@@ -246,7 +247,7 @@ namespace LaserCrush.Entity
         private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
-            Energy.ChargeCurrentMaxTime(0.2f);
+            Energy.ChargeCurrentMaxTime(s_AdditionalTime);
             m_IsDestroyed = true;
             m_PlayParticleAction?.Invoke(this);
         }

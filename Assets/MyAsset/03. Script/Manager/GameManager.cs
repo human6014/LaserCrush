@@ -81,6 +81,9 @@ namespace LaserCrush.Manager
             m_GameSettingManager.Init();
             m_AudioManager.Init();
 
+            m_SubLineController = GetComponent<SubLineController>();
+            m_ToolbarController = GetComponent<ToolbarController>();
+
             //데이터 있으면 자기가 바로밑에 Init 호출,
             //없으면 UIManger에서 Init호출
             m_UIManager.Init(hasData);
@@ -95,8 +98,6 @@ namespace LaserCrush.Manager
             else s_GameStateType = EGameStateType.BlockUpdating;
 
             //초기화 순서 중요함 건들 ㄴㄴ
-            m_SubLineController = GetComponent<SubLineController>();
-            m_ToolbarController = GetComponent<ToolbarController>();
 
             m_LaserManager.Init();
             m_BlockManager.Init(m_ItemManager);
@@ -211,6 +212,11 @@ namespace LaserCrush.Manager
 
             Energy.ChargeEnergy();
 
+            #region Temp
+            Debug.Log(Energy.s_CalcedDamage);
+            Energy.s_CalcedDamage = 0;
+            #endregion
+
             m_LaserTime = 0;
             ValidHit = 0;
 
@@ -244,6 +250,9 @@ namespace LaserCrush.Manager
         {
             if (Energy.IsValidTime())
             {
+                //Temp
+                Energy.CalcDamage();
+
                 m_LaserTime += Time.deltaTime;
                 if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
                 {

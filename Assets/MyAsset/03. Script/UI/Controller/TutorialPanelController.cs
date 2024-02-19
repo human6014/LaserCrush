@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using LaserCrush.UI.Receiver;
+using UnityEngine.EventSystems;
 
 namespace LaserCrush.UI.Controller
 {
@@ -9,8 +10,9 @@ namespace LaserCrush.UI.Controller
         [SerializeField] private GameObject[] m_TutorialImage;
         [SerializeField] private ButtonReceiver m_PrevButtonReceiver;
         [SerializeField] private ButtonReceiver m_NextButtonReceiver;
-        [SerializeField] private ButtonReceiver m_StartButtonReceiver;
+        [SerializeField] private GameObject m_TouchText;
 
+        private bool m_IsLastPanel;
         private int m_CurrentIndex;
         private Action m_TutorialEndAction;
 
@@ -24,7 +26,6 @@ namespace LaserCrush.UI.Controller
         {
             m_PrevButtonReceiver.ButtonClickAction += OnClickedPrevButton;
             m_NextButtonReceiver.ButtonClickAction += OnClickedNextButton;
-            m_StartButtonReceiver.ButtonClickAction += () => m_TutorialEndAction?.Invoke();
         }
 
         public void LoadTutorialPanel()
@@ -33,7 +34,7 @@ namespace LaserCrush.UI.Controller
             m_CurrentIndex = 0;
             m_PrevButtonReceiver.gameObject.SetActive(false);
             m_NextButtonReceiver.gameObject.SetActive(true);
-            m_StartButtonReceiver.gameObject.SetActive(false);
+            m_TouchText.SetActive(false);
             m_TutorialImage[m_CurrentIndex].SetActive(true);
         }
 
@@ -46,8 +47,9 @@ namespace LaserCrush.UI.Controller
             if (m_CurrentIndex == 0) m_PrevButtonReceiver.gameObject.SetActive(false);
             if (m_CurrentIndex == m_TutorialImage.Length - 2)
             {
+                m_IsLastPanel = false;
                 m_NextButtonReceiver.gameObject.SetActive(true);
-                m_StartButtonReceiver.gameObject.SetActive(false);
+                m_TouchText.SetActive(false);
             }
         }
 
@@ -60,13 +62,32 @@ namespace LaserCrush.UI.Controller
             if (m_CurrentIndex == 1) m_PrevButtonReceiver.gameObject.SetActive(true);
             if (m_CurrentIndex == m_TutorialImage.Length - 1)
             {
+                m_IsLastPanel = true;
                 m_NextButtonReceiver.gameObject.SetActive(false);
-                m_StartButtonReceiver.gameObject.SetActive(true);
+                m_TouchText.SetActive(true);
             }
+        }
+
+        private void Update()
+        {
+            if (!m_IsLastPanel) return;
+
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+            {
+                m_TutorialEndAction?.Invoke();
+                m_IsLastPanel = false;
+            }
+#else
+            if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            {
+                m_TutorialEndAction?.Invoke();
+                m_IsLastPanel = false;
+            }
+#endif
         }
 
         private void OnDestroy()
             => m_TutorialEndAction = null;
-        
     }
 }
