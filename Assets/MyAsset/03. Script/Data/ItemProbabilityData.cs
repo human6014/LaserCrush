@@ -1,12 +1,9 @@
-using LaserCrush.Entity;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LaserCrush.Data
 {
     [System.Serializable]
-    public class ItemProbability
+    public class Probability
     {
         [SerializeField] private float[] probability;
 
@@ -17,7 +14,7 @@ namespace LaserCrush.Data
     [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/ItemProbability Data", order = int.MaxValue)]
     public class ItemProbabilityData : ScriptableObject
     {
-        [SerializeField] private ItemProbability m_ItemProbability;
+        [SerializeField] private Probability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
 
         public GameObject[] DroppedItems { get => m_DroppedItems; }

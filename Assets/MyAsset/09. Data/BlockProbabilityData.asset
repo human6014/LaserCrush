@@ -9,9 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df73029462753b4797855b8369a26bb, type: 3}
-  m_Name: Laser Data
+  m_Script: {fileID: 11500000, guid: 27b6ad321756717499c8e1d98b088552, type: 3}
+  m_Name: BlockProbabilityData
   m_EditorClassIdentifier: 
-  m_Damage: 4
-  m_EraseVelocity: 500
-  m_ShootingVelocity: 250
+  m_BlockCountProbability:
+    probability:
+    - 0
+    - 20
+    - 50
+    - 60
+    - 50
+    - 15

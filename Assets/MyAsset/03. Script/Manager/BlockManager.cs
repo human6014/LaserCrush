@@ -22,6 +22,7 @@ namespace LaserCrush.Manager
         [SerializeField] private UIManager m_UIManager;
 
         [Header("Block Reference")]
+        [SerializeField] private BlockProbabilityData m_BlockProbabilityData;
         [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
         [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
@@ -89,7 +90,7 @@ namespace LaserCrush.Manager
             m_GridLineController.OnOffGridLine(false);
 
             m_BlockParticleController.Init(blockSize);
-
+            m_BlockProbabilityData.Init();
             AssignPoolingObject();
             LoadBlocks();
         }
@@ -271,27 +272,14 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
+            //int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
+            int randomSize = m_BlockProbabilityData.GetBlockIndex();
             HashSet<int> result = new HashSet<int>();
             while (result.Count < randomSize)
             {
                 result.Add(Random.Range(0, m_MaxColCount));
             }
             return result;
-        }
-
-        private int GetWeightedRandomNum()
-        {
-            int randomSize = Random.Range(1, s_MaxWightSum);
-
-            for (int i = 0; i < s_Probabilitytable.Count; i++)
-            {
-                if (randomSize < s_Probabilitytable[i])
-                    return i + 1;
-
-                randomSize -= s_Probabilitytable[i];
-            }
-            return s_Probabilitytable.Count - 1;
         }
 
         /// <summary>
