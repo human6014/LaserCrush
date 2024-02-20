@@ -15,7 +15,7 @@ namespace LaserCrush.Entity
 
         private static int s_HittingFloorLaserNum;
 
-        private static readonly int s_InitDamage = 5;
+        private static readonly int s_InitDamage = 4;
         private static int s_CurrentDamage;
         private static int s_AdditionalStack;
 
@@ -103,11 +103,14 @@ namespace LaserCrush.Entity
 
         public static void UpgradeDamage()
         {
-            CurrentDamage += 1;
+            CurrentDamage += 2;
             s_AdditionalStack += 1;
 
-            CurrentDamage += s_AdditionalStack / 2;
-            s_AdditionalStack %= 2;
+            if(s_AdditionalStack  == 10)
+            {
+                s_AdditionalStack = 0;
+                CurrentDamage += 1;
+            }
         }
 
         public static int GetHittingFloorLaserNum()
