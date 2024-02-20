@@ -62,8 +62,8 @@ MonoBehaviour:
   m_AdditionalLightsCookieFormat: 3
   m_UseSRPBatcher: 1
   m_SupportsDynamicBatching: 0
-  m_MixedLightingSupported: 1
-  m_SupportsLightCookies: 1
+  m_MixedLightingSupported: 0
+  m_SupportsLightCookies: 0
   m_SupportsLightLayers: 0
   m_DebugLevel: 0
   m_StoreActionsOptimization: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_LocalShadowsAtlasResolution: 256
   m_MaxPixelLights: 0
   m_ShadowAtlasResolution: 256
-  m_VolumeFrameworkUpdateMode: 0
+  m_VolumeFrameworkUpdateMode: 1
   m_Textures:
     blueNoise64LTex: {fileID: 2800000, guid: e3d24661c1e055f45a7560c033dbb837, type: 3}
     bayerMatrixTex: {fileID: 2800000, guid: f9ee4ed84c1d10c49aabb9b210b0fc44, type: 3}
