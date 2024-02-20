@@ -21,7 +21,7 @@ namespace LaserCrush.Entity
 
         private static float s_CurrentTime;
         private static float s_CurrentMaxTime;
-        private static readonly float s_MaxTime = 3;
+        private static readonly float s_MaxTime = 4;
         #endregion
 
         #region Property
