@@ -57,10 +57,6 @@ namespace LaserCrush.Manager
         private ItemManager m_ItemManager;
         private List<Block> m_Blocks;
 
-        private readonly List<int> s_Probabilitytable = new List<int>() { 0, 20, 50, 60, 50, 15 };
-        private readonly int s_MaxWightSum = 195;
-        //3.94개가 한 턴에 기댓값
-
         private const string m_ItemDroppedAudioKey = "ItemDropped";
 
         private float m_MoveDownElapsedTime;
@@ -188,34 +184,49 @@ namespace LaserCrush.Manager
                                0);
         }
 
-        public bool GenerateBlock()
+        public bool GenerateBlock(int size)
         {
-            bool flag = false;
-            if (m_GenerateElapsedTime == 0)
+            for (int j = 0; j < size; j++)
             {
-                HashSet<int> index = GenerateBlockOffset();
-                foreach (int i in index)
+                bool flag = false;
+                if (m_GenerateElapsedTime == 0)
                 {
-                    Vector3 pos = GetRowColPosition(i, 0);
-                    int itemIndex;
-                    if (!flag)
+                    HashSet<int> index = GenerateBlockOffset();
+                    foreach (int i in index)
                     {
-                        itemIndex = 1;
-                        flag = true;
-                    }
-                    else itemIndex = m_ItemProbabilityData.GetItemIndex();
+                        Vector3 pos = GetRowColPosition(i, 0-j);
+                        int itemIndex;
+                        if (!flag)
+                        {
+                            itemIndex = 1;
+                            flag = true;
+                        }
+                        else itemIndex = m_ItemProbabilityData.GetItemIndex();
 
-                    InstantiateBlock(GenerateBlockHP(), 0, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false, false);
+                        InstantiateBlock(GenerateBlockHP(), 0 + j, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false, false);
+                    }
                 }
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
             if (m_GenerateElapsedTime >= m_GenerateTime)
             {
+                AddBossBlockLive();
                 m_GenerateElapsedTime = 0;
                 return true;
             }
             return false;
+        }
+
+        public void AddBossBlockLive()
+        {
+            foreach(Block block in m_Blocks)
+            {
+                if(block.IsBossBlock)
+                {
+                    ((BossBlock)block).AddLiveCount();
+                }
+            }
         }
 
         /// <summary>
@@ -236,8 +247,6 @@ namespace LaserCrush.Manager
                 int itemIndex = 1;
 
                 InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true, false);
-                //후에 init쪽에서 블럭타입에서 어떻게 만들지 결정 후 코드 수정하고 주석된 코드 사용하면됨
-                //InstantiateBlock(GenerateBlockHP(), 1, 3, EEntityType.BossBlock, (DroppedItemType)itemIndex, pos, true);
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
@@ -254,11 +263,14 @@ namespace LaserCrush.Manager
             Block block;
             if (!isBossBlock) block = (Block)m_BlockPool.GetObject(true);
             else block = (BossBlock)m_BossBlockPool.GetObject(true);
-
+            if(row != 0)
+            {
+                int a = 1;
+            }
             if (!isLoadData)
             {
-                if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.5f);
-                else hp += (int)(hp * 0.5f);
+                if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.4f);
+                else hp += (int)(hp * 0.4f);
             }
 
             block.transform.position = pos;
@@ -291,7 +303,7 @@ namespace LaserCrush.Manager
         {
             if (GameManager.IsBossStage())
             {
-                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3.7f * 1.6f);
+                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3.7f * 2.5f);
                 int start = end - (end / 10);
                 return Random.Range(start, end+ 1) * 100;
             }
@@ -406,6 +418,19 @@ namespace LaserCrush.Manager
             }
 
             m_Blocks.Clear();
+        }
+
+        public bool IsBossSkill()
+        {
+            foreach (Block block in m_Blocks)
+            {
+                if (block.IsBossBlock)
+                {
+                    if(((BossBlock)block).IsBossSkill())
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }
