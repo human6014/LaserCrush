@@ -106,7 +106,7 @@ namespace LaserCrush.Entity
             CurrentDamage += 2;
             s_AdditionalStack += 1;
 
-            if(s_AdditionalStack  == 4)
+            if(s_AdditionalStack  == 5)
             {
                 s_AdditionalStack = 0;
                 CurrentDamage -= 1;
@@ -134,4 +134,4 @@ namespace LaserCrush.Entity
             s_MaxEnergyHighlightTextAction = null;
         }
     }
-}
+} 

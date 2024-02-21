@@ -7,6 +7,7 @@ using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
 using LaserCrush.Entity.Block;
 using Random = UnityEngine.Random;
+using Unity.VisualScripting;
 
 
 namespace LaserCrush.Manager
@@ -70,13 +71,15 @@ namespace LaserCrush.Manager
 
         private Vector2 m_MoveDownVector;
 
+        private BossBlock m_BossBlocks;
+
         #endregion
 
         #region Init
         public void Init(ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
-
+            m_BossBlocks = null;
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
@@ -213,22 +216,17 @@ namespace LaserCrush.Manager
             m_GenerateElapsedTime += Time.deltaTime;
             if (m_GenerateElapsedTime >= m_GenerateTime)
             {
-                AddBossBlockLive();
+                AddBossBlockAge();
                 m_GenerateElapsedTime = 0;
                 return true;
             }
             return false;
         }
 
-        public void AddBossBlockLive()
+        public void AddBossBlockAge()
         {
-            foreach(Block block in m_Blocks)
-            {
-                if(block.IsBossBlock)
-                {
-                    ((BossBlock)block).AddLiveCount();
-                }
-            }
+            if(m_BossBlocks != null)
+                m_BossBlocks.AddAgeCount();
         }
 
         /// <summary>
@@ -264,11 +262,15 @@ namespace LaserCrush.Manager
         {
             Block block;
             if (!isBossBlock) block = (Block)m_BlockPool.GetObject(true);
-            else block = (BossBlock)m_BossBlockPool.GetObject(true);
-
+            else
+            {
+                block = (BossBlock)m_BossBlockPool.GetObject(true);
+                m_BossBlocks = (BossBlock)block;
+            }
+     
             if (!isLoadData)
             {
-                int additionalHP = (int)(hp * 0.4f);
+                int additionalHP = (int)(hp * 0.2f);
                 hp += entityType == EEntityType.NormalBlock ? -additionalHP : additionalHP;
             }
 
@@ -300,26 +302,19 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
+            int end;
             if (GameManager.IsBossStage())
             {
-                int end = (int)(((GameManager.StageNum + 1) / 2) * 5 * 3.7f * 2.5f);
-                int start = end - (end / 10);
-                return Random.Range(start, end+ 1) * 100;
+                end = (int)((GameManager.StageNum + 1) / 2 * 5 * 3.8f * 2.85f);
             }
             else
             {
-                int end = ((GameManager.StageNum + 1) / 2) * 5;
-                int start = end - (end / 10);
-                return Random.Range(start, end + 1) * 100;
+                end = ((GameManager.StageNum + 1) / 2) * 5;
             }
+            int start = end - (end / 10);
+            return Random.Range(start, end + 1) * 100;
         }
 
-        /// <summary>
-        /// 확률 표
-        /// 일반 블럭 = 50
-        /// 반사 블럭 = 50
-        /// </summary>
-        /// <returns></returns>
         private EEntityType GenerateEntityType()
         {
             return Random.Range(0, 100) < 50 ? EEntityType.NormalBlock : EEntityType.ReflectBlock;
@@ -336,17 +331,21 @@ namespace LaserCrush.Manager
                 DroppedItem droppedItem = (DroppedItem)m_DroppedItemPool[typeIndex - 1].GetObject(true);
                 droppedItem.transform.position = block.Position;
                 droppedItem.Init(m_DroppedItemPool[typeIndex - 1].ReturnObject);
-                m_ItemManager.AddDroppedItem(droppedItem);
+                m_ItemManager.AddDroppedItem(droppedItem); 
             }
 
             m_BlockParticleController.PlayParticle(block.Position, block.GetEEntityType());
             m_UIManager.SetScore(block.Score);
 
-            if (block.IsBossBlock) m_BossBlockPool.ReturnObject(block);
+            if (block.IsBossBlock)
+            {
+                m_BossBlockPool.ReturnObject(block);
+                m_BossBlocks = null;
+            }
             else m_BlockPool.ReturnObject(block);
 
             m_Blocks.Remove(block);
-        }
+        }  
 
         public bool MoveDownAllBlocks(int step)
         {
@@ -421,14 +420,15 @@ namespace LaserCrush.Manager
 
         public bool IsBossSkill()
         {
-            foreach (Block block in m_Blocks)
+            /*foreach (Block block in m_Blocks)
             {
                 if (block.IsBossBlock)
                 {
                     if(((BossBlock)block).IsBossSkill())
                         return true;
                 }
-            }
+            }*/
+            if (m_BossBlocks != null && m_BossBlocks.IsBossSkill()) return true;
             return false;
         }
     }
