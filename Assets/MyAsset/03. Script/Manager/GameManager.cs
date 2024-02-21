@@ -53,6 +53,7 @@ namespace LaserCrush.Manager
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
         private bool m_IsCheckGenerateBlock;
+        
         #endregion
 
         #region Property
@@ -178,7 +179,7 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckMoveDownBlock)
             {
-                if (IsBossStage())
+                if (IsBossStage() || m_BlockManager.IsBossSkill())
                 {
                     m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(2);
                 }
@@ -203,7 +204,14 @@ namespace LaserCrush.Manager
                 }
                 else
                 {
-                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock();
+                    if (m_BlockManager.IsBossSkill())
+                    {
+                        m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock(2);
+                    }
+                    else
+                    {
+                        m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock(1);
+                    }
                 }
                 if (!m_IsCheckGenerateBlock) return;
             }
@@ -213,8 +221,8 @@ namespace LaserCrush.Manager
             Energy.ChargeEnergy();
 
             #region Temp
-            Debug.Log(Energy.s_CalcedDamage);
-            Energy.s_CalcedDamage = 0;
+            /*Debug.Log(Energy.s_CalcedDamage);
+            Energy.s_CalcedDamage = 0;*/
             #endregion
 
             m_LaserTime = 0;
