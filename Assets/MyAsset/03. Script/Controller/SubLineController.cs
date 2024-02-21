@@ -284,7 +284,6 @@ namespace LaserCrush.Controller
 
             UpdateLineRenderer();
         }
-
         #endregion
 
         #region Set Pos & Dir

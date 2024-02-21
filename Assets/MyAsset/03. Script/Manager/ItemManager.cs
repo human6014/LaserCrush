@@ -3,9 +3,8 @@ using System;
 using UnityEngine;
 using LaserCrush.Controller;
 using LaserCrush.Entity.Item;
+using LaserCrush.Entity.Block;
 using LaserCrush.UI;
-using LaserCrush.Entity;
-using UnityEngine.AI;
 
 namespace LaserCrush.Manager
 {
@@ -120,10 +119,7 @@ namespace LaserCrush.Manager
                 if (m_InstalledItem[i].IsOverloaded())
                     m_InstalledItemBuffer.Add(m_InstalledItem[i]);
                 else
-                {
                     m_InstalledItem[i].SetAdjustLine();
-                    m_InstalledItem[i].PlayUsingCountDisplay();
-                }
             }
             RemoveBufferFlush(false);
             return true;

@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
+using LaserCrush.Entity.Block;
 using LaserCrush.Data.Json;
 
 namespace LaserCrush.Data.Json

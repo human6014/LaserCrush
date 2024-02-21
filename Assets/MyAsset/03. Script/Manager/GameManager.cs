@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Collections;
 using LaserCrush.Controller;
 using LaserCrush.Entity;
 
@@ -220,11 +219,6 @@ namespace LaserCrush.Manager
 
             Energy.ChargeEnergy();
 
-            #region Temp
-            /*Debug.Log(Energy.s_CalcedDamage);
-            Energy.s_CalcedDamage = 0;*/
-            #endregion
-
             m_LaserTime = 0;
             ValidHit = 0;
 
@@ -242,7 +236,7 @@ namespace LaserCrush.Manager
                 DataManager.GameData.m_IsGameOver = true;
             }
 
-            SaveAllData();
+            SaveAllGameData();
         }
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
@@ -258,9 +252,6 @@ namespace LaserCrush.Manager
         {
             if (Energy.IsValidTime())
             {
-                //Temp
-                Energy.CalcDamage();
-
                 m_LaserTime += Time.deltaTime;
                 if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
                 {
@@ -291,7 +282,7 @@ namespace LaserCrush.Manager
             m_ToolbarController.CanInteraction = value;
         }
 
-        private void SaveAllData()
+        private void SaveAllGameData()
         {
             DataManager.GameData.m_StageNumber = StageNum;
 
@@ -321,16 +312,16 @@ namespace LaserCrush.Manager
             s_GameStateType = EGameStateType.BlockUpdating;
         }
 
-        private void OnApplicationQuit()
-        {
-            SaveAllData();
-            AudioManager.AudioManagerInstance.SaveAllData();
-        }
-
         public static bool IsBossStage()
         {
             if (StageNum % s_BossStage == 0) return true;
             return false;
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveAllGameData();
+            AudioManager.AudioManagerInstance.SaveAllData();
         }
     }
 }

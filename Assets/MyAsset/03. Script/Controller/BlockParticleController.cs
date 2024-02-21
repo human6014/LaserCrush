@@ -1,5 +1,5 @@
 using UnityEngine;
-using LaserCrush.Entity.Particle;
+using LaserCrush.Entity.Block.Particle;
 using LaserCrush.Entity;
 using LaserCrush.Manager;
 
