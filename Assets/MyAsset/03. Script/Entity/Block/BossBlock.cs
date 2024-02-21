@@ -11,7 +11,7 @@ namespace LaserCrush.Entity.Block
         [SerializeField] private Image m_BossIcon;
         [SerializeField] private Sprite[] m_BossBlockImages;
 
-        private int m_liveCount;
+        private int m_Age;
         private static readonly string s_BossBlockSpawnAudioKey = "BossBlockSpawn";
 
         private Coroutine m_ImageChangeCoroutine;
@@ -33,7 +33,7 @@ namespace LaserCrush.Entity.Block
         public override void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             m_BossIcon.sprite = m_BossBlockImages[0];
-            m_liveCount = 0;
+            m_Age = 0;
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber + 1));
@@ -63,15 +63,15 @@ namespace LaserCrush.Entity.Block
 
         public bool IsBossSkill()
         {
-            Debug.Log(m_liveCount);
-            if(m_liveCount == 3)
+            Debug.Log(m_Age);
+            if(m_Age == 3)
                 return true;
 
             return false;
         }
-        public void AddLiveCount()
+        public void AddAgeCount()
         {
-            m_liveCount++;
+            m_Age++;
         }
     }
 }  
