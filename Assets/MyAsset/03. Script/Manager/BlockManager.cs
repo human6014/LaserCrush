@@ -199,7 +199,7 @@ namespace LaserCrush.Manager
                     HashSet<int> index = GenerateBlockOffset();
                     foreach (int i in index)
                     {
-                        Vector3 pos = GetRowColPosition(i, 0-j);
+                        Vector3 pos = GetRowColPosition(i, 0 - j);
                         int itemIndex;
                         if (!flag)
                         {

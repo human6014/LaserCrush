@@ -124,7 +124,7 @@ namespace LaserCrush.Controller
             if (!m_IsInit || m_CanInteraction) return;
             if (!m_IsInstallMode) return;
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
             EditorOrWindow();
 #else
             AndroidOrIOS();

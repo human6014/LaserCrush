@@ -160,6 +160,7 @@ namespace LaserCrush.Manager
             m_IsCheckGenerateBlock = value;
         }
 
+        /// <summary>
         /// 1. 떨어진 아이템 수집
         /// 2. 살아있는 블럭들 1칸씩 내림 + 설치된 아이템 중 곂치는거 파괴
         /// 3. 설치된 아이템 중 사용횟수 다 된거 파괴

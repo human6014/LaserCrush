@@ -50,20 +50,18 @@ namespace LaserCrush.ThirdParty
 
             // Load a banner ad.
             m_BannerView.LoadAd(new AdRequest());
-
-            m_BannerOnAction?.Invoke(m_BannerView.GetHeightInPixels());
         }
 
         #region Banner callback handlers
 
         private void OnBannerAdLoaded()
         {
-            Debug.Log($"Ad Height: {m_BannerView.GetHeightInPixels()}, width: {m_BannerView.GetWidthInPixels()}");
+            m_BannerOnAction?.Invoke(m_BannerView.GetHeightInPixels());
         }
 
         private void OnBannerAdLoadFailed(LoadAdError error)
         {
-            Debug.LogError("Banner view failed to load an ad with error : " + error);
+            m_BannerOnAction?.Invoke(-50);
         }
 
         #endregion
