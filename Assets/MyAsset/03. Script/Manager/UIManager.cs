@@ -60,6 +60,7 @@ namespace LaserCrush.Manager
 
         private readonly string m_GameOverAudioKey = "GameOver";
 
+        //일부러 안지우고 있음
         private bool m_IsOnOffSettingCanvas;
         private bool m_IsOnOffGameOverCanvas;
         private bool m_IsInitTutorial;
