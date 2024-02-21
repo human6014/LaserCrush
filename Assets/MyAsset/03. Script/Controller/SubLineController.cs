@@ -116,7 +116,7 @@ namespace LaserCrush.Controller
             if (!m_IsInit || CanInteraction) return;
             if (IsInitItemDrag) return;
 
-            #if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            #if UNITY_EDITOR || UNITY_STANDALONE
             EditorOrWindow();
             #else
             AndroidOrIOS();

@@ -236,10 +236,8 @@ namespace LaserCrush.Entity.Block
             => CurrentHP / 100;
 
         protected virtual void SetHPText(int hp)
-        {
-            m_Text.text = hp.ToString();
-        }
-
+            => m_Text.text = hp.ToString();
+        
         /// <summary>
         /// 파티클, 사운드 실행하고 삭제
         /// </summary>

@@ -12262,7 +12262,7 @@ MonoBehaviour:
     m_MaxColCount: 6
     m_MoveDownTime: 0.2
     m_GenerateTime: 0.2
-    m_GenerateBossTime: 1.1
+    m_GenerateBossTime: 0.4
   m_ItemManager:
     m_AcquiredItemUI:
     - {fileID: 4304801088710433885}
