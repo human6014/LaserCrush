@@ -656,6 +656,7 @@ GameObject:
   - component: {fileID: 67470573}
   - component: {fileID: 67470572}
   - component: {fileID: 67470571}
+  - component: {fileID: 67470575}
   m_Layer: 5
   m_Name: SettingCanvas
   m_TagString: Untagged
@@ -749,6 +750,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &67470575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67470570}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9149cf3ded7526f419d76712102b1a27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CanvasGroups:
+  - m_CanvasName: SettingPanel
+    m_Canvas: {fileID: 1219381754}
+  - m_CanvasName: DonatePanel
+    m_Canvas: {fileID: 1916142548}
+  m_ActivePanelNumber: 0
 --- !u!1 &70318168
 GameObject:
   m_ObjectHideFlags: 0
@@ -14114,7 +14133,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1573006702}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 676065fe122d6d043a571420000f522f, type: 3}
   m_Name: 

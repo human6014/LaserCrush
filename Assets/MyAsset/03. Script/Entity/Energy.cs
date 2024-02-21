@@ -106,7 +106,7 @@ namespace LaserCrush.Entity
             CurrentDamage += 2;
             s_AdditionalStack += 1;
 
-            if(s_AdditionalStack  == 5)
+            if(s_AdditionalStack == 5)
             {
                 s_AdditionalStack = 0;
                 CurrentDamage -= 1;
@@ -124,8 +124,8 @@ namespace LaserCrush.Entity
             CurrentDamage = s_InitDamage;
             s_AdditionalStack = 0;
 
-            s_CurrentTime = 0;
             s_CurrentMaxTime = s_MaxTime;
+            CurrentTime = 0;
         }
 
         private void OnDestroy()

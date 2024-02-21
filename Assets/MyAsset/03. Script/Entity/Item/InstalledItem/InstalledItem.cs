@@ -46,6 +46,8 @@ namespace LaserCrush.Entity.Item
         private CircleCollider2D m_CircleCollider2D;
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
+        private static readonly int m_DiscreteUnit = 5;
+
         private const string m_ItemDragAudioKey = "ItemDrag";
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -231,7 +233,7 @@ namespace LaserCrush.Entity.Item
         public void SetDirection(Vector2 pos)
         {
             Vector2 direction = (pos - (Vector2)transform.position).normalized;
-            Vector2 discreteDirection = direction.DiscreteDirection(5);
+            Vector2 discreteDirection = direction.DiscreteDirection(m_DiscreteUnit);
 
             if (Direction != discreteDirection)
             {
