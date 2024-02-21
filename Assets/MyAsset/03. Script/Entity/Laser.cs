@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using LaserCrush.Manager;
-using LaserCrush.Entity.Particle;
 using LaserCrush.Entity.Interface;
+using LaserCrush.Entity.Particle;
 
 namespace LaserCrush.Entity
 {

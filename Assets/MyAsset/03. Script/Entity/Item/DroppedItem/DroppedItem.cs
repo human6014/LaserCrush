@@ -14,10 +14,10 @@ namespace LaserCrush.Entity.Item
 
         protected readonly static string m_AcquireAudioKey = "ItemAcquired";
 
-        public const float m_AnimationTime = 0.5f;
-
         private readonly static int s_MaxDuplicateCount = 2;
         private static int s_CurrentDuplicateCount;
+
+        public const float m_AnimationTime = 0.5f;
         #endregion
 
         public event Action<PoolableMonoBehaviour> ReturnAction 

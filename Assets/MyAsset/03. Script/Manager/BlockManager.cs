@@ -5,7 +5,9 @@ using LaserCrush.Data;
 using LaserCrush.Controller;
 using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
+using LaserCrush.Entity.Block;
 using Random = UnityEngine.Random;
+
 
 namespace LaserCrush.Manager
 {
@@ -257,8 +259,8 @@ namespace LaserCrush.Manager
 
             if (!isLoadData)
             {
-                if (entityType == EEntityType.NormalBlock) hp -= (int)(hp * 0.5f);
-                else hp += (int)(hp * 0.5f);
+                int additionalHP = (int)(hp * 0.5f);
+                hp += entityType == EEntityType.NormalBlock ? -additionalHP : additionalHP;
             }
 
             block.transform.position = pos;

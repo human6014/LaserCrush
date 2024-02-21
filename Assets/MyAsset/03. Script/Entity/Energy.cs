@@ -128,14 +128,6 @@ namespace LaserCrush.Entity
             s_CurrentMaxTime = s_MaxTime;
         }
 
-        #region Temp
-        public static int s_CalcedDamage = 0;
-        public static void CalcDamage()
-        {
-            s_CalcedDamage += CurrentDamage;
-        }
-        #endregion
-
         private void OnDestroy()
         {
             s_CurrentTimeUpdateAction = null;

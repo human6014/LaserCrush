@@ -46,8 +46,6 @@ namespace LaserCrush.Entity.Item
         private CircleCollider2D m_CircleCollider2D;
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
-        private Vector2 m_TextInitPos;
-
         private const string m_ItemDragAudioKey = "ItemDrag";
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -103,7 +101,6 @@ namespace LaserCrush.Entity.Item
             foreach (Transform tr in m_EjectionPortsTransform)
                 tr.gameObject.SetActive(true);
 
-            m_TextInitPos = m_CountText.rectTransform.anchoredPosition + new Vector2(0, 2.5f);
             m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
             m_CircleCollider2D.enabled = false;
             IsAdjustMode = true;
@@ -126,7 +123,6 @@ namespace LaserCrush.Entity.Item
 
             transform.SetPositionAndRotation(pos, Quaternion.LookRotation(Vector3.forward, dir));
 
-            m_TextInitPos = m_CountText.rectTransform.anchoredPosition + new Vector2(0, 2.5f);
             m_CircleCollider2D.enabled = true;
             IsAdjustMode = false;
             m_IsActivate = false;
@@ -263,42 +259,6 @@ namespace LaserCrush.Entity.Item
 
             m_Animator.SetTrigger(m_DestroyAnimationKey);
             //애니메이션 끝나고 이벤트로 ReturnObject() 호출함
-        }
-        #endregion
-
-        #region Play floating text
-        public void PlayUsingCountDisplay()
-            => StartCoroutine(UsingCountCoroutine(2));
-
-        private IEnumerator UsingCountCoroutine(float time)
-        {
-            m_CanvasTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-
-            if (RemainUsingCount - 1 < 0) Debug.LogError("[RemainUsingCount - 1] < 0 Error");
-            m_CountText.fontSize = m_InstalledItemData.FontSize[RemainUsingCount - 1];
-            m_CountText.text = RemainUsingCount.ToString();
-            m_CountText.gameObject.SetActive(true);
-            m_CountText.rectTransform.anchoredPosition = m_TextInitPos;
-            m_CountText.rectTransform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            m_CountText.color = m_InstalledItemData.TextStartColor;
-
-            Vector2 endPos = m_TextInitPos + new Vector2(0, 7.5f);
-
-            float elapsedTime = 0;
-            float t;
-            while (elapsedTime <= time)
-            {
-                elapsedTime += Time.deltaTime;
-                t = elapsedTime / time;
-
-                m_CountText.color = Color.Lerp(m_InstalledItemData.TextStartColor, m_InstalledItemData.TextEndColor, t);
-                m_CountText.rectTransform.anchoredPosition = Vector2.Lerp(m_TextInitPos, endPos, t);
-
-                yield return null;
-            }
-
-            m_CountText.gameObject.SetActive(false);
-            m_CountText.rectTransform.anchoredPosition = Vector2.zero;
         }
         #endregion
 
