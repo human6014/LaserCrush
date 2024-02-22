@@ -270,7 +270,7 @@ namespace LaserCrush.Manager
      
             if (!isLoadData)
             {
-                int additionalHP = (int)(hp * 0.2f);
+                int additionalHP = (int)(hp * 0.25f);
                 hp += entityType == EEntityType.NormalBlock ? -additionalHP : additionalHP;
             }
 
@@ -285,7 +285,6 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            //int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
             int randomSize = m_BlockProbabilityData.GetBlockIndex();
             HashSet<int> result = new HashSet<int>();
             while (result.Count < randomSize)
@@ -305,7 +304,7 @@ namespace LaserCrush.Manager
             int end;
             if (GameManager.IsBossStage())
             {
-                end = (int)((GameManager.StageNum + 1) / 2 * 5 * 3.8f * 2.85f);
+                end = (int)((GameManager.StageNum + 1) / 2 * 5 * 3.8f * 2.5f);
             }
             else
             {
@@ -420,14 +419,6 @@ namespace LaserCrush.Manager
 
         public bool IsBossSkill()
         {
-            /*foreach (Block block in m_Blocks)
-            {
-                if (block.IsBossBlock)
-                {
-                    if(((BossBlock)block).IsBossSkill())
-                        return true;
-                }
-            }*/
             if (m_BossBlocks != null && m_BossBlocks.IsBossSkill()) return true;
             return false;
         }
