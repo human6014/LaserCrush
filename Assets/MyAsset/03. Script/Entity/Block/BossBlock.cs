@@ -59,19 +59,6 @@ namespace LaserCrush.Entity.Block
             m_BossIcon.sprite = m_BossBlockImages[1];
             yield return m_ImageChangeDuration;
             m_BossIcon.sprite = m_BossBlockImages[0];
-        }
-
-        public bool IsBossSkill()
-        {
-            Debug.Log(m_Age);
-            if(m_Age == 3)
-                return true;
-
-            return false;
-        }
-        public void AddAgeCount()
-        {
-            m_Age++;
-        }
+        }        
     }
 }  

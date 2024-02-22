@@ -72,7 +72,7 @@ namespace LaserCrush.Manager
         private Vector2 m_MoveDownVector;
 
         private BossBlock m_BossBlocks;
-
+        private int m_BossBlockAge;
         #endregion
 
         #region Init
@@ -80,6 +80,7 @@ namespace LaserCrush.Manager
         {
             m_Blocks = new List<Block>();
             m_BossBlocks = null;
+            m_BossBlockAge = 0;
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
@@ -225,8 +226,10 @@ namespace LaserCrush.Manager
 
         public void AddBossBlockAge()
         {
-            if(m_BossBlocks != null)
-                m_BossBlocks.AddAgeCount();
+            if (m_BossBlocks != null)
+            {
+                m_BossBlockAge++;
+            }
         }
 
         /// <summary>
@@ -253,6 +256,7 @@ namespace LaserCrush.Manager
             if (m_GenerateElapsedTime >= m_GenerateBossTime)
             {
                 m_GenerateElapsedTime = 0;
+                m_BossBlockAge = 0;
                 return true;
             }
             return false;
@@ -270,7 +274,7 @@ namespace LaserCrush.Manager
      
             if (!isLoadData)
             {
-                int additionalHP = (int)(hp * 0.2f);
+                int additionalHP = (int)(hp * 0.25f);
                 hp += entityType == EEntityType.NormalBlock ? -additionalHP : additionalHP;
             }
 
@@ -285,7 +289,6 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()
         {
-            //int randomSize = GetWeightedRandomNum();//1 ~ m_MaxColCount사이 숫자
             int randomSize = m_BlockProbabilityData.GetBlockIndex();
             HashSet<int> result = new HashSet<int>();
             while (result.Count < randomSize)
@@ -302,16 +305,10 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end;
-            if (GameManager.IsBossStage())
-            {
-                end = (int)((GameManager.StageNum + 1) / 2 * 5 * 3.8f * 2.85f);
-            }
-            else
-            {
-                end = ((GameManager.StageNum + 1) / 2) * 5;
-            }
+            int end = ((GameManager.StageNum + 1) / 2) * 5;
+            if (GameManager.IsBossStage()) { end = (int)(end * 3.8f * 2.5f); }
             int start = end - (end / 10);
+
             return Random.Range(start, end + 1) * 100;
         }
 
@@ -407,7 +404,8 @@ namespace LaserCrush.Manager
         {
             m_MoveDownElapsedTime = 0;
             m_GenerateElapsedTime = 0;
-
+            m_BossBlocks = null;
+            m_BossBlockAge = 0;
             foreach (Block block in m_Blocks)
             {
                 block.ImmediatelyReset();
@@ -420,15 +418,7 @@ namespace LaserCrush.Manager
 
         public bool IsBossSkill()
         {
-            /*foreach (Block block in m_Blocks)
-            {
-                if (block.IsBossBlock)
-                {
-                    if(((BossBlock)block).IsBossSkill())
-                        return true;
-                }
-            }*/
-            if (m_BossBlocks != null && m_BossBlocks.IsBossSkill()) return true;
+            if (m_BossBlocks != null && m_BossBlockAge == 3) return true;
             return false;
         }
     }

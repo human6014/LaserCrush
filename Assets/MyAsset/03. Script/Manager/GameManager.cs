@@ -179,14 +179,8 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckMoveDownBlock)
             {
-                if (IsBossStage() || m_BlockManager.IsBossSkill())
-                {
-                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(2);
-                }
-                else
-                {
-                    m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(1);
-                }
+                 m_IsCheckMoveDownBlock = (IsBossStage() || m_BlockManager.IsBossSkill()) ? m_BlockManager.MoveDownAllBlocks(2) : m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(1);
+
                 if (!m_IsCheckMoveDownBlock) return;
             }
 
@@ -204,14 +198,7 @@ namespace LaserCrush.Manager
                 }
                 else
                 {
-                    if (m_BlockManager.IsBossSkill())
-                    {
-                        m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock(2);
-                    }
-                    else
-                    {
-                        m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock(1);
-                    }
+                    m_IsCheckGenerateBlock = m_BlockManager.IsBossSkill() ? m_BlockManager.GenerateBlock(2) : m_BlockManager.GenerateBlock(1);
                 }
                 if (!m_IsCheckGenerateBlock) return;
             }
