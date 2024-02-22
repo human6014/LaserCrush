@@ -57,7 +57,7 @@ namespace LaserCrush.Entity
 
             s_CurrentTimeUpdateAction = () => m_UIManager.SetCurrentTime((int)((s_CurrentMaxTime - s_CurrentTime) * 100), (int)(s_CurrentMaxTime * 100));
             s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
-            s_CurrentDamageUpdateAction = () => m_UIManager.PlayDamageHighlight(s_CurrentDamage);
+            s_CurrentDamageUpdateAction = () => m_UIManager.PlayDamageHighlight((int)(s_CurrentDamage * 60 * 0.01f));
 
             s_CurrentTimeUpdateAction?.Invoke();
             s_CurrentDamageUpdateAction?.Invoke();
@@ -75,8 +75,8 @@ namespace LaserCrush.Entity
 
         public static void ChargeEnergy()
         {
-            CurrentTime = 0;
             s_CurrentMaxTime = s_MaxTime;
+            CurrentTime = 0;
 
             s_MaxEnergyHighlightTextAction?.Invoke();
 
