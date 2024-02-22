@@ -301,16 +301,10 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end;
-            if (GameManager.IsBossStage())
-            {
-                end = (int)((GameManager.StageNum + 1) / 2 * 5 * 3.8f * 2.5f);
-            }
-            else
-            {
-                end = ((GameManager.StageNum + 1) / 2) * 5;
-            }
+            int end = ((GameManager.StageNum + 1) / 2) * 5;
+            if (GameManager.IsBossStage()) { end = (int)(end * 3.8f * 2.5f); }
             int start = end - (end / 10);
+
             return Random.Range(start, end + 1) * 100;
         }
 
@@ -406,7 +400,7 @@ namespace LaserCrush.Manager
         {
             m_MoveDownElapsedTime = 0;
             m_GenerateElapsedTime = 0;
-
+            m_BossBlocks = null;
             foreach (Block block in m_Blocks)
             {
                 block.ImmediatelyReset();

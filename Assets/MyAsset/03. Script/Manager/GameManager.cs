@@ -186,7 +186,7 @@ namespace LaserCrush.Manager
                 else
                 {
                     m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(1);
-                }
+                } 
                 if (!m_IsCheckMoveDownBlock) return;
             }
 

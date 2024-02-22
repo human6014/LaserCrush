@@ -106,11 +106,12 @@ namespace LaserCrush.Entity
             CurrentDamage += 2;
             s_AdditionalStack += 1;
 
-            if(s_AdditionalStack == 5)
+            if(s_AdditionalStack == 3)
             {
                 s_AdditionalStack = 0;
                 CurrentDamage -= 1;
             }
+            //Debug.Log(CurrentDamage - 4);
         }
 
         public static int GetHittingFloorLaserNum()
