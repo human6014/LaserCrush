@@ -6,7 +6,7 @@ using TMPro;
 using LaserCrush.Data;
 using LaserCrush.Manager;
 using LaserCrush.Extension;
-using LaserCrush.Entity.Interface;
+using LaserCrush.Entity.Interface; 
 
 namespace LaserCrush.Entity.Block
 {
