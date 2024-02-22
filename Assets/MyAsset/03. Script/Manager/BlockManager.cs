@@ -72,7 +72,7 @@ namespace LaserCrush.Manager
         private Vector2 m_MoveDownVector;
 
         private BossBlock m_BossBlocks;
-
+        private int m_BossBlockAge;
         #endregion
 
         #region Init
@@ -80,6 +80,7 @@ namespace LaserCrush.Manager
         {
             m_Blocks = new List<Block>();
             m_BossBlocks = null;
+            m_BossBlockAge = 0;
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
@@ -225,8 +226,10 @@ namespace LaserCrush.Manager
 
         public void AddBossBlockAge()
         {
-            if(m_BossBlocks != null)
-                m_BossBlocks.AddAgeCount();
+            if (m_BossBlocks != null)
+            {
+                m_BossBlockAge++;
+            }
         }
 
         /// <summary>
@@ -253,6 +256,7 @@ namespace LaserCrush.Manager
             if (m_GenerateElapsedTime >= m_GenerateBossTime)
             {
                 m_GenerateElapsedTime = 0;
+                m_BossBlockAge = 0;
                 return true;
             }
             return false;
@@ -401,6 +405,7 @@ namespace LaserCrush.Manager
             m_MoveDownElapsedTime = 0;
             m_GenerateElapsedTime = 0;
             m_BossBlocks = null;
+            m_BossBlockAge = 3;
             foreach (Block block in m_Blocks)
             {
                 block.ImmediatelyReset();
@@ -413,7 +418,7 @@ namespace LaserCrush.Manager
 
         public bool IsBossSkill()
         {
-            if (m_BossBlocks != null && m_BossBlocks.IsBossSkill()) return true;
+            if (m_BossBlocks != null && m_BossBlockAge == 3) return true;
             return false;
         }
     }
