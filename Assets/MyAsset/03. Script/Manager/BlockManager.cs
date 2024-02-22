@@ -405,7 +405,7 @@ namespace LaserCrush.Manager
             m_MoveDownElapsedTime = 0;
             m_GenerateElapsedTime = 0;
             m_BossBlocks = null;
-            m_BossBlockAge = 3;
+            m_BossBlockAge = 0;
             foreach (Block block in m_Blocks)
             {
                 block.ImmediatelyReset();
