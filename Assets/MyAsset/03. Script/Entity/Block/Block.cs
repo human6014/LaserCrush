@@ -48,7 +48,7 @@ namespace LaserCrush.Entity.Block
         private bool m_IsDestroyed;
 
         private static readonly int s_AudioCount = 6;
-        private static readonly float s_AdditionalTime = 0.15f;
+        private static readonly float s_AdditionalTime = 0.17f;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
 
