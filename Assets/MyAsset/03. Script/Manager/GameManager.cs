@@ -36,9 +36,10 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        public readonly static int s_BossStage = 15;
+        private const string m_MoveDownBossAudioKey = "BossBlock";
+        private const string m_MoveDownBlockAudioKey = "MoveDownBlock";
 
-        private const string m_StageChangeAudioKey = "StageChange";
+        public readonly static int s_BossStage = 5;
 
         private readonly float m_ValidTime = 2f;
         private float m_LaserTime;
@@ -179,8 +180,9 @@ namespace LaserCrush.Manager
 
             if (!m_IsCheckMoveDownBlock)
             {
-                 m_IsCheckMoveDownBlock = (IsBossStage() || m_BlockManager.IsBossSkill()) ? m_BlockManager.MoveDownAllBlocks(2) : m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(1);
-
+                int step = (IsBossStage() || m_BlockManager.IsBossSkill()) ? 2 : 1;
+                m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(step);
+                
                 if (!m_IsCheckMoveDownBlock) return;
             }
 
@@ -198,18 +200,21 @@ namespace LaserCrush.Manager
                 }
                 else
                 {
-                    m_IsCheckGenerateBlock = m_BlockManager.IsBossSkill() ? m_BlockManager.GenerateBlock(2) : m_BlockManager.GenerateBlock(1);
+                    int step = m_BlockManager.IsBossSkill() ? 2 : 1;
+                    m_IsCheckGenerateBlock = m_BlockManager.GenerateBlock(step);
                 }
                 if (!m_IsCheckGenerateBlock) return;
             }
 
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_StageChangeAudioKey);
+            if (m_BlockManager.IsBossSkill() || IsBossStage()) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBossAudioKey);
+            else AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBlockAudioKey);
 
             Energy.ChargeEnergy();
 
             m_LaserTime = 0;
             ValidHit = 0;
 
+            m_BlockManager.AddBossBlockAge();
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
             StageNum++;

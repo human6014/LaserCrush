@@ -18,7 +18,7 @@ namespace LaserCrush.Data
 
         public int GetBlockIndex()
         {
-            float randomPoint = Random.Range(1, m_CountProbabilitySum);
+            float randomPoint = Random.value * m_CountProbabilitySum;
             int length = m_BlockCountProbability.ProbabilityArray.Length;
             for (int i = 0; i < length; i++)
             {

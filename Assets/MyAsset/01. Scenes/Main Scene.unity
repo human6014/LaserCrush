@@ -12270,8 +12270,8 @@ MonoBehaviour:
     m_ItemProbabilityData: {fileID: 11400000, guid: bc23c512e901b2942bb7a565664d3a0d, type: 2}
     m_DroppedItemTransform: {fileID: 1611000099}
     m_BlockTransform: {fileID: 405668382}
-    m_Block: {fileID: 9211609264070865934, guid: d74fd69233ee8404aa07def9e616b137, type: 3}
-    m_BossBlock: {fileID: 1919721867437153191, guid: 69a4939352903cf458c63c861d409eb6, type: 3}
+    m_BlockPrefab: {fileID: 9211609264070865934, guid: d74fd69233ee8404aa07def9e616b137, type: 3}
+    m_BossBlockPrefab: {fileID: 1919721867437153191, guid: 69a4939352903cf458c63c861d409eb6, type: 3}
     m_GridLineController: {fileID: 1292888499}
     m_TopWall: {fileID: 872262233}
     m_LeftWall: {fileID: 910940327}

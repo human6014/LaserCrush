@@ -29,8 +29,8 @@ namespace LaserCrush.Manager
         [SerializeField] private ItemProbabilityData m_ItemProbabilityData;
         [SerializeField] private Transform m_DroppedItemTransform;
         [SerializeField] private Transform m_BlockTransform;
-        [SerializeField] private Block m_Block;
-        [SerializeField] private BossBlock m_BossBlock;
+        [SerializeField] private Block m_BlockPrefab;
+        [SerializeField] private BossBlock m_BossBlockPrefab;
 
         [Header("Block Grid Instancing")]
         [SerializeField] private GridLineController m_GridLineController;
@@ -58,20 +58,19 @@ namespace LaserCrush.Manager
         private ObjectPoolManager.PoolingObject[] m_DroppedItemPool;
 
         private ItemManager m_ItemManager;
+        private BossBlock m_BossBlock;
         private List<Block> m_Blocks;
+
+        private Vector2 m_CalculatedInitPos;
+        private Vector2 m_CalculatedOffset;
+        private Vector2 m_MoveDownVector;
 
         private const string m_ItemDroppedAudioKey = "ItemDropped";
 
         private float m_MoveDownElapsedTime;
         private float m_GenerateElapsedTime;
-
         private float m_CalculatedInitBossPosY;
-        private Vector2 m_CalculatedInitPos;
-        private Vector2 m_CalculatedOffset;
 
-        private Vector2 m_MoveDownVector;
-
-        private BossBlock m_BossBlocks;
         private int m_BossBlockAge;
         #endregion
 
@@ -79,14 +78,13 @@ namespace LaserCrush.Manager
         public void Init(ItemManager itemManager)
         {
             m_Blocks = new List<Block>();
-            m_BossBlocks = null;
-            m_BossBlockAge = 0;
+            m_BossBlock = null;
             m_ItemManager = itemManager;
             m_ItemManager.CheckAvailablePosFunc += CheckAvailablePos;
 
             Vector3 blockSize = CalculateGridRowColAndGetSize();
-            m_Block.transform.localScale = blockSize;
-            m_BossBlock.transform.localScale = blockSize * 2;
+            m_BlockPrefab.transform.localScale = blockSize;
+            m_BossBlockPrefab.transform.localScale = blockSize * 2;
 
             m_GridLineController.SetGridLineObjects(m_CalculatedInitPos, m_CalculatedOffset, m_MaxRowCount, m_MaxColCount);
             m_GridLineController.OnOffGridLine(false);
@@ -94,15 +92,15 @@ namespace LaserCrush.Manager
             m_BlockParticleController.Init(blockSize);
             m_BlockProbabilityData.Init();
             AssignPoolingObject();
-            LoadBlocks();
+            LoadBlockData();
         }
 
         private void AssignPoolingObject()
         {
-            m_BlockPool = ObjectPoolManager.Register(m_Block, m_BlockTransform);
+            m_BlockPool = ObjectPoolManager.Register(m_BlockPrefab, m_BlockTransform);
             m_BlockPool.GenerateObj(Mathf.Max(DataManager.GameData.m_Blocks.Count, m_BlockPoolingCount));
 
-            m_BossBlockPool = ObjectPoolManager.Register(m_BossBlock, m_BlockTransform);
+            m_BossBlockPool = ObjectPoolManager.Register(m_BossBlockPrefab, m_BlockTransform);
             m_BossBlockPool.GenerateObj(m_BossBlockPoolingCount);
 
             m_DroppedItemPool = new ObjectPoolManager.PoolingObject[m_DroppedItemPoolingCount.Length];
@@ -144,7 +142,6 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 if (block.IsGameOver(m_MaxRowCount - 1)) return true;
-
             }
             return false;
         }
@@ -165,6 +162,10 @@ namespace LaserCrush.Manager
 
         private Vector3 CalculateGridRowColAndGetSize()
         {
+            float leftPad = (m_LeftWall.GetComponent<BoxCollider2D>().size.x + m_LeftWall.lossyScale.x) * 0.5f;
+            float topPad = (m_TopWall.GetComponent<BoxCollider2D>().size.x + m_TopWall.lossyScale.x) * 0.5f;
+            //마저 수정해야긋다
+
             float height = m_LeftWall.localScale.y - 6;
             float width = m_TopWall.localScale.x - 4;
 
@@ -192,11 +193,12 @@ namespace LaserCrush.Manager
 
         public bool GenerateBlock(int size)
         {
-            for (int j = 0; j < size; j++)
+            if (m_GenerateElapsedTime == 0)
             {
-                bool flag = false;
-                if (m_GenerateElapsedTime == 0)
+                for (int j = 0; j < size; j++)
                 {
+                    bool flag = false;
+
                     HashSet<int> index = GenerateBlockOffset();
                     foreach (int i in index)
                     {
@@ -217,7 +219,6 @@ namespace LaserCrush.Manager
             m_GenerateElapsedTime += Time.deltaTime;
             if (m_GenerateElapsedTime >= m_GenerateTime)
             {
-                AddBossBlockAge();
                 m_GenerateElapsedTime = 0;
                 return true;
             }
@@ -226,10 +227,8 @@ namespace LaserCrush.Manager
 
         public void AddBossBlockAge()
         {
-            if (m_BossBlocks != null)
-            {
+            if (m_BossBlock != null)
                 m_BossBlockAge++;
-            }
         }
 
         /// <summary>
@@ -269,7 +268,7 @@ namespace LaserCrush.Manager
             else
             {
                 block = (BossBlock)m_BossBlockPool.GetObject(true);
-                m_BossBlocks = (BossBlock)block;
+                m_BossBlock = (BossBlock)block;
             }
      
             if (!isLoadData)
@@ -305,8 +304,10 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.StageNum + 1) / 2) * 5;
-            if (GameManager.IsBossStage()) { end = (int)(end * 3.8f * 2.5f); }
+            int end = (GameManager.StageNum + 1) / 2 * 5;
+            if (GameManager.IsBossStage())
+                end = (int)(end * 3.8f * 2.5f);
+
             int start = end - (end / 10);
 
             return Random.Range(start, end + 1) * 100;
@@ -337,7 +338,8 @@ namespace LaserCrush.Manager
             if (block.IsBossBlock)
             {
                 m_BossBlockPool.ReturnObject(block);
-                m_BossBlocks = null;
+                m_BossBlock = null;
+                m_BossBlockAge = 0;
             }
             else m_BlockPool.ReturnObject(block);
 
@@ -365,7 +367,7 @@ namespace LaserCrush.Manager
         }
 
         #region Load & Save
-        private void LoadBlocks()
+        private void LoadBlockData()
         {
             foreach (Data.Json.BlockData blockData in DataManager.GameData.m_Blocks)
             {
@@ -378,6 +380,7 @@ namespace LaserCrush.Manager
                                  blockData.m_IsBossBlock,
                                  true);
             }
+            m_BossBlockAge = DataManager.GameData.m_BossAge;
         }
 
         public void SaveAllData()
@@ -397,6 +400,7 @@ namespace LaserCrush.Manager
 
                 DataManager.GameData.m_Blocks.Add(blockData);
             }
+            DataManager.GameData.m_BossAge = m_BossBlockAge;
         }
         #endregion
 
@@ -404,7 +408,7 @@ namespace LaserCrush.Manager
         {
             m_MoveDownElapsedTime = 0;
             m_GenerateElapsedTime = 0;
-            m_BossBlocks = null;
+            m_BossBlock = null;
             m_BossBlockAge = 0;
             foreach (Block block in m_Blocks)
             {
@@ -418,7 +422,7 @@ namespace LaserCrush.Manager
 
         public bool IsBossSkill()
         {
-            if (m_BossBlocks != null && m_BossBlockAge == 3) return true;
+            if (m_BossBlock != null && m_BossBlockAge == 3) return true;
             return false;
         }
     }

@@ -11,9 +11,6 @@ namespace LaserCrush.Entity.Block
         [SerializeField] private Image m_BossIcon;
         [SerializeField] private Sprite[] m_BossBlockImages;
 
-        private int m_Age;
-        private static readonly string s_BossBlockSpawnAudioKey = "BossBlockSpawn";
-
         private Coroutine m_ImageChangeCoroutine;
         private WaitForSeconds m_ImageChangeDuration = new WaitForSeconds(0.2f);
 
@@ -33,7 +30,6 @@ namespace LaserCrush.Entity.Block
         public override void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
         {
             m_BossIcon.sprite = m_BossBlockImages[0];
-            m_Age = 0;
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber + 1));
@@ -41,7 +37,6 @@ namespace LaserCrush.Entity.Block
             m_MatrixPos.Add(new MatrixPos(rowNumber + 1, colNumber + 1));
 
             base.InitSetting(hp, entityType, itemType, pos, playParticleAction);
-            AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BossBlockSpawnAudioKey);
         }
 
         protected override void SetHPText(int hp)
