@@ -15,8 +15,8 @@ MonoBehaviour:
   m_BlockCountProbability:
     probability:
     - 0
-    - 20
-    - 50
-    - 60
-    - 50
-    - 15
+    - 5
+    - 21
+    - 33
+    - 33
+    - 8

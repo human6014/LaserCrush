@@ -63,6 +63,7 @@ namespace LaserCrush.Data.Json
         public int m_BestScore;
         public int m_CurrentScore;
         public int m_StageNumber;
+        public int m_BossAge;
 
         public int m_Prism1Count;
         public int m_Prism2Count;
@@ -76,7 +77,7 @@ namespace LaserCrush.Data.Json
         public List<BlockData> m_Blocks;
         public List<ItemData> m_InstalledItems;
 
-        public GameData(bool isGameOver, int bestScore, int currentScore, int stageNumber,
+        public GameData(bool isGameOver, int bestScore, int currentScore, int stageNumber, int bossAge,
                         int prism1Count, int prism2Count, int prism3Count, int prism4Count, int damage,
                         Vector2 launcherPos, Vector2 launcherDir,
                         List<BlockData> blocks, List<ItemData> items)
@@ -86,6 +87,7 @@ namespace LaserCrush.Data.Json
             m_BestScore = bestScore;
             m_CurrentScore = currentScore;
             m_StageNumber = stageNumber;
+            m_BossAge = bossAge;
 
             m_Prism1Count = prism1Count;
             m_Prism2Count = prism2Count;
@@ -157,6 +159,7 @@ namespace LaserCrush.Manager
                 bestScore: 0,
                 currentScore: 0,
                 stageNumber: 1,
+                bossAge : 0,
                 prism1Count: 1,
                 prism2Count: 1,
                 prism3Count: 1,

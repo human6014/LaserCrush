@@ -19,6 +19,13 @@ namespace LaserCrush.Manager
         /// <returns>PoolingObject</returns>
         public static PoolingObject Register(PoolableMonoBehaviour poolableScript, Transform parent) => new(poolableScript, parent);
 
+        public static PoolingObject RegisterAndGenerate(PoolableMonoBehaviour poolableScript, Transform parent, int count)
+        {
+            PoolingObject poolingObject = new PoolingObject(poolableScript, parent);
+            poolingObject.GenerateObj(count);
+            return poolingObject;
+        }
+
         /// <summary>
         /// Pooling Á¤º¸ °´Ã¼
         /// </summary>

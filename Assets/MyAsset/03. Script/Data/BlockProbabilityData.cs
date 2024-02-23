@@ -5,20 +5,13 @@ namespace LaserCrush.Data
     [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/BlockProbability Data", order = int.MaxValue)]
     public class BlockProbabilityData : ScriptableObject
     {
-        //0, 20, 50, 60, 50, 15
+        //0, 5, 21, 33, 33, 8
         [SerializeField] private Probability m_BlockCountProbability;
-        private float m_CountProbabilitySum;
-        //3.94개가 한 턴에 기댓값
-
-        public void Init()
-        {
-            for(int i = 0; i < m_BlockCountProbability.ProbabilityArray.Length; i++)
-                m_CountProbabilitySum += m_BlockCountProbability[i];
-        }
+        //기댓값 4.18
 
         public int GetBlockIndex()
         {
-            float randomPoint = Random.Range(1, m_CountProbabilitySum);
+            float randomPoint = Random.value * 100;
             int length = m_BlockCountProbability.ProbabilityArray.Length;
             for (int i = 0; i < length; i++)
             {
@@ -26,7 +19,7 @@ namespace LaserCrush.Data
                 else randomPoint -= m_BlockCountProbability[i];
             }
 
-            return length - 1;
+            return length;
         }
     }
 }
