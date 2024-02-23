@@ -36,7 +36,7 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        public readonly static int s_BossStage = 15;
+        public readonly int m_BossStage = 15;
 
         private const string m_StageChangeAudioKey = "StageChange";
 
@@ -300,9 +300,9 @@ namespace LaserCrush.Manager
             s_GameStateType = EGameStateType.BlockUpdating;
         }
 
-        public static bool IsBossStage()
+        public bool IsBossStage()
         {
-            if (StageNum % s_BossStage == 0) return true;
+            if (StageNum % m_BossStage == 0) return true;
             return false;
         }
 

@@ -249,7 +249,7 @@ namespace LaserCrush.Manager
 
                 int itemIndex = 1;
 
-                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true, false);
+                InstantiateBlock(GenerateBossBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true, false);
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
@@ -306,7 +306,14 @@ namespace LaserCrush.Manager
         private int GenerateBlockHP()
         {
             int end = ((GameManager.StageNum + 1) / 2) * 5;
-            if (GameManager.IsBossStage()) { end = (int)(end * 3.8f * 2.5f); }
+            int start = end - (end / 10);
+
+            return Random.Range(start, end + 1) * 100;
+        }
+
+        private int GenerateBossBlockHP()
+        {
+            int end = (int)((GameManager.StageNum + 1) * 0.5f * 5 * 3.8f * 2.5f);
             int start = end - (end / 10);
 
             return Random.Range(start, end + 1) * 100;
