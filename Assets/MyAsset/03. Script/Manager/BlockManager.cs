@@ -161,19 +161,15 @@ namespace LaserCrush.Manager
 
         private Vector3 CalculateGridRowColAndGetSize()
         {
-            float leftPad = (m_LeftWall.GetComponent<BoxCollider2D>().size.x + m_LeftWall.lossyScale.x) * 0.5f;
-            float topPad = (m_TopWall.GetComponent<BoxCollider2D>().size.x + m_TopWall.lossyScale.y) * 0.5f;
-            //마저 수정해야긋다
-
-            float height = m_LeftWall.localScale.y - 6;
-            float width = m_TopWall.localScale.x - 4;
+            float height = m_LeftWall.localScale.y - m_TopWall.localScale.y * 2 + 1;
+            float width = m_TopWall.localScale.x - m_LeftWall.localScale.x * 2 + 1;
 
             float blockHeight = height / m_MaxRowCount;
             float blockWidth = width / m_MaxColCount;
 
-            m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + blockWidth * 0.5f + 2, m_TopWall.position.y - blockHeight * 0.5f - 2);
+            m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + m_LeftWall.localScale.x * 0.5f + blockWidth * 0.5f, m_TopWall.position.y - m_TopWall.localScale.y * 0.5f - blockHeight * 0.5f);
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
-            m_CalculatedInitBossPosY = m_TopWall.position.y - blockHeight * 2 * 0.5f - 2;
+            m_CalculatedInitBossPosY = m_TopWall.position.y - blockHeight * 2 * 0.5f;
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
 
@@ -185,8 +181,8 @@ namespace LaserCrush.Manager
         #region Block Generate
         private Vector3 GetRowColPosition(int row, int col)
         {
-            return new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * row, 
-                               m_CalculatedInitPos.y + m_CalculatedOffset.y * col, 
+            return new Vector3(m_CalculatedInitPos.x + m_CalculatedOffset.x * col, 
+                               m_CalculatedInitPos.y - m_CalculatedOffset.y * row, 
                                0);
         }
 
@@ -201,7 +197,7 @@ namespace LaserCrush.Manager
                     HashSet<int> index = GenerateBlockOffset();
                     foreach (int i in index)
                     {
-                        Vector3 pos = GetRowColPosition(i, 0 - j);
+                        Vector3 pos = GetRowColPosition(j, i);
                         int itemIndex;
                         if (!flag)
                         {
@@ -210,7 +206,7 @@ namespace LaserCrush.Manager
                         }
                         else itemIndex = m_ItemProbabilityData.GetItemIndex();
 
-                        InstantiateBlock(GenerateBlockHP(), 0 + j, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false, false);
+                        InstantiateBlock(GenerateBlockHP(), j, i, GenerateEntityType(), (DroppedItemType)itemIndex, pos, false, false);
                     }
                 }
             }
@@ -224,12 +220,6 @@ namespace LaserCrush.Manager
             return false;
         }
 
-        public void AddBossBlockAge()
-        {
-            if (m_BossBlock != null)
-                m_BossBlockAge++;
-        }
-
         /// <summary>
         /// 지금은 무조건 에너지 아이템 드롭하게 만들어둠
         /// </summary>
@@ -238,16 +228,9 @@ namespace LaserCrush.Manager
         {
             if (m_GenerateElapsedTime == 0)
             {
-                int leftTopIndex = 2;
-                int rightBottomIndex = 3;
+                Vector3 pos = (GetRowColPosition(0,2) + GetRowColPosition(1, 3)) * 0.5f;
 
-                float x = (m_CalculatedInitPos.x + m_CalculatedOffset.x * leftTopIndex + m_CalculatedInitPos.x + m_CalculatedOffset.x * rightBottomIndex) / 2;
-                float y = m_CalculatedInitBossPosY;
-                Vector3 pos = new Vector3(x, y, 0);
-
-                int itemIndex = 1;
-
-                InstantiateBlock(GenerateBossBlockHP(), 0, 2, GenerateEntityType(), (DroppedItemType)itemIndex, pos, true, false);
+                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), DroppedItemType.Energy, pos, true, false);
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
@@ -370,6 +353,18 @@ namespace LaserCrush.Manager
             return false;
         }
 
+        public void AddBossBlockAge()
+        {
+            if (m_BossBlock != null)
+                m_BossBlockAge++;
+        }
+
+        public bool IsBossSkill()
+        {
+            if (m_BossBlock != null && m_BossBlockAge == 3) return true;
+            return false;
+        }
+
         #region Load & Save
         private void LoadBlockData()
         {
@@ -422,12 +417,6 @@ namespace LaserCrush.Manager
             }
 
             m_Blocks.Clear();
-        }
-
-        public bool IsBossSkill()
-        {
-            if (m_BossBlock != null && m_BossBlockAge == 3) return true;
-            return false;
         }
     }
 }

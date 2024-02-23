@@ -36,10 +36,10 @@ namespace LaserCrush.Manager
         private ToolbarController m_ToolbarController;
         private Action m_GameOverAction;
 
-        public readonly int m_BossStage = 15;
         private const string m_MoveDownBossAudioKey = "BossBlock";
         private const string m_MoveDownBlockAudioKey = "MoveDownBlock";
-
+        
+        public readonly int m_BossStage = 15;
         private readonly float m_ValidTime = 2f;
         private float m_LaserTime;
 
