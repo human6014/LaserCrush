@@ -39,7 +39,7 @@ namespace LaserCrush.Manager
         private const string m_MoveDownBossAudioKey = "BossBlock";
         private const string m_MoveDownBlockAudioKey = "MoveDownBlock";
 
-        public readonly static int s_BossStage = 5;
+        public readonly static int s_BossStage = 25;
 
         private readonly float m_ValidTime = 2f;
         private float m_LaserTime;
