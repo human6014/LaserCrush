@@ -90,7 +90,6 @@ namespace LaserCrush.Manager
             m_GridLineController.OnOffGridLine(false);
 
             m_BlockParticleController.Init(blockSize);
-            m_BlockProbabilityData.Init();
             AssignPoolingObject();
             LoadBlockData();
         }
@@ -163,7 +162,7 @@ namespace LaserCrush.Manager
         private Vector3 CalculateGridRowColAndGetSize()
         {
             float leftPad = (m_LeftWall.GetComponent<BoxCollider2D>().size.x + m_LeftWall.lossyScale.x) * 0.5f;
-            float topPad = (m_TopWall.GetComponent<BoxCollider2D>().size.x + m_TopWall.lossyScale.x) * 0.5f;
+            float topPad = (m_TopWall.GetComponent<BoxCollider2D>().size.x + m_TopWall.lossyScale.y) * 0.5f;
             //마저 수정해야긋다
 
             float height = m_LeftWall.localScale.y - 6;
