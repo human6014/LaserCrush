@@ -230,7 +230,7 @@ namespace LaserCrush.Manager
             {
                 Vector3 pos = (GetRowColPosition(0,2) + GetRowColPosition(1, 3)) * 0.5f;
 
-                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), DroppedItemType.Energy, pos, true, false);
+                InstantiateBlock(GenerateBossBlockHP(), 0, 2, GenerateEntityType(), DroppedItemType.Energy, pos, true, false);
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
