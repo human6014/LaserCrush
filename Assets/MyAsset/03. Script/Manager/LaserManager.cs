@@ -73,7 +73,7 @@ namespace LaserCrush.Manager
                 }
                 else
                 {
-                    m_InitLazer.Activate(pos, dir, 0);
+                    m_InitLazer.Activate(pos, dir);
 
                     m_RootLazer.Add(m_InitLazer);
                     m_Lasers.Add(m_InitLazer);
@@ -96,11 +96,6 @@ namespace LaserCrush.Manager
 
                 //중간에 부모를 잃은 레이저 처리하는 함수
                 RemoveLossParentsLaser();
-
-                if (CheckCollideWithFloor())
-                {
-                    Energy.SetTurnEnd();
-                }
             }
         }
 
@@ -117,7 +112,6 @@ namespace LaserCrush.Manager
                     m_LaserPool.ReturnObject(childs[i]);
 
                 m_Activated = false;
-                //AudioManager.AudioManagerInstance.StopNormalSE("Laser");
                 return true;
             }
             /*
@@ -211,13 +205,7 @@ namespace LaserCrush.Manager
             m_LossParentsLaserRemoveBuffer.Clear();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="infoList"></param>
-        /// <param name="hierarchy">부모가 해당 함수를 호출 시 자식의 계층을 계산 후 넘긴다.</param>
-        /// <returns></returns>
-        public List<Laser> CreateLaser(List<LaserInfo> infoList, int hierarchy)
+        public List<Laser> CreateLaser(List<LaserInfo> infoList)
         {
             List<Laser> answer = new List<Laser>();
 
@@ -227,7 +215,7 @@ namespace LaserCrush.Manager
                 laser = (Laser)m_LaserPool.GetObject(true);
                 laser.transform.position = infoList[i].Position;
                 laser.Init(CreateLaser, LossParent);
-                laser.Activate(infoList[i].Position, infoList[i].Direction, hierarchy);
+                laser.Activate(infoList[i].Position, infoList[i].Direction);
                 
                 m_LaserAddBuffer.Add(laser);
                 answer.Add(laser);
@@ -259,21 +247,6 @@ namespace LaserCrush.Manager
                     lasers[i].ResetLaser();
             }
             lasers.Clear();
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns> true : 충돌가능한 모든 레이저가 바닥과 충돌 중</returns>
-        private bool CheckCollideWithFloor()
-        {
-            int count = 0;
-            for (int i = 0; i < m_Lasers.Count; i++)
-            {
-                if (m_Lasers[i].GetELaserStateType() == ELaserStateType.Move || m_Lasers[i].GetELaserStateType() == ELaserStateType.Wait) { return false; }
-                if (m_Lasers[i].IsHittingDamagable()) count++;
-            }
-            if (Energy.GetHittingFloorLaserNum() == count && count != 0) { return true; }
-            return false;
         }
     }
 }

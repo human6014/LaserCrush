@@ -142,8 +142,6 @@ namespace LaserCrush.Entity.Block
             if (m_AttackCount % s_AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
             m_AttackCount++;
 
-            GameManager.ValidHit++;
-
             m_Animator.SetTrigger("Hit");
 
             CurrentHP -= Energy.CurrentDamage;
@@ -178,7 +176,6 @@ namespace LaserCrush.Entity.Block
                 return new List<LaserInfo>() { info };
             }
 
-            GameManager.ValidHit++;
             return answer;
         }
         #endregion

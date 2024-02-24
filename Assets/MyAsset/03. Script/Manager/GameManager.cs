@@ -40,11 +40,7 @@ namespace LaserCrush.Manager
         private const string m_MoveDownBlockAudioKey = "MoveDownBlock";
         
         public readonly int m_BossStage = 15;
-        private readonly float m_ValidTime = 2f;
-        private float m_LaserTime;
-
-        private int m_PreValidHit;
-       
+        
         private bool m_IsInit;
         private bool m_IsGameOver;
 
@@ -61,11 +57,6 @@ namespace LaserCrush.Manager
             add => m_GameOverAction += value;
             remove => m_GameOverAction -= value;
         }
-
-        //계층 임계점 변수
-        public static int LaserCriticalPoint { get; set; }
-
-        public static int ValidHit { get; set; }
 
         public static int StageNum { get; private set; }
 
@@ -109,8 +100,6 @@ namespace LaserCrush.Manager
 
             if (hasData) m_SubLineController.IsActiveSubLine = true;
 
-            ValidHit = 0;
-            LaserCriticalPoint = 3;
             StageNum = DataManager.GameData.m_StageNumber;
             m_UIManager.SetCurrentStage(StageNum - 1);
             m_IsGameOver = DataManager.GameData.m_IsGameOver;
@@ -210,9 +199,6 @@ namespace LaserCrush.Manager
 
             Energy.ChargeEnergy();
 
-            m_LaserTime = 0;
-            ValidHit = 0;
-
             m_BlockManager.AddBossBlockAge();
             m_SubLineController.IsActiveSubLine = true;
             s_GameStateType = EGameStateType.Deploying;
@@ -244,19 +230,6 @@ namespace LaserCrush.Manager
         {
             if (Energy.IsValidTime())
             {
-                m_LaserTime += Time.deltaTime;
-                if (m_LaserTime > m_ValidTime && m_PreValidHit == ValidHit)
-                {
-                    Energy.SetTurnEnd();
-                    return;
-                }
-
-                if (m_PreValidHit != ValidHit)
-                {
-                    m_PreValidHit = ValidHit;
-                    m_LaserTime = 0;
-                }
-
                 m_LaserManager.Activate(m_SubLineController.Position, m_SubLineController.Direction);
             }
             else
