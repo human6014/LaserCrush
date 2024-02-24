@@ -14,6 +14,12 @@ namespace LaserCrush.Data
     [CreateAssetMenu(fileName = "Scriptable Data", menuName = "Scriptable/ItemProbability Data", order = int.MaxValue)]
     public class ItemProbabilityData : ScriptableObject
     {
+        //87.5
+        //0
+        //2.5
+        //4.5
+        //4.5
+        //1
         [SerializeField] private Probability m_ItemProbability;
         [SerializeField] private GameObject[] m_DroppedItems;
 
