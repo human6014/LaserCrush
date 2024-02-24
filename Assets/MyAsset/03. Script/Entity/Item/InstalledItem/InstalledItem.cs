@@ -172,7 +172,6 @@ namespace LaserCrush.Entity.Item
         {
             if (m_IsActivate) return new List<LaserInfo>();
 
-            GameManager.ValidHit++;
             laser.ChangeLaserState(ELaserStateType.Wait);
 
             if (!m_IsSyn)

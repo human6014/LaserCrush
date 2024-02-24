@@ -8,7 +8,6 @@ namespace LaserCrush.Entity
     {
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
-            Energy.CollideWithWall();
             laser.ChangeLaserState(ELaserStateType.Hitting);
             LaserInfo info = new LaserInfo();
             info.Direction = Vector2.Reflect(parentDirVector, hit.normal);

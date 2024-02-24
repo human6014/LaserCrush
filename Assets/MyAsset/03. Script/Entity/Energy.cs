@@ -13,8 +13,6 @@ namespace LaserCrush.Entity
         private static event Action s_MaxEnergyHighlightTextAction;
         private static event Action s_CurrentDamageUpdateAction;
 
-        private static int s_HittingFloorLaserNum;
-
         private static readonly int s_InitDamage = 4;
         private static int s_CurrentDamage;
         private static int s_AdditionalStack;
@@ -70,21 +68,13 @@ namespace LaserCrush.Entity
         public static bool IsValidTime()
             => CurrentTime < s_CurrentMaxTime;
         
-        public static void DeCollideWithFloor()
-            => s_HittingFloorLaserNum--;
-
         public static void ChargeEnergy()
         {
             s_CurrentMaxTime = s_MaxTime;
             CurrentTime = 0;
 
             s_MaxEnergyHighlightTextAction?.Invoke();
-
-            s_HittingFloorLaserNum = 0;
         }
-
-        public static void CollideWithWall()
-            => GameManager.ValidHit++;
             
         private void Update()
         {
@@ -111,11 +101,7 @@ namespace LaserCrush.Entity
                 s_AdditionalStack = 0;
                 CurrentDamage -= 1;
             }
-            //Debug.Log(CurrentDamage - 4);
         }
-
-        public static int GetHittingFloorLaserNum()
-            => s_HittingFloorLaserNum;
 
         public static void SaveAllData()
             => DataManager.GameData.m_Damage = CurrentDamage;
