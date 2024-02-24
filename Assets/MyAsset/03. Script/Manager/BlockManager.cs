@@ -7,8 +7,6 @@ using LaserCrush.Entity;
 using LaserCrush.Entity.Item;
 using LaserCrush.Entity.Block;
 using Random = UnityEngine.Random;
-using Unity.VisualScripting;
-
 
 namespace LaserCrush.Manager
 {
@@ -415,7 +413,7 @@ namespace LaserCrush.Manager
             m_BossBlockAge = 0;
             foreach (Block block in m_Blocks)
             {
-                block.ImmediatelyReset();
+                block.DestroyImmediate();
                 if (!block.IsBossBlock) m_BlockPool.ReturnObject(block);
                 else m_BossBlockPool.ReturnObject(block);
             }

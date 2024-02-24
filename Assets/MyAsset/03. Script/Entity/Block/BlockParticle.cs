@@ -26,7 +26,6 @@ namespace LaserCrush.Entity.Block.Particle
                 m_BlockData.NormalBlockColor :
                 m_BlockData.ReflectBlockColor;
 
-
             transform.position = pos;
             StartCoroutine(ParticleCoroutine());
         }

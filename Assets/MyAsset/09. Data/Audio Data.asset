@@ -16,10 +16,6 @@ MonoBehaviour:
   - m_AudioName: MainBGM1
     m_AudioClip: {fileID: 8300000, guid: 3dc1edab4333fc44bb16a85bc9b9aa72, type: 3}
   - m_AudioName: MainBGM2
-    m_AudioClip: {fileID: 8300000, guid: 200b344363a925444952b4ca4c9dfa9b, type: 3}
-  - m_AudioName: MainBGM3
-    m_AudioClip: {fileID: 8300000, guid: ce7075622918f1745a07171669c1ab03, type: 3}
-  - m_AudioName: MainBGM4
     m_AudioClip: {fileID: 8300000, guid: d7740571113ff164e8c9329d829ca7ff, type: 3}
   m_SENormalAudioGroups:
   - m_AudioName: BlockDestroy

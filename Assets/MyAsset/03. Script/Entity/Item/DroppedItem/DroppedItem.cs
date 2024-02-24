@@ -10,21 +10,15 @@ namespace LaserCrush.Entity.Item
         [SerializeField] private AnimationCurve m_AnimationCurve;
         [SerializeField] protected int m_AcquiredItemIndex;
 
-        protected Action<PoolableMonoBehaviour> m_ReturnAction;
+        private Action<PoolableMonoBehaviour> m_ReturnAction;
 
-        protected readonly static string m_AcquireAudioKey = "ItemAcquired";
+        private readonly static string m_AcquireAudioKey = "ItemAcquired";
 
         private readonly static int s_MaxDuplicateCount = 2;
         private static int s_CurrentDuplicateCount;
 
         public const float m_AnimationTime = 0.5f;
         #endregion
-
-        public event Action<PoolableMonoBehaviour> ReturnAction 
-        {
-            add => m_ReturnAction = value;
-            remove => m_ReturnAction = null;
-        }
 
         public void Init(Action<PoolableMonoBehaviour> returnAction)
         {

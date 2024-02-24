@@ -15,6 +15,10 @@ namespace LaserCrush.Manager
 
         private bool m_IsAutoBGMMode;
 
+        private readonly float m_MaxWaitTime = 3;
+
+        private float m_WaitTime;
+
         private float m_MasterSound;
         private float m_BGMSound;
         private float m_SESound;
@@ -66,15 +70,19 @@ namespace LaserCrush.Manager
         public void OnOffAutoBGMLoop(bool isOnOff)
             => m_IsAutoBGMMode = isOnOff;
         
-
         private void Update()
         {
             if (!m_IsAutoBGMMode) return;
 
             if (m_BGMAudioSource.isPlaying) return;
 
-            string randomKey = m_AudioData.GetRandomBGMKey();
-            PlayBGM(randomKey);
+            m_WaitTime += Time.deltaTime;
+            if (m_WaitTime >= m_MaxWaitTime)
+            {
+                string randomKey = m_AudioData.GetRandomBGMKey();
+                PlayBGM(randomKey);
+                m_WaitTime = 0;
+            }
         }
 
         public void PlayBGM(string audioName)

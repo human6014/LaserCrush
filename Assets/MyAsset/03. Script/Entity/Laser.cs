@@ -143,7 +143,7 @@ namespace LaserCrush.Entity
             if (!Energy.IsValidTime()) { return; }
             if (!m_IsActivated) { return; }
 
-            RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.01f, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
+            RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.001f, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
 
             float dist = Vector2.Distance(m_EndPoint, hit.point);
             float shootingVelocity = m_LaserData.ShootingVelocity * Time.deltaTime;
