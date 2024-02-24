@@ -60,7 +60,7 @@ namespace LaserCrush.Manager
 
         public static int StageNum { get; private set; }
 
-        public static EGameStateType s_GameStateType { get; private set; } = EGameStateType.BlockUpdating;
+        public static EGameStateType GameStateType { get; private set; } = EGameStateType.BlockUpdating;
         #endregion
 
         #region Init
@@ -85,8 +85,8 @@ namespace LaserCrush.Manager
         {
             m_IsInit = true;
 
-            if (hasData) s_GameStateType = EGameStateType.Deploying;
-            else s_GameStateType = EGameStateType.BlockUpdating;
+            if (hasData) GameStateType = EGameStateType.Deploying;
+            else GameStateType = EGameStateType.BlockUpdating;
 
             //초기화 순서 중요함 건들 ㄴㄴ
 
@@ -124,7 +124,7 @@ namespace LaserCrush.Manager
             if (!m_IsInit) return;
             if (m_IsGameOver) return;
 
-            switch (s_GameStateType)
+            switch (GameStateType)
             {
                 case EGameStateType.Deploying:
                     break;
@@ -201,7 +201,7 @@ namespace LaserCrush.Manager
 
             m_BlockManager.AddBossBlockAge();
             m_SubLineController.IsActiveSubLine = true;
-            s_GameStateType = EGameStateType.Deploying;
+            GameStateType = EGameStateType.Deploying;
             StageNum++;
             m_UIManager.SetCurrentStage(StageNum - 1);
             CheckValueUpdate(false);
@@ -219,10 +219,10 @@ namespace LaserCrush.Manager
 
         private void EndDeploying() // 배치 끝 레이저 발사 시작
         {
-            if (s_GameStateType == EGameStateType.LaserActivating) return;
+            if (GameStateType == EGameStateType.LaserActivating) return;
 
             m_ItemManager.FixInstalledItemDirection();
-            s_GameStateType = EGameStateType.LaserActivating;
+            GameStateType = EGameStateType.LaserActivating;
             m_SubLineController.IsActiveSubLine = false;
         }
 
@@ -236,7 +236,7 @@ namespace LaserCrush.Manager
             {
                 if (m_LaserManager.DeActivate()) // true반환 시 레이저 모두 사라진 상태 -> 턴 종료
                 {
-                    s_GameStateType = EGameStateType.BlockUpdating;
+                    GameStateType = EGameStateType.BlockUpdating;
                 }
             }
         }
@@ -274,7 +274,7 @@ namespace LaserCrush.Manager
             StageNum = 1;
 
             //세이브 딴곳에서 해줌
-            s_GameStateType = EGameStateType.BlockUpdating;
+            GameStateType = EGameStateType.BlockUpdating;
         }
 
         private bool IsBossStage()

@@ -37,7 +37,6 @@ namespace LaserCrush.Entity.Item
         [SerializeField] private Transform[] m_EjectionPortsTransform;
         [SerializeField] private LineRenderer[] m_LineRenderers;
         [SerializeField] private GameObject[] m_SubRotationImage;
-        [SerializeField] private TextMeshProUGUI m_CountText;
         [SerializeField] private RectTransform m_CanvasTransform;
         [SerializeField] private ItemType m_ItemType;
 
@@ -45,8 +44,6 @@ namespace LaserCrush.Entity.Item
         private Animator m_Animator;
         private CircleCollider2D m_CircleCollider2D;
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
-
-        private static readonly int m_DiscreteUnit = 5;
 
         private const string m_ItemDragAudioKey = "ItemDrag";
         private const string m_FixedNoticeAnimationKey = "FixedNotice";
@@ -232,7 +229,7 @@ namespace LaserCrush.Entity.Item
         public void SetDirection(Vector2 pos)
         {
             Vector2 direction = (pos - (Vector2)transform.position).normalized;
-            Vector2 discreteDirection = direction.DiscreteDirection(m_DiscreteUnit);
+            Vector2 discreteDirection = direction.DiscreteDirection(m_InstalledItemData.DiscreteUnit);
 
             if (Direction != discreteDirection)
             {
