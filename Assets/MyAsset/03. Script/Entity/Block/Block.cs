@@ -47,8 +47,6 @@ namespace LaserCrush.Entity.Block
         private int m_AttackCount;
         private bool m_IsDestroyed;
 
-        private static readonly int s_AudioCount = 6;
-        private static readonly float s_AdditionalTime = 0.17f;
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
 
@@ -56,13 +54,13 @@ namespace LaserCrush.Entity.Block
         #endregion
 
         #region Property
-        public int CurrentHP { get; protected set; }
-        public int Score { get; protected set; }
+        public int CurrentHP { get; private set; }
+        public int Score { get; private set; }
         public virtual int RowNumber { get => m_MatrixPos[0].RowNumber; }
         public virtual int ColNumber { get => m_MatrixPos[0].ColNumber; }
         public virtual bool IsBossBlock { get => false; }
         public Vector2 Position { get; private set; }
-        public DroppedItemType ItemType { get; protected set; }
+        public DroppedItemType ItemType { get; private set; }
         #endregion
 
         #region Init
@@ -139,7 +137,7 @@ namespace LaserCrush.Entity.Block
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % s_AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
+            if (m_AttackCount % m_BlockData.AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
             m_AttackCount++;
 
             m_Animator.SetTrigger("Hit");
@@ -184,7 +182,8 @@ namespace LaserCrush.Entity.Block
         public void MoveDown(Vector2 moveDownVector, float moveDownTime, int step)
         {
             StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-            for(int i = 0; i < m_MatrixPos.Count; i++) 
+
+            for (int i = 0; i < m_MatrixPos.Count; i++) 
             {
                 MatrixPos pos = m_MatrixPos[i];
                 pos.RowNumber += step;
@@ -240,7 +239,7 @@ namespace LaserCrush.Entity.Block
         private void Destroy()
         {
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
-            Energy.ChargeCurrentMaxTime(s_AdditionalTime);
+            Energy.ChargeCurrentMaxTime(m_BlockData.AdditionalTime);
             m_IsDestroyed = true;
             m_PlayParticleAction?.Invoke(this);
         }

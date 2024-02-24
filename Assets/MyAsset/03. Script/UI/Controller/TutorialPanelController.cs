@@ -10,6 +10,7 @@ namespace LaserCrush.UI.Controller
         [SerializeField] private GameObject[] m_TutorialImage;
         [SerializeField] private ButtonReceiver m_PrevButtonReceiver;
         [SerializeField] private ButtonReceiver m_NextButtonReceiver;
+        [SerializeField] private ButtonReceiver m_LastTutorialImage;
         [SerializeField] private GameObject m_TouchText;
 
         private bool m_IsLastPanel;
@@ -26,6 +27,7 @@ namespace LaserCrush.UI.Controller
         {
             m_PrevButtonReceiver.ButtonClickAction += OnClickedPrevButton;
             m_NextButtonReceiver.ButtonClickAction += OnClickedNextButton;
+            m_LastTutorialImage.ButtonClickAction += OnClickEndTutorial;
         }
 
         public void LoadTutorialPanel()
@@ -62,29 +64,17 @@ namespace LaserCrush.UI.Controller
             if (m_CurrentIndex == 1) m_PrevButtonReceiver.gameObject.SetActive(true);
             if (m_CurrentIndex == m_TutorialImage.Length - 1)
             {
-                m_IsLastPanel = true;
                 m_NextButtonReceiver.gameObject.SetActive(false);
                 m_TouchText.SetActive(true);
+                m_IsLastPanel = true;
             }
         }
 
-        private void Update()
+        private void OnClickEndTutorial()
         {
             if (!m_IsLastPanel) return;
-
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
-            {
-                m_TutorialEndAction?.Invoke();
-                m_IsLastPanel = false;
-            }
-#else
-            if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-            {
-                m_TutorialEndAction?.Invoke();
-                m_IsLastPanel = false;
-            }
-#endif
+            m_TutorialEndAction?.Invoke();
+            m_IsLastPanel = false;
         }
 
         private void OnDestroy()

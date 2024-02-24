@@ -61,9 +61,6 @@ namespace LaserCrush.Entity
             s_CurrentDamageUpdateAction?.Invoke();
         }
         #endregion
-
-        public static void SetTurnEnd()
-            => CurrentTime = s_CurrentMaxTime;
         
         public static bool IsValidTime()
             => CurrentTime < s_CurrentMaxTime;
@@ -78,7 +75,7 @@ namespace LaserCrush.Entity
             
         private void Update()
         {
-            if (IsValidTime() && GameManager.s_GameStateType == GameManager.EGameStateType.LaserActivating)
+            if (IsValidTime() && GameManager.GameStateType == GameManager.EGameStateType.LaserActivating)
             {
                 s_CurrentTime += Time.deltaTime;
                 s_CurrentTimeUpdateAction?.Invoke();

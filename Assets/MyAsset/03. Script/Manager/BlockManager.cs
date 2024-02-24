@@ -159,6 +159,7 @@ namespace LaserCrush.Manager
 
         private Vector3 CalculateGridRowColAndGetSize()
         {
+            //열번호 0, end번호 (벽이랑 붙어있는) 블럭 틈새 안줄려고 1씩 더함
             float height = m_LeftWall.localScale.y - m_TopWall.localScale.y * 2 + 1;
             float width = m_TopWall.localScale.x - m_LeftWall.localScale.x * 2 + 1;
 
@@ -391,13 +392,13 @@ namespace LaserCrush.Manager
             foreach (Block block in m_Blocks)
             {
                 blockData = new Data.Json.BlockData(
-                    row: block.RowNumber,
-                    col: block.ColNumber,
-                    hp: block.CurrentHP,
-                    isBoss: block.IsBossBlock,
-                    pos: block.Position,
-                    entityType: block.GetEEntityType(),
-                    itemType: block.ItemType);
+                        row: block.RowNumber,
+                        col: block.ColNumber,
+                        hp: block.CurrentHP,
+                        isBoss: block.IsBossBlock,
+                        pos: block.Position,
+                        entityType: block.GetEEntityType(),
+                        itemType: block.ItemType);
 
                 DataManager.GameData.m_Blocks.Add(blockData);
             }
