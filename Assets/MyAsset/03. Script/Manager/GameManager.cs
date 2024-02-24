@@ -277,7 +277,7 @@ namespace LaserCrush.Manager
             s_GameStateType = EGameStateType.BlockUpdating;
         }
 
-        public bool IsBossStage()
+        private bool IsBossStage()
         {
             if (StageNum % m_BossStage == 0) return true;
             return false;

@@ -248,7 +248,7 @@ namespace LaserCrush.Entity.Block
         /// <summary>
         /// 파티클, 사운드 실행 안하고 바로 삭제
         /// </summary>
-        public void ImmediatelyReset()
+        public void DestroyImmediate()
             => m_IsDestroyed = true;
 
         private void OnDestroy()

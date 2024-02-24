@@ -227,11 +227,14 @@ namespace LaserCrush.Controller
 
         private void InitItemObject(int row, int col, int usingCount, bool isFixed, Vector2 pos, Vector2 dir, bool isLoadData)
         {
+            //usingCount 이거 이제 의미 없음 전부다 1임
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
             InstalledItem installedItem = m_ControllingTransform.GetComponent<InstalledItem>();
-            int currentUsingCount = isLoadData ? usingCount : m_InstalledItemData.MaxUsingNum[(int)installedItem.ItemType];
+            int itemType = (int)installedItem.ItemType;
+
+            int currentUsingCount = isLoadData ? usingCount : m_InstalledItemData.MaxUsingNum[itemType];
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(row, col, currentUsingCount, false, pos, dir, m_InstalledItemPool[(int)installedItem.ItemType]);
+            installedItem.Init(row, col, currentUsingCount, false, pos, dir, m_InstalledItemPool[itemType]);
 
             //FixDirection에 m_EjectionPorts설정해줘서 isFixed여부 상관없이 1번은 호출해줘야 함
             if (isFixed) installedItem.FixDirection();
