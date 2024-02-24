@@ -29,7 +29,7 @@ namespace LaserCrush.Entity
         private List<Laser> m_ChildLazers = new List<Laser>();
         private List<LaserInfo> m_LaserInfo;
 
-        private Func<List<LaserInfo>, int, List<Laser>> m_LaserCreateFunc;
+        private Func<List<LaserInfo>, List<Laser>> m_LaserCreateFunc;
         private Action<List<Laser>> m_LaserEraseAction;
 
         private ICollisionable m_Target = null;
@@ -44,8 +44,6 @@ namespace LaserCrush.Entity
         private bool m_IsActivated;
         private bool m_IsErased;
 
-        private int m_Hierarchy;
-
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
         #endregion
 
@@ -57,26 +55,19 @@ namespace LaserCrush.Entity
                     );
         }
 
-        public void Init(Func<List<LaserInfo>, int, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
+        public void Init(Func<List<LaserInfo>, List<Laser>> laserCreateFunc, Action<List<Laser>> laserEraseAction)
         {
             m_LaserCreateFunc = laserCreateFunc;
             m_LaserEraseAction = laserEraseAction;
         }
 
-        public void Activate(Vector2 position, Vector2 dir, int hierarchy)
+        public void Activate(Vector2 position, Vector2 dir)
         {
             m_StartPoint = position;
             m_EndPoint = position;
             m_DirectionVector = dir.normalized;
             m_IsErased = false;
             m_IsActivated = true;
-            m_Hierarchy = hierarchy;
-            //생성 시 디메리트 계산로직 입맛대로 수정 가능
-            if (m_Hierarchy >= GameManager.LaserCriticalPoint)
-            {
-                //Energy.UseEnergy(Energy.CurrentEnergy / 10);
-            }
-            //Debug.Log("계층: " + m_Hierarchy);
 
             m_State = ELaserStateType.Move;
 
@@ -133,9 +124,6 @@ namespace LaserCrush.Entity
                 m_IsErased = true;
                 MoveStartPoint(m_StartPoint, eraseVelocity, dist);
 
-                if (m_Target != null && m_Target.GetEEntityType() == EEntityType.Floor)
-                    Energy.DeCollideWithFloor();
-
                 ResetLaser();
 
                 return true;
@@ -171,7 +159,7 @@ namespace LaserCrush.Entity
 
                 if (m_State == ELaserStateType.Wait) return;
 
-                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy + 1));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
             MoveEndPoint(m_EndPoint + shootingVelocity * m_DirectionVector);
@@ -199,11 +187,7 @@ namespace LaserCrush.Entity
         {
             if (m_Target.Waiting())
             {
-                //기존 방식 -> +1이 아닌 -1 등도 가능 단 -1 이하일 경우 clamp를 해주어야한다
-                //AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, m_Hierarchy + 1));
-
-                //프리즘 통과 시 이후 레이저 계층 조정 마지막 변수를 조정하면됨
-                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo, 0));
+                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 m_State = ELaserStateType.Hitting;
             }
         }

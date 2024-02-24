@@ -69,7 +69,7 @@ namespace LaserCrush.Manager
 
         private float m_MoveDownElapsedTime;
         private float m_GenerateElapsedTime;
-        private float m_CalculatedInitBossPosY;
+        private float m_BlockHPWeight = 0.1f;
 
         private int m_BossBlockAge;
         #endregion
@@ -169,7 +169,6 @@ namespace LaserCrush.Manager
 
             m_CalculatedInitPos = new Vector2(m_LeftWall.position.x + m_LeftWall.localScale.x * 0.5f + blockWidth * 0.5f, m_TopWall.position.y - m_TopWall.localScale.y * 0.5f - blockHeight * 0.5f);
             m_CalculatedOffset = new Vector2(blockWidth, blockHeight);
-            m_CalculatedInitBossPosY = m_TopWall.position.y - blockHeight * 2 * 0.5f;
 
             Vector3 size = new Vector3(blockWidth, blockHeight, 1);
 
@@ -230,7 +229,7 @@ namespace LaserCrush.Manager
             {
                 Vector3 pos = (GetRowColPosition(0,2) + GetRowColPosition(1, 3)) * 0.5f;
 
-                InstantiateBlock(GenerateBlockHP(), 0, 2, GenerateEntityType(), DroppedItemType.Energy, pos, true, false);
+                InstantiateBlock(GenerateBossBlockHP(), 0, 2, GenerateEntityType(), DroppedItemType.Energy, pos, true, false);
             }
 
             m_GenerateElapsedTime += Time.deltaTime;
@@ -286,7 +285,7 @@ namespace LaserCrush.Manager
         /// <returns></returns>
         private int GenerateBlockHP()
         {
-            int end = ((GameManager.StageNum + 1) / 2) * 5;
+            int end = (int)((GameManager.StageNum + 1) * 0.5f * 5 * CalculateBlockStageHPWeight());
             int start = end - (end / 10);
 
             return Random.Range(start, end + 1) * 100;
@@ -294,10 +293,15 @@ namespace LaserCrush.Manager
 
         private int GenerateBossBlockHP()
         {
-            int end = (int)((GameManager.StageNum + 1) * 0.5f * 5 * 3.8f * 2.5f);
+            int end = (int)((GameManager.StageNum + 1) * 0.5f * 5 * 3.8f * 2.5f * CalculateBlockStageHPWeight());
             int start = end - (end / 10);
 
             return Random.Range(start, end + 1) * 100;
+        }
+
+        private float CalculateBlockStageHPWeight()
+        {
+            return (GameManager.StageNum / 100) * m_BlockHPWeight + 1;
         }
 
         private EEntityType GenerateEntityType()
