@@ -520,3 +520,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BlockData: {fileID: 11400000, guid: 144928d3fb6325a4bb8d514be8cc67db, type: 2}
+  m_MainSpriteRenderer: {fileID: 3533673539711577286}

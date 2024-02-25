@@ -217,6 +217,12 @@ namespace LaserCrush.Manager
             SaveAllGameData();
         }
 
+        private bool IsBossStage()
+        {
+            if (StageNum % m_BossStage == 0) return true;
+            return false;
+        }
+
         private void EndDeploying() // 배치 끝 레이저 발사 시작
         {
             if (GameStateType == EGameStateType.LaserActivating) return;
@@ -275,12 +281,6 @@ namespace LaserCrush.Manager
 
             //세이브 딴곳에서 해줌
             GameStateType = EGameStateType.BlockUpdating;
-        }
-
-        private bool IsBossStage()
-        {
-            if (StageNum % m_BossStage == 0) return true;
-            return false;
         }
 
         private void OnApplicationQuit()
