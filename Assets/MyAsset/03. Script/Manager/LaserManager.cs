@@ -52,8 +52,7 @@ namespace LaserCrush.Manager
             m_LossParentsLaserAddBuffer = new List<Laser>();
             m_LossParentsLaserRemoveBuffer = new List<Laser>();
 
-            m_LaserPool = ObjectPoolManager.Register(m_LaserObject, m_LasersTransform);
-            m_LaserPool.GenerateObj(m_PoolCount);
+            m_LaserPool = ObjectPoolManager.RegisterAndGenerate(m_LaserObject, m_LasersTransform, m_PoolCount);
             m_InitLazer.Init(CreateLaser, LossParent);
         }
 

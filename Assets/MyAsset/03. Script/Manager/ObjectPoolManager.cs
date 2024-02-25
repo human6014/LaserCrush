@@ -12,13 +12,12 @@ namespace LaserCrush.Manager
         private void Awake() => m_DeActivePool = transform;
 
         /// <summary>
-        /// Pooing 객체 등록
+        /// Pooing 객체 등록과 동시에 count만큼 미리 생성
         /// </summary>
         /// <param name="poolableScript"> PoolableScript를 상속받는 객체 </param>
         /// <param name="parent"> Hierarchy 오브젝트 위치 </param>
+        /// <param name="count"> 미리 생성할 개수</param>>
         /// <returns>PoolingObject</returns>
-        public static PoolingObject Register(PoolableMonoBehaviour poolableScript, Transform parent) => new(poolableScript, parent);
-
         public static PoolingObject RegisterAndGenerate(PoolableMonoBehaviour poolableScript, Transform parent, int count)
         {
             PoolingObject poolingObject = new PoolingObject(poolableScript, parent);

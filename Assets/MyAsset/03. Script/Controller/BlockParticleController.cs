@@ -19,8 +19,7 @@ namespace LaserCrush.Controller
             ParticleSystem.ShapeModule shapeModule = m_BlockParticle.GetComponent<ParticleSystem>().shape;
             shapeModule.scale = size;
 
-            m_BlockParticlePool = ObjectPoolManager.Register(m_BlockParticle, parent);
-            m_BlockParticlePool.GenerateObj(m_PoolingCount);
+            m_BlockParticlePool = ObjectPoolManager.RegisterAndGenerate(m_BlockParticle, parent, m_PoolingCount);
         }
 
         public void PlayParticle(Vector2 pos, EEntityType entityType)

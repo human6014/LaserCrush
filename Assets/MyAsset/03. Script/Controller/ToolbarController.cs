@@ -83,8 +83,7 @@ namespace LaserCrush.Controller
             m_InstalledItemPool = new ObjectPoolManager.PoolingObject[m_ItemPoolingCount.Length];
             for (int i = 0; i < m_ItemPoolingCount.Length; i++)
             {
-                m_InstalledItemPool[i] = ObjectPoolManager.Register(m_InstalledItems[i], m_BatchedItemTransform);
-                m_InstalledItemPool[i].GenerateObj(m_ItemPoolingCount[i]);
+                m_InstalledItemPool[i] = ObjectPoolManager.RegisterAndGenerate(m_InstalledItems[i], m_BatchedItemTransform, m_ItemPoolingCount[i]);
             }
         }
         #endregion

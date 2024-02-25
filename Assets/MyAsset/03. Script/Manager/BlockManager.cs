@@ -94,17 +94,13 @@ namespace LaserCrush.Manager
 
         private void AssignPoolingObject()
         {
-            m_BlockPool = ObjectPoolManager.Register(m_BlockPrefab, m_BlockTransform);
-            m_BlockPool.GenerateObj(Mathf.Max(DataManager.GameData.m_Blocks.Count, m_BlockPoolingCount));
-
-            m_BossBlockPool = ObjectPoolManager.Register(m_BossBlockPrefab, m_BlockTransform);
-            m_BossBlockPool.GenerateObj(m_BossBlockPoolingCount);
+            m_BlockPool = ObjectPoolManager.RegisterAndGenerate(m_BlockPrefab, m_BlockTransform, Mathf.Max(DataManager.GameData.m_Blocks.Count, m_BlockPoolingCount));
+            m_BossBlockPool = ObjectPoolManager.RegisterAndGenerate(m_BossBlockPrefab, m_BlockTransform, m_BossBlockPoolingCount);
 
             m_DroppedItemPool = new ObjectPoolManager.PoolingObject[m_DroppedItemPoolingCount.Length];
             for (int i = 0; i < m_DroppedItemPool.Length; i++)
             {
-                m_DroppedItemPool[i] = ObjectPoolManager.Register(m_ItemProbabilityData.DroppedItems[i].GetComponent<PoolableMonoBehaviour>(), m_DroppedItemTransform);
-                m_DroppedItemPool[i].GenerateObj(m_DroppedItemPoolingCount[i]);
+                m_DroppedItemPool[i] = ObjectPoolManager.RegisterAndGenerate(m_ItemProbabilityData.DroppedItems[i].GetComponent<PoolableMonoBehaviour>(), m_DroppedItemTransform, m_DroppedItemPoolingCount[i]);
             }
         }
         #endregion
@@ -342,7 +338,7 @@ namespace LaserCrush.Manager
             {
                 for (int i = 0; i < m_Blocks.Count; i++)
                 {
-                    m_Blocks[i].MoveDown(m_MoveDownVector * step , m_MoveDownTime, step);
+                    m_Blocks[i].MoveDownStart(m_MoveDownVector * step, m_MoveDownTime, step);
                     m_ItemManager.CheckDuplicatePosWithBlock(m_Blocks[i]);
                 }
             }
@@ -351,8 +347,13 @@ namespace LaserCrush.Manager
             if (m_MoveDownElapsedTime >= m_MoveDownTime)
             {
                 m_MoveDownElapsedTime = 0;
+                for (int i = 0; i < m_Blocks.Count; i++) m_Blocks[i].MoveDownEnd();
                 return true;
             }
+
+            for (int i = 0; i < m_Blocks.Count; i++)
+                m_Blocks[i].MoveDown();
+
             return false;
         }
 

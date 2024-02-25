@@ -35,14 +35,20 @@ namespace LaserCrush.Entity.Block
     {
         #region Variable
         [SerializeField] private BlockData m_BlockData;
+        [SerializeField] private SpriteRenderer m_MainSpriteRenderer;
 
         private BoxCollider2D m_BoxCollider2D;
         private Animator m_Animator;
-        private SpriteRenderer m_SpriteRenderer;
         private TextMeshProUGUI m_Text;
-        private Action<Block> m_PlayParticleAction;
+        private Action<Block> m_ReturnAction;
 
         private EEntityType m_EntityType;
+
+        private Vector2 m_MoveStartPos;
+        private Vector2 m_MoveEndPos;
+
+        private float m_ElapsedTime;
+        private float m_MoveDownTime;
 
         private int m_AttackCount;
         private bool m_IsDestroyed;
@@ -69,7 +75,7 @@ namespace LaserCrush.Entity.Block
             m_BoxCollider2D = GetComponent<BoxCollider2D>();
             m_Animator = GetComponent<Animator>();
             m_Text = GetComponentInChildren<TextMeshProUGUI>();
-            m_SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            m_MainSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
         /// <summary>
@@ -78,22 +84,22 @@ namespace LaserCrush.Entity.Block
         /// <param name="hp"></param>
         /// <param name="entityType"></param>
         /// <param name="droppedItem">드랍 아이템이 없을 경우 널값을 대입</param>
-        public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
+        public virtual void Init(int hp, int rowNumber, int colNumber, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> returnAction)
         {
             m_MatrixPos.Clear();
             m_MatrixPos.Add(new MatrixPos(rowNumber, colNumber));
 
-            InitSetting(hp, entityType, itemType, pos, playParticleAction);
+            InitSetting(hp, entityType, itemType, pos, returnAction);
         }
 
-        public void InitSetting(int hp, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> playParticleAction)
+        public void InitSetting(int hp, EEntityType entityType, DroppedItemType itemType, Vector2 pos, Action<Block> returnAction)
         {
             CurrentHP = hp;
             Score = hp;
 
             ItemType = itemType;
             Position = pos;
-            m_PlayParticleAction = playParticleAction;
+            m_ReturnAction = returnAction;
 
             m_BoxCollider2D.enabled = true;
             m_IsDestroyed = false;
@@ -103,12 +109,12 @@ namespace LaserCrush.Entity.Block
 
             if (m_EntityType == EEntityType.NormalBlock)
             {
-                m_SpriteRenderer.color = m_BlockData.NormalBlockColor;
+                m_MainSpriteRenderer.color = m_BlockData.NormalBlockColor;
                 gameObject.layer = m_BlockData.NormalLayer.GetLayerNumber();
             }
             else if (m_EntityType == EEntityType.ReflectBlock)
             {
-                m_SpriteRenderer.color = m_BlockData.ReflectBlockColor;
+                m_MainSpriteRenderer.color = m_BlockData.ReflectBlockColor;
                 gameObject.layer = m_BlockData.ReflectLayer.GetLayerNumber();
             }
             else Debug.LogError("Block has incorrect type");
@@ -165,6 +171,7 @@ namespace LaserCrush.Entity.Block
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             List<LaserInfo> answer = new List<LaserInfo>();
+
             laser.ChangeLaserState(ELaserStateType.Hitting);
             if (m_EntityType == EEntityType.ReflectBlock)//반사 블럭일 경우만 자식 생성
             {
@@ -179,11 +186,13 @@ namespace LaserCrush.Entity.Block
         #endregion
 
         #region MoveDown
-        public void MoveDown(Vector2 moveDownVector, float moveDownTime, int step)
+        public void MoveDownStart(Vector2 moveDownVector, float moveDownTime, int step)
         {
-            StartCoroutine(MoveDownCoroutine(moveDownVector, moveDownTime));
-
-            for (int i = 0; i < m_MatrixPos.Count; i++) 
+            m_MoveStartPos = transform.position;
+            m_MoveEndPos = m_MoveStartPos + moveDownVector;
+            m_ElapsedTime = 0;
+            m_MoveDownTime = moveDownTime;
+            for (int i = 0; i < m_MatrixPos.Count; i++)
             {
                 MatrixPos pos = m_MatrixPos[i];
                 pos.RowNumber += step;
@@ -191,20 +200,18 @@ namespace LaserCrush.Entity.Block
             }
         }
 
-        private IEnumerator MoveDownCoroutine(Vector2 moveDownVector, float moveDownTime)
+        public void MoveDown()
         {
-            Vector2 startPos = transform.position;
-            Vector2 endPos = startPos + moveDownVector;
-            float elapsedTime = 0;
-            while (elapsedTime < moveDownTime)
-            {
-                elapsedTime += Time.deltaTime;
-                transform.position = Vector2.Lerp(startPos, endPos, elapsedTime / moveDownTime);
-                yield return null;
-            }
-            Position = endPos;
-            transform.position = endPos;
+            m_ElapsedTime += Time.deltaTime;
+            transform.position = Vector2.Lerp(m_MoveStartPos, m_MoveEndPos, m_ElapsedTime / m_MoveDownTime);
         }
+
+        public void MoveDownEnd()
+        {
+            Position = m_MoveEndPos;
+            transform.position = m_MoveEndPos;
+        }
+        #endregion
 
         public bool IsAvailablePos(int row, int col)
         {
@@ -216,7 +223,6 @@ namespace LaserCrush.Entity.Block
             }
             return true;
         }
-        #endregion
 
         public bool IsGameOver(int maxRow)
         {
@@ -227,12 +233,15 @@ namespace LaserCrush.Entity.Block
             return false;
         }
 
+        #region HP
         private int GetHP()
             => CurrentHP / 100;
 
         protected virtual void SetHPText(int hp)
             => m_Text.text = hp.ToString();
-        
+        #endregion
+
+        #region Destroy & Return
         /// <summary>
         /// 파티클, 사운드 실행하고 삭제
         /// </summary>
@@ -241,7 +250,8 @@ namespace LaserCrush.Entity.Block
             AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDestroyAudioKey);
             Energy.ChargeCurrentMaxTime(m_BlockData.AdditionalTime);
             m_IsDestroyed = true;
-            m_PlayParticleAction?.Invoke(this);
+            StopAllCoroutines();
+            m_ReturnAction?.Invoke(this);
         }
 
         /// <summary>
@@ -251,12 +261,10 @@ namespace LaserCrush.Entity.Block
             => m_IsDestroyed = true;
 
         private void OnDestroy()
-            => m_PlayParticleAction = null;
+            => m_ReturnAction = null;
 
         public override void ReturnObject()
-        {
-            StopAllCoroutines();
-            m_PlayParticleAction?.Invoke(this);
-        }
+            => StopAllCoroutines();
+        #endregion
     }
 }

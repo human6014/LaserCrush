@@ -23,8 +23,7 @@ namespace LaserCrush.UI.Controller
         {
             m_RectTransform = GetComponent<RectTransform>();
             m_InitPos = m_RectTransform.anchoredPosition;
-            m_FloatingTextPool = ObjectPoolManager.Register(m_FloatingText, transform);
-            m_FloatingTextPool.GenerateObj(m_PoolingCount);
+            m_FloatingTextPool = ObjectPoolManager.RegisterAndGenerate(m_FloatingText, transform, m_PoolingCount);
         }
 
         public void PlayFloatingText(int length, int additionalScore)
