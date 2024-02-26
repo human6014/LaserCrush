@@ -112,6 +112,7 @@ namespace LaserCrush.Entity
         /// <summary>
         /// 일정 속도만큼 startPoint를 endPoint방향으로 이동
         /// 레이저가 지워지면 true 반환
+        /// 배열에서 지우지 않는다
         /// </summary>
         public bool Erase()
         {
