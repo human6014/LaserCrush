@@ -41,7 +41,6 @@ namespace LaserCrush.Manager
         private bool m_Activated = false;
         #endregion
 
-
         public void Init()
         {
             m_Lasers = new List<Laser>();
@@ -126,7 +125,8 @@ namespace LaserCrush.Manager
                     m_LaserRemoveBuffer.Add(m_RootLazer[i]);
                     foreach (Laser child in m_RootLazer[i].GetChildLazer())
                     {
-                        m_LaserAddBuffer.Add(child);
+                        if (m_Lasers.Contains(child))
+                            m_LaserAddBuffer.Add(child);
                     }
                 }
             }
