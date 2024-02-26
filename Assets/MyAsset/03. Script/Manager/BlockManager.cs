@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
 using LaserCrush.Data;
 using LaserCrush.Controller;
 using LaserCrush.Entity;
@@ -259,7 +259,7 @@ namespace LaserCrush.Manager
         }
 
         /// <summary>
-        /// 지금은 단순히 무작위 확률로 블럭 위치와 갯수를 생성
+        /// 무작위 확률로 블럭 위치와 갯수를 생성
         /// </summary>
         /// <returns></returns>
         private HashSet<int> GenerateBlockOffset()

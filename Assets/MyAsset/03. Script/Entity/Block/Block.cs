@@ -47,11 +47,15 @@ namespace LaserCrush.Entity.Block
         private Vector2 m_MoveStartPos;
         private Vector2 m_MoveEndPos;
 
-        private float m_ElapsedTime;
-        private float m_MoveDownTime;
-
         private int m_AttackCount;
+
         private bool m_IsDestroyed;
+
+        private float m_MoveDownElapsedTime;
+        private float m_MoveDownTime;
+        private float m_CurrentDamageTime;
+        
+        private static readonly float m_DamageTime = 0.1f;
 
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
@@ -101,6 +105,7 @@ namespace LaserCrush.Entity.Block
             Position = pos;
             m_ReturnAction = returnAction;
 
+            m_CurrentDamageTime = 0;
             m_BoxCollider2D.enabled = true;
             m_IsDestroyed = false;
             m_AttackCount = 0;
@@ -146,9 +151,17 @@ namespace LaserCrush.Entity.Block
             if (m_AttackCount % m_BlockData.AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
             m_AttackCount++;
 
+            int damageCount = 0;
+            m_CurrentDamageTime += Time.deltaTime;
+            if(m_CurrentDamageTime >= m_DamageTime)
+            {
+                damageCount = (int)(m_CurrentDamageTime / m_DamageTime);
+                m_CurrentDamageTime %= m_DamageTime;
+            }
+
             m_Animator.SetTrigger("Hit");
 
-            CurrentHP -= Energy.CurrentDamage;
+            CurrentHP -= (int)(Energy.CurrentDamagePerSecond * 0.1f * damageCount);
             if (GetHP() <= 0)
             {
                 Destroy();
@@ -190,7 +203,7 @@ namespace LaserCrush.Entity.Block
         {
             m_MoveStartPos = transform.position;
             m_MoveEndPos = m_MoveStartPos + moveDownVector;
-            m_ElapsedTime = 0;
+            m_MoveDownElapsedTime = 0;
             m_MoveDownTime = moveDownTime;
             for (int i = 0; i < m_MatrixPos.Count; i++)
             {
@@ -202,8 +215,8 @@ namespace LaserCrush.Entity.Block
 
         public void MoveDown()
         {
-            m_ElapsedTime += Time.deltaTime;
-            transform.position = Vector2.Lerp(m_MoveStartPos, m_MoveEndPos, m_ElapsedTime / m_MoveDownTime);
+            m_MoveDownElapsedTime += Time.deltaTime;
+            transform.position = Vector2.Lerp(m_MoveStartPos, m_MoveEndPos, m_MoveDownElapsedTime / m_MoveDownTime);
         }
 
         public void MoveDownEnd()

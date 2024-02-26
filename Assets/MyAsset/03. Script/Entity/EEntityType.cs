@@ -2,7 +2,7 @@ namespace LaserCrush.Entity
 {
     public enum EEntityType
     {
-        //Attable//
+        //Attakable//
         NormalBlock,
         ReflectBlock,
         BossBlock,
