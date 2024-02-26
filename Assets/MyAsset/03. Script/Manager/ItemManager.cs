@@ -215,7 +215,6 @@ namespace LaserCrush.Manager
                     row:     item.RowNumber,
                     col:     item.ColNumber,
                     count:   item.RemainUsingCount,
-                    isFixed: item.IsFixedDirection,
                     pos:     item.Position,
                     dir:     item.Direction,
                     type:    item.ItemType);

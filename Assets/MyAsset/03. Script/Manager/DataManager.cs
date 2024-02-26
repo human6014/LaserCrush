@@ -38,12 +38,11 @@ namespace LaserCrush.Data.Json
         public int m_RowNumber;
         public int m_ColNumber;
         public int m_RemainUsingCount;
-        public bool m_IsFixedDirection;
         public Vector2 m_Position;
         public Vector2 m_Direction;
         public ItemType m_ItemType;
 
-        public ItemData(int row, int col, int count, bool isFixed, Vector2 pos, Vector2 dir, ItemType type)
+        public ItemData(int row, int col, int count , Vector2 pos, Vector2 dir, ItemType type)
         {
             m_RowNumber = row;
             m_ColNumber = col;
@@ -51,7 +50,6 @@ namespace LaserCrush.Data.Json
             m_Direction = dir;
             m_ItemType = type;
             m_RemainUsingCount = count;
-            m_IsFixedDirection = isFixed;
         }
     }
 

@@ -131,6 +131,11 @@ namespace LaserCrush.Controller
                 bool m_BeforeClicked = false;
                 if (Input.GetMouseButton(0))
                 {
+                    if (EventSystem.current.IsPointerOverGameObject())
+                    {
+                        PointEndProcess();
+                        return;
+                    }
                     m_BeforeClicked = true;
 
                     if (m_IsItemPosMode || (!m_IsItemDirMode && RayManager.RaycastToClickable(out RaycastHit2D hit, RayManager.InstalledItemLayer)))
@@ -176,6 +181,12 @@ namespace LaserCrush.Controller
             {
                 m_ClickItem = false;
                 bool m_BeforeClicked = false;
+
+                if (Input.touchCount > 1 || (touch.phase == TouchPhase.Began && EventSystem.current.IsPointerOverGameObject()))
+                {
+                    PointEndProcess();
+                    return;
+                }
 
                 if (touch.phase == TouchPhase.Moved)
                 {
@@ -226,11 +237,6 @@ namespace LaserCrush.Controller
             if (1 << hit.transform.gameObject.layer != RayManager.InstalledItemLayer) return;
 
             m_AdjustingInstalledItem = hit.transform.GetComponent<InstalledItem>();
-            if (m_AdjustingInstalledItem.IsFixedDirection)
-            {
-                m_AdjustingInstalledItem.PlayFixNoticeAnimation();
-                return;
-            }
 
             m_ItemOriginalPos = m_AdjustingInstalledItem.Position;
             m_ItemOriginalRow = m_AdjustingInstalledItem.RowNumber;
