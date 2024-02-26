@@ -39,7 +39,8 @@ namespace LaserCrush.Manager
         private const string m_MoveDownBossAudioKey = "BossBlock";
         private const string m_MoveDownBlockAudioKey = "MoveDownBlock";
         
-        public readonly int m_BossStage = 15;
+        //15
+        private readonly int m_BossStage = 15;
         
         private bool m_IsInit;
         private bool m_IsGameOver;
@@ -48,7 +49,6 @@ namespace LaserCrush.Manager
         private bool m_IsCheckDestroyItem;
         private bool m_IsCheckMoveDownBlock;
         private bool m_IsCheckGenerateBlock;
-        
         #endregion
 
         #region Property
@@ -170,8 +170,9 @@ namespace LaserCrush.Manager
             {
                 int step = (IsBossStage() || m_BlockManager.IsBossSkill()) ? 2 : 1;
                 m_IsCheckMoveDownBlock = m_BlockManager.MoveDownAllBlocks(step);
-                
+
                 if (!m_IsCheckMoveDownBlock) return;
+                else if (step == 2) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBossAudioKey);
             }
 
             if (!m_IsCheckDestroyItem)
@@ -194,8 +195,7 @@ namespace LaserCrush.Manager
                 if (!m_IsCheckGenerateBlock) return;
             }
 
-            if (m_BlockManager.IsBossSkill() || IsBossStage()) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBossAudioKey);
-            else AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBlockAudioKey);
+            if (!m_BlockManager.IsBossSkill() && !IsBossStage()) AudioManager.AudioManagerInstance.PlayOneShotNormalSE(m_MoveDownBlockAudioKey); 
 
             Energy.ChargeEnergy();
 
@@ -281,12 +281,6 @@ namespace LaserCrush.Manager
 
             //세이브 딴곳에서 해줌
             GameStateType = EGameStateType.BlockUpdating;
-        }
-
-        private void OnApplicationQuit()
-        {
-            SaveAllGameData();
-            AudioManager.AudioManagerInstance.SaveAllData();
         }
     }
 }

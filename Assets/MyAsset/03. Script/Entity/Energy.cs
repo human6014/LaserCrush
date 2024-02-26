@@ -42,6 +42,11 @@ namespace LaserCrush.Entity
                 s_CurrentDamageUpdateAction?.Invoke();
             }
         }
+
+        public static int CurrentDamagePerSecond
+        {
+            get => s_CurrentDamage * 60;
+        }
         #endregion
 
         #region Init
@@ -55,13 +60,13 @@ namespace LaserCrush.Entity
 
             s_CurrentTimeUpdateAction = () => m_UIManager.SetCurrentTime((int)((s_CurrentMaxTime - s_CurrentTime) * 100), (int)(s_CurrentMaxTime * 100));
             s_MaxEnergyHighlightTextAction = () => m_UIManager.PlayEnergyHighlight();
-            s_CurrentDamageUpdateAction = () => m_UIManager.PlayDamageHighlight((int)(s_CurrentDamage * 60 * 0.01f));
+            s_CurrentDamageUpdateAction = () => m_UIManager.PlayDamageHighlight((int)(CurrentDamagePerSecond * 0.01f + 0.5f));
 
             s_CurrentTimeUpdateAction?.Invoke();
             s_CurrentDamageUpdateAction?.Invoke();
         }
         #endregion
-        
+
         public static bool IsValidTime()
             => CurrentTime < s_CurrentMaxTime;
         
