@@ -98,7 +98,6 @@ namespace LaserCrush.Controller
                 InitItemObject(itemData.m_RowNumber,
                                itemData.m_ColNumber,
                                itemData.m_RemainUsingCount,
-                               itemData.m_IsFixedDirection,
                                itemData.m_Position,
                                itemData.m_Direction,
                                true);
@@ -137,11 +136,9 @@ namespace LaserCrush.Controller
             if (Input.GetMouseButtonDown(0) && !m_IsDragging)
                 PointDownProcess();
 
-
             bool isHit = RayManager.RaycastToClickable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer);
             if (m_IsDragging)
                 PointDragProcess(isHit, ref hit2D);
-
 
             if (Input.GetMouseButtonUp(0))
             {
@@ -160,15 +157,21 @@ namespace LaserCrush.Controller
         {
             if (Input.touchCount <= 0 && !m_IsDragging) return;
 
+            if (Input.touchCount > 1 && m_IsDragging)
+            {
+                AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchFailAudioKey);
+                m_InstalledItemPool[(int)m_ControllingItem.ItemType].ReturnObject(m_ControllingItem);
+                BatchComp();
+                return;
+            }
+
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began && !m_IsDragging)
                 PointDownProcess();
 
-
             bool isHit = RayManager.RaycastToTouchable(out RaycastHit2D hit2D, RayManager.TouchableAreaLayer, touch);
             if (m_IsDragging)
                 PointDragProcess(isHit, ref hit2D);
-
 
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
@@ -217,14 +220,14 @@ namespace LaserCrush.Controller
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
             if (!result.m_IsAvailable) return false;
 
-            InitItemObject(result.m_RowNumber, result.m_ColNumber, 3, false, result.m_ItemGridPos, m_ItemInitDirection, false);
+            InitItemObject(result.m_RowNumber, result.m_ColNumber, 1, result.m_ItemGridPos, m_ItemInitDirection, false);
 
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchSuccessAudioKey);
 
             return true;
         }
 
-        private void InitItemObject(int row, int col, int usingCount, bool isFixed, Vector2 pos, Vector2 dir, bool isLoadData)
+        private void InitItemObject(int row, int col, int usingCount, Vector2 pos, Vector2 dir, bool isLoadData)
         {
             //usingCount 이거 이제 의미 없음 전부다 1임
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
@@ -233,10 +236,10 @@ namespace LaserCrush.Controller
 
             int currentUsingCount = isLoadData ? usingCount : m_InstalledItemData.MaxUsingNum[itemType];
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(row, col, currentUsingCount, false, pos, dir, m_InstalledItemPool[itemType]);
+            installedItem.Init(row, col, currentUsingCount, pos, dir, m_InstalledItemPool[itemType]);
 
             //FixDirection에 m_EjectionPorts설정해줘서 isFixed여부 상관없이 1번은 호출해줘야 함
-            if (isFixed) installedItem.FixDirection();
+            installedItem.FixDirection();
         }
 
         private void BatchComp()

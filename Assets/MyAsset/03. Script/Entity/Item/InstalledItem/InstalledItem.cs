@@ -44,7 +44,6 @@ namespace LaserCrush.Entity.Item
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
 
         private const string m_ItemDragAudioKey = "ItemDrag";
-        private const string m_FixedNoticeAnimationKey = "FixedNotice";
         private const string m_DestroyAnimationKey = "Destroy";
 
         private const float m_SubLineLength = 5;
@@ -74,7 +73,6 @@ namespace LaserCrush.Entity.Item
         public int RowNumber { get; private set; }
         public int ColNumber { get; private set; }
         public int RemainUsingCount { get; private set; }
-        public bool IsFixedDirection { get; private set; }
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
         public ItemType ItemType { get => m_ItemType; }
@@ -108,12 +106,11 @@ namespace LaserCrush.Entity.Item
         /// 1. m_EjectionPorts 위치와 방향 초기화
         /// 2. 사용횟수 초기화
         /// </summary>
-        public void Init(int rowNumber, int colNumber, int remainCount, bool isFixDirection, Vector2 pos, Vector2 dir, ObjectPoolManager.PoolingObject pool)
+        public void Init(int rowNumber, int colNumber, int remainCount, Vector2 pos, Vector2 dir, ObjectPoolManager.PoolingObject pool)
         {
             RowNumber = rowNumber;
             ColNumber = colNumber;
             RemainUsingCount = remainCount;
-            IsFixedDirection = isFixDirection;
             Position = pos;
             Direction = dir;
             m_Pool = pool;
@@ -129,9 +126,6 @@ namespace LaserCrush.Entity.Item
 
         public void FixDirection()
         {
-            if (IsFixedDirection) return;
-            IsFixedDirection = true;
-
             for (int i = 0; i < m_EjectionPorts.Count; i++)
             {
                 m_EjectionPorts[i] = new LaserInfo(
@@ -240,9 +234,6 @@ namespace LaserCrush.Entity.Item
         #endregion
 
         #region Play Animation
-        public void PlayFixNoticeAnimation()
-            => m_Animator.SetTrigger(m_FixedNoticeAnimationKey);
-
         public void PlayDestroyAnimation()
         {
             m_CircleCollider2D.enabled = false;

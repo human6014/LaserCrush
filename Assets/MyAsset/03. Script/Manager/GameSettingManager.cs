@@ -24,7 +24,7 @@ namespace LaserCrush.Manager
 
         private void SetBanner()
         {
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE || DEVELOPMENT_BUILD
             SetResolution(0);
 #else
             m_AdaptiveBanner.BannerOnAction += SetResolution;
