@@ -41,7 +41,7 @@ namespace LaserCrush.ThirdParty
 
             AdSize adSize = AdSize.GetPortraitAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
 
-            m_BannerView = new BannerView(m_TestAdUnitID, adSize, AdPosition.Bottom);
+            m_BannerView = new BannerView(m_AdUnitID, adSize, AdPosition.Bottom);
 
 
             // Register for ad events.

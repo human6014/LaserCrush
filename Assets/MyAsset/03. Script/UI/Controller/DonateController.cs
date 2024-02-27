@@ -17,20 +17,20 @@ namespace LaserCrush.UI.Controller
 
         public void OnPurchaseComplete(Product product)
         {
-            Debug.Log($"Purchase complete - Product: '{product.definition.id}'");
+            //Debug.Log($"Purchase complete - Product: '{product.definition.id}'");
             m_DonateCompPanel.SetActive(true);
         }
 
         public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
         {
-            Debug.Log($"Purchase failed - Product: '{product.definition.id}'," +
-                $" Purchase failure reason: {failureDescription.reason}," +
-                $" Purchase failure details: {failureDescription.message}");
+            //Debug.Log($"Purchase failed - Product: '{product.definition.id}'," +
+            //    $" Purchase failure reason: {failureDescription.reason}," +
+            //    $" Purchase failure details: {failureDescription.message}");
         }
 
         public void OnProductFetched(Product product)
         {
-            Debug.Log($"Purchase fetched - Product: '{product.definition.id}'");
+            //Debug.Log($"Purchase fetched - Product: '{product.definition.id}'");
         }
 
         private void PopupDown()
