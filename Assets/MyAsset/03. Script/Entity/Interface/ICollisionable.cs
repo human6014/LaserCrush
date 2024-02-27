@@ -9,9 +9,7 @@ namespace LaserCrush.Entity.Interface
 
         public bool IsGetDamageable();
 
-        public bool GetDamage(int damage);
-
-        public bool Waiting();
+        public bool GetDamage();
 
         public EEntityType GetEEntityType();
     }

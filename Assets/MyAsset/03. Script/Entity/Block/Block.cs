@@ -144,7 +144,7 @@ namespace LaserCrush.Entity.Block
         #endregion
 
         #region ICollisionable
-        public bool GetDamage(int damage)
+        public bool GetDamage()
         {
             if (m_IsDestroyed) return false;
 
@@ -173,9 +173,6 @@ namespace LaserCrush.Entity.Block
         }
 
         public bool IsGetDamageable()
-            => true;
-
-        public bool Waiting()
             => true;
 
         public EEntityType GetEEntityType()
