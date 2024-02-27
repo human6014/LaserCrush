@@ -142,7 +142,6 @@ namespace LaserCrush.Entity.Item
         }
 
         #region ICollisionable
-
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
             laser.ChangeLaserState(ELaserStateType.Hitting);
