@@ -11,7 +11,7 @@ namespace LaserCrush.Entity
             laser.ChangeLaserState(ELaserStateType.Hitting);
             LaserInfo info = new LaserInfo();
             info.Direction = Vector2.Reflect(parentDirVector, hit.normal);
-            info.Position = hit.point + info.Direction;
+            info.Position = hit.point;
 
             return new List<LaserInfo>() { info };
         }

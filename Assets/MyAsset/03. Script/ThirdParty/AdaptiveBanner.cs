@@ -16,10 +16,11 @@ namespace LaserCrush.ThirdParty
         private BannerView m_BannerView;
 
         private readonly string m_TestAdUnitID = "ca-app-pub-3940256099942544/9214589741";
+
 #if UNITY_ANDROID
-        private readonly string m_AdUnitID = "ca-app-pub-2303943085632745/9263589206";
+        private readonly string m_AdUnitID = "ca-app-pub-2303943085632745/9263589806";
 #elif UNITY_IPHONE
-  private readonly string m_AdUnitID = "ca-app-pub-3940256099942544/2934735716";
+  private readonly string m_AdUnitID = "ca-app-pub-2303943085632745/6287944236";
 #else
   private readonly string m_AdUnitID = "unused";
 #endif
@@ -43,7 +44,6 @@ namespace LaserCrush.ThirdParty
 
             m_BannerView = new BannerView(m_AdUnitID, adSize, AdPosition.Bottom);
 
-
             // Register for ad events.
             m_BannerView.OnBannerAdLoaded += OnBannerAdLoaded;
             m_BannerView.OnBannerAdLoadFailed += OnBannerAdLoadFailed;
@@ -53,7 +53,6 @@ namespace LaserCrush.ThirdParty
         }
 
         #region Banner callback handlers
-
         private void OnBannerAdLoaded()
         {
             m_BannerOnAction?.Invoke(m_BannerView.GetHeightInPixels());
@@ -63,7 +62,6 @@ namespace LaserCrush.ThirdParty
         {
             m_BannerOnAction?.Invoke(-50);
         }
-
         #endregion
 
         private void OnDestroy()

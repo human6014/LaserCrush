@@ -77,7 +77,7 @@ namespace LaserCrush.Entity
 
             s_MaxEnergyHighlightTextAction?.Invoke();
         }
-            
+
         private void Update()
         {
             if (IsValidTime() && GameManager.GameStateType == GameManager.EGameStateType.LaserActivating)
