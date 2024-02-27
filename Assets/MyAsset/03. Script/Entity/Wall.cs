@@ -21,14 +21,9 @@ namespace LaserCrush.Entity
             return false;
         }
 
-        public bool GetDamage(int damage)
+        public bool GetDamage()
         {
             return false;
-        }
-
-        public bool Waiting()
-        {
-            return true;
         }
 
         public EEntityType GetEEntityType()

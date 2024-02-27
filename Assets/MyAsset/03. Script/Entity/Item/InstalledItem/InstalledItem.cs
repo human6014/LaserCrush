@@ -48,8 +48,6 @@ namespace LaserCrush.Entity.Item
 
         private const float m_SubLineLength = 5;
 
-        private float m_ChargingWait;
-
         private bool m_IsActivate;
         private bool m_IsAdjustMode;
         private bool m_IsSyn;
@@ -139,44 +137,30 @@ namespace LaserCrush.Entity.Item
         {
             m_IsActivate = false;
             m_IsSyn = false;
-            m_ChargingWait = 0;
 
             return RemainUsingCount <= 0;
         }
 
         #region ICollisionable
-        public bool Waiting()
-        {
-            m_ChargingWait += Time.deltaTime;
-
-            if (m_ChargingWait >= m_InstalledItemData.ChargingTime && !m_IsActivate)
-            {
-                m_IsActivate = true;
-            }
-
-            return m_IsActivate;
-        }
 
         public List<LaserInfo> Hitted(RaycastHit2D hit, Vector2 parentDirVector, Laser laser)
         {
+            laser.ChangeLaserState(ELaserStateType.Hitting);
             if (m_IsActivate) return new List<LaserInfo>();
-
-            laser.ChangeLaserState(ELaserStateType.Wait);
-
             if (!m_IsSyn)
             {
                 RemainUsingCount--;
                 m_IsSyn = true;
             }
 
-            m_ChargingWait = 0;
+            m_IsActivate = true;
             return m_EjectionPorts;
         }
 
         public bool IsGetDamageable()
             => false;
 
-        public bool GetDamage(int damage)
+        public bool GetDamage()
             => false;
 
         public EEntityType GetEEntityType()
