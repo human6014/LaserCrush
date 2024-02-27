@@ -138,7 +138,7 @@ namespace LaserCrush.Entity.Item
             m_IsActivate = false;
             m_IsSyn = false;
 
-            return RemainUsingCount == 0;
+            return RemainUsingCount <= 0;
         }
 
         #region ICollisionable

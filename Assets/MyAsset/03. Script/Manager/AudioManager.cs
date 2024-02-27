@@ -30,6 +30,7 @@ namespace LaserCrush.Manager
 
         public static AudioManager AudioManagerInstance { get => m_AudioManager; }
 
+        #region Init
         public void Init()
         {
             if (m_AudioManager == null)
@@ -51,6 +52,7 @@ namespace LaserCrush.Manager
             SetVolume(m_BGMSound, SoundType.BGM);
             SetVolume(m_SESound, SoundType.SE);
         }
+        #endregion
 
         public void SetVolume(float value, SoundType soundType)
         {
@@ -96,23 +98,6 @@ namespace LaserCrush.Manager
         #endregion
 
         #region SE
-        public void PlayNormalSE(string audioName)
-        {
-            if (m_SEAudioSource.isPlaying) return;
-            if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
-            {
-                m_SEAudioSource.clip = audioClip;
-                m_SEAudioSource.Play();
-            }
-        }
-
-        public void StopNormalSE(string audioName)
-        {
-            if (!m_SEAudioSource.isPlaying) return;
-            if (m_SEAudioSource.clip is not null && m_SEAudioSource.clip.name == audioName) 
-                m_SEAudioSource.Stop();
-        }
-
         public void PlayOneShotNormalSE(string audioName)
         {
             if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))

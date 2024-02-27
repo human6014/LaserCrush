@@ -84,7 +84,8 @@ namespace LaserCrush.Entity
         /// </summary>
         public void Run()
         {
-            if (!m_IsActivated) return;
+            if (!m_IsActivated || m_IsErased) return;
+
             switch (m_State)
             {
                 case ELaserStateType.Move://에너지 소모x 이동만
@@ -135,10 +136,9 @@ namespace LaserCrush.Entity
         /// 1.1 충돌한 개체를 받아온다
         /// 1.2 개체에 맞는 함수를 호출한다.
         /// </summary> 
-        public void Move()
+        private void Move()
         {
             if (!Energy.IsValidTime()) { return; }
-            if (!m_IsActivated) { return; }
 
             RaycastHit2D hit = Physics2D.CircleCast(m_StartPoint, 0.001f, m_DirectionVector, Mathf.Infinity, RayManager.LaserHitableLayer);
 
@@ -184,10 +184,9 @@ namespace LaserCrush.Entity
         /// 2. 공격이 가능할 경우 에너지 잔량을 확인 후 0이 아니면 공격 진행
         /// 3. 해당 블럭에 GetDamage함수를 호출해 데미지를 주고 Energy개체에 에너지를 감소시킨다.
         /// </summary>
-        public void Hiting()
+        private void Hiting()
         {
             if (!m_Target.IsGetDamageable()) { return; }
-            if (!m_IsActivated) { return; }
 
             if (Energy.IsValidTime())//발사전 에너지 사용가능여부 확인
             {
@@ -225,19 +224,6 @@ namespace LaserCrush.Entity
                     remover.Enqueue(now.m_ChildLazers[i]);
                 }
             } 
-        }
-
-        public bool IsHittingDamagable()
-        {
-            if (m_Target == null) return false;
-            if (m_Target.IsGetDamageable()) return true;
-
-            return false;
-        }
-
-        public ELaserStateType GetELaserStateType()
-        {
-            return m_State;
         }
 
         public void ResetLaser()
