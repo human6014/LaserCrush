@@ -14,7 +14,7 @@ namespace LaserCrush.Manager
         public void Init()
         {
             SetFrame();
-            SetBanner();
+            SetResolution();
         }
 
         private void SetFrame()
@@ -22,23 +22,11 @@ namespace LaserCrush.Manager
             Application.targetFrameRate = m_TargetFrameRate;
         }
 
-        private void SetBanner()
-        {
-#if UNITY_STANDALONE || DEVELOPMENT_BUILD
-            SetResolution(0);
-#else
-            m_AdaptiveBanner.BannerOnAction += SetResolution;
-            m_AdaptiveBanner.Init();
-#endif
-        }
-
         /// <summary>
         /// 게임 최초 시작 시 해상도를 설정해줌
         /// </summary>
-        private void SetResolution(float bannerHeight)
+        private void SetResolution()
         {
-            float ratio = (bannerHeight + 50) / Screen.height;
-
             int deviceWidth = Screen.width; // 현재 기기 너비
             int deviceHeight = Screen.height; // 현재 기기 높이
 
@@ -55,10 +43,7 @@ namespace LaserCrush.Manager
             {
                 float newHeight = deviceAspect / targetAspect; // 새로운 높이
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
-            }
-
-            if (rect.y < ratio) rect.y = ratio;
-            
+            }            
 
             Camera.main.rect = rect;
         }
