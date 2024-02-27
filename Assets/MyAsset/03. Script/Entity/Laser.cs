@@ -10,8 +10,7 @@ namespace LaserCrush.Entity
     public enum ELaserStateType // 이름 고민
     {
         Move,
-        Hitting,
-        Wait
+        Hitting
     }
 
     /// <summary>
@@ -94,9 +93,6 @@ namespace LaserCrush.Entity
                 case ELaserStateType.Hitting:
                     Hiting();
                     break;
-                case ELaserStateType.Wait:
-                    Wait();
-                    break;
                 default:
                     Debug.Log("잘못된 레이저 상태입니다.");
                     break;
@@ -158,8 +154,6 @@ namespace LaserCrush.Entity
                 if (m_Target.GetEEntityType() == EEntityType.Wall)
                     AudioManager.AudioManagerInstance.PlayOneShotNormalSE(s_BlockDamageAudioKey);
 
-                if (m_State == ELaserStateType.Wait) return;
-
                 AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
                 return;
             }
@@ -184,15 +178,6 @@ namespace LaserCrush.Entity
             m_State = type;
         }
 
-        public void Wait()
-        {
-            if (m_Target.Waiting())
-            {
-                AddChild(m_LaserCreateFunc?.Invoke(m_LaserInfo));
-                m_State = ELaserStateType.Hitting;
-            }
-        }
-
         /// <summary>
         /// 작동 순서
         /// 1. 충돌 중인 블럭의 타입을 확인하고 공격 불가능인 경우 업데이트 종료
@@ -206,7 +191,7 @@ namespace LaserCrush.Entity
 
             if (Energy.IsValidTime())//발사전 에너지 사용가능여부 확인
             {
-                if (!m_Target.GetDamage(m_LaserData.Damage))
+                if (!m_Target.GetDamage())
                 {
                     m_LaserParticle.OffHitParticle();
                     m_LaserEraseAction?.Invoke(m_ChildLazers);
@@ -239,7 +224,7 @@ namespace LaserCrush.Entity
                 {
                     remover.Enqueue(now.m_ChildLazers[i]);
                 }
-            }
+            } 
         }
 
         public bool IsHittingDamagable()
