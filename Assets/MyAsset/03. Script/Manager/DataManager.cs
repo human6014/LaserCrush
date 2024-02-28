@@ -37,19 +37,17 @@ namespace LaserCrush.Data.Json
     {
         public int m_RowNumber;
         public int m_ColNumber;
-        public int m_RemainUsingCount;
         public Vector2 m_Position;
         public Vector2 m_Direction;
         public ItemType m_ItemType;
 
-        public ItemData(int row, int col, int count , Vector2 pos, Vector2 dir, ItemType type)
+        public ItemData(int row, int col , Vector2 pos, Vector2 dir, ItemType type)
         {
             m_RowNumber = row;
             m_ColNumber = col;
             m_Position = pos;
             m_Direction = dir;
             m_ItemType = type;
-            m_RemainUsingCount = count;
         }
     }
 
@@ -163,7 +161,7 @@ namespace LaserCrush.Manager
                 prism3Count: 1,
                 prism4Count: 0,
                 damage: 5,
-                launcherPos: new Vector2(0, -57), 
+                launcherPos: new Vector2(0, -57.01f), 
                 launcherDir: Vector2.zero,
                 blocks: new List<BlockData>(),
                 items: new List<ItemData>()

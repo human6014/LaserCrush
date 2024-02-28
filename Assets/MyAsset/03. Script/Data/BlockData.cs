@@ -11,8 +11,8 @@ namespace LaserCrush.Data
         [SerializeField] private LayerMask m_NormalLayer;
         [SerializeField] private LayerMask m_ReflectLayer;
 
-        [SerializeField] private int m_AudioCount = 6;
         [SerializeField] private float m_AdditionalTime = 0.17f;
+        [SerializeField] private float m_DamageTime = 0.1f;
 
         public Color NormalBlockColor { get => m_NormalBlockColor; }
         public Color ReflectBlockColor { get => m_ReflectBlockColor; }
@@ -20,7 +20,7 @@ namespace LaserCrush.Data
         public LayerMask NormalLayer { get => m_NormalLayer; }
         public LayerMask ReflectLayer { get => m_ReflectLayer; }
 
-        public int AudioCount { get => m_AudioCount; }
         public float AdditionalTime { get => m_AdditionalTime; }
+        public float DamageTime { get => m_DamageTime; }
     }
 }

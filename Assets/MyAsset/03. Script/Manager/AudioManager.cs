@@ -23,7 +23,7 @@ namespace LaserCrush.Manager
         private float m_BGMSound;
         private float m_SESound;
 
-        private readonly int m_MaxConcurrentAudioCount = 5;
+        private readonly int m_MaxConcurrentAudioCount = 4;
         private int m_ConcurrentAudioCount = 0;
 
         private static AudioManager m_AudioManager;
@@ -81,8 +81,7 @@ namespace LaserCrush.Manager
             m_WaitTime += Time.deltaTime;
             if (m_WaitTime >= m_MaxWaitTime)
             {
-                string randomKey = m_AudioData.GetRandomBGMKey();
-                PlayBGM(randomKey);
+                PlayBGM(m_AudioData.GetRandomBGMKey());
                 m_WaitTime = 0;
             }
         }
@@ -114,11 +113,11 @@ namespace LaserCrush.Manager
 
         public void PlayOneShotConcurrent(string audioName)
         {
-            if(m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
-            {
-                if (m_ConcurrentAudioCount >= m_MaxConcurrentAudioCount)
-                    return;
+            if (m_ConcurrentAudioCount >= m_MaxConcurrentAudioCount)
+                return;
 
+            if (m_AudioData.GetSENormal(audioName, out AudioClip audioClip))
+            {
                 m_ConcurrentAudioCount++;
                 m_SEAudioSource.PlayOneShot(audioClip);
                 StartCoroutine(CheckAudioEnd(audioClip));

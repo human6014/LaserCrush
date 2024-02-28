@@ -37,7 +37,7 @@ namespace LaserCrush.Manager
         /// </summary>
         private void SetResolution(float bannerHeight)
         {
-            float ratio = (bannerHeight + 50) / Screen.height;
+            float ratio = (bannerHeight * 1.5f) / Screen.height;
 
             int deviceWidth = Screen.width; // 현재 기기 너비
             int deviceHeight = Screen.height; // 현재 기기 높이
@@ -48,11 +48,17 @@ namespace LaserCrush.Manager
             Rect rect;
             if (targetAspect < deviceAspect)
             {
+                //기기 너비가 더 큼 or 기기 높이가 더 작음
+                //패드 같은 화면(정사각형)여기로 옴
+                //높이 값에 맞춘 너비가 필요
                 float newWidth = targetAspect / deviceAspect; // 새로운 너비
-                rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
+                rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
             }
             else
             {
+                //기기 너비가 더 작음 or 기기 높이가 더 큼
+                //위 아래로 길다란 화면 여기로 옴
+                //너비값에 맞춘 높이가 필요
                 float newHeight = deviceAspect / targetAspect; // 새로운 높이
                 rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
             }

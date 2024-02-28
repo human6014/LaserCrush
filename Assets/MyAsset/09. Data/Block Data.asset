@@ -21,3 +21,5 @@ MonoBehaviour:
   m_ReflectLayer:
     serializedVersion: 2
     m_Bits: 512
+  m_AdditionalTime: 0.17
+  m_DamageTime: 0.1

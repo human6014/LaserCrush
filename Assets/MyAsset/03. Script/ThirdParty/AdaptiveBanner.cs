@@ -60,7 +60,7 @@ namespace LaserCrush.ThirdParty
 
         private void OnBannerAdLoadFailed(LoadAdError error)
         {
-            m_BannerOnAction?.Invoke(-50);
+            m_BannerOnAction?.Invoke(0);
         }
         #endregion
 

@@ -27,7 +27,7 @@ namespace LaserCrush.Controller
 
         private Func<Vector3, InstalledItem, Result> m_CheckAvailablePosFunc;
 
-        private readonly Vector2 m_InitPos = new Vector2(0, -57);
+        private readonly Vector2 m_InitPos = new Vector2(0, -57.01f);
         private readonly Vector2 m_InitDir = Vector2.up;
 
         private Vector2 m_ItemOriginalPos;

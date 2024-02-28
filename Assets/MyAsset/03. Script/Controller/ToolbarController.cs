@@ -10,7 +10,6 @@ namespace LaserCrush.Controller
     public class ToolbarController : MonoBehaviour
     {
         #region Value
-        [SerializeField] private InstalledItemData m_InstalledItemData;
         [SerializeField] private Transform m_BatchedItemTransform;
         [SerializeField] private InstalledItem[] m_InstalledItems;
         [SerializeField] private int[] m_ItemPoolingCount;
@@ -97,7 +96,6 @@ namespace LaserCrush.Controller
 
                 InitItemObject(itemData.m_RowNumber,
                                itemData.m_ColNumber,
-                               itemData.m_RemainUsingCount,
                                itemData.m_Position,
                                itemData.m_Direction,
                                true);
@@ -220,26 +218,24 @@ namespace LaserCrush.Controller
             Result result = (Result)(m_CheckAvailablePosFunc?.Invoke(origin));
             if (!result.m_IsAvailable) return false;
 
-            InitItemObject(result.m_RowNumber, result.m_ColNumber, 1, result.m_ItemGridPos, m_ItemInitDirection, false);
+            InitItemObject(result.m_RowNumber, result.m_ColNumber, result.m_ItemGridPos, m_ItemInitDirection, false);
 
             AudioManager.AudioManagerInstance.PlayOneShotUISE(m_ItemBatchSuccessAudioKey);
 
             return true;
         }
 
-        private void InitItemObject(int row, int col, int usingCount, Vector2 pos, Vector2 dir, bool isLoadData)
+        private void InitItemObject(int row, int col, Vector2 pos, Vector2 dir, bool isLoadData)
         {
             //usingCount 이거 이제 의미 없음 전부다 1임
             //기존의 m_InstalledItem는 위치 조건에서 없어졌을 수도 있어서 다시 한번 받아야 함
             InstalledItem installedItem = m_ControllingTransform.GetComponent<InstalledItem>();
             int itemType = (int)installedItem.ItemType;
 
-            int currentUsingCount = isLoadData ? usingCount : m_InstalledItemData.MaxUsingNum[itemType];
             m_AddInstallItemAction?.Invoke(installedItem, m_CurrentItem);
-            installedItem.Init(row, col, currentUsingCount, pos, dir, m_InstalledItemPool[itemType]);
+            installedItem.Init(row, col, 1, pos, dir, m_InstalledItemPool[itemType]);
 
-            //FixDirection에 m_EjectionPorts설정해줘서 isFixed여부 상관없이 1번은 호출해줘야 함
-            installedItem.FixDirection();
+            installedItem.SetEjectionPorts();
         }
 
         private void BatchComp()
