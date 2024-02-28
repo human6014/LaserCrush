@@ -37,7 +37,7 @@ namespace LaserCrush.Manager
         /// </summary>
         private void SetResolution(float bannerHeight)
         {
-            float ratio = (bannerHeight * 1.5f) / Screen.height;
+            float ratio = (bannerHeight + 50) / Screen.height;
 
             int deviceWidth = Screen.width; // 현재 기기 너비
             int deviceHeight = Screen.height; // 현재 기기 높이
