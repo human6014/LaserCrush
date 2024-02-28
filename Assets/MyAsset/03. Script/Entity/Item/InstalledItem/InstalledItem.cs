@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using LaserCrush.Extension;
 using LaserCrush.Manager;
-using LaserCrush.Data;
 using LaserCrush.Entity.Interface;
 
 namespace LaserCrush.Entity
@@ -31,7 +30,6 @@ namespace LaserCrush.Entity.Item
     public sealed class InstalledItem : PoolableMonoBehaviour, ICollisionable
     {
         #region Variable
-        [SerializeField] private InstalledItemData m_InstalledItemData;
         [SerializeField] private Transform[] m_EjectionPortsTransform;
         [SerializeField] private LineRenderer[] m_LineRenderers;
         [SerializeField] private GameObject[] m_SubRotationImage;
@@ -42,6 +40,8 @@ namespace LaserCrush.Entity.Item
         private Animator m_Animator;
         private CircleCollider2D m_CircleCollider2D;
         private readonly List<LaserInfo> m_EjectionPorts = new List<LaserInfo>();
+
+        private static readonly int m_DiscreteUnit = 5;
 
         private const string m_ItemDragAudioKey = "ItemDrag";
         private const string m_DestroyAnimationKey = "Destroy";
@@ -122,7 +122,7 @@ namespace LaserCrush.Entity.Item
         }
         #endregion
 
-        public void FixDirection()
+        public void SetEjectionPorts()
         {
             for (int i = 0; i < m_EjectionPorts.Count; i++)
             {
@@ -204,7 +204,7 @@ namespace LaserCrush.Entity.Item
         public void SetDirection(Vector2 pos)
         {
             Vector2 direction = (pos - (Vector2)transform.position).normalized;
-            Vector2 discreteDirection = direction.DiscreteDirection(m_InstalledItemData.DiscreteUnit);
+            Vector2 discreteDirection = direction.DiscreteDirection(m_DiscreteUnit);
 
             if (Direction != discreteDirection)
             {

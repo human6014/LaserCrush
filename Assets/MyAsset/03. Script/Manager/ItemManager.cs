@@ -137,7 +137,7 @@ namespace LaserCrush.Manager
         public void FixInstalledItemDirection()
         {
             foreach (InstalledItem installedItem in m_InstalledItem)
-                installedItem.FixDirection();
+                installedItem.SetEjectionPorts();
         }
 
         private Result CheckAvailablePosWithExcept(Vector3 pos, InstalledItem exceptItem)
@@ -214,7 +214,6 @@ namespace LaserCrush.Manager
                 itemData = new Data.Json.ItemData(
                     row:     item.RowNumber,
                     col:     item.ColNumber,
-                    count:   item.RemainUsingCount,
                     pos:     item.Position,
                     dir:     item.Direction,
                     type:    item.ItemType);

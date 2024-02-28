@@ -47,15 +47,11 @@ namespace LaserCrush.Entity.Block
         private Vector2 m_MoveStartPos;
         private Vector2 m_MoveEndPos;
 
-        private int m_AttackCount;
-
         private bool m_IsDestroyed;
 
         private float m_MoveDownElapsedTime;
         private float m_MoveDownTime;
         private float m_CurrentDamageTime;
-        
-        private static readonly float m_DamageTime = 0.1f;
 
         private static readonly string s_BlockDestroyAudioKey = "BlockDestroy";
         private static readonly string s_BlockDamageAudioKey = "BlockDamage";
@@ -108,7 +104,7 @@ namespace LaserCrush.Entity.Block
             m_CurrentDamageTime = 0;
             m_BoxCollider2D.enabled = true;
             m_IsDestroyed = false;
-            m_AttackCount = 0;
+
             m_Text.text = GetHP().ToString();
             m_EntityType = entityType;
 
@@ -148,20 +144,19 @@ namespace LaserCrush.Entity.Block
         {
             if (m_IsDestroyed) return false;
 
-            if (m_AttackCount % m_BlockData.AudioCount == 0) AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
-            m_AttackCount++;
-
             int damageCount = 0;
             m_CurrentDamageTime += Time.deltaTime;
-            if(m_CurrentDamageTime >= m_DamageTime)
+            if(m_CurrentDamageTime >= m_BlockData.DamageTime)
             {
-                damageCount = (int)(m_CurrentDamageTime / m_DamageTime);
-                m_CurrentDamageTime %= m_DamageTime;
+                AudioManager.AudioManagerInstance.PlayOneShotConcurrent(s_BlockDamageAudioKey);
+
+                damageCount = (int)(m_CurrentDamageTime / m_BlockData.DamageTime);
+                m_CurrentDamageTime %= m_BlockData.DamageTime;
             }
 
             m_Animator.SetTrigger("Hit");
 
-            CurrentHP -= (int)(Energy.CurrentDamagePerSecond * 0.1f * damageCount);
+            CurrentHP -= (int)(Energy.CurrentDamagePerSecond * m_BlockData.DamageTime * damageCount);
             if (GetHP() <= 0)
             {
                 Destroy();

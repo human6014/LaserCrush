@@ -27,14 +27,14 @@ namespace LaserCrush.Controller
 
         private Func<Vector3, InstalledItem, Result> m_CheckAvailablePosFunc;
 
-        private readonly Vector2 m_InitPos = new Vector2(0, -57);
+        private readonly Vector2 m_InitPos = new Vector2(0, -57.01f);
         private readonly Vector2 m_InitDir = Vector2.up;
-
         private Vector2 m_ItemOriginalPos;
-        private int m_ItemOriginalRow;
-        private int m_ItemOriginalCol;
 
         private readonly float m_SecondSubLineLength = 8.5f;
+
+        private int m_ItemOriginalRow;
+        private int m_ItemOriginalCol;
 
         private bool m_IsInit;
 
@@ -301,7 +301,7 @@ namespace LaserCrush.Controller
             if (!m_IsInitPosDrag) return;
 
             Vector3 objectPos = RayManager.MousePointToWorldPoint();
-            float xPos = Mathf.Clamp(objectPos.x, -42, 42);
+            float xPos = Mathf.Clamp(objectPos.x, -41, 41);
             Position = new Vector3(xPos, -57, 0);
 
             UpdateLineRenderer();
